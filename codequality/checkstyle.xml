@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.1//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_1.dtd">
+
+<!-- commons lang customization of default Checkstyle behavior -->
+<module name="Checker">
+  <property name="localeLanguage" value="en"/>
+  <module name="JavadocPackage">
+    <!-- setting allowLegacy means it will check for package.html instead of just package-info.java -->
+    <property name="allowLegacy" value="true"/>
+  </module>
+  <module name="FileTabCharacter">
+    <property name="fileExtensions" value="java,xml"/>
+  </module>
+  <module name="TreeWalker">
+    <property name="cacheFile" value="target/cachefile"/>
+    <module name="AvoidStarImport"/>
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+    <module name="NeedBraces"/>
+    <module name="RedundantThrows">
+      <property name="allowUnchecked" value="true"/>
+    </module>
+    <module name="JavadocMethod">
+      <property name="allowUndeclaredRTE" value="true"/>
+    </module>
+ </module>
+ <module name="SuppressionFilter">
+    <property name="file" value="${config_loc}/suppressions.xml"/>
+ </module>
+</module>
+                        
+

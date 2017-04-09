@@ -1,0 +1,7 @@
+
+${AnsiColor.BLACK}+---------+
+${AnsiColor.BLACK}| ${AnsiColor.BRIGHT_RED}┌─┐┬┬─┐${AnsiColor.BRIGHT_CYAN} |
+${AnsiColor.BLACK}| ${AnsiColor.BRIGHT_RED}├─┤│├┬┘${AnsiColor.BRIGHT_CYAN} |
+${AnsiColor.BLACK}| ${AnsiColor.BRIGHT_RED}┴ ┴┴┴└─${AnsiColor.BRIGHT_CYAN} |
+${AnsiColor.BLACK}+---------+
+${AnsiColor.BLACK}${AnsiColor.BRIGHT_BLUE}AIR Platform ${application.formatted-version}  ${AnsiColor.BLACK}

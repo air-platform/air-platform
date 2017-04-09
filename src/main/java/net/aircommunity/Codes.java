@@ -1,0 +1,44 @@
+package net.aircommunity;
+
+/**
+ * Error Codes of AIR Platform.
+ * 
+ * @author Bin.Zhang
+ */
+public final class Codes {
+	// error code pattern: xxx_xx_xxx_xxx -> (HTTP status code) - (product) (component) (details)
+
+	// generic
+	public static final Code SUCCESS = Code.success(11_000_0001);
+	public static final Code INTERNAL_ERROR = Code.internalError(11_000_0002);
+	public static final Code SERVICE_UNAVAILABLE = Code.serviceUnavailable(11_000_0003);
+	public static final Code REQUEST_TIMEOUT = Code.gatewayTimeout(11_000_0004);
+
+	// json processing
+	public static final Code READ_JSON_FAILURE = Code.invalidArgument(11_000_0005);
+	public static final Code WRITE_JSON_FAILURE = Code.invalidArgument(11_000_0006);
+
+	// file upload
+	public static final Code UNSUPPORTED_FILE_TYPE = Code.invalidArgument(11_000_0007);
+
+	// account
+	public static final Code ACCOUNT_CREATION_FAILURE = Code.notAuthorized(11_001_0001);
+	public static final Code ACCOUNT_INVALID_VERIFICATION_CODE = Code.invalidArgument(11_001_0002);
+	public static final Code ACCOUNT_UNAUTHORIZED_PERMISSION = Code.notAuthorized(11_001_0003);
+	public static final Code ACCOUNT_INVALID_USERNAME = Code.invalidArgument(11_001_0004);
+	public static final Code ACCOUNT_PASSWORD_MISMATCH = Code.invalidArgument(11_001_0005);
+	public static final Code ACCOUNT_NOT_FOUND = Code.notFound(11_001_0006);
+	public static final Code ACCOUNT_ALREADY_EXISTS = Code.alreadyExists(11_001_0007);
+	public static final Code ACCOUNT_MOBILE_ALREADY_EXISTS = Code.alreadyExists(11_001_0008);
+	public static final Code ACCOUNT_EMAIL_ALREADY_EXISTS = Code.alreadyExists(11_001_0009);
+	public static final Code ACCOUNT_USERNAME_ALREADY_EXISTS = Code.alreadyExists(11_001_0010);
+	public static final Code ACCOUNT_EMAIL_NOT_BIND = Code.notAuthorized(11_001_0011);
+
+	// apikey
+	public static final Code APIKEY_NOT_FOUND = Code.notFound(11_002_0001);
+	public static final Code APIKEY_ILLEGAL_ACCESS = Code.illegalAccess(11_002_0002);
+
+	private Codes() {
+		throw new AssertionError();
+	}
+}

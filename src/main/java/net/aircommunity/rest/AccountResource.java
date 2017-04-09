@@ -1,0 +1,245 @@
+package net.aircommunity.rest;
+
+import java.net.URI;
+
+import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
+import net.aircommunity.model.AccessToken;
+import net.aircommunity.model.Account;
+import net.aircommunity.model.AccountRequest;
+import net.aircommunity.model.AuthcRequest;
+import net.aircommunity.model.EmailRequest;
+import net.aircommunity.model.PasswordRequest;
+import net.aircommunity.model.AccountAuth.AuthType;
+import net.aircommunity.rest.annotation.Authenticated;
+import net.aircommunity.rest.annotation.RESTful;
+import net.aircommunity.rest.annotation.TokenSecured;
+import net.aircommunity.rest.core.security.AccessTokenService;
+import net.aircommunity.rest.core.security.Claims;
+import net.aircommunity.rest.core.security.SimplePrincipal;
+import net.aircommunity.service.AccountService;
+
+/**
+ * Account RESTful API.
+ * 
+ * @author Bin.Zhang
+ */
+@RESTful
+@Path("account")
+public class AccountResource {
+	private static final Logger LOG = LoggerFactory.getLogger(AccountResource.class);
+
+	@Resource
+	private AccountService accountService;
+
+	@Resource
+	private AccessTokenService accessTokenService;
+
+	/**
+	 * Create user/tenant account
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Response createAccount(@NotNull @Valid AccountRequest request, @Context UriInfo uriInfo) {
+		Account account = accountService.createAccount(request.getMobile(), request.getPassword(),
+				request.getVerificationCode(), request.getRole());
+		URI uri = uriInfo.getAbsolutePathBuilder().segment(account.getId()).build();
+		LOG.debug("Created account: {}", uri);
+		return Response.created(uri).build();
+	}
+
+	/**
+	 * Authenticate via internal(username,email,mobile) or external(3rd party) auth
+	 */
+	@Path("auth")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Response authenticate(@QueryParam("type") AuthType type, @NotNull @Valid AuthcRequest request) {
+		// Authenticate the user using the credentials provided against a database credentials can be account not found
+		// or via external auth
+		Account account = null;
+		if (type != null) {
+			account = accountService.authenticateAccount(type, request.getPrincipal(), request.getCredential(),
+					request.getExpires());
+		}
+		else {
+			account = accountService.authenticateAccount(request.getPrincipal(), request.getCredential(),
+					request.isOtp());
+		}
+		if (account == null) {
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
+		try {
+			// Issue a token for this account
+			String token = accessTokenService.generateToken(account.getId(),
+					ImmutableMap.of(Claims.CLAIM_ROLES, ImmutableSet.of(account.getRole().name())));
+			// Return the token on the response
+			return Response.ok(new AccessToken(token)).build();
+		}
+		catch (Exception e) {
+			LOG.error(e.getLocalizedMessage(), e);
+		}
+		return Response.serverError().build();
+	}
+
+	/**
+	 * Refresh authc token
+	 */
+	@POST
+	@Path("auth/refresh")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response refreshToken(@Context SecurityContext context) {
+		SimplePrincipal principal = (SimplePrincipal) context.getUserPrincipal();
+		String refreshedToken = accessTokenService.generateToken(principal.getClaims().getSubject(),
+				principal.getClaims().getClaimsMap());
+		return Response.ok(new AccessToken(refreshedToken)).build();
+	}
+
+	/**
+	 * Refresh API Key
+	 */
+	@POST
+	@Path("apikey/refresh")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response refreshApiKey(@Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		Account account = accountService.refreshApiKey(accountId);
+		return Response.ok(new AccessToken(account.getApiKey())).build();
+	}
+
+	/**
+	 * Find account by ID (as a result of account creation), may not really useful, just to complete the RESTful API.
+	 */
+	@GET
+	@Path("{accountId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response findAccount(@PathParam("accountId") String accountId, @Context SecurityContext context) {
+		String selfAccountId = context.getUserPrincipal().getName();
+		if (!selfAccountId.equals(accountId)) {
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
+		Account account = accountService.findAccount(accountId);
+		return Response.ok(account).build();
+	}
+
+	/**
+	 * Get account
+	 */
+	@GET
+	@Path("profile")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response getSelfAccount(@Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		Account account = accountService.findAccount(accountId);
+		return Response.ok(account).build();
+	}
+
+	/**
+	 * Update account
+	 */
+	@PUT
+	@Path("profile")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response updateAccount(@NotNull @Valid Account newAccount, @Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		Account accountUpdated = accountService.updateAccount(accountId, newAccount);
+		return Response.ok(accountUpdated).build();
+	}
+
+	/**
+	 * Change password if old password is correct.
+	 */
+	@POST
+	@Path("password")
+	@Authenticated
+	public Response updatePassword(@NotNull @Valid PasswordRequest request, @Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		accountService.updatePassword(accountId, request.getOldPassword(), request.getNewPassword());
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Reset/forget password
+	 */
+	@POST
+	@Path("password/reset")
+	@Authenticated
+	public Response resetPassword(@Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		accountService.resetPassword(accountId);
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Change email and need to be verified
+	 */
+	@POST
+	@Path("email")
+	@Authenticated
+	public Response updateEmail(@NotNull @Valid EmailRequest request, @Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		accountService.updateEmail(accountId, request.getEmail());
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Confirm email, account/email/confirm?token=xxx&code=xxx
+	 */
+	@GET
+	@Path("email/confirm")
+	@TokenSecured
+	public Response confirmEmail(@QueryParam("code") String verificationCode, @Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		accountService.confirmEmail(accountId, verificationCode);
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Delete self account
+	 */
+	@DELETE
+	@Authenticated
+	public Response deleteSelfAccount(@NotNull @Valid AuthcRequest request) {
+		Account account = accountService.authenticateAccount(request.getPrincipal(), request.getCredential(),
+				request.isOtp());
+		if (account == null) {
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
+		accountService.deleteAccount(account.getId());
+		return Response.noContent().build();
+	}
+
+}

@@ -1,14 +1,42 @@
-# ---> Java
+# Eclipse project files
+.project
+.classpath
+.settings
+
+# IntelliJ IDEA project files and directories
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Geany project file
+.geany
+
+# KDevelop project file and directory
+.kdev4/
+*.kdev4
+
+# Build targets
+/target
+*/target
+target
 *.class
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Report directories
+/reports
+*/reports
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# Mac-specific directory that no other operating system needs.
+.DS_Store
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# JVM crash logs
+hs_err_pid*.log
 
+
+# Ingore for C
+.zshrc
+
+# specific directories
+backup
+logs
+data
