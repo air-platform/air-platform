@@ -6,7 +6,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**
- * Database based configuration for AI platform
+ * Database based configuration for AIR platform
  * 
  * @author Bin.Zhang
  */

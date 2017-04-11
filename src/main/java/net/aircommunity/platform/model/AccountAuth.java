@@ -10,12 +10,17 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
  * Account authentication info (support multiple authentication methods).
@@ -34,9 +39,6 @@ public class AccountAuth extends Persistable {
 
 	public static final long EXPIRES_NERVER = -1;
 	public static final long EXPIRES_IN_ONE_DAY = 24 * 60 * 60;
-
-	@Column(name = "account_id", nullable = false)
-	private String accountId;
 
 	// e.g. username/email/mobile/wechat/qq/weibo etc.
 	@Column(name = "type", nullable = false)
@@ -69,15 +71,12 @@ public class AccountAuth extends Persistable {
 	@Column(name = "last_accessed_ip")
 	private String lastAccessedIp;
 
+	@XmlJavaTypeAdapter(AccountAdapter.class)
+	@ManyToOne
+	@JoinColumn(name = "account_id", nullable = false)
+	private Account account;
+
 	// TODO from which source: app, browser etc.?
-
-	public String getAccountId() {
-		return accountId;
-	}
-
-	public void setAccountId(String accountId) {
-		this.accountId = accountId;
-	}
 
 	public AuthType getType() {
 		return type;
@@ -141,6 +140,14 @@ public class AccountAuth extends Persistable {
 
 	public void setLastAccessedIp(String lastAccessedIp) {
 		this.lastAccessedIp = lastAccessedIp;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	/**

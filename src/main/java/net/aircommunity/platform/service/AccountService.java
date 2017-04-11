@@ -7,10 +7,10 @@ import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Account;
-import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Account.Status;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
+import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Role;
 
 /**
  * Account service manages {@code Account}s. The account principal can be username, mobile or email.
@@ -137,6 +137,17 @@ public interface AccountService {
 	 */
 	@Nonnull
 	Page<Account> listAccounts(int page, int pageSize);
+
+	/**
+	 * List All Accounts by pagination filter by role.
+	 * 
+	 * @param role the account role
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of accounts or empty
+	 */
+	@Nonnull
+	Page<Account> listAccounts(@Nullable Role role, int page, int pageSize);
 
 	/**
 	 * Change the username for a account.

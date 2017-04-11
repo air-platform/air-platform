@@ -4,12 +4,11 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import net.aircommunity.platform.model.constraint.Mobile;
-import net.aircommunity.platform.model.constraint.NotEmpty;
 import net.aircommunity.platform.model.constraint.Password;
+import net.aircommunity.platform.model.constraint.Username;
 
 /**
- * Account registration request by user via mobile.
+ * Account registration request by admin/tenant via console.
  * 
  * @author Bin.Zhang
  */
@@ -17,11 +16,8 @@ public class AccountRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull
-	@Mobile
-	private String mobile;
-
-	@NotEmpty
-	private String verificationCode;
+	@Username
+	private String username;
 
 	@NotNull
 	@Password
@@ -30,12 +26,8 @@ public class AccountRequest implements Serializable {
 	@NotNull
 	private Role role;
 
-	public String getMobile() {
-		return mobile;
-	}
-
-	public String getVerificationCode() {
-		return verificationCode;
+	public String getUsername() {
+		return username;
 	}
 
 	public String getPassword() {

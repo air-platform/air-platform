@@ -7,9 +7,9 @@ package net.aircommunity.platform.model;
  */
 public final class Roles {
 
-	public static final String ROLE_ADMIN = "admin";
-	public static final String ROLE_TENANT = "tenant";
-	public static final String ROLE_USER = "user";
+	public static final String ROLE_ADMIN = "ADMIN";
+	public static final String ROLE_TENANT = "TENANT";
+	public static final String ROLE_USER = "USER";
 
 	private Roles() {
 		throw new AssertionError();

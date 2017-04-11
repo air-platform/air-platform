@@ -26,8 +26,9 @@ import org.slf4j.LoggerFactory;
 
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Account;
-import net.aircommunity.platform.model.AccountAdminRequest;
+import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.rest.annotation.RESTful;
@@ -72,7 +73,7 @@ public class AdminResource {
 	@POST
 	@Path(ACCOUNTS_PATH_PREFIX)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createAccount(@NotNull @Valid AccountAdminRequest request, @Context UriInfo uriInfo) {
+	public Response createAccount(@NotNull @Valid AccountRequest request, @Context UriInfo uriInfo) {
 		Account created = accountService.createAccount(request.getUsername(), request.getPassword(), request.getRole());
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created account: {}", uri);
@@ -85,9 +86,9 @@ public class AdminResource {
 	@GET
 	@Path(ACCOUNTS_PATH_PREFIX)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAllAccounts(@QueryParam("page") @DefaultValue("0") int page,
+	public Response listAllAccounts(@QueryParam("role") Role role, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<Account> accountPage = accountService.listAccounts(page, pageSize);
+		Page<Account> accountPage = accountService.listAccounts(role, page, pageSize);
 		return Response.ok(accountPage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(accountPage))
 				.build();
 	}

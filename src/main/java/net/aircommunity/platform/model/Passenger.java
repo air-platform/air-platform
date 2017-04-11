@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 
 /**
- * Passenger of an {@code Account}
+ * Passenger of an {@code Account} TODO just make it standard entity?
  * 
  * @author Bin.Zhang
  */
@@ -13,8 +13,12 @@ import javax.persistence.Embeddable;
 public class Passenger implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	// Passenger name
 	private String name;
+
+	// Passenger mobile
 	private String mobile;
+
 	// e.g. ID Card number
 	private String identity;
 

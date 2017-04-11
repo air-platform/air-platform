@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
@@ -36,6 +37,8 @@ import net.aircommunity.platform.model.AuthcRequest;
 import net.aircommunity.platform.model.EmailRequest;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.PasswordRequest;
+import net.aircommunity.platform.model.Role;
+import net.aircommunity.platform.model.UserAccountRequest;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.rest.annotation.Authenticated;
 import net.aircommunity.rest.annotation.RESTful;
@@ -66,11 +69,26 @@ public class AccountResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public Response createAccount(@NotNull @Valid AccountRequest request, @Context UriInfo uriInfo) {
+	public Response createAccount(@NotNull @Valid UserAccountRequest request, @Context UriInfo uriInfo) {
 		Account account = accountService.createAccount(request.getMobile(), request.getPassword(),
 				request.getVerificationCode(), request.getRole());
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(account.getId()).build();
 		LOG.debug("Created account: {}", uri);
+		return Response.created(uri).build();
+	}
+
+	/**
+	 * Create tenant account
+	 */
+	@Path("tenant")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Response createTenantAccount(@NotNull @Valid AccountRequest request, @Context UriInfo uriInfo) {
+		Account account = accountService.createAccount(request.getUsername(), request.getPassword(),
+				Role.TENANT /* force tenant */);
+		URI uri = UriBuilder.fromMethod(getClass(), "findAccount").segment(account.getId()).build();
+		LOG.debug("Created tenant account: {}", uri);
 		return Response.created(uri).build();
 	}
 
@@ -86,7 +104,7 @@ public class AccountResource {
 		// Authenticate the user using the credentials provided against a database credentials can be account not found
 		// or via external auth
 		Account account = null;
-		if (type != null) {
+		if (type != null && !type.isInternal()) {
 			account = accountService.authenticateAccount(type, request.getPrincipal(), request.getCredential(),
 					request.getExpires());
 		}
@@ -125,6 +143,19 @@ public class AccountResource {
 	}
 
 	/**
+	 * Get API Key
+	 */
+	@GET
+	@Path("apikey")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response findApiKey(@Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		Account account = accountService.findAccount(accountId);
+		return Response.ok(new AccessToken(account.getApiKey())).build();
+	}
+
+	/**
 	 * Refresh API Key
 	 */
 	@POST
@@ -146,7 +177,8 @@ public class AccountResource {
 	@Authenticated
 	public Response findAccount(@PathParam("accountId") String accountId, @Context SecurityContext context) {
 		String selfAccountId = context.getUserPrincipal().getName();
-		if (!selfAccountId.equals(accountId)) {
+		// denied for: 1) not self, 2) not admin
+		if (!(selfAccountId.equals(accountId) || context.isUserInRole(Role.ADMIN.name()))) {
 			return Response.status(Status.UNAUTHORIZED).build();
 		}
 		Account account = accountService.findAccount(accountId);

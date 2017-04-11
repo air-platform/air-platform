@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 
 /**
- * Address of an {@code Account}
+ * Address of an {@code User}
  * 
  * @author Bin.Zhang
  */

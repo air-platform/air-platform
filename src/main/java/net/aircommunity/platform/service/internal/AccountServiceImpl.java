@@ -32,6 +32,8 @@ import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
+import net.aircommunity.platform.model.Tenant;
+import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.repository.AccountAuthRepository;
 import net.aircommunity.platform.repository.AccountRepository;
 import net.aircommunity.platform.service.AccountService;
@@ -96,7 +98,7 @@ public class AccountServiceImpl implements AccountService {
 				break;
 			}
 		}
-		Account account = findAccount(auth.getAccountId());
+		Account account = auth.getAccount();
 		if (account.getStatus() != Status.ENABLED) {
 			LOG.warn("Account {} is not enabled, cannot be authenticated", principal);
 			return null;
@@ -129,7 +131,7 @@ public class AccountServiceImpl implements AccountService {
 				auth.setCredential(credential);
 				auth.setLastAccessedDate(new Date());
 				accountAuthRepository.save(auth);
-				account = findAccount(auth.getAccountId());
+				account = auth.getAccount();
 			}
 			break;
 
@@ -169,12 +171,30 @@ public class AccountServiceImpl implements AccountService {
 					String.format("Account with %s: %s is already exists", type, principal));
 		}
 		// create a new account
-		Account newAccount = new Account();
+		Account newAccount = null;
+		switch (role) {
+		case ADMIN:
+			newAccount = new Account();
+			break;
+
+		case TENANT:
+			newAccount = new Tenant();
+			break;
+
+		case USER:
+			newAccount = new User();
+			break;
+
+		default: // noop
+		}
 		// generate an api key
+		newAccount.setNickName(principal); // TODO
 		newAccount.setApiKey(UUIDs.shortRandom());
 		newAccount.setRole(role);
 		newAccount.setCreationDate(new Date());
 		newAccount.setStatus(Status.ENABLED);
+
+		// auth type
 		boolean verified = false;
 		switch (type) {
 		// no need to be verified
@@ -214,7 +234,7 @@ public class AccountServiceImpl implements AccountService {
 		case QQ:
 		case WEIBO:
 			verified = true;
-			// leave it AS-IS for now
+			// TODO later: leave it AS-IS for now
 			break;
 
 		default:
@@ -228,7 +248,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 		// create account auth info
 		auth = new AccountAuth();
-		auth.setAccountId(accountCreated.getId());
+		auth.setAccount(accountCreated);
 		auth.setCredential(credential);
 		auth.setPrincipal(principal);
 		auth.setType(type);
@@ -250,12 +270,35 @@ public class AccountServiceImpl implements AccountService {
 	public Account updateAccount(String accountId, Account newAccount) {
 		Account account = findAccount(accountId);
 		// profile
+		account.setNickName(newAccount.getNickName());
 		account.setAvatar(newAccount.getAvatar());
-		account.setBirthday(newAccount.getBirthday());
-		account.setCity(newAccount.getCity());
-		account.setGender(newAccount.getGender());
-		account.setHobbies(newAccount.getHobbies());
-		account.setRealName(newAccount.getRealName());
+		switch (account.getRole()) {
+		case ADMIN:
+			// noop
+			break;
+
+		case TENANT:
+			Tenant newTenant = (Tenant) newAccount;
+			Tenant tenant = (Tenant) account;
+			tenant.setEmail(newTenant.getEmail());
+			tenant.setWebsite(newTenant.getWebsite());
+			tenant.setAddress(newTenant.getAddress());
+			tenant.setHotline(newTenant.getHotline());
+			tenant.setDescription(newTenant.getDescription());
+			break;
+
+		case USER:
+			User newUser = (User) newAccount;
+			User user = (User) account;
+			user.setBirthday(newUser.getBirthday());
+			user.setCity(newUser.getCity());
+			user.setGender(newUser.getGender());
+			user.setHobbies(newUser.getHobbies());
+			user.setRealName(newUser.getRealName());
+			break;
+
+		default: // noop
+		}
 		return accountRepository.save(account);
 	}
 
@@ -284,6 +327,11 @@ public class AccountServiceImpl implements AccountService {
 		if (account == null) {
 			throw new AirException(Codes.ACCOUNT_NOT_FOUND, String.format("Account %s is not found", accountId));
 		}
+		if (account.getRole() == Role.USER) {
+			// FIXME
+			// List<Address> dddresses = User.class.cast(account).getAddresses();
+			// List<Passenger> passengers = User.class.cast(account).getPassengers();
+		}
 		return account;
 	}
 
@@ -292,13 +340,21 @@ public class AccountServiceImpl implements AccountService {
 		return Pages.adapt(accountRepository.findAll(Pages.createPageRequest(page, pageSize)));
 	}
 
+	@Override
+	public Page<Account> listAccounts(Role role, int page, int pageSize) {
+		if (role == null) {
+			return listAccounts(page, pageSize);
+		}
+		return Pages.adapt(accountRepository.findByRole(role, Pages.createPageRequest(page, pageSize)));
+	}
+
 	// TODO list all/cleanup unconfirmed/expired accounts, need to resend email if confirm link expired
 
 	@Override
 	public void updateUsername(String accountId, String username) {
 		AccountAuth existingAuth = accountAuthRepository.findByTypeAndPrincipal(AuthType.USERNAME, username);
 		// username not equals with others's email
-		if (existingAuth != null && !existingAuth.getAccountId().equals(accountId)) {
+		if (existingAuth != null && !existingAuth.getAccount().getId().equals(accountId)) {
 			throw new AirException(Codes.ACCOUNT_USERNAME_ALREADY_EXISTS,
 					String.format("Username %s already exists", username));
 		}
@@ -314,15 +370,16 @@ public class AccountServiceImpl implements AccountService {
 	public void updateEmail(String accountId, String email) {
 		AccountAuth existingAuth = accountAuthRepository.findByTypeAndPrincipal(AuthType.EMAIL, email);
 		// email not equals with others's email
-		if (existingAuth != null && !existingAuth.getAccountId().equals(accountId)) {
+		if (existingAuth != null && !existingAuth.getAccount().getId().equals(accountId)) {
 			throw new AirException(Codes.ACCOUNT_EMAIL_ALREADY_EXISTS, String.format("Email %s already exists", email));
 		}
 		// send email to verify
 		String verificationCode = UUIDs.shortRandom();
 		AccountAuth auth = accountAuthRepository.findByAccountIdAndType(accountId, AuthType.EMAIL);
 		if (auth == null) {
+			Account account = findAccount(accountId);
 			auth = new AccountAuth();
-			auth.setAccountId(accountId);
+			auth.setAccount(account);
 			auth.setType(AuthType.EMAIL);
 			auth.setExpires(AccountAuth.EXPIRES_IN_ONE_DAY);
 			auth.setVerified(false);
@@ -386,7 +443,8 @@ public class AccountServiceImpl implements AccountService {
 		account.setPassword(passwordEncoder.encode(rndPassword));
 		Account accountUpdated = accountRepository.save(account);
 		// TODO
-		mailService.sendMail(auth.getPrincipal(), "Reset Password", "TODO: build and email body with password inside: " + rndPassword);
+		mailService.sendMail(auth.getPrincipal(), "Reset Password",
+				"TODO: build and email body with password inside: " + rndPassword);
 		return accountUpdated;
 	}
 
