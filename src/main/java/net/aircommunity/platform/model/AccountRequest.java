@@ -8,7 +8,7 @@ import net.aircommunity.platform.model.constraint.Password;
 import net.aircommunity.platform.model.constraint.Username;
 
 /**
- * Account registration request by admin/tenant via console.
+ * Account (tenant/user) registration request by admin via console.
  * 
  * @author Bin.Zhang
  */

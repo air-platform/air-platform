@@ -43,7 +43,7 @@ public class Account extends Persistable {
 	@NotNull
 	@Column(name = "role", nullable = false)
 	@Enumerated(EnumType.STRING)
-	protected Role role = Role.USER;
+	protected Role role;
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -114,6 +114,15 @@ public class Account extends Persistable {
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Account [nickName=").append(nickName).append(", role=").append(role).append(", status=")
+				.append(status).append(", creationDate=").append(creationDate).append(", avatar=").append(avatar)
+				.append(", id=").append(id).append("]");
+		return builder.toString();
 	}
 
 	/**

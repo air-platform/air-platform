@@ -1,9 +1,13 @@
 package net.aircommunity.platform.rest;
 
+import java.io.StringWriter;
 import java.net.URI;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonWriter;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -26,13 +30,17 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AccessToken;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.AccountRequest;
+import net.aircommunity.platform.model.Address;
 import net.aircommunity.platform.model.AuthcRequest;
 import net.aircommunity.platform.model.EmailRequest;
 import net.aircommunity.platform.model.Passenger;
@@ -58,27 +66,30 @@ public class AccountResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountResource.class);
 
 	@Resource
+	private ObjectMapper objectMapper;
+
+	@Resource
 	private AccountService accountService;
 
 	@Resource
 	private AccessTokenService accessTokenService;
 
 	/**
-	 * Create user/tenant account
+	 * Create user
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public Response createAccount(@NotNull @Valid UserAccountRequest request, @Context UriInfo uriInfo) {
+	public Response createUserAccount(@NotNull @Valid UserAccountRequest request, @Context UriInfo uriInfo) {
 		Account account = accountService.createAccount(request.getMobile(), request.getPassword(),
-				request.getVerificationCode(), request.getRole());
+				request.getVerificationCode(), Role.USER /* force user */);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(account.getId()).build();
 		LOG.debug("Created account: {}", uri);
 		return Response.created(uri).build();
 	}
 
 	/**
-	 * Create tenant account
+	 * Create tenant
 	 */
 	@Path("tenant")
 	@POST
@@ -186,7 +197,7 @@ public class AccountResource {
 	}
 
 	/**
-	 * Get account
+	 * Get account profile for all (user/tenant/admin)
 	 */
 	@GET
 	@Path("profile")
@@ -199,31 +210,45 @@ public class AccountResource {
 	}
 
 	/**
-	 * Update account
+	 * Update account (FIXME not working for User/Tenant)
 	 */
 	@PUT
 	@Path("profile")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response updateAccount(@NotNull @Valid Account newAccount, @Context SecurityContext context) {
+	public Response updateAccount(@NotNull @Valid JsonObject newData, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		Account accountUpdated = accountService.updateAccount(accountId, newAccount);
-		return Response.ok(accountUpdated).build();
+		Account account = accountService.findAccount(accountId);
+		// convert to json string
+		StringWriter stringWriter = new StringWriter();
+		try (JsonWriter jsonWriter = Json.createWriter(stringWriter)) {
+			jsonWriter.writeObject(newData);
+		}
+		String json = stringWriter.toString();
+		try {
+			Account newAccount = objectMapper.readValue(json, account.getClass());
+			Account accountUpdated = accountService.updateAccount(accountId, newAccount);
+			return Response.ok(accountUpdated).build();
+		}
+		catch (Exception e) {
+			throw new AirException(Codes.INTERNAL_ERROR,
+					String.format("Failed to update account: %, cause: %s", json, e.getMessage()), e);
+		}
 	}
 
 	/**
-	 * Add Passenger
+	 * @deprecated
 	 */
 	@PUT
-	@Path("passenger")
+	@Path("profile2")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response addPassenger(@NotNull @Valid Passenger passenger, @Context SecurityContext context) {
+	public Response updateAccount2(@NotNull @Valid Account newAccount, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		// Account accountUpdated = accountService.updateAccount(accountId, newAccount);
-		return Response.ok().build();
+		Account accountUpdated = accountService.updateAccount(accountId, newAccount);
+		return Response.ok(accountUpdated).build();
 	}
 
 	/**
@@ -231,6 +256,7 @@ public class AccountResource {
 	 */
 	@POST
 	@Path("password")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
 	public Response updatePassword(@NotNull @Valid PasswordRequest request, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
@@ -286,6 +312,86 @@ public class AccountResource {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 		accountService.deleteAccount(account.getId());
+		return Response.noContent().build();
+	}
+
+	// ****************
+	// User
+	// ****************
+	/**
+	 * List all User addresses
+	 */
+	@GET
+	@Path("addresses")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response listUserAddresses(@Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		return Response.ok(accountService.listUserAddresses(accountId)).build();
+	}
+
+	/**
+	 * Add User address
+	 */
+	@POST
+	@Path("addresses")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response addUserAddress(@NotNull @Valid Address address, @Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		accountService.addUserAddress(accountId, address);
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Delete User address
+	 */
+	@DELETE
+	@Path("addresses/{addressId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response removeUserAddress(@PathParam("addressId") String addressId, @Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		accountService.removeUserAddress(accountId, addressId);
+		return Response.noContent().build();
+	}
+
+	/**
+	 * List all User passengers
+	 */
+	@GET
+	@Path("passengers")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response listUserPassengers(@Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		return Response.ok(accountService.listUserPassengers(accountId)).build();
+	}
+
+	/**
+	 * Add User passenger
+	 */
+	@POST
+	@Path("passengers")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response addPassenger(@NotNull @Valid Passenger passenger, @Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		accountService.addUserPassenger(accountId, passenger);
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Delete User passenger
+	 */
+	@DELETE
+	@Path("passengers/{passengerId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response removeUserPassenger(@PathParam("passengerId") String passengerId,
+			@Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		accountService.removeUserPassenger(accountId, passengerId);
 		return Response.noContent().build();
 	}
 

@@ -28,7 +28,7 @@ public class UserAccountRequest implements Serializable {
 	private String password;
 
 	@NotNull
-	private Role role;
+	private Role role; // TODO REMOVE ROLE?
 
 	public String getMobile() {
 		return mobile;

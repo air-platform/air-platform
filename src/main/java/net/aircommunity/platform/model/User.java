@@ -2,6 +2,7 @@ package net.aircommunity.platform.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -136,16 +137,58 @@ public class User extends Account {
 		return addresses;
 	}
 
-	public void setAddresses(List<Address> addresses) {
-		this.addresses = addresses;
+	public void addAddress(Address address) {
+		if (address != null) {
+			address.setOwner(this);
+			addresses.add(address);
+		}
+	}
+
+	public void removeAddress(Address address) {
+		if (address != null) {
+			addresses.remove(address);
+		}
+	}
+
+	public void removeAddressById(String addressId) {
+		if (addressId != null) {
+			Iterator<Address> iter = addresses.iterator();
+			while (iter.hasNext()) {
+				Address addr = iter.next();
+				if (addr.getId().equals(addressId)) {
+					iter.remove();
+				}
+			}
+		}
 	}
 
 	public List<Passenger> getPassengers() {
 		return passengers;
 	}
 
-	public void setPassengers(List<Passenger> passengers) {
-		this.passengers = passengers;
+	public void addPassenger(Passenger passenger) {
+		if (passenger != null) {
+			passenger.setOwner(this);
+			passengers.add(passenger);
+		}
+	}
+
+	public void removePassenger(Passenger passenger) {
+		if (passenger != null) {
+			passengers.remove(passenger);
+		}
+	}
+
+	public void removePassengerById(String passengerId) {
+		if (passengerId != null) {
+			Iterator<Passenger> iter = passengers.iterator();
+			while (iter.hasNext()) {
+				Passenger passenger = iter.next();
+				if (passenger.getId().equals(passengerId)) {
+					iter.remove();
+				}
+			}
+		}
 	}
 
 	@Override

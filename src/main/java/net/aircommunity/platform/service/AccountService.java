@@ -1,5 +1,6 @@
 package net.aircommunity.platform.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -9,7 +10,9 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Account.Status;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
+import net.aircommunity.platform.model.Address;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.Role;
 
 /**
@@ -127,6 +130,34 @@ public interface AccountService {
 	 */
 	@Nonnull
 	Account findAccount(@Nonnull String accountId);
+
+	/**
+	 * List all Addresses of an user.
+	 * 
+	 * @param accountId the accountId
+	 * @return a list of addresses or empty if none
+	 * @throws AirException if Account with the given is not found
+	 */
+	@Nonnull
+	List<Address> listUserAddresses(@Nonnull String accountId);
+
+	void addUserAddress(@Nonnull String accountId, @Nonnull Address address);
+
+	void removeUserAddress(@Nonnull String accountId, @Nonnull String addressId);
+
+	/**
+	 * List all Passengers of an user.
+	 * 
+	 * @param accountId the accountId
+	 * @return a list of passengers or empty if none
+	 * @throws AirException if Account with the given is not found
+	 */
+	@Nonnull
+	List<Passenger> listUserPassengers(@Nonnull String accountId);
+
+	void addUserPassenger(@Nonnull String accountId, @Nonnull Passenger passenger);
+
+	void removeUserPassenger(@Nonnull String accountId, @Nonnull String passengerId);
 
 	/**
 	 * List All Accounts by pagination

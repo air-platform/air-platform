@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
@@ -16,6 +18,7 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
  */
 @Entity
 @Table(name = "air_platfrom_user_passenger")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Passenger extends Persistable {
 	private static final long serialVersionUID = 1L;
 

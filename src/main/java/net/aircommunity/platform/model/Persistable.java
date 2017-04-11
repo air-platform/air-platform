@@ -6,6 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -16,10 +19,12 @@ import org.hibernate.annotations.Parameter;
  * @author Bin.Zhang
  */
 @MappedSuperclass
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class Persistable implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// timestamp based UUID
+	@XmlElement
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator", parameters = {

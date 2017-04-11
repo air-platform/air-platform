@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -330,12 +331,73 @@ public class AccountServiceImpl implements AccountService {
 		if (account == null) {
 			throw new AirException(Codes.ACCOUNT_NOT_FOUND, String.format("Account %s is not found", accountId));
 		}
-		if (account.getRole() == Role.USER) {
-			// FIXME
-			List<Address> dddresses = User.class.cast(account).getAddresses();
-			List<Passenger> passengers = User.class.cast(account).getPassengers();
-		}
 		return account;
+	}
+
+	@Override
+	public List<Address> listUserAddresses(String accountId) {
+		Account account = findAccount(accountId);
+		if (account.getRole() != Role.USER) {
+			return Collections.emptyList();
+		}
+		return User.class.cast(account).getAddresses();
+	}
+
+	@Override
+	public void addUserAddress(String accountId, Address address) {
+		Account account = findAccount(accountId);
+		if (account.getRole() != Role.USER) {
+			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
+					String.format("Address is not allowed for account %s", account.getNickName()));
+		}
+		User user = User.class.cast(account);
+		user.addAddress(address);
+		accountRepository.save(user);
+	}
+
+	@Override
+	public void removeUserAddress(String accountId, String addressId) {
+		Account account = findAccount(accountId);
+		if (account.getRole() != Role.USER) {
+			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
+					String.format("Address is not allowed for account %s", account.getNickName()));
+		}
+		User user = User.class.cast(account);
+		user.removeAddressById(addressId);
+		accountRepository.save(user);
+	}
+
+	@Override
+	public List<Passenger> listUserPassengers(String accountId) {
+		Account account = findAccount(accountId);
+		if (account.getRole() != Role.USER) {
+			return Collections.emptyList();
+		}
+		return User.class.cast(account).getPassengers();
+	}
+
+	@Override
+	public void addUserPassenger(String accountId, Passenger passenger) {
+		Account account = findAccount(accountId);
+		if (account.getRole() != Role.USER) {
+			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
+					String.format("Passenger is not allowed for account %s", account.getNickName()));
+		}
+		User user = User.class.cast(account);
+		user.addPassenger(passenger);
+		accountRepository.save(user);
+	}
+
+	@Override
+	public void removeUserPassenger(String accountId, String passengerId) {
+		Account account = findAccount(accountId);
+		if (account.getRole() != Role.USER) {
+			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
+					String.format("Passenger is not allowed for account %s", account.getNickName()));
+		}
+		User user = User.class.cast(account);
+		user.removePassengerById(passengerId);
+		accountRepository.save(user);
 	}
 
 	@Override
