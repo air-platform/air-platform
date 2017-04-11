@@ -342,7 +342,7 @@ public class AccountServiceImpl implements AccountService {
 				ImmutableSet.of(account.getRole().name()), Claims.CLAIM_EXPIRY, expires));
 		String link = String.format(EMAIL_CONFIRMATION_LINK_FORMAT, token, verificationCode);
 		// TODO build email body and full confirmation link
-		mailService.sendMail(email, "TODO: build and email body with full link: " + link);
+		mailService.sendMail(email, "Email Confirm", "TODO: build and email body with full link: " + link);
 	}
 
 	@Override
@@ -386,7 +386,7 @@ public class AccountServiceImpl implements AccountService {
 		account.setPassword(passwordEncoder.encode(rndPassword));
 		Account accountUpdated = accountRepository.save(account);
 		// TODO
-		mailService.sendMail(auth.getPrincipal(), "TODO: build and email body with password inside: " + rndPassword);
+		mailService.sendMail(auth.getPrincipal(), "Reset Password", "TODO: build and email body with password inside: " + rndPassword);
 		return accountUpdated;
 	}
 

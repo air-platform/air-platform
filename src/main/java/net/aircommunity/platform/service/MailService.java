@@ -12,8 +12,7 @@ public interface MailService {
 	 * 
 	 * @param email the email to receive the message
 	 * @param content the content to be sent
-	 * @throws AirException if failed to send
 	 */
-	void sendMail(String email, String content);
+	void sendMail(String email, String subject, String content);
 
 }

@@ -41,3 +41,5 @@ backup
 logs
 data
 src/main/resources/config/application.properties
+src/main/java/net/aircommunity/platform/rest/TestResource.java
+src/main/java/net/aircommunity/platform/rest/MyTest.java

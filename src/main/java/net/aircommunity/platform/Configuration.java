@@ -25,8 +25,67 @@ public class Configuration {
 	@Value("${air.common.file-upload-dir}")
 	private String fileUploadDir;
 
+
+	@Value("${air.common.mail.from}")
+	private String mailFrom;
+
+	@Value("${air.common.sms.url}")
+	private String smsUrl;
+
+	@Value("${air.common.sms.app-key}")
+	private String smsAppKey;
+
+	@Value("${air.common.sms.app-secret}")
+	private String smsAppSecret;
+
+	@Value("${air.common.sms.extend}")
+	private String smsExtend;
+
+	@Value("${air.common.sms.type}")
+	private String smsType;
+
+	@Value("${air.common.sms.sign}")
+	private String smsSign;
+
+
+	@Value("${air.common.sms.tmpl-code}")
+	private String smsTmplCode;
+
 	public String getFileUploadDir() {
 		return fileUploadDir;
+	}
+
+
+	public String getMailFrom() {
+		return mailFrom;
+	}
+
+	public String getSmsUrl() {
+		return smsUrl;
+	}
+
+	public String getSmsAppKey() {
+		return smsAppKey;
+	}
+
+	public String getSmsAppSecret() {
+		return smsAppSecret;
+	}
+
+	public String getSmsExtend() {
+		return smsExtend;
+	}
+
+	public String getSmsType() {
+		return smsType;
+	}
+
+	public String getSmsSign() {
+		return smsSign;
+	}
+
+	public String getSmsTmplCode() {
+		return smsTmplCode;
 	}
 
 	public Set<String> getAuthMethods() {
