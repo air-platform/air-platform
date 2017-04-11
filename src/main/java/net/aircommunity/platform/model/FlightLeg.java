@@ -1,22 +1,29 @@
 package net.aircommunity.platform.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.constraint.NotEmpty;
+import net.aircommunity.platform.model.jaxb.OrderAdapter;
 
 /**
- * Flight segment (of a voyage).
+ * Flight segment (of a voyage) for a {@code CharterOrder}.
  * 
  * @author Bin.Zhang
  */
-public class FlightLeg implements Serializable {
+@Entity
+@Table(name = "air_platfrom_flightleg")
+public class FlightLeg extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// departure city
@@ -39,6 +46,11 @@ public class FlightLeg implements Serializable {
 	@Min(1)
 	@Column(name = "passengers")
 	private int passengers;
+
+	@XmlJavaTypeAdapter(OrderAdapter.class)
+	@ManyToOne
+	@JoinColumn(name = "order_id", nullable = false)
+	private CharterOrder order;
 
 	public String getDeparture() {
 		return departure;
@@ -70,6 +82,14 @@ public class FlightLeg implements Serializable {
 
 	public void setPassengers(int passengers) {
 		this.passengers = passengers;
+	}
+
+	public CharterOrder getOrder() {
+		return order;
+	}
+
+	public void setOrder(CharterOrder order) {
+		this.order = order;
 	}
 
 	@Override
@@ -116,7 +136,7 @@ public class FlightLeg implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("FlightLeg [departure=").append(departure).append(", arrival=").append(arrival).append(", date=")
-				.append(date).append(", passengers=").append(passengers).append("]");
+				.append(date).append(", passengers=").append(passengers).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

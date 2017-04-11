@@ -1,26 +1,40 @@
 package net.aircommunity.platform.model;
 
-import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import javax.persistence.Embeddable;
+import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
- * Passenger of an {@code Account} TODO just make it standard entity?
+ * Passenger of an {@code Account}
  * 
  * @author Bin.Zhang
  */
-@Embeddable
-public class Passenger implements Serializable {
+@Entity
+@Table(name = "air_platfrom_user_passenger")
+public class Passenger extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// Passenger name
+	@Column(name = "name")
 	private String name;
 
 	// Passenger mobile
+	@Column(name = "mobile")
 	private String mobile;
 
 	// e.g. ID Card number
+	@Column(name = "identity")
 	private String identity;
+
+	@XmlJavaTypeAdapter(AccountAdapter.class)
+	@ManyToOne
+	@JoinColumn(name = "account_id", nullable = false)
+	private User owner;
 
 	public String getName() {
 		return name;
@@ -46,12 +60,19 @@ public class Passenger implements Serializable {
 		this.identity = identity;
 	}
 
+	public User getOwner() {
+		return owner;
+	}
+
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Passenger [name=").append(name).append(", mobile=").append(mobile).append(", identity=")
-				.append(identity).append("]");
+				.append(identity).append(", owner=").append(owner).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
-
 }

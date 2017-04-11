@@ -2,6 +2,7 @@ package net.aircommunity.platform.service.internal;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -30,7 +31,9 @@ import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Account.Status;
 import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
+import net.aircommunity.platform.model.Address;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.model.User;
@@ -329,8 +332,8 @@ public class AccountServiceImpl implements AccountService {
 		}
 		if (account.getRole() == Role.USER) {
 			// FIXME
-			// List<Address> dddresses = User.class.cast(account).getAddresses();
-			// List<Passenger> passengers = User.class.cast(account).getPassengers();
+			List<Address> dddresses = User.class.cast(account).getAddresses();
+			List<Passenger> passengers = User.class.cast(account).getPassengers();
 		}
 		return account;
 	}

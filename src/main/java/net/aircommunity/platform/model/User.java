@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CollectionTable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -62,17 +61,14 @@ public class User extends Account {
 	@Column(name = "hobbies")
 	private String hobbies;
 
-	// cannot simultaneously fetch multiple bags when >=2 enteties FetchType.EAGER
-	// @ElementCollection(fetch = FetchType.EAGER)
-	// FIXME
+	// Bidirectional
 	@XmlTransient
-	@ElementCollection
-	@CollectionTable(name = "air_platfrom_account_address", joinColumns = @JoinColumn(name = "account_id"))
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", orphanRemoval = true)
 	private List<Address> addresses = new ArrayList<>();
 
+	// Bidirectional
 	@XmlTransient
-	@ElementCollection
-	@CollectionTable(name = "air_platfrom_account_passenger", joinColumns = @JoinColumn(name = "account_id"))
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", orphanRemoval = true)
 	private List<Passenger> passengers = new ArrayList<>();
 
 	@PrePersist

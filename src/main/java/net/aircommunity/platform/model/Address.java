@@ -1,28 +1,43 @@
 package net.aircommunity.platform.model;
 
-import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import javax.persistence.Embeddable;
+import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
  * Address of an {@code User}
  * 
  * @author Bin.Zhang
  */
-@Embeddable
-public class Address implements Serializable {
+@Entity
+@Table(name = "air_platfrom_user_address")
+public class Address extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// contact person
+	@Column(name = "contact")
 	private String contact;
 
 	// contact person mobile
+	@Column(name = "mobile")
 	private String mobile;
 
 	// detailed address
+	@Column(name = "address")
 	private String address;
 
+	@Column(name = "is_default")
 	private boolean isDefault;
+
+	@XmlJavaTypeAdapter(AccountAdapter.class)
+	@ManyToOne
+	@JoinColumn(name = "account_id", nullable = false)
+	private User owner;
 
 	public String getContact() {
 		return contact;
@@ -56,4 +71,20 @@ public class Address implements Serializable {
 		this.isDefault = isDefault;
 	}
 
+	public User getOwner() {
+		return owner;
+	}
+
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Address [contact=").append(contact).append(", mobile=").append(mobile).append(", address=")
+				.append(address).append(", isDefault=").append(isDefault).append(", owner=").append(owner)
+				.append(", id=").append(id).append("]");
+		return builder.toString();
+	}
 }

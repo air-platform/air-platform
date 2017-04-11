@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -23,6 +25,7 @@ public class AirTaxiOrder extends Order {
 	// SpecicalOffer (接送机15, 机场停车24), details
 
 	// passengers
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Passenger> passengers = new HashSet<>();
 
 }

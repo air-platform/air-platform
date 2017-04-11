@@ -4,17 +4,10 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
  * Empty Legs, preferential charter.
@@ -23,8 +16,12 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
  */
 @Entity
 @Table(name = "air_platfrom_ferryflight")
-public class FerryFlight extends Persistable {
+public class FerryFlight extends Product {
 	private static final long serialVersionUID = 1L;
+
+	// properties inherited:
+	// name:
+	// price: whole price (full load)
 
 	// Flight NO.
 	@Column(name = "flight_no", nullable = false)
@@ -42,17 +39,9 @@ public class FerryFlight extends Persistable {
 	@Column(name = "arrival", nullable = false)
 	private String arrival;
 
-	// whole price (full load)
-	@Column(name = "fullload_price")
-	private int fullLoadPrice;
-
 	// single seat price
 	@Column(name = "seat_price")
 	private int seatPrice;
-
-	@Column(name = "unit", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private CurrencyUnit unit = CurrencyUnit.RMB;
 
 	// Number of seats
 	@Column(name = "seats")
@@ -68,14 +57,10 @@ public class FerryFlight extends Persistable {
 	@Column(name = "date", nullable = false)
 	private Date date;
 
+	// TODO a better name
 	// the image of this flight
 	@Column(name = "avatar")
 	private String avatar;
-
-	@XmlJavaTypeAdapter(AccountAdapter.class)
-	@ManyToOne
-	@JoinColumn(name = "tenant_id", nullable = false)
-	private Tenant owner;
 
 	public String getFlightNo() {
 		return flightNo;
@@ -109,28 +94,12 @@ public class FerryFlight extends Persistable {
 		this.arrival = arrival;
 	}
 
-	public int getFullLoadPrice() {
-		return fullLoadPrice;
-	}
-
-	public void setFullLoadPrice(int fullLoadPrice) {
-		this.fullLoadPrice = fullLoadPrice;
-	}
-
 	public int getSeatPrice() {
 		return seatPrice;
 	}
 
 	public void setSeatPrice(int seatPrice) {
 		this.seatPrice = seatPrice;
-	}
-
-	public CurrencyUnit getUnit() {
-		return unit;
-	}
-
-	public void setUnit(CurrencyUnit unit) {
-		this.unit = unit;
 	}
 
 	public int getSeats() {
@@ -165,22 +134,15 @@ public class FerryFlight extends Persistable {
 		this.avatar = avatar;
 	}
 
-	public Tenant getOwner() {
-		return owner;
-	}
-
-	public void setOwner(Tenant owner) {
-		this.owner = owner;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("FerryFlight [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)
-				.append(", departure=").append(departure).append(", arrival=").append(arrival)
-				.append(", fullLoadPrice=").append(fullLoadPrice).append(", seatPrice=").append(seatPrice)
-				.append(", unit=").append(unit).append(", seats=").append(seats).append(", minPassengers=")
-				.append(minPassengers).append(", date=").append(date).append(", avatar=").append(avatar).append("]");
+				.append(", departure=").append(departure).append(", arrival=").append(arrival).append(", seatPrice=")
+				.append(seatPrice).append(", seats=").append(seats).append(", minPassengers=").append(minPassengers)
+				.append(", date=").append(date).append(", avatar=").append(avatar).append(", name=").append(name)
+				.append(", price=").append(price).append(", currencyUnit=").append(currencyUnit)
+				.append(", description=").append(description).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

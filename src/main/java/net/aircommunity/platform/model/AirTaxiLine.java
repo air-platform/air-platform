@@ -1,14 +1,14 @@
 package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
-import javax.persistence.Lob;
 
-public class AirTaxiLine extends Persistable {
+public class AirTaxiLine extends Product {
 	private static final long serialVersionUID = 1L;
 
-	// the line name
-	@Column(name = "name", nullable = false)
-	private String name;
+	// properties inherited:
+	// name: e.g. air line name
+	// price
+	// desc
 
 	// in which city
 	@Column(name = "city", nullable = false)
@@ -17,8 +17,4 @@ public class AirTaxiLine extends Persistable {
 	// from/to
 	// fromLocation/toLocation
 
-	// card description, e.g. hour card: 25hours
-	@Lob
-	@Column(name = "description")
-	private String description;
 }

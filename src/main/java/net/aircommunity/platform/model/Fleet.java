@@ -2,48 +2,35 @@ package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
- * Fleet Information
+ * Fleet Information for {@code Charter}
  * 
  * @author Bin.Zhang
  */
 @Entity
 @Table(name = "air_platfrom_fleet")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Fleet extends Persistable {
+public class Fleet extends Product {
 	private static final long serialVersionUID = 1L;
+
+	// properties inherited:
+	// name: e.g. G450 in Chinese
+	// price
+	// desc
+
+	// TODO images of this fleet
 
 	// Flight NO.
 	@Column(name = "flight_no", nullable = false, unique = true)
 	private String flightNo;
 
-	// e.g. G450 in Chinese
-	@Column(name = "name", nullable = false)
-	private String name;
-
 	// e.g. Gulfstream 450
 	@Column(name = "aircraft_type", nullable = false)
 	private String aircraftType;
-
-	// start from price +
-	@Column(name = "price")
-	private int price;
-
-	@Column(name = "unit", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private CurrencyUnit unit = CurrencyUnit.RMB;
 
 	// e.g. 11 - 14 guests
 	@Column(name = "capacity")
@@ -65,16 +52,7 @@ public class Fleet extends Persistable {
 	@Column(name = "fullload_range")
 	private int fullloadRange;
 
-	@Lob
-	@Column(name = "description")
-	private String description;
-
 	// List<appearance>...
-
-	@XmlJavaTypeAdapter(AccountAdapter.class)
-	@ManyToOne
-	@JoinColumn(name = "tenant_id", nullable = false)
-	private Tenant owner;
 
 	public String getFlightNo() {
 		return flightNo;
@@ -84,36 +62,12 @@ public class Fleet extends Persistable {
 		this.flightNo = flightNo;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getAircraftType() {
 		return aircraftType;
 	}
 
 	public void setAircraftType(String aircraftType) {
 		this.aircraftType = aircraftType;
-	}
-
-	public int getPrice() {
-		return price;
-	}
-
-	public void setPrice(int price) {
-		this.price = price;
-	}
-
-	public CurrencyUnit getUnit() {
-		return unit;
-	}
-
-	public void setUnit(CurrencyUnit unit) {
-		this.unit = unit;
 	}
 
 	public String getCapacity() {
@@ -156,30 +110,15 @@ public class Fleet extends Persistable {
 		this.fullloadRange = fullloadRange;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Tenant getOwner() {
-		return owner;
-	}
-
-	public void setOwner(Tenant owner) {
-		this.owner = owner;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Fleet [flightNo=").append(flightNo).append(", name=").append(name).append(", aircraftType=")
-				.append(aircraftType).append(", price=").append(price).append(", unit=").append(unit)
+		builder.append("Fleet [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)
 				.append(", capacity=").append(capacity).append(", weight=").append(weight).append(", beds=")
 				.append(beds).append(", facilities=").append(facilities).append(", fullloadRange=")
-				.append(fullloadRange).append(", description=").append(description).append("]");
+				.append(fullloadRange).append(", name=").append(name).append(", price=").append(price)
+				.append(", currencyUnit=").append(currencyUnit).append(", description=").append(description)
+				.append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }
