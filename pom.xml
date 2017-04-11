@@ -17,7 +17,11 @@
 	<properties>
 		<maven.test.skip>true</maven.test.skip>
 		<additionalparam>-Xdoclint:none</additionalparam>
-		<start-class>net.aircommunity.Application</start-class>
+		<start-class>net.aircommunity.platform.Application</start-class>
+		<lib-path>${project.basedir}/lib</lib-path>
+
+		<!-- 3rd party API -->
+		<alidayu.version>1.0</alidayu.version>
 	</properties>
 
 	<dependencies>
@@ -25,6 +29,13 @@
 			<groupId>net.aircommunity</groupId>
 			<artifactId>air-platform-rest</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alidayu</groupId>
+			<artifactId>alidayu</artifactId>
+			<version>${alidayu.version}</version>
+			<scope>system</scope>
+			<systemPath>${lib-path}/com/alidayu/${alidayu.version}/taobao-sdk-java-auto_1455552377940-20160607.jar</systemPath>
 		</dependency>
 
 		<!-- spring boot -->
@@ -119,6 +130,7 @@
 						<configuration>
 							<executable>false</executable>
 							<layout>ZIP</layout>
+							<includeSystemScope>true</includeSystemScope>
 						</configuration>
 					</execution>
 				</executions>
