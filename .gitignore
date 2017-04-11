@@ -40,3 +40,5 @@ hs_err_pid*.log
 backup
 logs
 data
+src/main/java/net/aircommunity/platform/rest/TestResource.java
+src/main/java/net/aircommunity/platform/rest/MyTest.java
