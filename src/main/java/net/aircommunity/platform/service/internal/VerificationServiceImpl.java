@@ -27,7 +27,11 @@ public class VerificationServiceImpl implements VerificationService {
 
 	@Override
 	public String generateCode(String key, long expires) {
-		String code = Randoms.randomNumeric(VERIFICATION_CODE_LENGTH);
+		String code = findCode(key);
+		if (code != null) {
+			return code;
+		}
+		code = Randoms.randomNumeric(VERIFICATION_CODE_LENGTH);
 		redisTemplate.opsForValue().set(String.format(VERIFICATION_CODD_KEY_FORMAT, key), code, expires,
 				TimeUnit.SECONDS);
 		return code;
@@ -35,11 +39,15 @@ public class VerificationServiceImpl implements VerificationService {
 
 	@Override
 	public boolean verifyCode(String key, String code) {
-		String codeFound = redisTemplate.opsForValue().get(String.format(VERIFICATION_CODD_KEY_FORMAT, key));
+		String codeFound = findCode(key);
 		if (codeFound == null) {
 			return false;
 		}
 		return codeFound.equals(code);
+	}
+
+	private String findCode(String key) {
+		return redisTemplate.opsForValue().get(String.format(VERIFICATION_CODD_KEY_FORMAT, key));
 	}
 
 }

@@ -15,15 +15,15 @@ import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
-import net.aircommunity.platform.model.jaxb.OrderAdapter;
+import net.aircommunity.platform.model.jaxb.ProductAdapter;
 
 /**
- * Comment of an order.
+ * Comment of an product.
  * 
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_order_comment")
+@Table(name = "air_platfrom_product_comment")
 public class Comment extends Persistable {
 	private static final long serialVersionUID = 1L;
 
@@ -40,11 +40,10 @@ public class Comment extends Persistable {
 	@Column(name = "content")
 	private String content;
 
-	// TODO make comment on a product
-	// order REMOVE
-	@XmlJavaTypeAdapter(OrderAdapter.class)
-	@Column(name = "order_id", nullable = false)
-	private Order order;
+	// make comment on a product
+	@XmlJavaTypeAdapter(ProductAdapter.class)
+	@Column(name = "product_id", nullable = false)
+	private Product product;
 
 	// owner
 	@XmlJavaTypeAdapter(AccountAdapter.class)
@@ -76,12 +75,12 @@ public class Comment extends Persistable {
 		this.content = content;
 	}
 
-	public Order getOrder() {
-		return order;
+	public Product getProduct() {
+		return product;
 	}
 
-	public void setOrder(Order order) {
-		this.order = order;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 
 	public Account getOwner() {
@@ -96,7 +95,8 @@ public class Comment extends Persistable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Comment [rate=").append(rate).append(", date=").append(date).append(", content=")
-				.append(content).append("]");
+				.append(content).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
+
 }

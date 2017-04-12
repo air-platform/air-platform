@@ -11,18 +11,24 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
+/**
+ * Base Order model.
+ * 
+ * @author Bin.Zhang
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Order extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-	// Order Number, TODO a reasonable order number generation
+	// Order Number
 	@Column(name = "order_no", nullable = false, unique = true)
 	protected String orderNo;
 
@@ -51,6 +57,14 @@ public abstract class Order extends Persistable {
 	@ManyToOne
 	@JoinColumn(name = "account_id", nullable = false)
 	protected User owner;
+
+	@PrePersist
+	private void generateOrderNo() {
+		if (orderNo == null) {
+			// TODO a reasonable order number generation
+			// orderNo = "";
+		}
+	}
 
 	public String getOrderNo() {
 		return orderNo;
