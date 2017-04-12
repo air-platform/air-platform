@@ -29,13 +29,8 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Nonnull
     @Override
-    public TrainingBanner createTrainingBanner(@Nonnull String bannerName, @Nonnull String bannerDesc, @Nonnull String imageUrl, @Nullable String bannerUrl) {
-        TrainingBanner trainingBanner = new TrainingBanner();
-        trainingBanner.setBannerName(bannerName);
-        trainingBanner.setBannerDesc(bannerDesc);
-        trainingBanner.setImageUrl(imageUrl);
-        trainingBanner.setBannerUrl(bannerUrl);
-        TrainingBanner trainingBannerCreated = trainingBannerRepository.save(trainingBanner);
+    public TrainingBanner createTrainingBanner(@Nonnull TrainingBanner request) {
+        TrainingBanner trainingBannerCreated = trainingBannerRepository.save(request);
         return trainingBannerCreated;
     }
 }

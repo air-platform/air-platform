@@ -1,11 +1,11 @@
 package net.aircommunity.platform.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import net.aircommunity.platform.model.jaxb.AccountAdapter;
+
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * Created by guankai on 11/04/2017.
@@ -30,6 +30,11 @@ public class School extends Persistable{
 
     @Column(name = "contact")
     private String contact;
+
+    @XmlJavaTypeAdapter(AccountAdapter.class)
+    @ManyToOne
+    @JoinColumn(name = "tenant_id", nullable = false)
+    private Tenant tenant;
 
     public String getSchoolName() {
         return schoolName;
@@ -69,5 +74,13 @@ public class School extends Persistable{
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
     }
 }
