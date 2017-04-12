@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import net.aircommunity.platform.model.Page;
 
@@ -23,9 +24,16 @@ final class Pages {
 	/**
 	 * @param page 1-indexed
 	 * @param pageSize
-	 * @return
 	 */
 	public static Pageable createPageRequest(int page, int pageSize) {
+		return createPageRequest(page, pageSize, null);
+	}
+
+	/**
+	 * @param page 1-indexed
+	 * @param pageSize
+	 */
+	public static Pageable createPageRequest(int page, int pageSize, Sort sort) {
 		// our page start from index= 1
 		if (pageSize <= 0) {
 			pageSize = DEFAULT_PAGE_SIZE;
@@ -34,7 +42,10 @@ final class Pages {
 			page = 1;
 		}
 		// NOTE: PageRequest's pages are zero indexed
-		return new PageRequest(page - 1, pageSize);
+		if (sort == null) {
+			return new PageRequest(page - 1, pageSize);
+		}
+		return new PageRequest(page - 1, pageSize, sort);
 	}
 
 	/**

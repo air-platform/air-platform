@@ -45,14 +45,6 @@ public interface AccountService {
 			long expires);
 
 	/**
-	 * Generate Verification Code.
-	 * 
-	 * @param mobile the user mobile
-	 * @return verification code
-	 */
-	String generateVerificationCode(String mobile);
-
-	/**
 	 * Create an account.
 	 * 
 	 * @param type the authentication type

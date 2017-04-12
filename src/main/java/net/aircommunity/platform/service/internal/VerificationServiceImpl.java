@@ -35,7 +35,7 @@ public class VerificationServiceImpl implements VerificationService {
 
 	@Override
 	public boolean verifyCode(String key, String code) {
-		String codeFound = redisTemplate.opsForValue().get(key);
+		String codeFound = redisTemplate.opsForValue().get(String.format(VERIFICATION_CODD_KEY_FORMAT, key));
 		if (codeFound == null) {
 			return false;
 		}

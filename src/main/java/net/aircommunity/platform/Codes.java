@@ -39,6 +39,11 @@ public final class Codes {
 	public static final Code APIKEY_NOT_FOUND = Code.notFound(11_002_0001);
 	public static final Code APIKEY_ILLEGAL_ACCESS = Code.illegalAccess(11_002_0002);
 
+	// airjet
+	public static final Code FLEET_NOT_FOUND = Code.notFound(11_003_0001);
+	public static final Code FERRYFLIGHTI_NOT_FOUND = Code.notFound(11_003_0002);
+	public static final Code JETCARD_NOT_FOUND = Code.notFound(11_003_0003);
+
 	private Codes() {
 		throw new AssertionError();
 	}

@@ -47,6 +47,8 @@ import net.aircommunity.platform.model.PasswordRequest;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.UserAccountRequest;
 import net.aircommunity.platform.service.AccountService;
+import net.aircommunity.platform.service.SmsService;
+import net.aircommunity.platform.service.VerificationService;
 import net.aircommunity.rest.annotation.Authenticated;
 import net.aircommunity.rest.annotation.RESTful;
 import net.aircommunity.rest.annotation.TokenSecured;
@@ -72,6 +74,12 @@ public class AccountResource {
 
 	@Resource
 	private AccessTokenService accessTokenService;
+
+	@Resource
+	private VerificationService verificationService;
+
+	@Resource
+	private SmsService smsService;
 
 	/**
 	 * Create user
@@ -138,6 +146,19 @@ public class AccountResource {
 			LOG.error(e.getLocalizedMessage(), e);
 		}
 		return Response.serverError().build();
+	}
+
+	/**
+	 * Send SMS verification code
+	 */
+	@POST
+	@Path("verification")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Response requestVerification(@NotNull @QueryParam("mobile") String mobile) {
+		String code = verificationService.generateCode(mobile);
+		smsService.sendSms(mobile, code);
+		return Response.noContent().build();
 	}
 
 	/**

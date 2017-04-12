@@ -1,7 +1,10 @@
 package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -30,14 +33,25 @@ public class Fleet extends Product {
 	// interior-360
 
 	// Flight NO.
+	// @Column(name = "flight_no", nullable = false, unique = true)
+	// TODO need unique?
+	// if YES: should be: account_id + flight_no = unique
 	@NotEmpty
-	@Column(name = "flight_no", nullable = false, unique = true)
+	@Column(name = "flight_no", nullable = false)
 	private String flightNo;
 
 	// e.g. Gulfstream 450
 	@NotEmpty
 	@Column(name = "aircraft_type", nullable = false)
 	private String aircraftType;
+
+	// GPS location
+	@Embedded
+	private Location location;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status")
+	private Status status;
 
 	// e.g. 11 - 14 guests
 	@Column(name = "capacity")
@@ -75,6 +89,22 @@ public class Fleet extends Product {
 
 	public void setAircraftType(String aircraftType) {
 		this.aircraftType = aircraftType;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	public String getCapacity() {
@@ -121,11 +151,19 @@ public class Fleet extends Product {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Fleet [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)
-				.append(", capacity=").append(capacity).append(", weight=").append(weight).append(", beds=")
-				.append(beds).append(", facilities=").append(facilities).append(", fullloadRange=")
-				.append(fullloadRange).append(", name=").append(name).append(", price=").append(price)
-				.append(", currencyUnit=").append(currencyUnit).append(", description=").append(description)
-				.append(", id=").append(id).append("]");
+				.append(", location=").append(location).append(", status=").append(status).append(", capacity=")
+				.append(capacity).append(", weight=").append(weight).append(", beds=").append(beds)
+				.append(", facilities=").append(facilities).append(", fullloadRange=").append(fullloadRange)
+				.append(", name=").append(name).append(", price=").append(price).append(", currencyUnit=")
+				.append(currencyUnit).append(", description=").append(description).append(", id=").append(id)
+				.append("]");
 		return builder.toString();
+	}
+
+	/**
+	 * Flight status
+	 */
+	public enum Status {
+		UNAVAILABLE, AVAILABLE
 	}
 }
