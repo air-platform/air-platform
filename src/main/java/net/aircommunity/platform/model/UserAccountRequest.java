@@ -27,9 +27,6 @@ public class UserAccountRequest implements Serializable {
 	@Password
 	private String password;
 
-	@NotNull
-	private Role role; // TODO REMOVE ROLE?
-
 	public String getMobile() {
 		return mobile;
 	}
@@ -40,10 +37,6 @@ public class UserAccountRequest implements Serializable {
 
 	public String getPassword() {
 		return password;
-	}
-
-	public Role getRole() {
-		return role;
 	}
 
 }

@@ -1,7 +1,13 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Resource;
+
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import net.aircommunity.platform.common.base.Randoms;
 import net.aircommunity.platform.service.VerificationService;
 
 /**
@@ -11,19 +17,27 @@ import net.aircommunity.platform.service.VerificationService;
  */
 @Service
 public class VerificationServiceImpl implements VerificationService {
+	private static final int VERIFICATION_CODE_LENGTH = 6;
+	private static final String VERIFICATION_CODD_KEY_FORMAT = "account:vc:%s";
 
-	// TODO: impl based on redis
+	@Resource
+	private RedisTemplate<String, String> redisTemplate;
 
 	@Override
 	public String generateCode(String key, long expires) {
-		// TODO
-		return null;
+		String code = Randoms.randomNumeric(VERIFICATION_CODE_LENGTH);
+		redisTemplate.opsForValue().set(String.format(VERIFICATION_CODD_KEY_FORMAT, key), code, expires,
+				TimeUnit.SECONDS);
+		return code;
 	}
 
 	@Override
 	public boolean verifyCode(String key, String code) {
-		// TODO
-		return true;
+		String codeFound = redisTemplate.opsForValue().get(key);
+		if (codeFound == null) {
+			return false;
+		}
+		return codeFound.equals(code);
 	}
 
 }
