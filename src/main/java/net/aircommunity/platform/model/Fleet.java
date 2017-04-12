@@ -6,6 +6,8 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import net.aircommunity.platform.model.constraint.NotEmpty;
+
 /**
  * Fleet Information for {@code Charter}
  * 
@@ -23,12 +25,17 @@ public class Fleet extends Product {
 	// desc
 
 	// TODO images of this fleet
+	// appearance
+	// interior
+	// interior-360
 
 	// Flight NO.
+	@NotEmpty
 	@Column(name = "flight_no", nullable = false, unique = true)
 	private String flightNo;
 
 	// e.g. Gulfstream 450
+	@NotEmpty
 	@Column(name = "aircraft_type", nullable = false)
 	private String aircraftType;
 

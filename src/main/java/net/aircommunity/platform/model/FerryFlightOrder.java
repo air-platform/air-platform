@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,6 +23,10 @@ public class FerryFlightOrder extends Order {
 	@Column(name = "passengers")
 	private int passengers;
 
+	// customer contact information for this order
+	@Embedded
+	protected Contact contact;
+
 	@ManyToOne
 	@JoinColumn(name = "flight_id", nullable = false)
 	private FerryFlight flight;
@@ -32,6 +37,14 @@ public class FerryFlightOrder extends Order {
 
 	public void setPassengers(int passengers) {
 		this.passengers = passengers;
+	}
+
+	public Contact getContact() {
+		return contact;
+	}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
 	}
 
 	public FerryFlight getFlight() {

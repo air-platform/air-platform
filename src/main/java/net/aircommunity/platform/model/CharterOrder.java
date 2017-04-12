@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,6 +25,10 @@ public class CharterOrder extends Order {
 	@Column(name = "aircraft_type")
 	private String aircraftType;
 
+	// customer contact information for this order
+	@Embedded
+	protected Contact contact;
+
 	// multiple flight legs
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<FlightLeg> flightLegs = new HashSet<>();
@@ -38,6 +43,14 @@ public class CharterOrder extends Order {
 
 	public void setAircraftType(String aircraftType) {
 		this.aircraftType = aircraftType;
+	}
+
+	public Contact getContact() {
+		return contact;
+	}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
 	}
 
 	public Set<FlightLeg> getFlightLegs() {

@@ -40,7 +40,8 @@ public class Comment extends Persistable {
 	@Column(name = "content")
 	private String content;
 
-	// order
+	// TODO make comment on a product
+	// order REMOVE
 	@XmlJavaTypeAdapter(OrderAdapter.class)
 	@Column(name = "order_id", nullable = false)
 	private Order order;
