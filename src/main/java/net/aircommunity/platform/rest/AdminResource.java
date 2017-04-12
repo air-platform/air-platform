@@ -88,7 +88,7 @@ public class AdminResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listAllAccounts(@QueryParam("role") String role, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<Account> accountPage = accountService.listAccounts(Role.valueOf(role), page, pageSize);
+		Page<Account> accountPage = accountService.listAccounts(Role.of(role), page, pageSize);
 		return Response.ok(accountPage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(accountPage))
 				.build();
 	}

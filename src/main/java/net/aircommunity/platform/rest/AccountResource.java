@@ -24,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
@@ -98,7 +97,9 @@ public class AccountResource {
 	public Response createTenantAccount(@NotNull @Valid AccountRequest request, @Context UriInfo uriInfo) {
 		Account account = accountService.createAccount(request.getUsername(), request.getPassword(),
 				Role.TENANT /* force tenant */);
-		URI uri = UriBuilder.fromMethod(getClass(), "findAccount").segment(account.getId()).build();
+		// FIXME URI
+		// URI uri = UriBuilder.fromMethod(getClass(), "findAccount").segment(account.getId()).build();
+		URI uri = URI.create("account/" + account.getId());
 		LOG.debug("Created tenant account: {}", uri);
 		return Response.created(uri).build();
 	}

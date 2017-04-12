@@ -153,8 +153,8 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public String generateVerificationCode(String mobile) {
-//		this.verificationService.generateCode(mobile, expires);
-//		smsService.sendSms(mobile, message);
+		// this.verificationService.generateCode(mobile, expires);
+		// smsService.sendSms(mobile, message);
 		return null;
 	}
 

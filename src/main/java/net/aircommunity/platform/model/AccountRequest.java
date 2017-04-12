@@ -23,7 +23,6 @@ public class AccountRequest implements Serializable {
 	@Password
 	private String password;
 
-	@NotNull
 	private Role role;
 
 	public String getUsername() {
