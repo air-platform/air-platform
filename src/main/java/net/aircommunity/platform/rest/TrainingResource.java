@@ -26,27 +26,24 @@ import java.net.URI;
  * Created by guankai on 11/04/2017.
  */
 @RESTful
-@Path("training")
+@Path("trainings")
 public class TrainingResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrainingResource.class);
     @Resource
     private TrainingService trainingService;
 
-    @Path("create")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
 //    @RolesAllowed(Roles.ROLE_TENANT)
     @PermitAll
     public Response createTrainingBanner(@Nonnull @Valid TrainingBanner request, @Context UriInfo uriInfo) {
-        LOG.debug("Created Training Banner: {}");
-        TrainingBanner tb = trainingService.createTrainingBanner(request.getBannerName(), request.getBannerDesc(), request.getImageUrl(), request.getBannerUrl());
+        TrainingBanner tb = trainingService.createTrainingBanner(request);
         URI uri = uriInfo.getAbsolutePathBuilder().segment(tb.getId()).build();
         LOG.debug("Created Training Banner: {}", uri);
         return Response.created(uri).build();
     }
 
-    @Path("list")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll

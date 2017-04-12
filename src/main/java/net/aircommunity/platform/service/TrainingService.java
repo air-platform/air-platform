@@ -15,5 +15,5 @@ public interface TrainingService {
     Page<TrainingBanner> getAllTrainingBanner(int page, int pageSize);
 
     @Nonnull
-    TrainingBanner createTrainingBanner(@Nonnull String bannerName, @Nonnull String bannerDesc, @Nonnull String imageUrl, @Nullable String bannerUrl);
+    TrainingBanner createTrainingBanner(@Nonnull TrainingBanner trainingBanner);
 }
