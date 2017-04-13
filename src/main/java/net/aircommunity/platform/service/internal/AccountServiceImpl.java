@@ -42,7 +42,6 @@ import net.aircommunity.platform.repository.AccountAuthRepository;
 import net.aircommunity.platform.repository.AccountRepository;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.MailService;
-import net.aircommunity.platform.service.SmsService;
 import net.aircommunity.platform.service.VerificationService;
 import net.aircommunity.rest.core.security.AccessTokenService;
 import net.aircommunity.rest.core.security.Claims;
@@ -77,9 +76,6 @@ public class AccountServiceImpl implements AccountService {
 
 	@Resource
 	private MailService mailService;
-
-	@Resource
-	private SmsService smsService;
 
 	@Resource
 	private VerificationService verificationService;
@@ -149,13 +145,6 @@ public class AccountServiceImpl implements AccountService {
 		default:
 		}
 		return account;
-	}
-
-	@Override
-	public String generateVerificationCode(String mobile) {
-		// this.verificationService.generateCode(mobile, expires);
-		// smsService.sendSms(mobile, message);
-		return null;
 	}
 
 	@Override

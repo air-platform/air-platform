@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 public interface VerificationService {
 
 	/**
-	 * Generate a verification code expies in 120 seconds.
+	 * Generate a verification code expires in 120 seconds.
 	 * 
 	 * @param key the key to generate the code for
 	 * @return verification code generated
@@ -25,7 +25,7 @@ public interface VerificationService {
 	 * Generate a verification code.
 	 * 
 	 * @param key the key to generate the code for
-	 * @param expires the code expiry in seconds
+	 * @param expires the code expires in seconds
 	 * @return verification code generated
 	 */
 	@Nonnull

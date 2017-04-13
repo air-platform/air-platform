@@ -1,23 +1,26 @@
 package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
- * Product of an {@code Tenant} (AKA. vendor).
+ * Product of an {@code Tenant} (AKA. vendor). TODO need set accountManagers (a1@company.com,a2@company.com)
  * 
  * @author Bin.Zhang
  */
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Product extends Persistable {
 	private static final long serialVersionUID = 1L;
 

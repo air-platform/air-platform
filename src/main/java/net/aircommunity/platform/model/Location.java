@@ -2,15 +2,22 @@ package net.aircommunity.platform.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
 /**
  * Geo Location.
  * 
  * @author Bin.Zhang
  */
+@Embeddable
 public class Location implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "lat")
 	private double latitude;
+
+	@Column(name = "lon")
 	private double longitude;
 
 	public double getLatitude() {

@@ -53,6 +53,15 @@ public class AdminResource {
 	@Resource
 	private AccessTokenService accessTokenService;
 
+	@Resource
+	private FleetResource fleetResource;
+
+	@Resource
+	private FerryFlightResource ferryFlightResource;
+
+	@Resource
+	private JetCardResource jetCardResource;
+
 	/**
 	 * Ping server to make sure server is still alive, it is used for monitoring purpose.
 	 */
@@ -141,5 +150,22 @@ public class AdminResource {
 	public Response deleteAccount(@PathParam("accountId") String accountId) {
 		accountService.deleteAccount(accountId);
 		return Response.noContent().build();
+	}
+
+	// Tenant
+
+	@Path(ACCOUNTS_PATH_PREFIX + "/{tenantId}/fleets")
+	public FleetResource fleets(@PathParam("tenantId") String tenantId) {
+		return fleetResource;
+	}
+
+	@Path(ACCOUNTS_PATH_PREFIX + "/{tenantId}/ferryflights")
+	public FerryFlightResource ferryflights(@PathParam("tenantId") String tenantId) {
+		return ferryFlightResource;
+	}
+
+	@Path(ACCOUNTS_PATH_PREFIX + "/{tenantId}/jetcards")
+	public JetCardResource jetcards(@PathParam("tenantId") String tenantId) {
+		return jetCardResource;
 	}
 }
