@@ -24,7 +24,7 @@ public class FerryFlight extends Product {
 	// price: whole price (full load)
 
 	// Flight NO.
-	@Column(name = "flight_no", nullable = false)
+	@Column(name = "flight_no", nullable = false, unique = true)
 	private String flightNo;
 
 	// e.g. Gulfstream 450
@@ -61,6 +61,13 @@ public class FerryFlight extends Product {
 	// the image of this flight
 	@Column(name = "avatar")
 	private String avatar;
+
+	public FerryFlight() {
+	}
+
+	public FerryFlight(String id) {
+		this.id = id;
+	}
 
 	public String getFlightNo() {
 		return flightNo;

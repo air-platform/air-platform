@@ -92,7 +92,6 @@ public class JetCardServiceImpl extends AbstractServiceSupport implements JetCar
 	public void deleteJetCards(String tenantId) {
 		Tenant tenant = findAccount(tenantId, Tenant.class);
 		jetCardRepository.deleteByVendor(tenant);
-
 	}
 
 }

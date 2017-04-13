@@ -95,7 +95,7 @@ public class FleetServiceImpl extends AbstractServiceSupport implements FleetSer
 		return Pages.adapt(fleetRepository.findAll(Pages.createPageRequest(page, pageSize)));
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#fleetId")
 	@Override
 	public void deleteFleet(String fleetId) {
 		fleetRepository.delete(fleetId);

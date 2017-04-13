@@ -31,10 +31,12 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.CharterOrderService;
+import net.aircommunity.platform.service.FerryFlightOrderService;
+import net.aircommunity.platform.service.JetCardOrderService;
 import net.aircommunity.rest.annotation.RESTful;
 
 /**
- * Card RESTful API.
+ * AirJet Orders RESTful API.
  * 
  * @author Bin.Zhang
  */
@@ -46,6 +48,12 @@ public class JetOrderResource {
 
 	@Resource
 	private CharterOrderService charterOrderService;
+
+	@Resource
+	private FerryFlightOrderService ferryFlightOrderService;
+
+	@Resource
+	private JetCardOrderService jetCardOrderService;
 
 	// *************
 	// CharterOrder
@@ -71,7 +79,7 @@ public class JetOrderResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listAll(@PathParam("userId") String userId, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<CharterOrder> result = charterOrderService.listCharterOrders(userId, page, pageSize);
+		Page<CharterOrder> result = charterOrderService.listUserCharterOrders(userId, page, pageSize);
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
 	}
 
@@ -133,6 +141,10 @@ public class JetOrderResource {
 		charterOrderService.deleteCharterOrders(userId);
 		return Response.noContent().build();
 	}
+
+	// *************
+	// JetCard
+	// *************
 
 	// Tenant
 	/**

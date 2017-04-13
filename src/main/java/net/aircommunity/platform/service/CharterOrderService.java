@@ -55,31 +55,87 @@ public interface CharterOrderService {
 	@Nonnull
 	CharterOrder updateCharterOrder(@Nonnull String charterOrderId, @Nonnull CharterOrder newCharterOrder);
 
+	/**
+	 * Update CharterOrder status
+	 * 
+	 * @param charterOrderId the charterOrderId
+	 * @param status the CharterOrder
+	 * @return updated CharterOrder
+	 */
 	@Nonnull
 	CharterOrder updateCharterOrderStatus(@Nonnull String charterOrderId, @Nonnull Order.Status status);
 
-	Page<CharterOrder> listTenantCharterOrders(String tenantId, int page, int pageSize);
+	/**
+	 * List all CharterOrders by pagination filtered by userId and order status.
+	 * 
+	 * @param userId the userId
+	 * @param status the order status
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of CharterOrders or empty
+	 */
+	@Nonnull
+	Page<CharterOrder> listUserCharterOrders(@Nonnull String userId, Order.Status status, int page, int pageSize);
 
 	/**
-	 * List all CharterOrders by pagination filter by userId.
+	 * List all CharterOrders by pagination filtered by userId.
 	 * 
 	 * @param userId the userId
 	 * @param page the page number
 	 * @param pageSize the pageSize
 	 * @return a page of CharterOrders or empty
 	 */
-	@Nonnull
-	Page<CharterOrder> listCharterOrders(@Nonnull String userId, int page, int pageSize);
+	default @Nonnull Page<CharterOrder> listUserCharterOrders(@Nonnull String userId, int page, int pageSize) {
+		return listUserCharterOrders(userId, null, page, pageSize);
+	}
 
 	/**
-	 * List all CharterOrders by pagination (all users)
+	 * List all the CharterOrder placed on this tenant filtered by tenantId and order status.
+	 * 
+	 * @param tenantId the tenantId
+	 * @param status the order status
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of CharterOrders or empty
+	 */
+	@Nonnull
+	Page<CharterOrder> listTenantCharterOrders(@Nonnull String tenantId, Order.Status status, int page, int pageSize);
+
+	/**
+	 * List all the CharterOrder placed on this tenant
+	 * 
+	 * @param tenantId the tenantId
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of CharterOrders or empty
+	 */
+	@Nonnull
+	default Page<CharterOrder> listTenantCharterOrders(@Nonnull String tenantId, int page, int pageSize) {
+		return listTenantCharterOrders(tenantId, null, page, pageSize);
+	}
+
+	/**
+	 * List all CharterOrders by pagination (all users) filtered by order status.
+	 * 
+	 * @param status the order status
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of CharterOrders or empty
+	 */
+	@Nonnull
+	Page<CharterOrder> listCharterOrders(Order.Status status, int page, int pageSize);
+
+	/**
+	 * List all CharterOrders by pagination (all users).
 	 * 
 	 * @param page the page number
 	 * @param pageSize the pageSize
 	 * @return a page of CharterOrders or empty
 	 */
 	@Nonnull
-	Page<CharterOrder> listCharterOrders(int page, int pageSize);
+	default Page<CharterOrder> listCharterOrders(int page, int pageSize) {
+		return listCharterOrders(null, page, pageSize);
+	}
 
 	/**
 	 * Delete a CharterOrder.
