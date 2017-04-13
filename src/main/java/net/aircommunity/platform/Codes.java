@@ -47,6 +47,9 @@ public final class Codes {
 	// school
 	public static final Code SCHOOL_NOT_FOUND = Code.notFound(11_004_0001);
 
+	// course
+    public static final Code COURSE_NOT_FOUND = Code.notFound(11_005_0001);
+
 	private Codes() {
 		throw new AssertionError();
 	}
