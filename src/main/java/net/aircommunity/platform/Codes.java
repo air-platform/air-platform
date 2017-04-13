@@ -44,6 +44,15 @@ public final class Codes {
 	public static final Code FERRYFLIGHTI_NOT_FOUND = Code.notFound(11_003_0002);
 	public static final Code JETCARD_NOT_FOUND = Code.notFound(11_003_0003);
 
+	// school
+	public static final Code SCHOOL_NOT_FOUND = Code.notFound(11_004_0001);
+
+	// course
+    public static final Code COURSE_NOT_FOUND = Code.notFound(11_005_0001);
+
+    // enrollment
+    public static final Code ENROLLMENT_NOT_FOUND = Code.notFound(11_006_0001);
+
 	private Codes() {
 		throw new AssertionError();
 	}
