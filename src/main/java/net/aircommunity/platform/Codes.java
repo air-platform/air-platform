@@ -50,6 +50,9 @@ public final class Codes {
 	// course
     public static final Code COURSE_NOT_FOUND = Code.notFound(11_005_0001);
 
+    // enrollment
+    public static final Code ENROLLMENT_NOT_FOUND = Code.notFound(11_006_0001);
+
 	private Codes() {
 		throw new AssertionError();
 	}
