@@ -10,6 +10,9 @@ import javax.validation.constraints.NotNull;
  * Created by guankai on 11/04/2017.
  */
 public interface CourseService {
+    @Nonnull
+    Page<Course> getAllCourses(int page, int pageSize);
+
     /**
      * get all courses by school
      *
@@ -23,6 +26,7 @@ public interface CourseService {
 
     /**
      * get all courses by tenant
+     *
      * @param tenantId
      * @param page
      * @param pageSize
@@ -79,11 +83,10 @@ public interface CourseService {
      *
      * @param course
      * @param schoolId
-     * @param tenantId
      * @return
      */
     @Nonnull
-    Course updateCourse(@Nonnull Course course, @Nonnull String schoolId, @Nonnull String tenantId);
+    Course updateCourse(@Nonnull Course course, @Nonnull String schoolId);
 
     /**
      * delete a course

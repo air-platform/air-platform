@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -28,7 +29,9 @@ public class SchoolResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSchoolList(@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+    //    @RolesAllowed(Roles.ROLE_TENANT)
+    @PermitAll
+    public Response getSchoolList(@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
         Page<School> schoolPage = schoolService.getSchoolList(page, pageSize);
         return Response.ok(schoolPage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(schoolPage))
                 .build();
@@ -37,7 +40,9 @@ public class SchoolResource {
     @GET
     @Path("tenant")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSchoolListByTenant(@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
+    //    @RolesAllowed(Roles.ROLE_TENANT)
+    @PermitAll
+    public Response getSchoolListByTenant(@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
         LOG.debug("get school list by tenant...");
         String accountId = context.getUserPrincipal().getName(); // 获取商户信息
         Page<School> schoolPage = schoolService.getSchoolListByTenant(accountId, page, pageSize);
@@ -47,6 +52,8 @@ public class SchoolResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    //    @RolesAllowed(Roles.ROLE_TENANT)
+    @PermitAll
     public Response createSchool(@NotNull School request, @Context SecurityContext context, @Context UriInfo uriInfo) {
         LOG.debug("create school start...");
         String accountId = context.getUserPrincipal().getName(); // 获取商户信息
@@ -58,10 +65,11 @@ public class SchoolResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateSchool(@NotNull School request, @Context SecurityContext context) {
+    //    @RolesAllowed(Roles.ROLE_TENANT)
+    @PermitAll
+    public Response updateSchool(@NotNull School request) {
         LOG.debug("update school start...");
-        String accountId = context.getUserPrincipal().getName();
-        schoolService.updateSchool(request, accountId);
+        schoolService.updateSchool(request);
         return Response.noContent().build();
     }
 

@@ -42,11 +42,10 @@ public interface SchoolService {
     /**
      * update a school
      * @param request
-     * @param tenantId
      * @return
      */
     @Nonnull
-    School updateSchool(@Nonnull School request, @Nonnull String tenantId);
+    School updateSchool(@Nonnull School request);
 
 
 }
