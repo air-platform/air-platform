@@ -15,6 +15,8 @@ import net.aircommunity.platform.model.Tenant;
  */
 public interface FleetRepository extends JpaRepository<Fleet, String> {
 
+	Fleet findByFlightNo(String flightNo);
+
 	Page<Fleet> findByVendor(Tenant vendor, Pageable pageable);
 
 	long deleteByVendor(Tenant vendor);

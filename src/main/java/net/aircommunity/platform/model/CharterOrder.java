@@ -4,13 +4,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+import net.aircommunity.platform.model.constraint.NotEmpty;
 
 /**
  * Charter Order on a {@code Fleet}.
@@ -19,31 +21,21 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "air_platfrom_charter_order")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CharterOrder extends Order {
 	private static final long serialVersionUID = 1L;
-
-	@Column(name = "aircraft_type")
-	private String aircraftType;
 
 	// customer contact information for this order
 	@Embedded
 	protected Contact contact;
 
 	// multiple flight legs
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	@NotEmpty
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<FlightLeg> flightLegs = new HashSet<>();
 
-	@ManyToOne
-	@JoinColumn(name = "fleet_id", nullable = false)
-	private Fleet fleet;
-
-	public String getAircraftType() {
-		return aircraftType;
-	}
-
-	public void setAircraftType(String aircraftType) {
-		this.aircraftType = aircraftType;
-	}
+	@OneToMany(mappedBy = "fleet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private Set<FleetCandidate> fleetCandidates = new HashSet<>();
 
 	public Contact getContact() {
 		return contact;
@@ -58,23 +50,35 @@ public class CharterOrder extends Order {
 	}
 
 	public void setFlightLegs(Set<FlightLeg> flightLegs) {
-		this.flightLegs = flightLegs;
+		if (flightLegs != null) {
+			flightLegs.stream().forEach(flightLeg -> {
+				flightLeg.setOrder(this);
+			});
+			this.flightLegs.addAll(flightLegs);
+		}
 	}
 
-	public Fleet getFleet() {
-		return fleet;
+	public Set<FleetCandidate> getFleetCandidates() {
+		return fleetCandidates;
 	}
 
-	public void setFleet(Fleet fleet) {
-		this.fleet = fleet;
+	public void setFleetCandidates(Set<FleetCandidate> fleetCandidates) {
+		if (fleetCandidates != null) {
+			fleetCandidates.stream().forEach(fleetCandidate -> {
+				fleetCandidate.setOrder(this);
+			});
+			this.fleetCandidates = fleetCandidates;
+		}
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("CharterOrder [aircraftType=").append(aircraftType).append(", orderNo=").append(orderNo)
-				.append(", contact=").append(contact).append(", note=").append(note).append(", id=").append(id)
-				.append("]");
+		builder.append("CharterOrder [contact=").append(contact).append(", flightLegs=").append(flightLegs)
+				.append(", fleetCandidates=").append(fleetCandidates).append(", orderNo=").append(orderNo)
+				.append(", creationDate=").append(creationDate).append(", paymentDate=").append(paymentDate)
+				.append(", finishedDate=").append(finishedDate).append(", note=").append(note).append(", id=")
+				.append(id).append("]");
 		return builder.toString();
 	}
 

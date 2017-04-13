@@ -27,6 +27,7 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
 public class Comment extends Persistable {
 	private static final long serialVersionUID = 1L;
 
+	// TODO: user can only rate once per product
 	// 0 - 5
 	@Min(0)
 	@Max(5)

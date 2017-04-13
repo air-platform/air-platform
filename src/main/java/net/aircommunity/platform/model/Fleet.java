@@ -5,6 +5,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,7 +18,7 @@ import net.aircommunity.platform.model.constraint.NotEmpty;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_fleet")
+@Table(name = "air_platfrom_fleet", indexes = { @Index(name = "idx_aircraft_type", columnList = "aircraft_type") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Fleet extends Product {
 	private static final long serialVersionUID = 1L;
@@ -27,53 +28,62 @@ public class Fleet extends Product {
 	// price
 	// desc
 
-	// TODO images of this fleet
-	// appearance
-	// interior
-	// interior-360
-
 	// Flight NO.
-	// @Column(name = "flight_no", nullable = false, unique = true)
-	// TODO need unique?
-	// if YES: should be: account_id + flight_no = unique
+	// this is global unique for all air company
 	@NotEmpty
-	@Column(name = "flight_no", nullable = false)
+	@Column(name = "flight_no", nullable = false, unique = true)
 	private String flightNo;
 
-	// e.g. Gulfstream 450
+	// e.g. Gulfstream 450 (should select from a predefined list)
 	@NotEmpty
 	@Column(name = "aircraft_type", nullable = false)
 	private String aircraftType;
 
-	// GPS location
+	// Aircraft GPS location
 	@Embedded
 	private Location location;
 
+	// Aircraft current status
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
-	private Status status;
+	private Status status = Status.AVAILABLE;
 
 	// e.g. 11 - 14 guests
 	@Column(name = "capacity")
 	private String capacity;
 
-	// e.g. 430 kilograms of baggage
-	@Column(name = "weight")
-	private int weight;
-
 	// e.g. 2 divans can be made as beds
 	@Column(name = "beds")
 	private int beds;
 
-	// e.g. Satellite phone, WIFI, wine cooler, DVD/CD player, external IPOD player, LCD monitor.
-	@Column(name = "facilities")
-	private String facilities;
+	// e.g. 430 kilograms of baggage
+	@Column(name = "weight")
+	private int weight;
 
 	// e.g. Full-load range of about 8061 kilometers, amount to the distance from Beijing to Kuala Lumpur.
 	@Column(name = "fullload_range")
 	private int fullloadRange;
 
-	// List<appearance>...
+	// e.g. Satellite phone, WIFI, wine cooler, DVD/CD player, external IPOD player, LCD monitor.
+	@Column(name = "facilities")
+	private String facilities;
+
+	// images of this Aircraft, comma separated, image1.png,image2/png
+	@Column(name = "appearances")
+	private String appearances;
+
+	// interior 360 of this Aircraft, 360view.html
+	@Column(name = "interior")
+	private String interior;
+
+	// TODO accountManagers
+
+	public Fleet() {
+	}
+
+	public Fleet(String id) {
+		this.id = id;
+	}
 
 	public String getFlightNo() {
 		return flightNo;
@@ -115,14 +125,6 @@ public class Fleet extends Product {
 		this.capacity = capacity;
 	}
 
-	public int getWeight() {
-		return weight;
-	}
-
-	public void setWeight(int weight) {
-		this.weight = weight;
-	}
-
 	public int getBeds() {
 		return beds;
 	}
@@ -131,12 +133,12 @@ public class Fleet extends Product {
 		this.beds = beds;
 	}
 
-	public String getFacilities() {
-		return facilities;
+	public int getWeight() {
+		return weight;
 	}
 
-	public void setFacilities(String facilities) {
-		this.facilities = facilities;
+	public void setWeight(int weight) {
+		this.weight = weight;
 	}
 
 	public int getFullloadRange() {
@@ -147,16 +149,40 @@ public class Fleet extends Product {
 		this.fullloadRange = fullloadRange;
 	}
 
+	public String getFacilities() {
+		return facilities;
+	}
+
+	public void setFacilities(String facilities) {
+		this.facilities = facilities;
+	}
+
+	public String getAppearances() {
+		return appearances;
+	}
+
+	public void setAppearances(String appearances) {
+		this.appearances = appearances;
+	}
+
+	public String getInterior() {
+		return interior;
+	}
+
+	public void setInterior(String interior) {
+		this.interior = interior;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Fleet [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)
 				.append(", location=").append(location).append(", status=").append(status).append(", capacity=")
-				.append(capacity).append(", weight=").append(weight).append(", beds=").append(beds)
-				.append(", facilities=").append(facilities).append(", fullloadRange=").append(fullloadRange)
-				.append(", name=").append(name).append(", price=").append(price).append(", currencyUnit=")
-				.append(currencyUnit).append(", description=").append(description).append(", id=").append(id)
-				.append("]");
+				.append(capacity).append(", beds=").append(beds).append(", weight=").append(weight)
+				.append(", fullloadRange=").append(fullloadRange).append(", facilities=").append(facilities)
+				.append(", appearances=").append(appearances).append(", interior=").append(interior).append(", name=")
+				.append(name).append(", price=").append(price).append(", currencyUnit=").append(currencyUnit)
+				.append(", description=").append(description).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

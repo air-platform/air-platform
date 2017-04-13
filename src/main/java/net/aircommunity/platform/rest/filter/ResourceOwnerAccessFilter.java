@@ -54,11 +54,11 @@ public class ResourceOwnerAccessFilter implements ContainerRequestFilter {
 		SimplePrincipal principal = (SimplePrincipal) securityContext.getUserPrincipal();
 		MultivaluedMap<String, String> pathParams = info.getPathParameters();
 		String tenantId = pathParams.getFirst(TENANT_ID_PATH_PARAM);
-		if (!principal.getName().equals(tenantId)) {
-			LOG.warn("Cannot access account {} resource by account {}", tenantId, principal.getName());
-			context.abortWith(RESPONSE_UNAUTHORIZED);
-			return;
-		}
+//		if (!principal.getName().equals(tenantId)) {
+//			LOG.warn("Cannot access account {} resource by account {}", tenantId, principal.getName());
+//			context.abortWith(RESPONSE_UNAUTHORIZED);
+//			return;
+//		}
 
 		// TODO API KEY
 		// String apiKey = (String) principal.getClaims().getClaimsMap().get(Constants.CLAIM_API_KEY);

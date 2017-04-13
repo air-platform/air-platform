@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Account;
+import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.Account.Status;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.Address;
@@ -130,6 +131,16 @@ public interface AccountService {
 	 */
 	@Nonnull
 	Account findAccount(@Nonnull String accountId);
+
+	/**
+	 * Find an account auths by ID.
+	 * 
+	 * @param accountId the accountId
+	 * @return Account found
+	 * @throws AirException if Account with the given is not found
+	 */
+	@Nonnull
+	List<AccountAuth> findAccountAuths(String accountId);
 
 	/**
 	 * List all Addresses of an user.

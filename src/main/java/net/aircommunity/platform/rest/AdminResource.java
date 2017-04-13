@@ -62,6 +62,9 @@ public class AdminResource {
 	@Resource
 	private JetCardResource jetCardResource;
 
+	@Resource
+	private JetOrderResource jetOrderResource;
+
 	/**
 	 * Ping server to make sure server is still alive, it is used for monitoring purpose.
 	 */
@@ -167,5 +170,10 @@ public class AdminResource {
 	@Path(ACCOUNTS_PATH_PREFIX + "/{tenantId}/jetcards")
 	public JetCardResource jetcards(@PathParam("tenantId") String tenantId) {
 		return jetCardResource;
+	}
+
+	@Path(ACCOUNTS_PATH_PREFIX + "/{tenantId}/jetorders")
+	public JetOrderResource jetorders(@PathParam("tenantId") String tenantId) {
+		return jetOrderResource;
 	}
 }

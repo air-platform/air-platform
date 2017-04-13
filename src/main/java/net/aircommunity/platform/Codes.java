@@ -41,8 +41,10 @@ public final class Codes {
 
 	// airjet
 	public static final Code FLEET_NOT_FOUND = Code.notFound(11_003_0001);
+	public static final Code FLEET_ALREADY_EXISTS = Code.alreadyExists(11_003_0001);
 	public static final Code FERRYFLIGHTI_NOT_FOUND = Code.notFound(11_003_0002);
 	public static final Code JETCARD_NOT_FOUND = Code.notFound(11_003_0003);
+	public static final Code CHARTERORDER_NOT_FOUND = Code.notFound(11_003_0002);
 
 	private Codes() {
 		throw new AssertionError();

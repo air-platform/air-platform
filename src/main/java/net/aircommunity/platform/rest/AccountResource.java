@@ -2,6 +2,7 @@ package net.aircommunity.platform.rest;
 
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -37,6 +38,7 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AccessToken;
 import net.aircommunity.platform.model.Account;
+import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.Address;
@@ -46,6 +48,7 @@ import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.PasswordRequest;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.UserAccountRequest;
+import net.aircommunity.platform.model.UsernameRequest;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.SmsService;
 import net.aircommunity.platform.service.VerificationService;
@@ -231,8 +234,18 @@ public class AccountResource {
 		return Response.ok(account).build();
 	}
 
+	@GET
+	@Path("profile/auths")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response getSelfAccountAuths(@Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		List<AccountAuth> accountAuths = accountService.findAccountAuths(accountId);
+		return Response.ok(accountAuths).build();
+	}
+
 	/**
-	 * Update account (FIXME not working for User/Tenant)
+	 * Update account (User/Tenant/Admin)
 	 */
 	@PUT
 	@Path("profile")
@@ -260,20 +273,6 @@ public class AccountResource {
 	}
 
 	/**
-	 * @deprecated
-	 */
-	@PUT
-	@Path("profile2")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
-	public Response updateAccount2(@NotNull @Valid Account newAccount, @Context SecurityContext context) {
-		String accountId = context.getUserPrincipal().getName();
-		Account accountUpdated = accountService.updateAccount(accountId, newAccount);
-		return Response.ok(accountUpdated).build();
-	}
-
-	/**
 	 * Change password if old password is correct.
 	 */
 	@POST
@@ -295,6 +294,18 @@ public class AccountResource {
 	public Response resetPassword(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.resetPassword(accountId);
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Change username
+	 */
+	@POST
+	@Path("username")
+	@Authenticated
+	public Response updateUsername(@NotNull @Valid UsernameRequest request, @Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		accountService.updateUsername(accountId, request.getUsername());
 		return Response.noContent().build();
 	}
 
@@ -415,6 +426,15 @@ public class AccountResource {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.removeUserPassenger(accountId, passengerId);
 		return Response.noContent().build();
+	}
+
+	//
+	@Resource
+	private JetOrderResource jetOrderResource;
+
+	@Path("{userId}/orders")
+	public JetOrderResource orders(@PathParam("userId") String userId) {
+		return jetOrderResource;
 	}
 
 }

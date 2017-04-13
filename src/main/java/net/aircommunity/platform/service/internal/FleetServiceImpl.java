@@ -32,6 +32,11 @@ public class FleetServiceImpl extends AbstractServiceSupport implements FleetSer
 	@Override
 	public Fleet createFleet(String tenantId, Fleet fleet) {
 		Tenant tenant = findAccount(tenantId, Tenant.class);
+		Fleet existing = fleetRepository.findByFlightNo(fleet.getFlightNo());
+		if (existing != null) {
+			throw new AirException(Codes.FLEET_ALREADY_EXISTS,
+					String.format("Flight NO: %s already exists", fleet.getFlightNo()));
+		}
 		// create new
 		Fleet newFleet = new Fleet();
 		copyProperties(fleet, newFleet);
@@ -75,6 +80,8 @@ public class FleetServiceImpl extends AbstractServiceSupport implements FleetSer
 		tgt.setName(src.getName());
 		tgt.setPrice(src.getPrice());
 		tgt.setWeight(src.getWeight());
+		tgt.setAppearances(src.getAppearances());
+		tgt.setInterior(src.getInterior());
 	}
 
 	@Override

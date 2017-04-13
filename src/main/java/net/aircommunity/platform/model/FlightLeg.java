@@ -11,6 +11,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.constraint.NotEmpty;
@@ -23,6 +25,7 @@ import net.aircommunity.platform.model.jaxb.OrderAdapter;
  */
 @Entity
 @Table(name = "air_platfrom_flightleg")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class FlightLeg extends Persistable {
 	private static final long serialVersionUID = 1L;
 

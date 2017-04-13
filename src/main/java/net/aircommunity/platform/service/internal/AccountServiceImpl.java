@@ -89,6 +89,8 @@ public class AccountServiceImpl implements AccountService {
 				Constants.DEFAULT_ADMIN_USERNAME);
 		if (auth == null) {
 			createAdminAccount(Constants.DEFAULT_ADMIN_USERNAME, Constants.DEFAULT_ADMIN_PASSWORD);
+			// for testing XXX
+			createAccount("user1", "p0o9i8u7", Role.USER);
 			LOG.debug("Created default admin account");
 		}
 	}
@@ -335,6 +337,11 @@ public class AccountServiceImpl implements AccountService {
 			throw new AirException(Codes.ACCOUNT_NOT_FOUND, String.format("Account %s is not found", accountId));
 		}
 		return account;
+	}
+
+	@Override
+	public List<AccountAuth> findAccountAuths(String accountId) {
+		return accountAuthRepository.findByAccountId(accountId);
 	}
 
 	@Override

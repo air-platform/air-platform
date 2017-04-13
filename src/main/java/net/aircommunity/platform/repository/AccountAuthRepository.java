@@ -1,5 +1,7 @@
 package net.aircommunity.platform.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.model.AccountAuth;
@@ -14,6 +16,15 @@ import net.aircommunity.platform.model.AccountAuth.AuthType;
 public interface AccountAuthRepository extends JpaRepository<AccountAuth, String> {
 
 	// TODO enable cache for CRUD
+
+	/**
+	 * Find an account auths for accountId.
+	 * 
+	 * @param accountId the accountId
+	 * @return auths or empty if none
+	 */
+	List<AccountAuth> findByAccountId(String accountId);
+
 	/**
 	 * Find an account auth by type and accountId.
 	 * 

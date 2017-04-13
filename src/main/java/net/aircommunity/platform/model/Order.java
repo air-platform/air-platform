@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import net.aircommunity.platform.common.base.UUIDs;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
@@ -41,11 +42,11 @@ public abstract class Order extends Persistable {
 	protected Date creationDate;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
-	@Column(name = "payment_date", nullable = false)
+	@Column(name = "payment_date")
 	protected Date paymentDate;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
-	@Column(name = "finished_date", nullable = false)
+	@Column(name = "finished_date")
 	protected Date finishedDate;
 
 	// customer extra information for an order
@@ -62,7 +63,7 @@ public abstract class Order extends Persistable {
 	private void generateOrderNo() {
 		if (orderNo == null) {
 			// TODO a reasonable order number generation
-			// orderNo = "";
+			orderNo = UUIDs.shortTimebased();
 		}
 	}
 
@@ -126,6 +127,15 @@ public abstract class Order extends Persistable {
 	 * Order status
 	 */
 	public enum Status {
-		PUBLISHED, PENDING, FINISHED, CANCELLED
+		PUBLISHED, PENDING, FINISHED, CANCELLED;
+
+		public static Status of(String value) {
+			for (Status e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
 	}
 }
