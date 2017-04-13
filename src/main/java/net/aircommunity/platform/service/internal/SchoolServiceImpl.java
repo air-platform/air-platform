@@ -7,6 +7,7 @@ import net.aircommunity.platform.model.School;
 import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.repository.SchoolRepository;
 import net.aircommunity.platform.repository.TenantRepository;
+import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.SchoolService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +20,13 @@ import javax.annotation.Resource;
  */
 @Service
 @Transactional
-public class SchoolServiceImpl implements SchoolService {
+public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolService {
     @Resource
     private SchoolRepository schoolRepository;
     @Resource
     private TenantRepository tenantRepository;
+    @Resource
+    private AccountService accountService;
 
     @Nonnull
     @Override
@@ -45,13 +48,20 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Nonnull
     @Override
-    public School updateSchool(@Nonnull School request,@Nonnull String tenantId) {
+    public School updateSchool(@Nonnull School request, @Nonnull String tenantId) {
         Tenant tenant = tenantRepository.findOne(tenantId);
-        if(tenant == null){
-            throw new AirException(Codes.ACCOUNT_NOT_FOUND,String.format("tenant %s is not found", tenantId));
+        if (tenant == null) {
+            throw new AirException(Codes.ACCOUNT_NOT_FOUND, String.format("tenant %s is not found", tenantId));
         }
         request.setTenant(tenant);
         School schoolUpdate = schoolRepository.save(request);
         return schoolUpdate;
+    }
+
+    @Nonnull
+    @Override
+    public Page<School> getSchoolListByTenant(String tenantId, int page, int pageSize) {
+        Tenant tenant = findAccount(tenantId,Tenant.class);
+        return Pages.adapt(schoolRepository.findByTenant(tenant, Pages.createPageRequest(page, pageSize)));
     }
 }

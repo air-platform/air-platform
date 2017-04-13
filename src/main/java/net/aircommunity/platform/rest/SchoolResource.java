@@ -34,12 +34,23 @@ public class SchoolResource {
                 .build();
     }
 
+    @GET
+    @Path("tenant")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSchoolListByTenant(@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
+        LOG.debug("get school list by tenant...");
+        String accountId = context.getUserPrincipal().getName(); // 获取商户信息
+        Page<School> schoolPage = schoolService.getSchoolListByTenant(accountId, page, pageSize);
+        return Response.ok(schoolPage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(schoolPage))
+                .build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createSchool(@NotNull School request, @Context SecurityContext context, @Context UriInfo uriInfo){
+    public Response createSchool(@NotNull School request, @Context SecurityContext context, @Context UriInfo uriInfo) {
         LOG.debug("create school start...");
         String accountId = context.getUserPrincipal().getName(); // 获取商户信息
-        School schoolCreated = schoolService.createSchool(request,accountId);
+        School schoolCreated = schoolService.createSchool(request, accountId);
         URI uri = uriInfo.getAbsolutePathBuilder().segment(schoolCreated.getId()).build();
         LOG.debug("Created school : {}", uri);
         return Response.created(uri).build();
@@ -47,10 +58,10 @@ public class SchoolResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateSchool(@NotNull School request,@Context SecurityContext context){
+    public Response updateSchool(@NotNull School request, @Context SecurityContext context) {
         LOG.debug("update school start...");
         String accountId = context.getUserPrincipal().getName();
-        schoolService.updateSchool(request,accountId);
+        schoolService.updateSchool(request, accountId);
         return Response.noContent().build();
     }
 
