@@ -34,7 +34,7 @@ public class JetCardServiceImpl extends AbstractServiceSupport implements JetCar
 		Tenant tenant = findAccount(tenantId, Tenant.class);
 		// create new
 		JetCard newCard = new JetCard();
-		copyProperties(newCard, jetCard);
+		copyProperties(jetCard, newCard);
 		// set vendor
 		newCard.setVendor(tenant);
 		return jetCardRepository.save(newCard);
