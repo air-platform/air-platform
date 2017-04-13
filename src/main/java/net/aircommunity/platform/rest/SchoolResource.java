@@ -2,6 +2,7 @@ package net.aircommunity.platform.rest;
 
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.School;
 import net.aircommunity.platform.service.SchoolService;
 import net.aircommunity.rest.annotation.RESTful;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -40,8 +42,7 @@ public class SchoolResource {
     @GET
     @Path("tenant")
     @Produces(MediaType.APPLICATION_JSON)
-    //    @RolesAllowed(Roles.ROLE_TENANT)
-    @PermitAll
+    @RolesAllowed(Roles.ROLE_TENANT)
     public Response getSchoolListByTenant(@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
         LOG.debug("get school list by tenant...");
         String accountId = context.getUserPrincipal().getName(); // 获取商户信息
@@ -52,8 +53,7 @@ public class SchoolResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    //    @RolesAllowed(Roles.ROLE_TENANT)
-    @PermitAll
+    @RolesAllowed(Roles.ROLE_TENANT)
     public Response createSchool(@NotNull School request, @Context SecurityContext context, @Context UriInfo uriInfo) {
         LOG.debug("create school start...");
         String accountId = context.getUserPrincipal().getName(); // 获取商户信息
@@ -65,8 +65,7 @@ public class SchoolResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    //    @RolesAllowed(Roles.ROLE_TENANT)
-    @PermitAll
+    @RolesAllowed(Roles.ROLE_TENANT)
     public Response updateSchool(@NotNull School request) {
         LOG.debug("update school start...");
         schoolService.updateSchool(request);

@@ -56,7 +56,7 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
     @Nonnull
     @Override
     public Page<Course> getHotCourses(int page, int pageSize) {
-        Sort sort = new Sort(Sort.Direction.DESC, "creationDate");
+        Sort sort = new Sort(Sort.Direction.DESC, "enrollNum");
         return Pages.adapt(courseRepository.findAll(Pages.createPageRequest(page, pageSize, sort)));
     }
 

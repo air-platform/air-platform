@@ -39,10 +39,10 @@ public interface CourseRepository extends JpaRepository<Course, String> {
      * @param pageable
      * @return
      */
-    @Query("select t from Course t where t.endDate >= now() and t.school = :sc order by t.startDate desc")
+    @Query("select t from Course t where t.endDate >= :now and t.school = :sc order by t.startDate desc")
     Page<Course> findBySchool2(@Param("sc") School school, @Param("now") Date now, Pageable pageable);
 
-    @Query("select t from Course t where t.endDate >= now() and t.vendor = :te order by t.startDate desc")
+    @Query("select t from Course t where t.endDate >= :now and t.vendor = :te order by t.startDate desc")
     Page<Course> findByTenant2(@Param("te") Tenant tenant, @Param("now") Date now,Pageable pageable);
 
 }

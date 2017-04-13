@@ -85,8 +85,7 @@ public class CourseResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("create/{schoolId}")
-    //@RolesAllowed(Roles.ROLE_TENANT)
-    @PermitAll
+    @RolesAllowed(Roles.ROLE_TENANT)
     public Response createCourse(@NotNull Course request, @PathParam("schoolId") String schoolId, @Context SecurityContext context, @Context UriInfo uriInfo) {
         LOG.debug("create course...");
         String tenantId = context.getUserPrincipal().getName();
@@ -99,7 +98,7 @@ public class CourseResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("update/{schoolId}")
-    @PermitAll
+    @RolesAllowed(Roles.ROLE_TENANT)
     public Response updateCourse(@NotNull Course request, @PathParam("schoolId") String schoolId) {
         LOG.debug("update course....");
         Course course = courseService.updateCourse(request, schoolId);
