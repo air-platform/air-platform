@@ -7,8 +7,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 
 import net.aircommunity.platform.model.constraint.NotEmpty;
 
@@ -19,7 +17,6 @@ import net.aircommunity.platform.model.constraint.NotEmpty;
  */
 @Entity
 @Table(name = "air_platfrom_fleet", indexes = { @Index(name = "idx_aircraft_type", columnList = "aircraft_type") })
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Fleet extends Product {
 	private static final long serialVersionUID = 1L;
 

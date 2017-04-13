@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.common.base.UUIDs;
@@ -26,6 +28,7 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Order extends Persistable {
 	private static final long serialVersionUID = 1L;
 
