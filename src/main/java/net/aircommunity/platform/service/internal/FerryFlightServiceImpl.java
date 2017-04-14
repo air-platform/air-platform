@@ -89,7 +89,7 @@ public class FerryFlightServiceImpl extends AbstractServiceSupport implements Fe
 		return Pages.adapt(ferryFlightRepository.findAll(Pages.createPageRequest(page, pageSize)));
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#ferryFlightId")
 	@Override
 	public void deleteFerryFlight(String ferryFlightId) {
 		ferryFlightRepository.delete(ferryFlightId);

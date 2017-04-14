@@ -22,6 +22,13 @@ public class JetCard extends Product {
 	@Column(name = "summary")
 	private String summary;
 
+	public JetCard() {
+	}
+
+	public JetCard(String id) {
+		this.id = id;
+	}
+
 	public String getType() {
 		return type;
 	}

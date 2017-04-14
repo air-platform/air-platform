@@ -16,12 +16,13 @@ import net.aircommunity.platform.model.CharterOrder;
 import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.FleetCandidate;
 import net.aircommunity.platform.model.Order;
+import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.repository.CharterOrderRepository;
 import net.aircommunity.platform.repository.FleetCandidateRepository;
-import net.aircommunity.platform.repository.FleetRepository;
 import net.aircommunity.platform.service.CharterOrderService;
+import net.aircommunity.platform.service.FleetService;
 
 /**
  * CharterOrder service implementation.
@@ -31,6 +32,8 @@ import net.aircommunity.platform.service.CharterOrderService;
 @Service
 @Transactional
 public class CharterOrderServiceImpl extends AbstractServiceSupport implements CharterOrderService {
+	// TODO
+	private static final String CACHE_NAME = "cache.charterorder";
 
 	@Resource
 	private CharterOrderRepository charterOrderRepository;
@@ -39,7 +42,7 @@ public class CharterOrderServiceImpl extends AbstractServiceSupport implements C
 	private FleetCandidateRepository fleetCandidateRepository;
 
 	@Resource
-	private FleetRepository fleetRepository;
+	private FleetService fleetService;
 
 	@Override
 	public CharterOrder createCharterOrder(String userId, CharterOrder charterOrder) {
@@ -64,7 +67,7 @@ public class CharterOrderServiceImpl extends AbstractServiceSupport implements C
 			fleetCandidates.stream().forEach(fleetCandidate -> {
 				Fleet fleet = fleetCandidate.getFleet();
 				if (fleet != null) {
-					fleet = fleetRepository.findOne(fleet.getId());
+					fleet = fleetService.findFleet(fleet.getId());
 					fleetCandidate.setFleet(fleet);
 				}
 			});
@@ -108,7 +111,18 @@ public class CharterOrderServiceImpl extends AbstractServiceSupport implements C
 	}
 
 	@Override
-	public Page<CharterOrder> listTenantCharterOrders(String tenantId, int page, int pageSize) {
+	public Page<CharterOrder> listUserCharterOrders(String userId, Status status, int page, int pageSize) {
+		if (status == null) {
+			return Pages.adapt(charterOrderRepository.findByOwnerIdOrderByCreationDateDesc(userId,
+					Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(charterOrderRepository.findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<CharterOrder> listTenantCharterOrders(String tenantId, Status status, int page, int pageSize) {
+		// TODO order status is NOT used
 		Page<FleetCandidate> data = Pages
 				.adapt(fleetCandidateRepository.findByVendorId(tenantId, Pages.createPageRequest(page, pageSize)));
 		List<CharterOrder> content = data.getContent().stream().map(fleetCandidate -> fleetCandidate.getOrder())
@@ -117,19 +131,13 @@ public class CharterOrderServiceImpl extends AbstractServiceSupport implements C
 	}
 
 	@Override
-	public Page<CharterOrder> listCharterOrders(String userId, int page, int pageSize) {
-		User owner = findAccount(userId, User.class);
-		// Page<CharterOrder> p = Pages.adapt(charterOrderRepository.findByOwnerIdByOrderByCreationDateDesc(userId,
-		// Pages.createPageRequest(page, pageSize)));
-		Page<CharterOrder> p = Pages.adapt(charterOrderRepository.findBy2OwnerByOrderByCreationDateDesc(owner,
+	public Page<CharterOrder> listCharterOrders(Status status, int page, int pageSize) {
+		if (status == null) {
+			return Pages.adapt(
+					charterOrderRepository.findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(charterOrderRepository.findByStatusOrderByCreationDateDesc(status,
 				Pages.createPageRequest(page, pageSize)));
-
-		return p;
-	}
-
-	@Override
-	public Page<CharterOrder> listCharterOrders(int page, int pageSize) {
-		return Pages.adapt(charterOrderRepository.findAll(Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override

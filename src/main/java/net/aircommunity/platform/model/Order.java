@@ -36,9 +36,9 @@ public abstract class Order extends Persistable {
 	@Column(name = "order_no", nullable = false, unique = true)
 	protected String orderNo;
 
-	@Column(name = "status")
+	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private Status status;
+	protected Status status;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
@@ -59,7 +59,7 @@ public abstract class Order extends Persistable {
 
 	@XmlJavaTypeAdapter(AccountAdapter.class)
 	@ManyToOne
-	@JoinColumn(name = "account_id", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false)
 	protected User owner;
 
 	@PrePersist
