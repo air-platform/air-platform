@@ -3,8 +3,10 @@ package net.aircommunity.platform.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -29,7 +31,7 @@ public class AirTransport extends Product {
 	@Column(name = "arrival", nullable = false)
 	private String arrival;
 
-	@OneToMany
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<AircraftItem> aircraftItems = new HashSet<>();
 
 	public String getFamily() {

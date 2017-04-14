@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * Aircraft Item
@@ -16,6 +18,7 @@ import javax.validation.constraints.Min;
  */
 @Entity
 @Table(name = "air_platfrom_aircraftitem")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class AircraftItem extends Persistable {
 	private static final long serialVersionUID = 1L;
 
