@@ -24,7 +24,6 @@ public class Enrollment extends Order {
     @Column(name = "location",nullable = false)
     private String location;
 
-    @XmlJavaTypeAdapter(AccountAdapter.class)
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;

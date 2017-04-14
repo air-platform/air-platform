@@ -30,7 +30,6 @@ public class Course extends Product {
     @Column(name = "end_date", nullable = false)
     private Date endDate;
 
-    @XmlJavaTypeAdapter(AccountAdapter.class)
     @ManyToOne
     @JoinColumn(name = "school_id", nullable = false)
     private School school;

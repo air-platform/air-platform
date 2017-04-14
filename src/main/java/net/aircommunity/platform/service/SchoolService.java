@@ -47,5 +47,13 @@ public interface SchoolService {
     @Nonnull
     School updateSchool(@Nonnull School request);
 
+    /**
+     * get school by id
+     * @param schoolId
+     * @return
+     */
+    @Nonnull
+    School getSchoolById(@Nonnull String schoolId);
+
 
 }

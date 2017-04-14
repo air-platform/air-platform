@@ -68,4 +68,14 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
         Tenant tenant = findAccount(tenantId, Tenant.class);
         return Pages.adapt(schoolRepository.findByTenant(tenant, Pages.createPageRequest(page, pageSize)));
     }
+
+    @Nonnull
+    @Override
+    public School getSchoolById(@Nonnull String schoolId) {
+        School school = schoolRepository.findOne(schoolId);
+        if (school == null) {
+            throw new AirException(Codes.SCHOOL_NOT_FOUND, String.format("school %s not found",schoolId));
+        }
+        return school;
+    }
 }

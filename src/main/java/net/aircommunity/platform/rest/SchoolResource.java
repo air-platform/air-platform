@@ -72,5 +72,15 @@ public class SchoolResource {
         return Response.noContent().build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{schoolId}")
+    @PermitAll
+    public Response getSchoolById(@PathParam("schoolId") String schoolId) {
+        LOG.debug("get school by id start...");
+        School school = schoolService.getSchoolById(schoolId);
+        return Response.ok(school).build();
+    }
+
 
 }
