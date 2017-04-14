@@ -96,5 +96,13 @@ public interface CourseService {
     @Nonnull
     void deleteCourse(@Nonnull String courseId);
 
+    /**
+     * get course by id
+     * @param courseId
+     * @return
+     */
+    @Nonnull
+    Course getCourseById(@Nonnull String courseId);
+
 
 }
