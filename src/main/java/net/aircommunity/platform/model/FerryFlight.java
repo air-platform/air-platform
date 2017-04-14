@@ -16,7 +16,7 @@ import javax.validation.constraints.Min;
  */
 @Entity
 @Table(name = "air_platfrom_ferryflight")
-public class FerryFlight extends Product {
+public class FerryFlight extends PricedProduct {
 	private static final long serialVersionUID = 1L;
 
 	// properties inherited:
@@ -59,8 +59,8 @@ public class FerryFlight extends Product {
 
 	// TODO a better name
 	// the image of this flight
-	@Column(name = "avatar")
-	private String avatar;
+	@Column(name = "image")
+	private String image;
 
 	public FerryFlight() {
 	}
@@ -133,12 +133,12 @@ public class FerryFlight extends Product {
 		this.date = date;
 	}
 
-	public String getAvatar() {
-		return avatar;
+	public String getImage() {
+		return image;
 	}
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	@Override
@@ -147,7 +147,7 @@ public class FerryFlight extends Product {
 		builder.append("FerryFlight [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)
 				.append(", departure=").append(departure).append(", arrival=").append(arrival).append(", seatPrice=")
 				.append(seatPrice).append(", seats=").append(seats).append(", minPassengers=").append(minPassengers)
-				.append(", date=").append(date).append(", avatar=").append(avatar).append(", name=").append(name)
+				.append(", date=").append(date).append(", image=").append(image).append(", name=").append(name)
 				.append(", price=").append(price).append(", currencyUnit=").append(currencyUnit)
 				.append(", description=").append(description).append(", id=").append(id).append("]");
 		return builder.toString();

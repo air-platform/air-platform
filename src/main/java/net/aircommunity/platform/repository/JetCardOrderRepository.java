@@ -13,26 +13,7 @@ import net.aircommunity.platform.model.Order.Status;
  * 
  * @author Bin.Zhang
  */
-public interface JetCardOrderRepository extends JpaRepository<JetCardOrder, String> {
-
-	/**
-	 * Find all user orders
-	 * 
-	 * @param userId the userId
-	 * @param pageable page request
-	 * @return a page of JetCardOrders or empty if none
-	 */
-	Page<JetCardOrder> findByOwnerIdOrderByCreationDateDesc(String userId, Pageable pageable);
-
-	/**
-	 * Find all user orders
-	 * 
-	 * @param userId the userId
-	 * @param status the status
-	 * @param pageable page request
-	 * @return a page of JetCardOrders or empty if none
-	 */
-	Page<JetCardOrder> findByOwnerIdAndStatusOrderByCreationDateDesc(String userId, Status status, Pageable pageable);
+public interface JetCardOrderRepository extends BaseOrderRepository<JetCardOrder> {
 
 	/**
 	 * Find all orders place on a tenant
@@ -53,30 +34,5 @@ public interface JetCardOrderRepository extends JpaRepository<JetCardOrder, Stri
 	 */
 	Page<JetCardOrder> findByVendorIdAndStatusOrderByCreationDateDesc(String tenantId, Status status,
 			Pageable pageable);
-
-	/**
-	 * Find all orders
-	 * 
-	 * @param pageable page request
-	 * @return a page of JetCardOrders or empty if none
-	 */
-	Page<JetCardOrder> findAllByOrderByCreationDateDesc(Pageable pageable);
-
-	/**
-	 * Find all orders
-	 * 
-	 * @param status the status
-	 * @param pageable page request
-	 * @return a page of JetCardOrders or empty if none
-	 */
-	Page<JetCardOrder> findByStatusOrderByCreationDateDesc(Status status, Pageable pageable);
-
-	/**
-	 * Delete all the orders of a user.
-	 * 
-	 * @param userId the userId
-	 * @return the records deleted
-	 */
-	long deleteByOwnerId(String userId);
 
 }

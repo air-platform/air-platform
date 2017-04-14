@@ -11,7 +11,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "air_platfrom_jetcard")
-public class JetCard extends Product {
+public class JetCard extends PricedProduct {
 	private static final long serialVersionUID = 1L;
 
 	// card type

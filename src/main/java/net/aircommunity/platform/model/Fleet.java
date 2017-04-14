@@ -17,7 +17,7 @@ import net.aircommunity.platform.model.constraint.NotEmpty;
  */
 @Entity
 @Table(name = "air_platfrom_fleet", indexes = { @Index(name = "idx_aircraft_type", columnList = "aircraft_type") })
-public class Fleet extends Product {
+public class Fleet extends PricedProduct {
 	private static final long serialVersionUID = 1L;
 
 	// properties inherited:

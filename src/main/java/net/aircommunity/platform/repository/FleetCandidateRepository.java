@@ -1,5 +1,7 @@
 package net.aircommunity.platform.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,5 +19,7 @@ public interface FleetCandidateRepository extends JpaRepository<FleetCandidate, 
 	// Page<FleetCandidate> findByFleetVendorId(String tenantId, Pageable pageable);
 
 	Page<FleetCandidate> findByVendorId(String tenantId, Pageable pageable);
+
+	List<FleetCandidate> findByOrderId(String orderId);
 
 }

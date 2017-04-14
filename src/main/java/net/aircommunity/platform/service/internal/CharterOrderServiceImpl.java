@@ -83,6 +83,9 @@ public class CharterOrderServiceImpl extends AbstractServiceSupport implements C
 			throw new AirException(Codes.CHARTERORDER_NOT_FOUND,
 					String.format("CharterOrder %s is not found", charterOrderId));
 		}
+
+		List<FleetCandidate> cc = fleetCandidateRepository.findByOrderId(charterOrderId);
+		Set<FleetCandidate> c = charterOrder.getFleetCandidates();
 		return charterOrder;
 	}
 

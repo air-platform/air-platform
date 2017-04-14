@@ -2,14 +2,11 @@ package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -31,16 +28,6 @@ public abstract class Product extends Persistable {
 	@Column(name = "name", nullable = false)
 	protected String name;
 
-	// product price
-	@Min(0)
-	@Column(name = "price", nullable = false)
-	protected int price;
-
-	// product price CurrencyUnit
-	@Column(name = "currency_unit", nullable = false)
-	@Enumerated(EnumType.STRING)
-	protected CurrencyUnit currencyUnit = CurrencyUnit.RMB;
-
 	// product description
 	@Lob
 	@Column(name = "description")
@@ -57,22 +44,6 @@ public abstract class Product extends Persistable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public int getPrice() {
-		return price;
-	}
-
-	public void setPrice(int price) {
-		this.price = price;
-	}
-
-	public CurrencyUnit getCurrencyUnit() {
-		return currencyUnit;
-	}
-
-	public void setCurrencyUnit(CurrencyUnit currencyUnit) {
-		this.currencyUnit = currencyUnit;
 	}
 
 	public String getDescription() {
