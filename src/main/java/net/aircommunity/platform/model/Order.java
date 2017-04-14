@@ -130,7 +130,8 @@ public abstract class Order extends Persistable {
 	 * Order status
 	 */
 	public enum Status {
-		PUBLISHED, PENDING, FINISHED, CANCELLED;
+		// TODO check if PUBLISHED needed
+		PUBLISHED, PENDING, PAID, FINISHED, CANCELLED;
 
 		public static Status of(String value) {
 			for (Status e : values()) {

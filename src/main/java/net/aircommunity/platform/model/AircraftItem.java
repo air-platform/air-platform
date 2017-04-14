@@ -117,4 +117,11 @@ public class AircraftItem extends Persistable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("AircraftItem [price=").append(price).append(", seatPrice=").append(seatPrice)
+				.append(", currencyUnit=").append(currencyUnit).append(", id=").append(id).append("]");
+		return builder.toString();
+	}
 }

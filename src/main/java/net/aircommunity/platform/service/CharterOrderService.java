@@ -66,6 +66,16 @@ public interface CharterOrderService {
 	CharterOrder updateCharterOrderStatus(@Nonnull String charterOrderId, @Nonnull Order.Status status);
 
 	/**
+	 * Update CharterOrder to select a fleet candidate
+	 * 
+	 * @param charterOrderId the charterOrderId
+	 * @param fleetCandidateId the fleetCandidateId to be selected
+	 * @return updated CharterOrder
+	 */
+	@Nonnull
+	CharterOrder selectFleetCandidate(@Nonnull String charterOrderId, @Nonnull String fleetCandidateId);
+
+	/**
 	 * List all CharterOrders by pagination filtered by userId and order status.
 	 * 
 	 * @param userId the userId

@@ -5,10 +5,13 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import net.aircommunity.platform.model.constraint.NotEmpty;
 
 /**
  * Air Transport
@@ -20,17 +23,18 @@ import javax.persistence.Table;
 public class AirTransport extends Product {
 	private static final long serialVersionUID = 1L;
 
+	@NotEmpty
 	@Column(name = "family", nullable = false)
 	private String family;
 
-	// departure city
-	@Column(name = "departure", nullable = false)
-	private String departure;
+	// in minutes
+	@Column(name = "time_estimation", nullable = false)
+	private int timeEstimation;
 
-	// arrival city
-	@Column(name = "arrival", nullable = false)
-	private String arrival;
+	@Embedded
+	private FlightRoute flightRoute;
 
+	@NotEmpty
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<AircraftItem> aircraftItems = new HashSet<>();
 
@@ -42,20 +46,20 @@ public class AirTransport extends Product {
 		this.family = family;
 	}
 
-	public String getDeparture() {
-		return departure;
+	public int getTimeEstimation() {
+		return timeEstimation;
 	}
 
-	public void setDeparture(String departure) {
-		this.departure = departure;
+	public void setTimeEstimation(int timeEstimation) {
+		this.timeEstimation = timeEstimation;
 	}
 
-	public String getArrival() {
-		return arrival;
+	public FlightRoute getFlightRoute() {
+		return flightRoute;
 	}
 
-	public void setArrival(String arrival) {
-		this.arrival = arrival;
+	public void setFlightRoute(FlightRoute flightRoute) {
+		this.flightRoute = flightRoute;
 	}
 
 	public Set<AircraftItem> getAircraftItems() {
@@ -69,4 +73,28 @@ public class AirTransport extends Product {
 		}
 	}
 
+	public boolean addAircraftItem(AircraftItem item) {
+		if (aircraftItems.contains(item)) {
+			return false;
+		}
+		item.setProduct(this);
+		return aircraftItems.add(item);
+	}
+
+	public boolean removeAircraftItem(AircraftItem item) {
+		if (!aircraftItems.contains(item)) {
+			return false;
+		}
+		return aircraftItems.remove(item);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("AirTransport [family=").append(family).append(", timeEstimation=").append(timeEstimation)
+				.append(", flightRoute=").append(flightRoute).append(", aircraftItems=").append(aircraftItems)
+				.append(", name=").append(name).append(", description=").append(description).append(", id=").append(id)
+				.append("]");
+		return builder.toString();
+	}
 }

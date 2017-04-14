@@ -57,6 +57,10 @@ public class FerryFlight extends PricedProduct {
 	@Column(name = "date", nullable = false)
 	private Date date;
 
+	// departure timeSlot, e.g. 8:00-9:00
+	@Column(name = "time_slot", nullable = false)
+	private String timeSlot;
+
 	// TODO a better name
 	// the image of this flight
 	@Column(name = "image")
@@ -133,6 +137,14 @@ public class FerryFlight extends PricedProduct {
 		this.date = date;
 	}
 
+	public String getTimeSlot() {
+		return timeSlot;
+	}
+
+	public void setTimeSlot(String timeSlot) {
+		this.timeSlot = timeSlot;
+	}
+
 	public String getImage() {
 		return image;
 	}
@@ -147,9 +159,9 @@ public class FerryFlight extends PricedProduct {
 		builder.append("FerryFlight [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)
 				.append(", departure=").append(departure).append(", arrival=").append(arrival).append(", seatPrice=")
 				.append(seatPrice).append(", seats=").append(seats).append(", minPassengers=").append(minPassengers)
-				.append(", date=").append(date).append(", image=").append(image).append(", name=").append(name)
-				.append(", price=").append(price).append(", currencyUnit=").append(currencyUnit)
-				.append(", description=").append(description).append(", id=").append(id).append("]");
+				.append(", date=").append(date).append(", timeSlot=").append(timeSlot).append(", image=").append(image)
+				.append(", price=").append(price).append(", currencyUnit=").append(currencyUnit).append(", name=")
+				.append(name).append(", description=").append(description).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

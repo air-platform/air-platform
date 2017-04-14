@@ -96,7 +96,7 @@ public class FerryFlightResource {
 	 * Delete a ferryFlight
 	 */
 	@DELETE
-	@Path("{FerryFlightId}")
+	@Path("{ferryFlightId}")
 	public Response delete(@PathParam("ferryFlightId") String ferryFlightId) {
 		ferryFlightService.deleteFerryFlight(ferryFlightId);
 		return Response.noContent().build();

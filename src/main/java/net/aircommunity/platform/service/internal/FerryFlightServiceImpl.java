@@ -65,6 +65,7 @@ public class FerryFlightServiceImpl extends AbstractServiceSupport implements Fe
 	private void copyProperties(FerryFlight src, FerryFlight tgt) {
 		tgt.setAircraftType(src.getAircraftType());
 		tgt.setArrival(src.getArrival());
+		tgt.setTimeSlot(src.getTimeSlot());
 		tgt.setImage(src.getImage());
 		tgt.setCurrencyUnit(src.getCurrencyUnit());
 		tgt.setDate(src.getDate());

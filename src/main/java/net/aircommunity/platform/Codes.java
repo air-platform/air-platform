@@ -48,6 +48,11 @@ public final class Codes {
 	public static final Code FERRYFLIGHT_ORDER_NOT_FOUND = Code.notFound(11_003_0003);
 	public static final Code CHARTERORDER_NOT_FOUND = Code.notFound(11_003_0002);
 
+	// air taxi
+	public static final Code AIRTRANSPORT_NOT_FOUND = Code.notFound(11_003_0002);
+	public static final Code AIRCRAFT_NOT_FOUND = Code.notFound(11_003_0002);
+	public static final Code AIRCRAFT_ALREADY_EXISTS = Code.alreadyExists(11_003_0002);
+
 	// school
 	public static final Code SCHOOL_NOT_FOUND = Code.notFound(11_004_0001);
 

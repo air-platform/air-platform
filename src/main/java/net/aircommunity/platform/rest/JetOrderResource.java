@@ -113,14 +113,37 @@ public class JetOrderResource {
 	}
 
 	/**
+	 * Select a fleet
+	 */
+	@POST
+	@Path("{charterOrderId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public CharterOrder selectFleet(@PathParam("charterOrderId") String charterOrderId,
+			@QueryParam("fleetCandidateId") String fleetCandidateId) {
+		return charterOrderService.selectFleetCandidate(charterOrderId, fleetCandidateId);
+	}
+
+	/**
 	 * Cancel order
 	 */
 	@POST
 	@Path("{charterOrderId}/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public CharterOrder cancel(@PathParam("charterOrderId") String charterOrderId) {
+	public CharterOrder cancelOrder(@PathParam("charterOrderId") String charterOrderId) {
 		return charterOrderService.updateCharterOrderStatus(charterOrderId, Order.Status.CANCELLED);
+	}
+
+	/**
+	 * Finish order
+	 */
+	@POST
+	@Path("{charterOrderId}/finish")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public CharterOrder finishOrder(@PathParam("charterOrderId") String charterOrderId) {
+		return charterOrderService.updateCharterOrderStatus(charterOrderId, Order.Status.FINISHED);
 	}
 
 	/**

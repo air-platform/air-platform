@@ -2,14 +2,8 @@ package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
  * Aircraft.
@@ -18,7 +12,7 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
  */
 @Entity
 @Table(name = "air_platfrom_aircraft")
-public class Aircraft extends Persistable {
+public class Aircraft extends Product {
 	private static final long serialVersionUID = 1L;
 
 	// Flight NO. global unique, e.g. 353252
@@ -45,15 +39,6 @@ public class Aircraft extends Persistable {
 
 	@Column(name = "image")
 	private String image;
-
-	@Lob
-	@Column(name = "description")
-	private String description;
-
-	@XmlJavaTypeAdapter(AccountAdapter.class)
-	@ManyToOne
-	@JoinColumn(name = "tenant_id", nullable = false)
-	private Tenant vendor;
 
 	public Aircraft() {
 	}
@@ -108,22 +93,6 @@ public class Aircraft extends Persistable {
 
 	public void setImage(String image) {
 		this.image = image;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Tenant getVendor() {
-		return vendor;
-	}
-
-	public void setVendor(Tenant vendor) {
-		this.vendor = vendor;
 	}
 
 	@Override

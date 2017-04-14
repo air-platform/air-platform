@@ -99,7 +99,6 @@ public class FerryFlightOrderServiceImpl extends AbstractServiceSupport implemen
 				Pages.createPageRequest(page, pageSize)));
 	}
 
-
 	@Override
 	public Page<FerryFlightOrder> listTenantFerryFlightOrders(String tenantId, Order.Status status, int page,
 			int pageSize) {
@@ -110,7 +109,7 @@ public class FerryFlightOrderServiceImpl extends AbstractServiceSupport implemen
 		return Pages.adapt(ferryFlightOrderRepository.findByVendorIdAndStatusOrderByCreationDateDesc(tenantId, status,
 				Pages.createPageRequest(page, pageSize)));
 	}
-	
+
 	@Override
 	public Page<FerryFlightOrder> listFerryFlightOrders(Order.Status status, int page, int pageSize) {
 		if (status == null) {
