@@ -64,7 +64,7 @@ public class CourseResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/school/{schoolId}")
-    @PermitAll
+    @RolesAllowed(Roles.ROLE_TENANT)
     public Response getCourseBySchool(@PathParam("schoolId") String schoolId, @QueryParam("page") @DefaultValue("1") int page, @QueryParam("page") @DefaultValue("10") int pageSize) {
         LOG.debug("get courses by school..");
         Page<Course> coursePage = courseService.getAllCourseBySchool(schoolId, page, pageSize);
@@ -74,7 +74,7 @@ public class CourseResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/tenant")
-    @PermitAll
+    @RolesAllowed(Roles.ROLE_TENANT)
     public Response getCourseByTenant(@QueryParam("page") @DefaultValue("1") int page, @QueryParam("page") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
         LOG.debug("get courses by tenant..");
         String tenantId = context.getUserPrincipal().getName();

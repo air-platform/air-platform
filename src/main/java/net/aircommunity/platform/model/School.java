@@ -13,16 +13,16 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @Entity
 @Table(name = "air_platform_school")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class School extends Persistable{
+public class School extends Persistable {
 
-    @Column(name = "school_name",nullable = false)
+    @Column(name = "school_name", nullable = false)
     private String schoolName;
 
     @Lob
-    @Column(name = "school_decs",nullable = false)
+    @Column(name = "school_decs", nullable = false)
     private String schoolDesc;
 
-    @Column(name = "image_url",nullable = false)
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
     @Column(name = "address")
@@ -83,4 +83,5 @@ public class School extends Persistable{
     public void setTenant(Tenant tenant) {
         this.tenant = tenant;
     }
+
 }

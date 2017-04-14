@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * Created by guankai on 13/04/2017.
@@ -31,21 +32,21 @@ public class EnrollmentServiceImpl extends AbstractServiceSupport implements Enr
     @Nonnull
     @Override
     public Page<Enrollment> getAllEnrollment(int page, int pageSize) {
-        Sort sort = new Sort(Sort.Direction.DESC, "enrollNum");
+        Sort sort = new Sort(Sort.Direction.DESC, "creationDate");
         return Pages.adapt(enrollmentRepository.findAll(Pages.createPageRequest(page, pageSize, sort)));
     }
 
     @Nonnull
     @Override
     public Page<Enrollment> getEnrollmentByUser(String userId, int page, int pageSize) {
-        Sort sort = new Sort(Sort.Direction.DESC, "enrollNum");
+        Sort sort = new Sort(Sort.Direction.DESC, "creationDate");
         return Pages.adapt(enrollmentRepository.findByOwnerId(userId, Pages.createPageRequest(page, pageSize, sort)));
     }
 
     @Nonnull
     @Override
     public Page<Enrollment> getEnrollmentByTenant(String tenantId, int page, int pageSize) {
-        Sort sort = new Sort(Sort.Direction.DESC, "enrollNum");
+        Sort sort = new Sort(Sort.Direction.DESC, "creationDate");
         Tenant tenant = findAccount(tenantId, Tenant.class);
         return Pages.adapt(enrollmentRepository.findByTenant(tenant, Pages.createPageRequest(page, pageSize, sort)));
     }
@@ -53,7 +54,7 @@ public class EnrollmentServiceImpl extends AbstractServiceSupport implements Enr
     @Nonnull
     @Override
     public Page<Enrollment> getEnrollmentByCourse(String courseId, int page, int pageSize) {
-        Sort sort = new Sort(Sort.Direction.DESC, "enrollNum");
+        Sort sort = new Sort(Sort.Direction.DESC, "creationDate");
         Course course = courseRepository.findOne(courseId);
         if (course == null) {
             throw new AirException(Codes.COURSE_NOT_FOUND, String.format("course %s not found", courseId));
@@ -69,6 +70,8 @@ public class EnrollmentServiceImpl extends AbstractServiceSupport implements Enr
         if (course == null) {
             throw new AirException(Codes.COURSE_NOT_FOUND, String.format("course %s not found", courseId));
         }
+        Date now = new Date();
+        enrollment.setCreationDate(now);
         enrollment.setStatus(Order.Status.PUBLISHED);
         enrollment.setOwner(user);
         enrollment.setCourse(course);

@@ -3,6 +3,7 @@ package net.aircommunity.platform.rest;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Enrollment;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.service.EnrollmentService;
 import net.aircommunity.rest.annotation.RESTful;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -39,7 +41,7 @@ public class EnrollmentResource {
     @GET
     @Path("user")
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed(Roles.ROLE_USER)
     public Response getUserEnrollments(@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
         LOG.debug("get user all enrollments");
         String userId = context.getUserPrincipal().getName();
@@ -51,7 +53,7 @@ public class EnrollmentResource {
     @GET
     @Path("course/{courseId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed(Roles.ROLE_TENANT)
     public Response getCourseEnrollments(@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize, @PathParam("courseId") String courseId) {
         LOG.debug("get school all enrollments");
         Page<Enrollment> enrollmentPage = enrollmentService.getEnrollmentByCourse(courseId, page, pageSize);
@@ -62,7 +64,7 @@ public class EnrollmentResource {
     @GET
     @Path("tenant")
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed(Roles.ROLE_TENANT)
     public Response getTenantEnrollments(@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
         LOG.debug("get tenant all enrollments");
         String tenantId = context.getUserPrincipal().getName();
@@ -72,10 +74,11 @@ public class EnrollmentResource {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("create/{courseId}")
+    @RolesAllowed(Roles.ROLE_USER)
     public Response createEnrollment(@NotNull Enrollment request, @PathParam("courseId") String courseId, @Context SecurityContext context, @Context UriInfo uriInfo) {
-        LOG.debug("create enrollment");
+        LOG.debug("create enrollment" + request.getLicense());
         String userId = context.getUserPrincipal().getName();
         Enrollment enrollment = enrollmentService.createEnrollment(request, courseId, userId);
         URI uri = uriInfo.getAbsolutePathBuilder().segment(enrollment.getId()).build();
@@ -85,8 +88,7 @@ public class EnrollmentResource {
 
     @POST
     @Path("cancel/{enrollmentId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed(Roles.ROLE_USER)
     public Response cancelEnrollment(@PathParam("enrollmentId") String enrollmentId) {
         LOG.debug("cancel enrollment...");
         enrollmentService.cancelEnrollment(enrollmentId);

@@ -143,4 +143,5 @@ public class Course extends Product {
     public void setLocation(String location) {
         this.location = location;
     }
+
 }
