@@ -126,4 +126,14 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
         Tenant tenant = findAccount(tenantId, Tenant.class);
         return Pages.adapt(courseRepository.findByVendor(tenant, Pages.createPageRequest(page, pageSize)));
     }
+
+    @Nonnull
+    @Override
+    public Course getCourseById(@Nonnull String courseId) {
+        Course course = courseRepository.findOne(courseId);
+        if (course == null){
+            throw new AirException(Codes.COURSE_NOT_FOUND,String.format("course %s not found",courseId));
+        }
+        return course;
+    }
 }

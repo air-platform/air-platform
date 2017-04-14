@@ -105,4 +105,14 @@ public class CourseResource {
         return Response.noContent().build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{courseId}")
+    @PermitAll
+    public Response getCourseById(@PathParam("courseId") String courseId){
+        LOG.debug("get course by Id" + courseId);
+        Course course = courseService.getCourseById(courseId);
+        return Response.ok(course).build();
+    }
+
 }
