@@ -508,6 +508,14 @@ public class AccountServiceImpl implements AccountService {
 
 	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
 	@Override
+	public Account resetPasswordTo(String accountId, String newPassword) {
+		Account account = findAccount(accountId);
+		account.setPassword(passwordEncoder.encode(newPassword));
+		return accountRepository.save(account);
+	}
+
+	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@Override
 	public Account resetPassword(String accountId) {
 		Account account = findAccount(accountId);
 		AccountAuth auth = accountAuthRepository.findByAccountIdAndType(accountId, AuthType.EMAIL);

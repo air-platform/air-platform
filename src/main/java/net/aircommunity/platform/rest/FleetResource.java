@@ -3,6 +3,7 @@ package net.aircommunity.platform.rest;
 import java.net.URI;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
@@ -27,13 +29,14 @@ import org.slf4j.LoggerFactory;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.FleetService;
 import net.aircommunity.rest.annotation.RESTful;
 
 /**
- * Fleet RESTful API.
+ * Fleet RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT and <b>list/find/query</b> for ANYONE
  * 
  * @author Bin.Zhang
  */
@@ -46,6 +49,57 @@ public class FleetResource {
 	@Resource
 	private FleetService fleetService;
 
+	// ***********************
+	// ANYONE
+	// ***********************
+
+	/**
+	 * List all Fleets
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
+		Page<Fleet> result = Page.emptyPage(page, pageSize);
+		// redirect to tenant owned
+		if (context.isUserInRole(Role.TENANT.name())) {
+			result = fleetService.listFleets(context.getUserPrincipal().getName(), page, pageSize);
+		}
+		else {
+			result = fleetService.listFleets(page, pageSize);
+		}
+		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+	}
+
+	/**
+	 * Get a Fleet
+	 */
+	@GET
+	@Path("{fleetId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Fleet find(@PathParam("fleetId") String fleetId) {
+		return fleetService.findFleet(fleetId);
+	}
+
+	// TODO query by flightNo, status etc.
+
+	// ***********************
+	// ADMIN/TENANT
+	// ***********************
+
+	/**
+	 * List all Fleets of an tenant
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response listAllForTenant(@PathParam("tenantId") String tenantId,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		Page<Fleet> result = fleetService.listFleets(tenantId, page, pageSize);
+		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+	}
+
 	/**
 	 * Create a Fleet
 	 */
@@ -57,27 +111,6 @@ public class FleetResource {
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
-	}
-
-	/**
-	 * List all Fleets of an tenant
-	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAll(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<Fleet> result = fleetService.listFleets(tenantId, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
-	}
-
-	/**
-	 * Get a Fleet
-	 */
-	@GET
-	@Path("{fleetId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Fleet find(@PathParam("fleetId") String fleetId) {
-		return fleetService.findFleet(fleetId);
 	}
 
 	/**

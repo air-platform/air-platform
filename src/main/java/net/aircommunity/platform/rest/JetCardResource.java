@@ -3,6 +3,7 @@ package net.aircommunity.platform.rest;
 import java.net.URI;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
@@ -27,13 +29,14 @@ import org.slf4j.LoggerFactory;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.JetCard;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.JetCardService;
 import net.aircommunity.rest.annotation.RESTful;
 
 /**
- * Card RESTful API.
+ * Card RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT and <b>list/find/query</b> for ANYONE
  * 
  * @author Bin.Zhang
  */
@@ -46,6 +49,57 @@ public class JetCardResource {
 	@Resource
 	private JetCardService jetCardService;
 
+	// ***********************
+	// ANYONE
+	// ***********************
+
+	/**
+	 * List all cards
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
+		Page<JetCard> result = Page.emptyPage(page, pageSize);
+		// redirect to tenant owned
+		if (context.isUserInRole(Role.TENANT.name())) {
+			result = jetCardService.listJetCards(context.getUserPrincipal().getName(), page, pageSize);
+		}
+		else {
+			result = jetCardService.listJetCards(page, pageSize);
+		}
+		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+	}
+
+	/**
+	 * Get a card
+	 */
+	@GET
+	@Path("{jetCardId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public JetCard find(@PathParam("jetCardId") String jetCardId) {
+		return jetCardService.findJetCard(jetCardId);
+	}
+
+	// TODO query by type etc.
+
+	// ***********************
+	// ADMIN/TENANT
+	// ***********************
+
+	/**
+	 * List all cards of an tenant
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response listAllForTenant(@PathParam("tenantId") String tenantId,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		Page<JetCard> result = jetCardService.listJetCards(tenantId, page, pageSize);
+		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+	}
+
 	/**
 	 * Create a card
 	 */
@@ -57,27 +111,6 @@ public class JetCardResource {
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
-	}
-
-	/**
-	 * List all cards of an tenant
-	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAll(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<JetCard> result = jetCardService.listJetCards(tenantId, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
-	}
-
-	/**
-	 * Get a card
-	 */
-	@GET
-	@Path("{jetCardId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public JetCard find(@PathParam("jetCardId") String jetCardId) {
-		return jetCardService.findJetCard(jetCardId);
 	}
 
 	/**

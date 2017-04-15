@@ -27,61 +27,61 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.aircommunity.platform.common.net.HttpHeaders;
-import net.aircommunity.platform.model.FerryFlight;
+import net.aircommunity.platform.model.AirTransport;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.FerryFlightService;
+import net.aircommunity.platform.service.AirTransportService;
 import net.aircommunity.rest.annotation.RESTful;
 
 /**
- * FerryFlight RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT and <b>list/find/query</b> for ANYONE
+ * AirTransport RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT and <b>list/find/query</b> for ANYONE
  * 
  * @author Bin.Zhang
  */
 @RESTful
-@Path("ferryflights")
+@Path("transports")
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class FerryFlightResource {
-	private static final Logger LOG = LoggerFactory.getLogger(FerryFlightResource.class);
+public class AirTransportResource {
+	private static final Logger LOG = LoggerFactory.getLogger(AirTransportResource.class);
 
 	@Resource
-	private FerryFlightService ferryFlightService;
+	private AirTransportService airTransportService;
 
 	// ***********************
 	// ANYONE
 	// ***********************
 
 	/**
-	 * List all ferryFlight
+	 * List all
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
 	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
-		Page<FerryFlight> result = Page.emptyPage(page, pageSize);
+		Page<AirTransport> result = Page.emptyPage(page, pageSize);
 		// redirect to tenant owned
 		if (context.isUserInRole(Role.TENANT.name())) {
-			result = ferryFlightService.listFerryFlights(context.getUserPrincipal().getName(), page, pageSize);
+			result = airTransportService.listAirTransports(context.getUserPrincipal().getName(), page, pageSize);
 		}
 		else {
-			result = ferryFlightService.listFerryFlights(page, pageSize);
+			result = airTransportService.listAirTransports(page, pageSize);
 		}
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
 	}
 
 	/**
-	 * Get a ferryFlight
+	 * Find
 	 */
 	@GET
-	@Path("{ferryFlightId}")
+	@Path("{transportId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {
-		return ferryFlightService.findFerryFlight(ferryFlightId);
+	public AirTransport find(@PathParam("transportId") String transportId) {
+		return airTransportService.findAirTransport(transportId);
 	}
 
 	// TODO query by departure/arrival/date/timeSlot
@@ -91,57 +91,57 @@ public class FerryFlightResource {
 	// ***********************
 
 	/**
-	 * Create a ferryFlight
+	 * Create
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid FerryFlight ferryFlight,
+	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid AirTransport airTransport,
 			@Context UriInfo uriInfo) {
-		FerryFlight created = ferryFlightService.createFerryFlight(tenantId, ferryFlight);
+		AirTransport created = airTransportService.createAirTransport(tenantId, airTransport);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
 	}
 
 	/**
-	 * List all ferryFlight of an tenant
+	 * List all of an tenant
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listAllForTenant(@PathParam("tenantId") String tenantId,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<FerryFlight> result = ferryFlightService.listFerryFlights(tenantId, page, pageSize);
+		Page<AirTransport> result = airTransportService.listAirTransports(tenantId, page, pageSize);
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
 	}
 
 	/**
-	 * Update a ferryFlight
+	 * Update
 	 */
 	@PUT
-	@Path("{ferryFlightId}")
+	@Path("{transportId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public FerryFlight update(@PathParam("ferryFlightId") String ferryFlightId,
-			@NotNull @Valid FerryFlight newFerryFlight) {
-		return ferryFlightService.updateFerryFlight(ferryFlightId, newFerryFlight);
+	public AirTransport update(@PathParam("transportId") String transportId,
+			@NotNull @Valid AirTransport newAirTransport) {
+		return airTransportService.updateAirTransport(transportId, newAirTransport);
 	}
 
 	/**
-	 * Delete a ferryFlight
+	 * Delete
 	 */
 	@DELETE
-	@Path("{ferryFlightId}")
-	public Response delete(@PathParam("ferryFlightId") String ferryFlightId) {
-		ferryFlightService.deleteFerryFlight(ferryFlightId);
+	@Path("{transportId}")
+	public Response delete(@PathParam("transportId") String transportId) {
+		airTransportService.deleteAirTransport(transportId);
 		return Response.noContent().build();
 	}
 
 	/**
-	 * Delete all ferryFlights for a tenant
+	 * Delete all
 	 */
 	@DELETE
 	public Response deleteAll(@PathParam("tenantId") String tenantId) {
-		ferryFlightService.deleteFerryFlights(tenantId);
+		airTransportService.deleteAirTransports(tenantId);
 		return Response.noContent().build();
 	}
 

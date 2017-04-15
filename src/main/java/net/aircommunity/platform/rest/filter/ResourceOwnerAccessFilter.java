@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.AccessControlService;
-import net.aircommunity.rest.core.security.SimplePrincipal;
 
 /**
  * Access check for agent sub-resources TODO
@@ -51,14 +50,30 @@ public class ResourceOwnerAccessFilter implements ContainerRequestFilter {
 			return;
 		}
 
-		SimplePrincipal principal = (SimplePrincipal) securityContext.getUserPrincipal();
-		MultivaluedMap<String, String> pathParams = info.getPathParameters();
-		String tenantId = pathParams.getFirst(TENANT_ID_PATH_PARAM);
-//		if (!principal.getName().equals(tenantId)) {
-//			LOG.warn("Cannot access account {} resource by account {}", tenantId, principal.getName());
-//			context.abortWith(RESPONSE_UNAUTHORIZED);
-//			return;
-//		}
+		// for tenant resource without tenantId passed from URI, but append it automatically
+		if (securityContext.isUserInRole(Role.TENANT.name())) {
+			MultivaluedMap<String, String> pathParams = info.getPathParameters();
+			pathParams.add(TENANT_ID_PATH_PARAM, securityContext.getUserPrincipal().getName());
+		}
+
+		// SimplePrincipal principal = (SimplePrincipal) securityContext.getUserPrincipal();
+		// System.out.println(principal.getClaims());
+
+		// UriInfo uriInfo = context.getUriInfo();
+		// // convert baseUri to http://example.com/delegate/rest
+		// URI baseUri = uriInfo.getBaseUriBuilder().path(uriInfo.getPathSegments().get(0).getPath() + "/").build();
+		// URI requestUri = uriInfo.getRequestUri();
+		// // context.setRequestUri(baseUri, requestUri);
+
+		// SimplePrincipal principal = (SimplePrincipal) securityContext.getUserPrincipal();
+		// MultivaluedMap<String, String> pathParams = info.getPathParameters();
+		// pathParams.add(TENANT_ID_PATH_PARAM, principal.getName());
+		// String tenantId = pathParams.getFirst(TENANT_ID_PATH_PARAM);
+		// if (!principal.getName().equals(tenantId)) {
+		// LOG.warn("Cannot access account {} resource by account {}", tenantId, principal.getName());
+		// context.abortWith(RESPONSE_UNAUTHORIZED);
+		// return;
+		// }
 
 		// TODO API KEY
 		// String apiKey = (String) principal.getClaims().getClaimsMap().get(Constants.CLAIM_API_KEY);

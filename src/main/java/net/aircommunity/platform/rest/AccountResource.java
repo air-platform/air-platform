@@ -46,6 +46,7 @@ import net.aircommunity.platform.model.AuthcRequest;
 import net.aircommunity.platform.model.EmailRequest;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.PasswordRequest;
+import net.aircommunity.platform.model.PasswordResetRequest;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.UserAccountRequest;
 import net.aircommunity.platform.model.UsernameRequest;
@@ -85,7 +86,7 @@ public class AccountResource {
 	private SmsService smsService;
 
 	/**
-	 * Create user
+	 * Create user (registration)
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -99,7 +100,7 @@ public class AccountResource {
 	}
 
 	/**
-	 * Create tenant
+	 * Create tenant (registration)
 	 */
 	@Path("tenant")
 	@POST
@@ -206,6 +207,8 @@ public class AccountResource {
 
 	/**
 	 * Find account by ID (as a result of account creation), may not really useful, just to complete the RESTful API.
+	 * 
+	 * TODO REMOVE?
 	 */
 	@GET
 	@Path("{accountId}")
@@ -234,6 +237,9 @@ public class AccountResource {
 		return Response.ok(account).build();
 	}
 
+	/**
+	 * Get account auths of a profile
+	 */
 	@GET
 	@Path("profile/auths")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -286,10 +292,26 @@ public class AccountResource {
 	}
 
 	/**
-	 * Reset/forget password
+	 * Reset/forget password via mobile
 	 */
 	@POST
 	@Path("password/reset")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Authenticated
+	public Response resetPassword(@NotNull @Valid PasswordResetRequest request, @Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		if (verificationService.verifyCode(request.getMobile(), request.getVerificationCode())) {
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
+		accountService.resetPasswordTo(accountId, request.getNewPassword());
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Reset/forget password via email
+	 */
+	@POST
+	@Path("password/reset/email")
 	@Authenticated
 	public Response resetPassword(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
@@ -302,6 +324,7 @@ public class AccountResource {
 	 */
 	@POST
 	@Path("username")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
 	public Response updateUsername(@NotNull @Valid UsernameRequest request, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
@@ -314,6 +337,7 @@ public class AccountResource {
 	 */
 	@POST
 	@Path("email")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
 	public Response updateEmail(@NotNull @Valid EmailRequest request, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
@@ -349,7 +373,7 @@ public class AccountResource {
 	}
 
 	// ****************
-	// User
+	// TODO MOVE to UserResource
 	// ****************
 	/**
 	 * List all User addresses
@@ -428,7 +452,7 @@ public class AccountResource {
 		return Response.noContent().build();
 	}
 
-	//
+	// Orders
 	@Resource
 	private JetOrderResource jetOrderResource;
 

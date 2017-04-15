@@ -222,6 +222,16 @@ public interface AccountService {
 	Account updatePassword(@Nonnull String accountId, @Nonnull String oldPassword, @Nonnull String newPassword);
 
 	/**
+	 * Reset password to a new password
+	 * 
+	 * @param accountId the accountId
+	 * @param newPassword the newPassword
+	 * @return update account
+	 */
+	@Nonnull
+	Account resetPasswordTo(@Nonnull String accountId, @Nonnull String newPassword);
+
+	/**
 	 * Reset password with a random value and send via email
 	 * 
 	 * @param accountId the accountId

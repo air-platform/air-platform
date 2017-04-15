@@ -39,6 +39,13 @@ public class Passenger extends Persistable {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User owner;
 
+	public Passenger() {
+	}
+
+	public Passenger(String id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}

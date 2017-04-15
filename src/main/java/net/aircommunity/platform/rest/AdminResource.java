@@ -45,7 +45,7 @@ import net.aircommunity.rest.core.security.AccessTokenService;
 public class AdminResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AdminResource.class);
 
-	private static final String ACCOUNTS_PATH_PREFIX = "accounts";
+	private static final String TENANTS_PATH_PREFIX = "tenants";
 
 	@Resource
 	private AccountService accountService;
@@ -83,7 +83,7 @@ public class AdminResource {
 	 * Create a tenant account
 	 */
 	@POST
-	@Path(ACCOUNTS_PATH_PREFIX)
+	@Path(TENANTS_PATH_PREFIX)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createAccount(@NotNull @Valid AccountRequest request, @Context UriInfo uriInfo) {
 		Account created = accountService.createAccount(request.getUsername(), request.getPassword(), request.getRole());
@@ -96,7 +96,7 @@ public class AdminResource {
 	 * List All accounts
 	 */
 	@GET
-	@Path(ACCOUNTS_PATH_PREFIX)
+	@Path(TENANTS_PATH_PREFIX)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listAllAccounts(@QueryParam("role") String role, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
@@ -109,7 +109,7 @@ public class AdminResource {
 	 * Gets a account
 	 */
 	@GET
-	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}")
+	@Path(TENANTS_PATH_PREFIX + "/{accountId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Account findAccount(@PathParam("accountId") String accountId) {
 		return accountService.findAccount(accountId);
@@ -119,7 +119,7 @@ public class AdminResource {
 	 * Reset password for a account
 	 */
 	@POST
-	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/password/reset")
+	@Path(TENANTS_PATH_PREFIX + "/{accountId}/password/reset")
 	public Response resetAccountPassword(@PathParam("accountId") String accountId) {
 		accountService.resetPassword(accountId);
 		return Response.noContent().build();
@@ -129,7 +129,7 @@ public class AdminResource {
 	 * Lock a account
 	 */
 	@POST
-	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/lock")
+	@Path(TENANTS_PATH_PREFIX + "/{accountId}/lock")
 	public Response lockAccount(@PathParam("accountId") String accountId) {
 		accountService.updateAccountStatus(accountId, Account.Status.DISABLED);
 		return Response.noContent().build();
@@ -139,7 +139,7 @@ public class AdminResource {
 	 * Unlock a account
 	 */
 	@POST
-	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/unlock")
+	@Path(TENANTS_PATH_PREFIX + "/{accountId}/unlock")
 	public Response unlockAccount(@PathParam("accountId") String accountId) {
 		accountService.updateAccountStatus(accountId, Account.Status.ENABLED);
 		return Response.noContent().build();
@@ -148,32 +148,75 @@ public class AdminResource {
 	/**
 	 * Delete a account
 	 */
-	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}")
+	@Path(TENANTS_PATH_PREFIX + "/{accountId}")
 	@DELETE
 	public Response deleteAccount(@PathParam("accountId") String accountId) {
 		accountService.deleteAccount(accountId);
 		return Response.noContent().build();
 	}
 
+	// *************
 	// Tenant
+	// *************
 
-	@Path(ACCOUNTS_PATH_PREFIX + "/{tenantId}/fleets")
+	// Air jet
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/fleets")
 	public FleetResource fleets(@PathParam("tenantId") String tenantId) {
 		return fleetResource;
 	}
 
-	@Path(ACCOUNTS_PATH_PREFIX + "/{tenantId}/ferryflights")
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/ferryflights")
 	public FerryFlightResource ferryflights(@PathParam("tenantId") String tenantId) {
 		return ferryFlightResource;
 	}
 
-	@Path(ACCOUNTS_PATH_PREFIX + "/{tenantId}/jetcards")
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/jetcards")
 	public JetCardResource jetcards(@PathParam("tenantId") String tenantId) {
 		return jetCardResource;
 	}
 
-	@Path(ACCOUNTS_PATH_PREFIX + "/{tenantId}/jetorders")
+	// jet orders
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/jetorders")
 	public JetOrderResource jetorders(@PathParam("tenantId") String tenantId) {
 		return jetOrderResource;
+	}
+
+	// aircraft
+	@Resource
+	private AircraftResource aircraftResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/aircrafts")
+	public AircraftResource aircrafts(@PathParam("tenantId") String tenantId) {
+		return aircraftResource;
+	}
+
+	// transports
+	@Resource
+	private AirTransportResource airTransportResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/transports")
+	public AirTransportResource transports(@PathParam("tenantId") String tenantId) {
+		return airTransportResource;
+	}
+
+	// school
+	@Resource
+	private SchoolResource schoolResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/schools")
+	public SchoolResource schools(@PathParam("tenantId") String tenantId) {
+		return schoolResource;
+	}
+
+	// ***********************
+	// comments
+	// ***********************
+
+	@Resource
+	private CommentResource commentResource;
+
+	@Path("comments")
+	public CommentResource comments() {
+		return commentResource;
 	}
 }
