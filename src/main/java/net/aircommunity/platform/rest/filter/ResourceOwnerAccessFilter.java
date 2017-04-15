@@ -34,6 +34,7 @@ public class ResourceOwnerAccessFilter implements ContainerRequestFilter {
 
 	private static final Response RESPONSE_UNAUTHORIZED = Response.status(Response.Status.UNAUTHORIZED).build();
 	private static final String TENANT_ID_PATH_PARAM = "tenantId";
+	private static final String USER_ID_PATH_PARAM = "userId";
 
 	@Context
 	private UriInfo info;
@@ -50,10 +51,14 @@ public class ResourceOwnerAccessFilter implements ContainerRequestFilter {
 			return;
 		}
 
+		MultivaluedMap<String, String> pathParams = info.getPathParameters();
 		// for tenant resource without tenantId passed from URI, but append it automatically
 		if (securityContext.isUserInRole(Role.TENANT.name())) {
-			MultivaluedMap<String, String> pathParams = info.getPathParameters();
 			pathParams.add(TENANT_ID_PATH_PARAM, securityContext.getUserPrincipal().getName());
+		}
+
+		if (securityContext.isUserInRole(Role.USER.name())) {
+			pathParams.add(USER_ID_PATH_PARAM, securityContext.getUserPrincipal().getName());
 		}
 
 		// SimplePrincipal principal = (SimplePrincipal) securityContext.getUserPrincipal();

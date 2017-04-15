@@ -175,12 +175,6 @@ public class AdminResource {
 		return jetCardResource;
 	}
 
-	// jet orders
-	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/jetorders")
-	public JetOrderResource jetorders(@PathParam("tenantId") String tenantId) {
-		return jetOrderResource;
-	}
-
 	// aircraft
 	@Resource
 	private AircraftResource aircraftResource;
@@ -197,6 +191,24 @@ public class AdminResource {
 	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/transports")
 	public AirTransportResource transports(@PathParam("tenantId") String tenantId) {
 		return airTransportResource;
+	}
+
+	// taxis
+	@Resource
+	private AirTaxiResource airTaxiResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/taxis")
+	public AirTaxiResource taxis(@PathParam("tenantId") String tenantId) {
+		return airTaxiResource;
+	}
+
+	// tour
+	@Resource
+	private AirTourResourse airTourResourse;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/tours")
+	public AirTourResourse tours(@PathParam("tenantId") String tenantId) {
+		return airTourResourse;
 	}
 
 	// school
@@ -219,4 +231,22 @@ public class AdminResource {
 	public CommentResource comments() {
 		return commentResource;
 	}
+
+	// ***********************
+	// orders
+	// ***********************
+	@Resource
+	private AirTransportOrderResource airTransportOrderResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/transport-orders")
+	public AirTransportOrderResource airTransportOrders(@PathParam("tenantId") String tenantId) {
+		return airTransportOrderResource;
+	}
+
+	// jet orders
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/jetorders")
+	public JetOrderResource jetorders(@PathParam("tenantId") String tenantId) {
+		return jetOrderResource;
+	}
+
 }

@@ -1,31 +1,45 @@
 package net.aircommunity.platform.service;
 
-import net.aircommunity.platform.model.AirTour;
-import net.aircommunity.platform.model.Page;
-
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
+
+import net.aircommunity.platform.model.AirTour;
+import net.aircommunity.platform.model.Page;
 
 /**
  * Created by guankai on 14/04/2017.
  */
 public interface AirTourService {
 
-    @Nonnull
-    Page<AirTour> getAllTours(int page, int pageSize);
+	@NotNull
+	AirTour createAirTour(@Nonnull String tenantId, @Nonnull AirTour airTour);
 
-    @Nonnull
-    Page<AirTour> getToursByCity(@Nonnull String city, int page, int pageSize);
+	@NotNull
+	AirTour findAirTour(@Nonnull String airTourId);
 
-    @NotNull
-    AirTour getTourById(@Nonnull String tourId);
+	@Nonnull
+	AirTour updateAirTour(@Nonnull String airTourId, @Nonnull AirTour newAirTour);
 
-    @Nonnull
-    AirTour createTour(@Nonnull AirTour request, @Nonnull String tenantId);
+	@Nonnull
+	Page<AirTour> listAirTours(int page, int pageSize);
 
-    @Nonnull
-    AirTour updateTour(@Nonnull String tourId, @Nonnull AirTour request);
+	@Nonnull
+	Page<AirTour> listAirTours(@Nonnull String tenantId, int page, int pageSize);
 
-    @Nonnull
-    Page<AirTour> getToursByTenant(@Nonnull String tenantId, int page, int pageSize);
+	@Nonnull
+	Page<AirTour> listAirToursByCity(@Nonnull String city, int page, int pageSize);
+
+	/**
+	 * Delete a AirTour.
+	 * 
+	 * @param airTourId the airTourId
+	 */
+	void deleteAirTour(@Nonnull String airTourId);
+
+	/**
+	 * Delete AirTours.
+	 * 
+	 * @param tenantId the tenantId
+	 */
+	void deleteAirTours(@Nonnull String tenantId);
 }

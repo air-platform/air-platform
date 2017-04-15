@@ -24,7 +24,7 @@ import net.aircommunity.platform.model.constraint.NotEmpty;
  */
 @Entity
 @Table(name = "air_platfrom_airtransport_order")
-public class AirTransportOrder extends Order {
+public class AirTransportOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	// departure date, e.g. 2017-5-1
@@ -47,13 +47,6 @@ public class AirTransportOrder extends Order {
 	@NotEmpty
 	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Passenger> passengers = new HashSet<>();
-
-	// NOTE: XXX
-	// extra info (the vendor of this card, it's already available in jetCard, just add extra id to avoid join)
-	// should be set via Product.vendor
-	@ManyToOne
-	@JoinColumn(name = "tenant_id", nullable = false)
-	private Tenant vendor;
 
 	public Date getDate() {
 		return date;

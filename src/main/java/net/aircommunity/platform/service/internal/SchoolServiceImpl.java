@@ -1,8 +1,10 @@
 package net.aircommunity.platform.service.internal;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import net.aircommunity.platform.service.SchoolService;
 @Service
 @Transactional
 public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolService {
+	private static final String CACHE_NAME = "cache.school";
 
 	@Resource
 	private SchoolRepository schoolRepository;
@@ -33,15 +36,17 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 	private AccountService accountService;
 
 	@Override
-	public School createSchool(String tenantId, School request) {
+	public School createSchool(String tenantId, School school) {
 		Tenant tenant = findAccount(tenantId, Tenant.class);
-		// FIXME create new School
-		request.setTenant(tenant);
-		return schoolRepository.save(request);
+		School newSchool = new School();
+		copyProperties(school, newSchool);
+		newSchool.setTenant(tenant);
+		return schoolRepository.save(newSchool);
 	}
 
+	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
-	public School findSchool(@Nonnull String schoolId) {
+	public School findSchool(String schoolId) {
 		School school = schoolRepository.findOne(schoolId);
 		if (school == null) {
 			throw new AirException(Codes.SCHOOL_NOT_FOUND, String.format("school %s not found", schoolId));
@@ -49,16 +54,20 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 		return school;
 	}
 
-	@Nonnull
+	@CachePut(cacheNames = CACHE_NAME, key = "#schoolId")
 	@Override
 	public School updateSchool(String schoolId, School newSchool) {
 		School school = findSchool(schoolId);
-		school.setImageUrl(newSchool.getImageUrl());
-		school.setContact(newSchool.getContact());
-		school.setAddress(newSchool.getAddress());
-		school.setSchoolName(newSchool.getSchoolName());
-		school.setSchoolDesc(newSchool.getSchoolDesc());
+		copyProperties(newSchool, school);
 		return schoolRepository.save(school);
+	}
+
+	private void copyProperties(School src, School tgt) {
+		tgt.setAddress(src.getAddress());
+		tgt.setContact(src.getContact());
+		tgt.setImageUrl(src.getImageUrl());
+		tgt.setSchoolDesc(src.getSchoolDesc());
+		tgt.setSchoolName(src.getSchoolName());
 	}
 
 	@Override
@@ -72,6 +81,7 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 		return Pages.adapt(schoolRepository.findByTenant(tenant, Pages.createPageRequest(page, pageSize)));
 	}
 
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#schoolId")
 	@Override
 	public void deleteSchool(String schoolId) {
 		schoolRepository.delete(schoolId);

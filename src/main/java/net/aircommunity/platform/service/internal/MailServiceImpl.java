@@ -16,7 +16,7 @@ import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.service.MailService;
 
 /**
- * TODO
+ * Mail service implementation
  */
 @Service
 public class MailServiceImpl implements MailService {

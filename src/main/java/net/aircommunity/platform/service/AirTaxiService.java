@@ -1,32 +1,45 @@
 package net.aircommunity.platform.service;
 
+import javax.annotation.Nonnull;
+
 import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.Page;
-
-import javax.annotation.Nonnull;
 
 /**
  * Created by guankai on 14/04/2017.
  */
 public interface AirTaxiService {
 
-    @Nonnull
-    Page<AirTaxi> listAirTaxi(int page, int pageSize);
+	@Nonnull
+	AirTaxi createAirTaxi(@Nonnull String tenantId, @Nonnull AirTaxi airTaxi);
 
-    @Nonnull
-    Page<AirTaxi> listAirTaxiByDeparture(String departure, int page, int pageSize);
+	@Nonnull
+	AirTaxi findAirTaxi(@Nonnull String airTaxiId);
 
-    @Nonnull
-    AirTaxi createAirTaxi(String tenantId, @Nonnull AirTaxi request);
+	@Nonnull
+	AirTaxi updateAirTaxi(@Nonnull String airTaxiId, @Nonnull AirTaxi airTaxi);
 
-    @Nonnull
-    AirTaxi updateAirTaxi(String taxiId, @Nonnull AirTaxi request);
+	@Nonnull
+	Page<AirTaxi> listAirTaxis(int page, int pageSize);
 
-    @Nonnull
-    Page<AirTaxi> listAirTaxiByTenant(String tenantId, int page, int pageSize);
+	@Nonnull
+	Page<AirTaxi> listAirTaxis(String tenantId, int page, int pageSize);
 
-    @Nonnull
-    AirTaxi findAirTaxi(String taxiId);
+	@Nonnull
+	Page<AirTaxi> listAirTaxisByDeparture(String departure, int page, int pageSize);
 
+	/**
+	 * Delete a AirTaxi.
+	 * 
+	 * @param airairTaxiId the airairTaxiId
+	 */
+	void deleteAirTaxi(@Nonnull String airTaxiId);
+
+	/**
+	 * Delete AirTaxis.
+	 * 
+	 * @param tenantId the tenantId
+	 */
+	void deleteAirTaxis(@Nonnull String tenantId);
 
 }

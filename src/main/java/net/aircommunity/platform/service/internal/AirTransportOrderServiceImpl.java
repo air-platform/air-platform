@@ -89,6 +89,7 @@ public class AirTransportOrderServiceImpl extends AbstractServiceSupport impleme
 		tgt.setTimeSlot(src.getTimeSlot());
 		Set<Passenger> passengers = src.getPassengers();
 		if (passengers != null) {
+			// TODO better use service and throw NOT FOUND
 			passengers = passengers.stream().map(passenger -> passengerRepository.findOne(passenger.getId()))
 					.collect(Collectors.toSet());
 			tgt.setPassengers(passengers);

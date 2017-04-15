@@ -65,6 +65,24 @@ public class TenantResource {
 		return airTransportResource;
 	}
 
+	// taxis
+	@Resource
+	private AirTaxiResource airTaxiResource;
+
+	@Path("taxis")
+	public AirTaxiResource taxis() {
+		return airTaxiResource;
+	}
+
+	// tour
+	@Resource
+	private AirTourResourse airTourResourse;
+
+	@Path("tours")
+	public AirTourResourse tours() {
+		return airTourResourse;
+	}
+
 	// ***********************
 	// School
 	// ***********************
@@ -87,6 +105,17 @@ public class TenantResource {
 	@Path("comments")
 	public CommentResource comments() {
 		return commentResource;
+	}
+
+	// ***********************
+	// Orders
+	// ***********************
+	@Resource
+	private AirTransportOrderResource airTransportOrderResource;
+
+	@Path("transport-orders")
+	public AirTransportOrderResource airTransportOrders() {
+		return airTransportOrderResource;
 	}
 
 }

@@ -25,28 +25,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.aircommunity.platform.common.net.HttpHeaders;
-import net.aircommunity.platform.model.AirTransportOrder;
+import net.aircommunity.platform.model.AirTourOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.AirTransportOrderService;
+import net.aircommunity.platform.service.AirTourOrderService;
 import net.aircommunity.rest.annotation.RESTful;
 
 /**
- * AirTransportOrder RESTful API.
+ * AirTourOrder RESTful API.
  * 
  * @author Bin.Zhang
  */
 @RESTful
-@Path("transport-orders")
+@Path("tour-orders")
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
-public class AirTransportOrderResource {
-	private static final Logger LOG = LoggerFactory.getLogger(AirTransportOrderResource.class);
+public class AirTourOrderResource {
+	private static final Logger LOG = LoggerFactory.getLogger(AirTourOrderResource.class);
 
 	@Resource
-	private AirTransportOrderService airTransportOrderService;
+	private AirTourOrderService airTourOrderService;
 
 	// ***********************
 	// ADMIN/TENANT
@@ -61,12 +61,12 @@ public class AirTransportOrderResource {
 	public Response listAllForTenant(@PathParam("tenantId") String tenantId, @QueryParam("status") String status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		Order.Status orderStatus = Order.Status.of(status);
-		Page<AirTransportOrder> result = Page.emptyPage(page, pageSize);
+		Page<AirTourOrder> result = Page.emptyPage(page, pageSize);
 		if (orderStatus == null) {
-			result = airTransportOrderService.listTenantAirTransportOrders(tenantId, page, pageSize);
+			result = airTourOrderService.listTenantAirTourOrders(tenantId, page, pageSize);
 		}
 		else {
-			result = airTransportOrderService.listTenantAirTransportOrders(tenantId, orderStatus, page, pageSize);
+			result = airTourOrderService.listTenantAirTourOrders(tenantId, orderStatus, page, pageSize);
 		}
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
 	}
@@ -80,9 +80,9 @@ public class AirTransportOrderResource {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response create(@PathParam("userId") String userId, @NotNull @Valid AirTransportOrder airTransportOrder,
+	public Response create(@PathParam("userId") String userId, @NotNull @Valid AirTourOrder airTourOrder,
 			@Context UriInfo uriInfo) {
-		AirTransportOrder created = airTransportOrderService.createAirTransportOrder(userId, airTransportOrder);
+		AirTourOrder created = airTourOrderService.createAirTourOrder(userId, airTourOrder);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
@@ -95,7 +95,7 @@ public class AirTransportOrderResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listAll(@PathParam("userId") String userId, @QueryParam("status") String status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<AirTransportOrder> result = airTransportOrderService.listUserAirTransportOrders(userId, page, pageSize);
+		Page<AirTourOrder> result = airTourOrderService.listUserAirTourOrders(userId, page, pageSize);
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
 	}
 
@@ -103,53 +103,53 @@ public class AirTransportOrderResource {
 	 * Get
 	 */
 	@GET
-	@Path("{airTransportOrderId}")
+	@Path("{airTourOrderId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public AirTransportOrder find(@PathParam("airTransportOrderId") String airTransportOrderId) {
-		return airTransportOrderService.findAirTransportOrder(airTransportOrderId);
+	public AirTourOrder find(@PathParam("airTourOrderId") String airTourOrderId) {
+		return airTourOrderService.findAirTourOrder(airTourOrderId);
 	}
 
 	/**
 	 * Update
 	 */
 	@PUT
-	@Path("{airTransportOrderId}")
+	@Path("{airTourOrderId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public AirTransportOrder update(@PathParam("airTransportOrderId") String airTransportOrderId,
-			@NotNull @Valid AirTransportOrder newAirTransportOrder) {
-		return airTransportOrderService.updateAirTransportOrder(airTransportOrderId, newAirTransportOrder);
+	public AirTourOrder update(@PathParam("airTourOrderId") String airTourOrderId,
+			@NotNull @Valid AirTourOrder newAirTourOrder) {
+		return airTourOrderService.updateAirTourOrder(airTourOrderId, newAirTourOrder);
 	}
 
 	/**
 	 * Cancel order
 	 */
 	@POST
-	@Path("{airTransportOrderId}/cancel")
+	@Path("{airTourOrderId}/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public AirTransportOrder cancelOrder(@PathParam("airTransportOrderId") String airTransportOrderId) {
-		return airTransportOrderService.updateAirTransportOrderStatus(airTransportOrderId, Order.Status.CANCELLED);
+	public AirTourOrder cancelOrder(@PathParam("airTourOrderId") String airTourOrderId) {
+		return airTourOrderService.updateAirTourOrderStatus(airTourOrderId, Order.Status.CANCELLED);
 	}
 
 	/**
 	 * Finish order
 	 */
 	@POST
-	@Path("{airTransportOrderId}/finish")
+	@Path("{airTourOrderId}/finish")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public AirTransportOrder finishOrder(@PathParam("airTransportOrderId") String airTransportOrderId) {
-		return airTransportOrderService.updateAirTransportOrderStatus(airTransportOrderId, Order.Status.FINISHED);
+	public AirTourOrder finishOrder(@PathParam("airTourOrderId") String airTourOrderId) {
+		return airTourOrderService.updateAirTourOrderStatus(airTourOrderId, Order.Status.FINISHED);
 	}
 
 	/**
 	 * Delete
 	 */
 	@DELETE
-	@Path("{airTransportOrderId}")
-	public Response delete(@PathParam("airTransportOrderId") String airTransportOrderId) {
-		airTransportOrderService.deleteAirTransportOrder(airTransportOrderId);
+	@Path("{airTourOrderId}")
+	public Response delete(@PathParam("airTourOrderId") String airTourOrderId) {
+		airTourOrderService.deleteAirTourOrder(airTourOrderId);
 		return Response.noContent().build();
 	}
 
@@ -158,7 +158,7 @@ public class AirTransportOrderResource {
 	 */
 	@DELETE
 	public Response deleteAll(@PathParam("userId") String userId) {
-		airTransportOrderService.deleteAirTransportOrders(userId);
+		airTourOrderService.deleteAirTourOrders(userId);
 		return Response.noContent().build();
 	}
 

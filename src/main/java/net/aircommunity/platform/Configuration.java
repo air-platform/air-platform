@@ -16,45 +16,79 @@ import net.aircommunity.platform.common.collect.ImmutableCollectors;
  */
 @Component
 public class Configuration {
-
 	private static final String AUTH_METHODS_SEP = ",";
 
 	// @Value("${air.security.auth-methods}")
 	private String authMethods;
 
-	@Value("${air.common.file-upload-dir}")
+	// for local file upload
+	@Value("${air.fileupload.dir}")
 	private String fileUploadDir;
 
+	// for cloud file upload
+	@Value("${air.fileload.host}")
+	private String fileUploadHost;
 
-	@Value("${air.common.mail.from}")
+	@Value("${air.fileload.bucket}")
+	private String fileUploadBucket;
+
+	@Value("${air.fileload.access-key}")
+	private String fileUploadAccessKey;
+
+	@Value("${air.fileload.secret-key}")
+	private String fileUploadSecretKey;
+
+	@Value("${air.mail.from}")
 	private String mailFrom;
 
-	@Value("${air.common.sms.url}")
+	@Value("${air.sms.url}")
 	private String smsUrl;
 
-	@Value("${air.common.sms.app-key}")
+	@Value("${air.sms.app-key}")
 	private String smsAppKey;
 
-	@Value("${air.common.sms.app-secret}")
+	@Value("${air.sms.app-secret}")
 	private String smsAppSecret;
 
-	@Value("${air.common.sms.extend}")
+	@Value("${air.sms.extend}")
 	private String smsExtend;
 
-	@Value("${air.common.sms.type}")
+	@Value("${air.sms.type}")
 	private String smsType;
 
-	@Value("${air.common.sms.sign}")
+	@Value("${air.sms.sign}")
 	private String smsSign;
 
-
-	@Value("${air.common.sms.tmpl-code}")
+	@Value("${air.sms.tmpl-code}")
 	private String smsTmplCode;
+
+	// NodeBB
+
+	@Value("${air.nodebb.url}")
+	private String nodebbUrl;
+
+	@Value("${air.nodebb.token}")
+	private String nodebbToken;
 
 	public String getFileUploadDir() {
 		return fileUploadDir;
 	}
 
+	public String getFileUploadHost() {
+		return fileUploadHost;
+	}
+
+	public String getFileUploadBucket() {
+		return fileUploadBucket;
+	}
+
+	public String getFileUploadAccessKey() {
+		return fileUploadAccessKey;
+	}
+
+	public String getFileUploadSecretKey() {
+		return fileUploadSecretKey;
+	}
 
 	public String getMailFrom() {
 		return mailFrom;
@@ -86,6 +120,14 @@ public class Configuration {
 
 	public String getSmsTmplCode() {
 		return smsTmplCode;
+	}
+
+	public String getNodebbUrl() {
+		return nodebbUrl;
+	}
+
+	public String getNodebbToken() {
+		return nodebbToken;
 	}
 
 	public Set<String> getAuthMethods() {

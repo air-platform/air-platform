@@ -25,11 +25,28 @@ public interface BaseProductRepository<T extends Product> extends JpaRepository<
 	Page<T> findByVendor(Tenant vendor, Pageable pageable);
 
 	/**
+	 * Find by products by vendor.
+	 * 
+	 * @param tenantId the tenantId
+	 * @param pageable the page request
+	 * @return page of products
+	 */
+	Page<T> findByVendorId(String tenantId, Pageable pageable);
+
+	/**
 	 * Delete all the orders of a vendor.
 	 * 
 	 * @param userId the userId
 	 * @return the records deleted
 	 */
 	long deleteByVendor(Tenant vendor);
+
+	/**
+	 * Delete all the orders of a vendor.
+	 * 
+	 * @param tenantId the tenantId
+	 * @return the records deleted
+	 */
+	long deleteByVendorId(String tenantId);
 
 }

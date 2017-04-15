@@ -13,7 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "air_platfrom_jetcard_order")
-public class JetCardOrder extends Order {
+public class JetCardOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	// customer contact information for this order
@@ -23,13 +23,6 @@ public class JetCardOrder extends Order {
 	@ManyToOne
 	@JoinColumn(name = "jetcard_id", nullable = false)
 	private JetCard jetCard;
-
-	// NOTE: TODO (create a new VendorAwareOrder extends Order, e.g. coz CharterOrder will have multi-vendors)?
-	// extra info (the vendor of this card, it's already available in jetCard, just add extra id to avoid join)
-	// should be set via Product.vendor
-	@ManyToOne
-	@JoinColumn(name = "tenant_id", nullable = false)
-	private Tenant vendor;
 
 	public Contact getContact() {
 		return contact;

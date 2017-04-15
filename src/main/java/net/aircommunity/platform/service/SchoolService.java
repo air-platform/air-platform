@@ -11,25 +11,6 @@ import net.aircommunity.platform.model.School;
 public interface SchoolService {
 
 	/**
-	 * get all school list
-	 * @param page
-	 * @param pageSize
-	 * @return
-	 */
-	@Nonnull
-	Page<School> listSchools(int page, int pageSize);
-
-	/**
-	 * get all school list by tenant
-	 * @param tenantId
-	 * @param page
-	 * @param pageSize
-	 * @return
-	 */
-	@Nonnull
-	Page<School> listSchools(String tenantId, int page, int pageSize);
-
-	/**
 	 * create a school by tenant
 	 * @param request
 	 * @param tenantId
@@ -52,7 +33,26 @@ public interface SchoolService {
 	 * @return
 	 */
 	@Nonnull
-	School updateSchool(@Nonnull String schoolId, @Nonnull School school);
+	School updateSchool(@Nonnull String schoolId, @Nonnull School newSchool);
+
+	/**
+	 * get all school list
+	 * @param page
+	 * @param pageSize
+	 * @return
+	 */
+	@Nonnull
+	Page<School> listSchools(int page, int pageSize);
+
+	/**
+	 * get all school list by tenant
+	 * @param tenantId
+	 * @param page
+	 * @param pageSize
+	 * @return
+	 */
+	@Nonnull
+	Page<School> listSchools(@Nonnull String tenantId, int page, int pageSize);
 
 	/**
 	 * Delete a School.

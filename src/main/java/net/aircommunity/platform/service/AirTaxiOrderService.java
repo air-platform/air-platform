@@ -1,12 +1,11 @@
 package net.aircommunity.platform.service;
 
+import javax.annotation.Nonnull;
+
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.AirTaxiOrder;
 import net.aircommunity.platform.model.AirTaxiOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
-
-import javax.annotation.Nonnull;
 
 /**
  * AirTaxiOrder service.
@@ -43,8 +42,7 @@ public interface AirTaxiOrderService {
 	 * @return AirTaxiOrder created
 	 */
 	@Nonnull
-	AirTaxiOrder updateAirTaxiOrder(@Nonnull String airTaxiOrderId,
-                                              @Nonnull AirTaxiOrder newAirTaxiOrder);
+	AirTaxiOrder updateAirTaxiOrder(@Nonnull String airTaxiOrderId, @Nonnull AirTaxiOrder newAirTaxiOrder);
 
 	/**
 	 * Update AirTaxiOrder status
@@ -66,8 +64,7 @@ public interface AirTaxiOrderService {
 	 * @return a page of AirTaxiOrders or empty
 	 */
 	@Nonnull
-	Page<AirTaxiOrder> listUserAirTaxiOrders(@Nonnull String userId, Order.Status status, int page,
-                                                       int pageSize);
+	Page<AirTaxiOrder> listUserAirTaxiOrders(@Nonnull String userId, Order.Status status, int page, int pageSize);
 
 	/**
 	 * List all AirTaxiOrders by pagination filtered by userId.
@@ -91,8 +88,7 @@ public interface AirTaxiOrderService {
 	 * @param pageSize the pageSize
 	 * @return a page of AirTaxiOrders or empty
 	 */
-	Page<AirTaxiOrder> listTenantAirTaxiOrders(@Nonnull String tenantId, Order.Status status, int page,
-                                                         int pageSize);
+	Page<AirTaxiOrder> listTenantAirTaxiOrders(@Nonnull String tenantId, Order.Status status, int page, int pageSize);
 
 	/**
 	 * List all the AirTaxiOrders placed on this tenant.

@@ -14,49 +14,50 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @Table(name = "air_platform_training_banner")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TrainingBanner extends Persistable {
+	private static final long serialVersionUID = 1L;
 
-    @Column(name = "banner_name", nullable = false)
-    private String bannerName;
+	@Column(name = "banner_name", nullable = false)
+	private String bannerName;
 
-    @Lob
-    @Column(name = "banner_desc")
-    private String bannerDesc;
+	@Lob
+	@Column(name = "banner_desc")
+	private String bannerDesc;
 
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
+	@Column(name = "image_url", nullable = false)
+	private String imageUrl;
 
-    @Column(name = "banner_url")
-    private String bannerUrl;
+	@Column(name = "banner_url")
+	private String bannerUrl;
 
-    public String getBannerName() {
-        return bannerName;
-    }
+	public String getBannerName() {
+		return bannerName;
+	}
 
-    public void setBannerName(String bannerName) {
-        this.bannerName = bannerName;
-    }
+	public void setBannerName(String bannerName) {
+		this.bannerName = bannerName;
+	}
 
-    public String getBannerDesc() {
-        return bannerDesc;
-    }
+	public String getBannerDesc() {
+		return bannerDesc;
+	}
 
-    public void setBannerDesc(String bannerDesc) {
-        this.bannerDesc = bannerDesc;
-    }
+	public void setBannerDesc(String bannerDesc) {
+		this.bannerDesc = bannerDesc;
+	}
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+	public String getImageUrl() {
+		return imageUrl;
+	}
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
 
-    public String getBannerUrl() {
-        return bannerUrl;
-    }
+	public String getBannerUrl() {
+		return bannerUrl;
+	}
 
-    public void setBannerUrl(String bannerUrl) {
-        this.bannerUrl = bannerUrl;
-    }
+	public void setBannerUrl(String bannerUrl) {
+		this.bannerUrl = bannerUrl;
+	}
 }

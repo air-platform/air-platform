@@ -15,7 +15,7 @@ import javax.validation.constraints.Min;
  */
 @Entity
 @Table(name = "air_platfrom_ferryflight_order")
-public class FerryFlightOrder extends Order {
+public class FerryFlightOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	// the number of passengers
@@ -30,13 +30,6 @@ public class FerryFlightOrder extends Order {
 	@ManyToOne
 	@JoinColumn(name = "ferryflight_id", nullable = false)
 	private FerryFlight ferryFlight;
-
-	// NOTE: XXX
-	// extra info (the vendor of this card, it's already available in jetCard, just add extra id to avoid join)
-	// should be set via Product.vendor
-	@ManyToOne
-	@JoinColumn(name = "tenant_id", nullable = false)
-	private Tenant vendor;
 
 	public int getPassengers() {
 		return passengers;

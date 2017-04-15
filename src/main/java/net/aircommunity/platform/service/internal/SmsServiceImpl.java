@@ -20,7 +20,7 @@ import net.aircommunity.platform.model.SmsMessage;
 import net.aircommunity.platform.service.SmsService;
 
 /**
- * TODO
+ * SMS service implementation
  */
 @Service
 public class SmsServiceImpl implements SmsService {

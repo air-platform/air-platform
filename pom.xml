@@ -22,6 +22,7 @@
 
 		<!-- 3rd party API -->
 		<alidayu.version>1.0</alidayu.version>
+		<qiniu.sdk.version>7.2.6</qiniu.sdk.version>
 	</properties>
 
 	<dependencies>
@@ -36,6 +37,12 @@
 			<version>${alidayu.version}</version>
 			<scope>system</scope>
 			<systemPath>${lib-path}/com/alidayu/${alidayu.version}/taobao-sdk-java-auto_1455552377940-20160607.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.qiniu</groupId>
+			<artifactId>qiniu-java-sdk</artifactId>
+			<version>${qiniu.sdk.version}</version>
 		</dependency>
 
 		<!-- spring boot -->

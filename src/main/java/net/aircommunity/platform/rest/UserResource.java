@@ -113,6 +113,15 @@ public class UserResource {
 		return Response.noContent().build();
 	}
 
+	// ***********************
 	// Orders
+	// ***********************
+	@Resource
+	private AirTransportOrderResource airTransportOrderResource;
+
+	@Path("transport-orders")
+	public AirTransportOrderResource airTransportOrders() {
+		return airTransportOrderResource;
+	}
 
 }
