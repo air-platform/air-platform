@@ -103,53 +103,53 @@ public class AirTaxiOrderResource {
 	 * Get
 	 */
 	@GET
-	@Path("{AirTaxiOrderId}")
+	@Path("{airTaxiOrderId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public AirTaxiOrder find(@PathParam("AirTaxiOrderId") String AirTaxiOrderId) {
-		return airTaxiOrderService.findAirTaxiOrder(AirTaxiOrderId);
+	public AirTaxiOrder find(@PathParam("airTaxiOrderId") String airTaxiOrderId) {
+		return airTaxiOrderService.findAirTaxiOrder(airTaxiOrderId);
 	}
 
 	/**
 	 * Update
 	 */
 	@PUT
-	@Path("{AirTaxiOrderId}")
+	@Path("{airTaxiOrderId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public AirTaxiOrder update(@PathParam("AirTaxiOrderId") String AirTaxiOrderId,
+	public AirTaxiOrder update(@PathParam("airTaxiOrderId") String airTaxiOrderId,
 			@NotNull @Valid AirTaxiOrder newAirTaxiOrder) {
-		return airTaxiOrderService.updateAirTaxiOrder(AirTaxiOrderId, newAirTaxiOrder);
+		return airTaxiOrderService.updateAirTaxiOrder(airTaxiOrderId, newAirTaxiOrder);
 	}
 
 	/**
 	 * Cancel order
 	 */
 	@POST
-	@Path("{AirTaxiOrderId}/cancel")
+	@Path("{airTaxiOrderId}/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public AirTaxiOrder cancelOrder(@PathParam("AirTaxiOrderId") String AirTaxiOrderId) {
-		return airTaxiOrderService.updateAirTaxiOrderStatus(AirTaxiOrderId, Order.Status.CANCELLED);
+	public AirTaxiOrder cancelOrder(@PathParam("airTaxiOrderId") String airTaxiOrderId) {
+		return airTaxiOrderService.updateAirTaxiOrderStatus(airTaxiOrderId, Order.Status.CANCELLED);
 	}
 
 	/**
 	 * Finish order
 	 */
 	@POST
-	@Path("{AirTaxiOrderId}/finish")
+	@Path("{airTaxiOrderId}/finish")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public AirTaxiOrder finishOrder(@PathParam("AirTaxiOrderId") String AirTaxiOrderId) {
-		return airTaxiOrderService.updateAirTaxiOrderStatus(AirTaxiOrderId, Order.Status.FINISHED);
+	public AirTaxiOrder finishOrder(@PathParam("airTaxiOrderId") String airTaxiOrderId) {
+		return airTaxiOrderService.updateAirTaxiOrderStatus(airTaxiOrderId, Order.Status.FINISHED);
 	}
 
 	/**
 	 * Delete
 	 */
 	@DELETE
-	@Path("{AirTaxiOrderId}")
-	public Response delete(@PathParam("AirTaxiOrderId") String AirTaxiOrderId) {
-		airTaxiOrderService.deleteAirTaxiOrder(AirTaxiOrderId);
+	@Path("{airTaxiOrderId}")
+	public Response delete(@PathParam("airTaxiOrderId") String airTaxiOrderId) {
+		airTaxiOrderService.deleteAirTaxiOrder(airTaxiOrderId);
 		return Response.noContent().build();
 	}
 
