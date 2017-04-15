@@ -66,8 +66,10 @@ public final class Codes {
 
 	// tour
 	public static final Code TOUR_NOT_FOUND = Code.notFound(11_007_0001);
+    public static final Code TOUR_ORDER_NOT_FOUND = Code.notFound(11_007_000);
 	// taxi
 	public static final Code TAXI_NOT_FOUND = Code.notFound(11_008_0001);
+    public static final Code TAXI_ORDER_NOT_FOUND = Code.notFound(11_008_0002);
 
 	private Codes() {
 		throw new AssertionError();

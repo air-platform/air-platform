@@ -1,12 +1,15 @@
 package net.aircommunity.platform.model;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.*;
+/**
+ * Created by guankai on 15/04/2017.
+ */
+public class AirTourOrder extends Order {
 
-public class AirTaxiOrder extends Order {
     private static final long serialVersionUID = 1L;
 
     // departure date, e.g. 2017-5-1
@@ -19,8 +22,8 @@ public class AirTaxiOrder extends Order {
     private String timeSlot;
 
     @ManyToOne
-    @JoinColumn(name = "airtaxi_id", nullable = false)
-    private AirTaxi airTaxi;
+    @JoinColumn(name = "airtour_id", nullable = false)
+    private AirTour airTour;
 
     // passengers
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -42,19 +45,19 @@ public class AirTaxiOrder extends Order {
         this.timeSlot = timeSlot;
     }
 
+    public AirTour getAirTour() {
+        return airTour;
+    }
+
+    public void setAirTour(AirTour airTour) {
+        this.airTour = airTour;
+    }
+
     public Set<Passenger> getPassengers() {
         return passengers;
     }
 
     public void setPassengers(Set<Passenger> passengers) {
         this.passengers = passengers;
-    }
-
-    public AirTaxi getAirTaxi() {
-        return airTaxi;
-    }
-
-    public void setAirTaxi(AirTaxi airTaxi) {
-        this.airTaxi = airTaxi;
     }
 }
