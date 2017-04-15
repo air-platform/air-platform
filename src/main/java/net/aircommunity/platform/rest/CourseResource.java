@@ -7,6 +7,7 @@ import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.service.CourseService;
 import net.aircommunity.rest.annotation.RESTful;
+import org.jboss.resteasy.annotations.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.rmi.runtime.Log;
@@ -34,9 +35,14 @@ public class CourseResource {
     @Produces(MediaType.APPLICATION_JSON)
     //@RolesAllowed(Roles.ROLE_ADMIN)
     @PermitAll
-    public Response getAllCourses(@QueryParam("page") @DefaultValue("1") int page, @QueryParam("page") @DefaultValue("10") int pageSize) {
+    public Response getAllCourses(@QueryParam("airType") String airType, @QueryParam("page") @DefaultValue("1") int page, @QueryParam("page") @DefaultValue("10") int pageSize) {
         LOG.debug("get all courses start...");
-        Page<Course> courses = courseService.getAllCourses(page, pageSize);
+        Page<Course> courses;
+        if (airType == null) {
+            courses = courseService.getAllCourses(page, pageSize);
+        } else {
+            courses = courseService.getCourseByAirType(airType, page, pageSize);
+        }
         return Response.ok(courses).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(courses))
                 .build();
     }
@@ -109,7 +115,7 @@ public class CourseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{courseId}")
     @PermitAll
-    public Response getCourseById(@PathParam("courseId") String courseId){
+    public Response getCourseById(@PathParam("courseId") String courseId) {
         LOG.debug("get course by Id" + courseId);
         Course course = courseService.getCourseById(courseId);
         return Response.ok(course).build();

@@ -45,4 +45,12 @@ public interface CourseRepository extends JpaRepository<Course, String> {
     @Query("select t from Course t where t.endDate >= :now and t.vendor = :te order by t.startDate desc")
     Page<Course> findByTenant2(@Param("te") Tenant tenant, @Param("now") Date now,Pageable pageable);
 
+    /**
+     * get course by airType
+     * @param airType
+     * @param pageable
+     * @return
+     */
+    Page<Course> findByAirTypeContaining(String airType,Pageable pageable);
+
 }

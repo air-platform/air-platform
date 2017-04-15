@@ -131,9 +131,15 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
     @Override
     public Course getCourseById(@Nonnull String courseId) {
         Course course = courseRepository.findOne(courseId);
-        if (course == null){
-            throw new AirException(Codes.COURSE_NOT_FOUND,String.format("course %s not found",courseId));
+        if (course == null) {
+            throw new AirException(Codes.COURSE_NOT_FOUND, String.format("course %s not found", courseId));
         }
         return course;
+    }
+
+    @Nonnull
+    @Override
+    public Page<Course> getCourseByAirType(@Nonnull String airType, int page, int pageSize) {
+        return Pages.adapt(courseRepository.findByAirTypeContaining(airType, Pages.createPageRequest(page, pageSize)));
     }
 }
