@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * Created by guankai on 14/04/2017.
  */
-public interface AirTourRepository extends JpaRepository<AirTour, String> {
+public interface AirTourRepository extends BaseProductRepository<AirTour> {
     /**
      * 通过city查询产品
      * @param city
