@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -46,6 +47,7 @@ import okhttp3.OkHttpClient;
 @SpringBootApplication
 @EnableCaching(proxyTargetClass = true)
 @EnableTransactionManagement(proxyTargetClass = true)
+@EnableConfigurationProperties
 @SuppressWarnings("javadoc")
 public class Application {
 
