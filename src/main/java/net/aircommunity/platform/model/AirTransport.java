@@ -38,6 +38,14 @@ public class AirTransport extends Product {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<AircraftItem> aircraftItems = new HashSet<>();
 
+	public AirTransport() {
+
+	}
+
+	public AirTransport(String id) {
+		this.id = id;
+	}
+
 	public String getFamily() {
 		return family;
 	}
