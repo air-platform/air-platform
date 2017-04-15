@@ -1,16 +1,17 @@
 package net.aircommunity.platform.model;
 
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
-import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.Date;
 
 /**
  * Created by guankai on 12/04/2017.
  */
 @Entity
+@XmlAccessorType(XmlAccessType.FIELD)
 @Table(name = "air_platform_enrollment")
 public class Enrollment extends Order {
 
@@ -23,7 +24,6 @@ public class Enrollment extends Order {
     @Column(name = "location",nullable = false)
     private String location;
 
-    @XmlJavaTypeAdapter(AccountAdapter.class)
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;

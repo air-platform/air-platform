@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -21,21 +21,22 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class FleetCandidate extends Persistable {
 	private static final long serialVersionUID = 1L;
 
+	// can have only one SELECTED
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Status status = Status.CANDIDATE;
 
 	// TODO add nullable = false?
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "order_id")
 	private CharterOrder order;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "fleet_id")
 	private Fleet fleet;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "tenant_id")
 	private Tenant vendor;
 

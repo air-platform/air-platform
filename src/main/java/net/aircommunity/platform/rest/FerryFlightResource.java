@@ -3,6 +3,7 @@ package net.aircommunity.platform.rest;
 import java.net.URI;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
@@ -27,17 +29,19 @@ import org.slf4j.LoggerFactory;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.FerryFlightService;
 import net.aircommunity.rest.annotation.RESTful;
 
 /**
- * FerryFlight RESTful API.
+ * FerryFlight RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT and <b>list/find/query</b> for ANYONE
  * 
  * @author Bin.Zhang
  */
 @RESTful
+@Path("ferryflights")
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
 public class FerryFlightResource {
@@ -45,6 +49,46 @@ public class FerryFlightResource {
 
 	@Resource
 	private FerryFlightService ferryFlightService;
+
+	// ***********************
+	// ANYONE
+	// ***********************
+
+	/**
+	 * List all ferryFlight
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
+		Page<FerryFlight> result = Page.emptyPage(page, pageSize);
+		// redirect to tenant owned
+		if (context.isUserInRole(Role.TENANT.name())) {
+			result = ferryFlightService.listFerryFlights(context.getUserPrincipal().getName(), page, pageSize);
+		}
+		else {
+			result = ferryFlightService.listFerryFlights(page, pageSize);
+		}
+		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+	}
+
+	/**
+	 * Get a ferryFlight
+	 */
+	@GET
+	@Path("{ferryFlightId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {
+		return ferryFlightService.findFerryFlight(ferryFlightId);
+	}
+
+	// TODO query by departure/arrival/date/timeSlot
+
+	// ***********************
+	// ADMIN/TENANT
+	// ***********************
 
 	/**
 	 * Create a ferryFlight
@@ -64,20 +108,10 @@ public class FerryFlightResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAll(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+	public Response listAllForTenant(@PathParam("tenantId") String tenantId,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		Page<FerryFlight> result = ferryFlightService.listFerryFlights(tenantId, page, pageSize);
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
-	}
-
-	/**
-	 * Get a ferryFlight
-	 */
-	@GET
-	@Path("{ferryFlightId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {
-		return ferryFlightService.findFerryFlight(ferryFlightId);
 	}
 
 	/**
@@ -96,7 +130,7 @@ public class FerryFlightResource {
 	 * Delete a ferryFlight
 	 */
 	@DELETE
-	@Path("{FerryFlightId}")
+	@Path("{ferryFlightId}")
 	public Response delete(@PathParam("ferryFlightId") String ferryFlightId) {
 		ferryFlightService.deleteFerryFlight(ferryFlightId);
 		return Response.noContent().build();

@@ -65,7 +65,8 @@ public class FerryFlightServiceImpl extends AbstractServiceSupport implements Fe
 	private void copyProperties(FerryFlight src, FerryFlight tgt) {
 		tgt.setAircraftType(src.getAircraftType());
 		tgt.setArrival(src.getArrival());
-		tgt.setAvatar(src.getAvatar());
+		tgt.setTimeSlot(src.getTimeSlot());
+		tgt.setImage(src.getImage());
 		tgt.setCurrencyUnit(src.getCurrencyUnit());
 		tgt.setDate(src.getDate());
 		tgt.setDeparture(src.getDeparture());
@@ -89,7 +90,7 @@ public class FerryFlightServiceImpl extends AbstractServiceSupport implements Fe
 		return Pages.adapt(ferryFlightRepository.findAll(Pages.createPageRequest(page, pageSize)));
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#ferryFlightId")
 	@Override
 	public void deleteFerryFlight(String ferryFlightId) {
 		ferryFlightRepository.delete(ferryFlightId);

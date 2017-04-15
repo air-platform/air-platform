@@ -28,8 +28,15 @@ public class FerryFlightOrder extends Order {
 	protected Contact contact;
 
 	@ManyToOne
-	@JoinColumn(name = "flight_id", nullable = false)
-	private FerryFlight flight;
+	@JoinColumn(name = "ferryflight_id", nullable = false)
+	private FerryFlight ferryFlight;
+
+	// NOTE: XXX
+	// extra info (the vendor of this card, it's already available in jetCard, just add extra id to avoid join)
+	// should be set via Product.vendor
+	@ManyToOne
+	@JoinColumn(name = "tenant_id", nullable = false)
+	private Tenant vendor;
 
 	public int getPassengers() {
 		return passengers;
@@ -47,20 +54,21 @@ public class FerryFlightOrder extends Order {
 		this.contact = contact;
 	}
 
-	public FerryFlight getFlight() {
-		return flight;
+	public FerryFlight getFerryFlight() {
+		return ferryFlight;
 	}
 
-	public void setFlight(FerryFlight flight) {
-		this.flight = flight;
+	public void setFerryFlight(FerryFlight ferryFlight) {
+		this.ferryFlight = ferryFlight;
+		this.vendor = ferryFlight.getVendor();
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("FerryFlightOrder [passengers=").append(passengers).append(", flight=").append(flight)
-				.append(", orderNo=").append(orderNo).append(", contact=").append(contact).append(", note=")
-				.append(note).append(", id=").append(id).append("]");
+		builder.append("FerryFlightOrder [passengers=").append(passengers).append(", orderNo=").append(orderNo)
+				.append(", contact=").append(contact).append(", note=").append(note).append(", id=").append(id)
+				.append("]");
 		return builder.toString();
 	}
 

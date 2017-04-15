@@ -16,7 +16,7 @@ import javax.validation.constraints.Min;
  */
 @Entity
 @Table(name = "air_platfrom_ferryflight")
-public class FerryFlight extends Product {
+public class FerryFlight extends PricedProduct {
 	private static final long serialVersionUID = 1L;
 
 	// properties inherited:
@@ -24,7 +24,7 @@ public class FerryFlight extends Product {
 	// price: whole price (full load)
 
 	// Flight NO.
-	@Column(name = "flight_no", nullable = false)
+	@Column(name = "flight_no", nullable = false, unique = true)
 	private String flightNo;
 
 	// e.g. Gulfstream 450
@@ -57,10 +57,21 @@ public class FerryFlight extends Product {
 	@Column(name = "date", nullable = false)
 	private Date date;
 
+	// departure timeSlot, e.g. 8:00-9:00
+	@Column(name = "time_slot", nullable = false)
+	private String timeSlot;
+
 	// TODO a better name
 	// the image of this flight
-	@Column(name = "avatar")
-	private String avatar;
+	@Column(name = "image")
+	private String image;
+
+	public FerryFlight() {
+	}
+
+	public FerryFlight(String id) {
+		this.id = id;
+	}
 
 	public String getFlightNo() {
 		return flightNo;
@@ -126,12 +137,20 @@ public class FerryFlight extends Product {
 		this.date = date;
 	}
 
-	public String getAvatar() {
-		return avatar;
+	public String getTimeSlot() {
+		return timeSlot;
 	}
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
+	public void setTimeSlot(String timeSlot) {
+		this.timeSlot = timeSlot;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	@Override
@@ -140,9 +159,9 @@ public class FerryFlight extends Product {
 		builder.append("FerryFlight [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)
 				.append(", departure=").append(departure).append(", arrival=").append(arrival).append(", seatPrice=")
 				.append(seatPrice).append(", seats=").append(seats).append(", minPassengers=").append(minPassengers)
-				.append(", date=").append(date).append(", avatar=").append(avatar).append(", name=").append(name)
-				.append(", price=").append(price).append(", currencyUnit=").append(currencyUnit)
-				.append(", description=").append(description).append(", id=").append(id).append("]");
+				.append(", date=").append(date).append(", timeSlot=").append(timeSlot).append(", image=").append(image)
+				.append(", price=").append(price).append(", currencyUnit=").append(currencyUnit).append(", name=")
+				.append(name).append(", description=").append(description).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

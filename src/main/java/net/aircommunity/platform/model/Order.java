@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.common.base.UUIDs;
@@ -26,6 +28,7 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Order extends Persistable {
 	private static final long serialVersionUID = 1L;
 
@@ -33,9 +36,9 @@ public abstract class Order extends Persistable {
 	@Column(name = "order_no", nullable = false, unique = true)
 	protected String orderNo;
 
-	@Column(name = "status")
+	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private Status status;
+	protected Status status;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
@@ -56,7 +59,7 @@ public abstract class Order extends Persistable {
 
 	@XmlJavaTypeAdapter(AccountAdapter.class)
 	@ManyToOne
-	@JoinColumn(name = "account_id", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false)
 	protected User owner;
 
 	@PrePersist
@@ -127,7 +130,8 @@ public abstract class Order extends Persistable {
 	 * Order status
 	 */
 	public enum Status {
-		PUBLISHED, PENDING, FINISHED, CANCELLED;
+		// TODO check if PUBLISHED needed
+		PUBLISHED, PENDING, PAID, FINISHED, CANCELLED;
 
 		public static Status of(String value) {
 			for (Status e : values()) {

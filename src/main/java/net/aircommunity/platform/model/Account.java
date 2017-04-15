@@ -56,8 +56,7 @@ public class Account extends Persistable {
 	@Column(name = "avatar")
 	protected String avatar;
 
-	// @XmlTransient
-	// @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+	// @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	// private List<AccountAuth> auths;
 
 	public String getNickName() {

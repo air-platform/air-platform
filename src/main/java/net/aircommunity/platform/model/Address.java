@@ -86,8 +86,7 @@ public class Address extends Persistable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Address [contact=").append(contact).append(", mobile=").append(mobile).append(", address=")
-				.append(address).append(", isDefault=").append(isDefault).append(", owner=").append(owner)
-				.append(", id=").append(id).append("]");
+				.append(address).append(", isDefault=").append(isDefault).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

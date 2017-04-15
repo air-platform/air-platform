@@ -96,5 +96,17 @@ public interface CourseService {
     @Nonnull
     void deleteCourse(@Nonnull String courseId);
 
+    /**
+     * get course by id
+     *
+     * @param courseId
+     * @return
+     */
+    @Nonnull
+    Course getCourseById(@Nonnull String courseId);
+
+    @Nonnull
+    Page<Course> getCourseByAirType(@Nonnull String airType, int page, int pageSize);
+
 
 }

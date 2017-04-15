@@ -9,8 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 
 import net.aircommunity.platform.model.constraint.NotEmpty;
 
@@ -21,7 +19,6 @@ import net.aircommunity.platform.model.constraint.NotEmpty;
  */
 @Entity
 @Table(name = "air_platfrom_charter_order")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CharterOrder extends Order {
 	private static final long serialVersionUID = 1L;
 
@@ -51,9 +48,7 @@ public class CharterOrder extends Order {
 
 	public void setFlightLegs(Set<FlightLeg> flightLegs) {
 		if (flightLegs != null) {
-			flightLegs.stream().forEach(flightLeg -> {
-				flightLeg.setOrder(this);
-			});
+			flightLegs.stream().forEach(flightLeg -> flightLeg.setOrder(this));
 			this.flightLegs.addAll(flightLegs);
 		}
 	}
@@ -64,10 +59,15 @@ public class CharterOrder extends Order {
 
 	public void setFleetCandidates(Set<FleetCandidate> fleetCandidates) {
 		if (fleetCandidates != null) {
-			fleetCandidates.stream().forEach(fleetCandidate -> {
-				fleetCandidate.setOrder(this);
-			});
+			fleetCandidates.stream().forEach(fleetCandidate -> fleetCandidate.setOrder(this));
 			this.fleetCandidates = fleetCandidates;
+		}
+	}
+
+	public void selectFleetCandidate(String fleetCandidateId) {
+		if (fleetCandidateId != null) {
+			fleetCandidates.stream().filter(candidate -> candidate.getId().equals(fleetCandidateId)).findFirst()
+					.ifPresent(candidate -> candidate.setStatus(FleetCandidate.Status.SELECTED));
 		}
 	}
 

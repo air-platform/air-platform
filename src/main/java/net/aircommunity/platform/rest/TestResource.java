@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -14,7 +15,9 @@ import org.slf4j.LoggerFactory;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.Fleet;
+import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.Role;
+import net.aircommunity.platform.repository.ProductRepository;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CharterOrderService;
 import net.aircommunity.platform.service.FleetService;
@@ -38,6 +41,18 @@ public class TestResource {
 
 	@Resource
 	private CharterOrderService charterOrderService;
+
+	@Resource
+	private ProductRepository productRepository;
+
+	@GET
+	@Path("{id}")
+	@PermitAll
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response get(@PathParam("id") String id) {
+		Product prd = productRepository.findOne(id);
+		return Response.ok(prd).build();
+	}
 
 	@GET
 	@PermitAll

@@ -12,6 +12,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
@@ -24,6 +26,7 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
  */
 @Entity
 @Table(name = "air_platfrom_product_comment")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Comment extends Persistable {
 	private static final long serialVersionUID = 1L;
 
@@ -43,7 +46,8 @@ public class Comment extends Persistable {
 
 	// make comment on a product
 	@XmlJavaTypeAdapter(ProductAdapter.class)
-	@Column(name = "product_id", nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "product_id", nullable = false)
 	private Product product;
 
 	// owner

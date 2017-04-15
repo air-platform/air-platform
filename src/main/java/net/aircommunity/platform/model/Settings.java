@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * Database based configuration for AIR platform
@@ -12,6 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "air_platfrom_settings")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Settings extends Persistable {
 	private static final long serialVersionUID = 1L;
 
