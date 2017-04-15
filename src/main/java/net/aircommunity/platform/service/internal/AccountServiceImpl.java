@@ -1,26 +1,21 @@
 package net.aircommunity.platform.service.internal;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-//luocheng
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
-import javax.json.*;
-import org.springframework.beans.factory.annotation.Value;
-
-import org.jose4j.json.internal.json_simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
@@ -73,12 +68,6 @@ public class AccountServiceImpl implements AccountService {
 	private static final String EMAIL_CONFIRMATION_LINK_FORMAT = "account/email/confirm?token=%s&code=%s";
 	private static final String CACHE_NAME_ACCOUNT = "cache.account";
 	// private static final String CACHE_NAME_APIKEY = "cache.account_apikey";
-
-	@Value("${nodebb.url}")
-	private String nodebbUrl;
-
-	@Value("${nodebb.token}")
-	private String nodebbToken;
 
 	@Resource
 	private Configuration configuration;
@@ -294,79 +283,60 @@ public class AccountServiceImpl implements AccountService {
 		return accountCreated;
 	}
 
-
 	private void createNodeBBAccount(String userName, String passWord) {
-
 		try {
-
-			URL url = new URL(nodebbUrl + "/api/v1/users");
+			URL url = new URL(configuration.getNodebbUrl() + "/api/v1/users");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Authorization", nodebbToken);
+			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
 
-			JSONObject json = new JSONObject();
-			json.put("username", userName);
-			json.put("password", passWord);
-			json.put("email", "");
-			json.put("_uid", "1");
+			String json = Json.createObjectBuilder().add("username", userName).add("password", passWord)
+					.add("email", "").add("_uid", "1").build().toString();
 
 			OutputStream os = conn.getOutputStream();
-			os.write(json.toString().getBytes());
+			os.write(json.getBytes());
 			os.flush();
 
 			int respCode = conn.getResponseCode();
 			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("Creating NodeBB user Failed : HTTP error code : "
-						+ respCode);
+				LOG.debug("Creating NodeBB user Failed : HTTP error code : " + respCode);
 			}
-
 			conn.disconnect();
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (Exception e) {
+			// TODO handle ex
 			e.printStackTrace();
 		}
 	}
 
 	private void updateNodeBBAccountPassword(String userName, String newPassWord) {
-
 		try {
 			String userID = getNodeBBUserID(userName);
-			URL url = new URL(nodebbUrl + "/api/v1/users/" + userID + "/password");
+			URL url = new URL(configuration.getNodebbUrl() + "/api/v1/users/" + userID + "/password");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("PUT");
 			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Authorization", nodebbToken);
+			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
 
-			JSONObject json = new JSONObject();
-			json.put("uid", userID);
-			json.put("new", newPassWord);
-			json.put("_uid", "1");
-
+			String json = Json.createObjectBuilder().add("uid", userID).add("new", newPassWord).add("_uid", "1").build()
+					.toString();
 			OutputStream os = conn.getOutputStream();
 			os.write(json.toString().getBytes());
 			os.flush();
 
 			int respCode = conn.getResponseCode();
 			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("update NodeBB user password Failed : HTTP error code : "
-						+ respCode);
+				LOG.debug("update NodeBB user password Failed : HTTP error code : " + respCode);
 			}
 
 			conn.disconnect();
-
-		} catch (MalformedURLException e) {
-
+		}
+		catch (Exception e) {
+			// TODO handle ex
 			e.printStackTrace();
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
 		}
 	}
 
@@ -374,81 +344,65 @@ public class AccountServiceImpl implements AccountService {
 
 		try {
 			String userID = getNodeBBUserID(userName);
-			URL url = new URL(nodebbUrl + "/api/v1/users/" + userID);
+			URL url = new URL(configuration.getNodebbUrl() + "/api/v1/users/" + userID);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("PUT");
 			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Authorization", nodebbToken);
+			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
 
-			JSONObject json = new JSONObject();
-			json.put("email", email);
-			json.put("_uid", "1");
-
+			String json = Json.createObjectBuilder().add("email", email).add("_uid", "1").build().toString();
 			OutputStream os = conn.getOutputStream();
 			os.write(json.toString().getBytes());
 			os.flush();
 
 			int respCode = conn.getResponseCode();
 			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("update NodeBB user profile Failed : HTTP error code : "
-						+ respCode);
+				LOG.debug("update NodeBB user profile Failed : HTTP error code : " + respCode);
 			}
 
 			conn.disconnect();
 
-		} catch (MalformedURLException e) {
-
+		}
+		catch (Exception e) {
+			// TODO handle ex
 			e.printStackTrace();
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
 		}
 	}
-
 
 	private void deleteNodeBBAccount(String userName) {
 
 		try {
 			String userID = getNodeBBUserID(userName);
-			URL url = new URL(nodebbUrl + "/api/v1/users/" + userID);
+			URL url = new URL(configuration.getNodebbUrl() + "/api/v1/users/" + userID);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("DELETE");
 			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Authorization", nodebbToken);
+			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
 
-			JSONObject json = new JSONObject();
-			json.put("_uid", "1");
-
+			String json = Json.createObjectBuilder().add("_uid", "1").build().toString();
 			OutputStream os = conn.getOutputStream();
 			os.write(json.toString().getBytes());
 			os.flush();
 
 			int respCode = conn.getResponseCode();
 			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("Deleting NodeBB user Failed : HTTP error code : "
-						+ respCode);
+				LOG.debug("Deleting NodeBB user Failed : HTTP error code : " + respCode);
 			}
 			conn.disconnect();
 
-		} catch (MalformedURLException e) {
-
+		}
+		catch (Exception e) {
+			// TODO handle ex
 			e.printStackTrace();
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
 		}
 	}
 
 	private String getNodeBBUserID(String userName) {
 		String userID = "";
 		try {
-			URL url = new URL(nodebbUrl + "/api/users/");
+			URL url = new URL(configuration.getNodebbUrl() + "/api/users/");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("GET");
@@ -474,14 +428,10 @@ public class AccountServiceImpl implements AccountService {
 			jsonReader.close();
 			conn.disconnect();
 
-		} catch (MalformedURLException e) {
-
+		}
+		catch (Exception e) {
+			// TODO handle ex
 			e.printStackTrace();
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
 		}
 		return userID;
 	}
