@@ -27,69 +27,41 @@ import org.slf4j.LoggerFactory;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.CourseService;
 import net.aircommunity.rest.annotation.RESTful;
 
 /**
- * Created by guankai on 13/04/2017. TODO
+ * Created by guankai on 13/04/2017.
  */
 @RESTful
 @Path("courses")
-@AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
 public class CourseResource {
-	private static final Logger LOG = LoggerFactory.getLogger(CourseResource.class);
 
+	private static final Logger LOG = LoggerFactory.getLogger(CourseResource.class);
 	@Resource
 	private CourseService courseService;
 
-	// ***********************
-	// ANYONE
-	// ***********************
-
-	/**
-	 * List all ?schoolId=xxx
-	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	// @RolesAllowed(Roles.ROLE_ADMIN)
 	@PermitAll
-	public Response listAll(@QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("page") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
+	public Response getAllCourses(@QueryParam("airType") String airType,
+			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("page") @DefaultValue("10") int pageSize) {
 		LOG.debug("get all courses start...");
-		Page<Course> result = Page.emptyPage(page, pageSize);
-		// redirect to tenant owned
-		if (context.isUserInRole(Role.TENANT.name())) {
-			result = courseService.getAllCourseByTenant(context.getUserPrincipal().getName(), page, pageSize);
+		Page<Course> courses;
+		if (airType == null) {
+			courses = courseService.getAllCourses(page, pageSize);
 		}
 		else {
-			result = courseService.getAllCourses(page, pageSize);
+			courses = courseService.getCourseByAirType(airType, page, pageSize);
 		}
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return Response.ok(courses).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(courses)).build();
 	}
 
-	/**
-	 * All courses of a school
-	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/school/{schoolId}")
-	public Response listAllCoursesOfSchool(@PathParam("schoolId") String schoolId,
-			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("page") @DefaultValue("10") int pageSize) {
-		// TODO merge with listAll
-		Page<Course> coursePage = courseService.getAllCourseBySchool(schoolId, page, pageSize);
-		return Response.ok(coursePage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(coursePage))
-				.build();
-	}
-
-	/**
-	 * Hot
-	 */
-	@GET
 	@Path("hot")
-	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
 	public Response getHotCourses(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("page") @DefaultValue("10") int pageSize) {
@@ -98,18 +70,6 @@ public class CourseResource {
 		return Response.ok(coursePages).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(coursePages))
 				.build();
 	}
-
-	@GET
-	@Path("{courseId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll
-	public Response getCourseById(@PathParam("courseId") String courseId) {
-		LOG.debug("getCourseById {}", courseId);
-		Course course = courseService.getCourseById(courseId);
-		return Response.ok(course).build();
-	}
-
-	// TODO
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -123,17 +83,26 @@ public class CourseResource {
 				.build();
 	}
 
-	// ***********************
-	// ADMIN/TENANT
-	// ***********************
-
-	/**
-	 * List all
-	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAllForTenant(@PathParam("tenantId") String tenantId,
+	@Path("/school/{schoolId}")
+	@RolesAllowed(Roles.ROLE_TENANT)
+	public Response getCourseBySchool(@PathParam("schoolId") String schoolId,
 			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("page") @DefaultValue("10") int pageSize) {
+		LOG.debug("get courses by school..");
+		Page<Course> coursePage = courseService.getAllCourseBySchool(schoolId, page, pageSize);
+		return Response.ok(coursePage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(coursePage))
+				.build();
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/tenant")
+	@RolesAllowed(Roles.ROLE_TENANT)
+	public Response getCourseByTenant(@QueryParam("page") @DefaultValue("1") int page,
+			@QueryParam("page") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
+		LOG.debug("get courses by tenant..");
+		String tenantId = context.getUserPrincipal().getName();
 		Page<Course> coursePage = courseService.getAllCourseByTenant(tenantId, page, pageSize);
 		return Response.ok(coursePage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(coursePage))
 				.build();
@@ -161,6 +130,16 @@ public class CourseResource {
 		LOG.debug("update course....");
 		Course course = courseService.updateCourse(request, schoolId);
 		return Response.noContent().build();
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("{courseId}")
+	@PermitAll
+	public Response getCourseById(@PathParam("courseId") String courseId) {
+		LOG.debug("get course by Id" + courseId);
+		Course course = courseService.getCourseById(courseId);
+		return Response.ok(course).build();
 	}
 
 }

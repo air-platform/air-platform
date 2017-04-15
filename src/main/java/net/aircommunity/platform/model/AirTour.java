@@ -27,9 +27,6 @@ public class AirTour extends Product {
     @Column(name = "tour_time", nullable = false)
     private String tourTime;
 
-    @Column(name = "tour_route", nullable = false)
-    private String tourRoute;
-
     @Lob
     @Column(name = "tour_show", nullable = false)
     private String tourShow;
@@ -82,14 +79,6 @@ public class AirTour extends Product {
 
     public void setTourTime(String tourTime) {
         this.tourTime = tourTime;
-    }
-
-    public String getTourRoute() {
-        return tourRoute;
-    }
-
-    public void setTourRoute(String tourRoute) {
-        this.tourRoute = tourRoute;
     }
 
     public String getTourShow() {

@@ -21,8 +21,11 @@ public interface AirTourService {
     AirTour getTourById(@Nonnull String tourId);
 
     @Nonnull
-    AirTour createTour(@Nonnull AirTour request);
+    AirTour createTour(@Nonnull AirTour request, @Nonnull String tenantId);
 
     @Nonnull
-    AirTour updateTour(@Nonnull AirTour request);
+    AirTour updateTour(@Nonnull String tourId, @Nonnull AirTour request);
+
+    @Nonnull
+    Page<AirTour> getToursByTenant(@Nonnull String tenantId, int page, int pageSize);
 }
