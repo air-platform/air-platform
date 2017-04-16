@@ -43,6 +43,7 @@ public final class Codes {
 	public static final Code FLEET_NOT_FOUND = Code.notFound(11_003_0001);
 	public static final Code FLEET_ALREADY_EXISTS = Code.alreadyExists(11_003_0001);
 	public static final Code FERRYFLIGHTI_NOT_FOUND = Code.notFound(11_003_0002);
+	public static final Code FERRYFLIGHTI_ALREADY_EXISTS = Code.alreadyExists(11_003_0002);
 	public static final Code JETCARD_NOT_FOUND = Code.notFound(11_003_0003);
 	public static final Code JETCARD_ORDER_NOT_FOUND = Code.notFound(11_003_0003);
 	public static final Code FERRYFLIGHT_ORDER_NOT_FOUND = Code.notFound(11_003_0003);
@@ -51,8 +52,7 @@ public final class Codes {
 	public static final Code AIRCRAFT_NOT_FOUND = Code.notFound(11_003_0002);
 	public static final Code AIRTRANSPORT_NOT_FOUND = Code.notFound(11_003_0002);
 	public static final Code AIRTRANSPORT_ORDER_NOT_FOUND = Code.notFound(11_003_0002);
-	
-	
+
 	public static final Code COMMENT_NOT_FOUND = Code.notFound(11_003_0002);
 	public static final Code PRODUCT_NOT_FOUND = Code.notFound(11_003_0002);
 
@@ -67,10 +67,11 @@ public final class Codes {
 
 	// tour
 	public static final Code TOUR_NOT_FOUND = Code.notFound(11_007_0001);
-    public static final Code TOUR_ORDER_NOT_FOUND = Code.notFound(11_007_000);
+	public static final Code TOUR_ORDER_NOT_FOUND = Code.notFound(11_007_000);
+
 	// taxi
 	public static final Code TAXI_NOT_FOUND = Code.notFound(11_008_0001);
-    public static final Code TAXI_ORDER_NOT_FOUND = Code.notFound(11_008_0002);
+	public static final Code TAXI_ORDER_NOT_FOUND = Code.notFound(11_008_0002);
 
 	private Codes() {
 		throw new AssertionError();

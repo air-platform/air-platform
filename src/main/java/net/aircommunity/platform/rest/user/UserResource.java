@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest;
+package net.aircommunity.platform.rest.user;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -35,6 +35,10 @@ public class UserResource {
 
 	@Resource
 	private AccountService accountService;
+
+	// ***********************
+	// User information
+	// ***********************
 
 	/**
 	 * List all User addresses
@@ -113,15 +117,68 @@ public class UserResource {
 		return Response.noContent().build();
 	}
 
+	// *******//
+	// Orders //
+	// *******//
+
 	// ***********************
-	// Orders
+	// Air Jet
+	// ***********************
+	@Resource
+	private ChaterOrderResource chaterOrderResource;
+
+	@Path("chater/orders")
+	public ChaterOrderResource chaterOrders() {
+		return chaterOrderResource;
+	}
+
+	@Resource
+	private FerryFlightOrderResource ferryFlightOrderResource;
+
+	@Path("ferryflight/orders")
+	public FerryFlightOrderResource ferryFlightOrders() {
+		return ferryFlightOrderResource;
+	}
+
+	@Resource
+	private JetcardOrderResource jetcardOrderResource;
+
+	@Path("jetcard/orders")
+	public JetcardOrderResource jetcardOrders() {
+		return jetcardOrderResource;
+	}
+
+	// ***********************
+	// Air Transport
 	// ***********************
 	@Resource
 	private AirTransportOrderResource airTransportOrderResource;
 
-	@Path("transport-orders")
+	@Path("airtransport/orders")
 	public AirTransportOrderResource airTransportOrders() {
 		return airTransportOrderResource;
+	}
+
+	// ***********************
+	// Air Taxi
+	// ***********************
+	@Resource
+	private AirTaxiOrderResource airTaxiOrderResource;
+
+	@Path("airtaxi/orders")
+	public AirTaxiOrderResource airTaxiOrders() {
+		return airTaxiOrderResource;
+	}
+
+	// ***********************
+	// Air Tour
+	// ***********************
+	@Resource
+	private AirTourOrderResource airTourOrderResource;
+
+	@Path("airtour/orders")
+	public AirTourOrderResource airTourOrders() {
+		return airTourOrderResource;
 	}
 
 }

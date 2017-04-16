@@ -28,6 +28,10 @@ public abstract class Product extends Persistable {
 	@Column(name = "name", nullable = false)
 	protected String name;
 
+	// product score
+	@Column(name = "score", nullable = false)
+	protected double score;
+
 	// product description
 	@Lob
 	@Column(name = "description")
@@ -44,6 +48,14 @@ public abstract class Product extends Persistable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public double getScore() {
+		return score;
+	}
+
+	public void setScore(double score) {
+		this.score = score;
 	}
 
 	public String getDescription() {

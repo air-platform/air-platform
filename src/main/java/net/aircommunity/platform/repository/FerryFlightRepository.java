@@ -12,4 +12,6 @@ import net.aircommunity.platform.model.FerryFlight;
  */
 public interface FerryFlightRepository extends BaseProductRepository<FerryFlight> {
 
+	FerryFlight findByFlightNo(String flightNo);
+
 }

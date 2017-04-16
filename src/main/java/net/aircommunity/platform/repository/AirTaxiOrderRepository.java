@@ -1,31 +1,10 @@
 package net.aircommunity.platform.repository;
 
 import net.aircommunity.platform.model.AirTaxiOrder;
-import net.aircommunity.platform.model.Order;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 /**
  * Created by guankai on 15/04/2017.
  */
-public interface AirTaxiOrderRepository extends BaseOrderRepository<AirTaxiOrder> {
-    /**
-     * Find all orders place on a tenant
-     *
-     * @param tenantId the tenantId
-     * @param pageable page request
-     * @return a page of FerryFlightOrders or empty if none
-     */
-    Page<AirTaxiOrder> findByVendorIdOrderByCreationDateDesc(String tenantId, Pageable pageable);
+public interface AirTaxiOrderRepository extends VendorAwareOrderRepository<AirTaxiOrder> {
 
-    /**
-     * Find all orders place on a tenant
-     *
-     * @param tenantId the tenantId
-     * @param status the status
-     * @param pageable page request
-     * @return a page of FerryFlightOrders or empty if none
-     */
-    Page<AirTaxiOrder> findByVendorIdAndStatusOrderByCreationDateDesc(String tenantId, Order.Status status,
-                                                                          Pageable pageable);
 }

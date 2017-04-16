@@ -20,9 +20,18 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	 * 
 	 * @param userId the userId
 	 * @param pageable page request
-	 * @return a page of FerryFlightOrders or empty if none
+	 * @return a page of orders or empty if none
 	 */
 	Page<T> findByOwnerIdOrderByCreationDateDesc(String userId, Pageable pageable);
+
+	/**
+	 * Find all user orders not status
+	 * 
+	 * @param userId the userId
+	 * @param pageable page request
+	 * @return a page of orders or empty if none
+	 */
+	Page<T> findByOwnerIdAndStatusNotOrderByCreationDateDesc(String userId, Status ignoredStatus, Pageable pageable);
 
 	/**
 	 * Find all user orders
@@ -30,7 +39,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	 * @param userId the userId
 	 * @param status the status
 	 * @param pageable page request
-	 * @return a page of FerryFlightOrders or empty if none
+	 * @return a page of orders or empty if none
 	 */
 	Page<T> findByOwnerIdAndStatusOrderByCreationDateDesc(String userId, Status status, Pageable pageable);
 
@@ -38,7 +47,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	 * Find all orders
 	 * 
 	 * @param pageable page request
-	 * @return a page of FerryFlightOrders or empty if none
+	 * @return a page of orders or empty if none
 	 */
 	Page<T> findAllByOrderByCreationDateDesc(Pageable pageable);
 
@@ -47,7 +56,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	 * 
 	 * @param status the status
 	 * @param pageable page request
-	 * @return a page of FerryFlightOrders or empty if none
+	 * @return a page of orders or empty if none
 	 */
 	Page<T> findByStatusOrderByCreationDateDesc(Status status, Pageable pageable);
 

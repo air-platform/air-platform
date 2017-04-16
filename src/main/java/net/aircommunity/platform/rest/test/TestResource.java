@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest;
+package net.aircommunity.platform.rest.test;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;

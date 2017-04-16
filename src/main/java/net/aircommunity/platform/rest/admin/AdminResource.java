@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest;
+package net.aircommunity.platform.rest.admin;
 
 import java.net.URI;
 
@@ -30,6 +30,21 @@ import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.rest.CommentResource;
+import net.aircommunity.platform.rest.SchoolResource;
+import net.aircommunity.platform.rest.tenant.TenantAirTaxiResource;
+import net.aircommunity.platform.rest.tenant.TenantAirTourResourse;
+import net.aircommunity.platform.rest.tenant.TenantAirTransportResource;
+import net.aircommunity.platform.rest.tenant.TenantAircraftResource;
+import net.aircommunity.platform.rest.tenant.TenantFerryFlightResource;
+import net.aircommunity.platform.rest.tenant.TenantFleetResource;
+import net.aircommunity.platform.rest.tenant.TenantJetCardResource;
+import net.aircommunity.platform.rest.user.AirTaxiOrderResource;
+import net.aircommunity.platform.rest.user.AirTourOrderResource;
+import net.aircommunity.platform.rest.user.AirTransportOrderResource;
+import net.aircommunity.platform.rest.user.ChaterOrderResource;
+import net.aircommunity.platform.rest.user.FerryFlightOrderResource;
+import net.aircommunity.platform.rest.user.JetcardOrderResource;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.rest.annotation.RESTful;
 import net.aircommunity.rest.core.security.AccessTokenService;
@@ -46,24 +61,13 @@ public class AdminResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AdminResource.class);
 
 	private static final String TENANTS_PATH_PREFIX = "tenants";
+	private static final String USERS_PATH_PREFIX = "users";
 
 	@Resource
 	private AccountService accountService;
 
 	@Resource
 	private AccessTokenService accessTokenService;
-
-	@Resource
-	private FleetResource fleetResource;
-
-	@Resource
-	private FerryFlightResource ferryFlightResource;
-
-	@Resource
-	private JetCardResource jetCardResource;
-
-	@Resource
-	private JetOrderResource jetOrderResource;
 
 	/**
 	 * Ping server to make sure server is still alive, it is used for monitoring purpose.
@@ -159,58 +163,78 @@ public class AdminResource {
 	// Tenant
 	// *************
 
-	// Air jet
+	// ***********************
+	// Air Jet
+	// ***********************
+	@Resource
+	private TenantFleetResource tenantFleetResource;
+
 	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/fleets")
-	public FleetResource fleets(@PathParam("tenantId") String tenantId) {
-		return fleetResource;
+	public TenantFleetResource fleets(@PathParam("tenantId") String tenantId) {
+		return tenantFleetResource;
 	}
+
+	@Resource
+	private TenantFerryFlightResource tenantFerryFlightResource;
 
 	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/ferryflights")
-	public FerryFlightResource ferryflights(@PathParam("tenantId") String tenantId) {
-		return ferryFlightResource;
+	public TenantFerryFlightResource ferryflights(@PathParam("tenantId") String tenantId) {
+		return tenantFerryFlightResource;
 	}
+
+	@Resource
+	private TenantJetCardResource tenantJetCardResource;
 
 	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/jetcards")
-	public JetCardResource jetcards(@PathParam("tenantId") String tenantId) {
-		return jetCardResource;
+	public TenantJetCardResource jetcards(@PathParam("tenantId") String tenantId) {
+		return tenantJetCardResource;
 	}
 
-	// aircraft
+	// ***********************
+	// Air Transport
+	// ***********************
 	@Resource
-	private AircraftResource aircraftResource;
+	private TenantAirTransportResource tenantAirTransportResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/airtransports")
+	public TenantAirTransportResource transports(@PathParam("tenantId") String tenantId) {
+		return tenantAirTransportResource;
+	}
+
+	// ***********************
+	// Air Taxi
+	// ***********************
+	@Resource
+	private TenantAirTaxiResource tenantAirTaxiResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/airtaxis")
+	public TenantAirTaxiResource taxis(@PathParam("tenantId") String tenantId) {
+		return tenantAirTaxiResource;
+	}
+
+	// ***********************
+	// Air Tour
+	// ***********************
+	@Resource
+	private TenantAirTourResourse tenantAirTourResourse;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/airtours")
+	public TenantAirTourResourse tours(@PathParam("tenantId") String tenantId) {
+		return tenantAirTourResourse;
+	}
+
+	// ***********************
+	// AirCraft information
+	// ***********************
+	@Resource
+	private TenantAircraftResource tenantAircraftResource;
 
 	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/aircrafts")
-	public AircraftResource aircrafts(@PathParam("tenantId") String tenantId) {
-		return aircraftResource;
+	public TenantAircraftResource aircrafts(@PathParam("tenantId") String tenantId) {
+		return tenantAircraftResource;
 	}
 
-	// transports
-	@Resource
-	private AirTransportResource airTransportResource;
-
-	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/transports")
-	public AirTransportResource transports(@PathParam("tenantId") String tenantId) {
-		return airTransportResource;
-	}
-
-	// taxis
-	@Resource
-	private AirTaxiResource airTaxiResource;
-
-	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/taxis")
-	public AirTaxiResource taxis(@PathParam("tenantId") String tenantId) {
-		return airTaxiResource;
-	}
-
-	// tour
-	@Resource
-	private AirTourResourse airTourResourse;
-
-	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/tours")
-	public AirTourResourse tours(@PathParam("tenantId") String tenantId) {
-		return airTourResourse;
-	}
-
+	// TODO
 	// school
 	@Resource
 	private SchoolResource schoolResource;
@@ -221,7 +245,7 @@ public class AdminResource {
 	}
 
 	// ***********************
-	// comments
+	// Comments TODO
 	// ***********************
 
 	@Resource
@@ -233,20 +257,67 @@ public class AdminResource {
 	}
 
 	// ***********************
-	// orders
+	// User orders
+	// ***********************
+
+	// ***********************
+	// Air Jet
+	// ***********************
+	@Resource
+	private ChaterOrderResource chaterOrderResource;
+
+	@Path(USERS_PATH_PREFIX + "/{userId}/chater/orders")
+	public ChaterOrderResource chaterOrders(@PathParam("userId") String userId) {
+		return chaterOrderResource;
+	}
+
+	@Resource
+	private FerryFlightOrderResource ferryFlightOrderResource;
+
+	@Path(USERS_PATH_PREFIX + "/{userId}/ferryflight/orders")
+	public FerryFlightOrderResource ferryFlightOrders(@PathParam("userId") String userId) {
+		return ferryFlightOrderResource;
+	}
+
+	@Resource
+	private JetcardOrderResource jetcardOrderResource;
+
+	@Path(USERS_PATH_PREFIX + "/{userId}/jetcard/orders")
+	public JetcardOrderResource jetcardOrders(@PathParam("userId") String userId) {
+		return jetcardOrderResource;
+	}
+
+	// ***********************
+	// Air Transport
 	// ***********************
 	@Resource
 	private AirTransportOrderResource airTransportOrderResource;
 
-	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/transport-orders")
-	public AirTransportOrderResource airTransportOrders(@PathParam("tenantId") String tenantId) {
+	@Path(USERS_PATH_PREFIX + "/{userId}/airtransport/orders")
+	public AirTransportOrderResource airTransportOrders(@PathParam("userId") String userId) {
 		return airTransportOrderResource;
 	}
 
-	// jet orders
-	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/jetorders")
-	public JetOrderResource jetorders(@PathParam("tenantId") String tenantId) {
-		return jetOrderResource;
+	// ***********************
+	// Air Taxi
+	// ***********************
+	@Resource
+	private AirTaxiOrderResource airTaxiOrderResource;
+
+	@Path(USERS_PATH_PREFIX + "/{userId}/airtaxi/orders")
+	public AirTaxiOrderResource airTaxiOrders(@PathParam("userId") String userId) {
+		return airTaxiOrderResource;
+	}
+
+	// ***********************
+	// Air Tour
+	// ***********************
+	@Resource
+	private AirTourOrderResource airTourOrderResource;
+
+	@Path(USERS_PATH_PREFIX + "/{userId}/airtour/orders")
+	public AirTourOrderResource airTourOrders(@PathParam("userId") String userId) {
+		return airTourOrderResource;
 	}
 
 }

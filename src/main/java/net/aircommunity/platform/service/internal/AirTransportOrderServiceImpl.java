@@ -1,6 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,7 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTransport;
 import net.aircommunity.platform.model.AirTransportOrder;
@@ -20,9 +19,9 @@ import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
-import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.repository.AirTransportOrderRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
+import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.AirTransportOrderService;
 import net.aircommunity.platform.service.AirTransportService;
 import net.aircommunity.platform.service.FerryFlightService;
@@ -34,8 +33,9 @@ import net.aircommunity.platform.service.FerryFlightService;
  */
 @Service
 @Transactional
-public class AirTransportOrderServiceImpl extends AbstractServiceSupport implements AirTransportOrderService {
-	private static final String CACHE_NAME = "cache.airtransportorder";
+public class AirTransportOrderServiceImpl extends AbstractVendorAwareOrderService<AirTransportOrder>
+		implements AirTransportOrderService {
+	private static final String CACHE_NAME = "cache.airtransport-order";
 
 	@Resource
 	private AirTransportService airTransportService;
@@ -50,38 +50,24 @@ public class AirTransportOrderServiceImpl extends AbstractServiceSupport impleme
 	private PassengerRepository passengerRepository;
 
 	@Override
-	public AirTransportOrder createAirTransportOrder(String userId, AirTransportOrder airTransportOrder) {
-		User owner = findAccount(userId, User.class);
-		AirTransportOrder newAirTransportOrder = new AirTransportOrder();
-		newAirTransportOrder.setCreationDate(new Date());
-		newAirTransportOrder.setStatus(Order.Status.PENDING);
-		copyProperties(airTransportOrder, newAirTransportOrder);
-		// set vendor
-		newAirTransportOrder.setOwner(owner);
-		return airTransportOrderRepository.save(newAirTransportOrder);
+	public AirTransportOrder createAirTransportOrder(String userId, AirTransportOrder order) {
+		return createOrder(userId, order);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
-	public AirTransportOrder findAirTransportOrder(String airTransportOrderId) {
-		AirTransportOrder AirTransportOrder = airTransportOrderRepository.findOne(airTransportOrderId);
-		if (AirTransportOrder == null) {
-			throw new AirException(Codes.AIRTRANSPORT_ORDER_NOT_FOUND,
-					String.format("AirTransportOrder %s is not found", airTransportOrderId));
-		}
-		return AirTransportOrder;
+	public AirTransportOrder findAirTransportOrder(String orderId) {
+		return findOrder(orderId);
 	}
 
-	@CachePut(cacheNames = CACHE_NAME, key = "#airTransportOrderId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public AirTransportOrder updateAirTransportOrder(String airTransportOrderId,
-			AirTransportOrder newAirTransportOrder) {
-		AirTransportOrder airTransportOrder = findAirTransportOrder(airTransportOrderId);
-		copyProperties(newAirTransportOrder, airTransportOrder);
-		return airTransportOrderRepository.save(airTransportOrder);
+	public AirTransportOrder updateAirTransportOrder(String orderId, AirTransportOrder newOrder) {
+		return updateOrder(orderId, newOrder);
 	}
 
-	private void copyProperties(AirTransportOrder src, AirTransportOrder tgt) {
+	@Override
+	protected void copyProperties(AirTransportOrder src, AirTransportOrder tgt) {
 		AirTransport airTransport = airTransportService.findAirTransport(src.getAirTransport().getId());
 		tgt.setAirTransport(airTransport);
 		tgt.setDate(src.getDate());
@@ -96,56 +82,49 @@ public class AirTransportOrderServiceImpl extends AbstractServiceSupport impleme
 		}
 	}
 
-	@CachePut(cacheNames = CACHE_NAME, key = "#airTransportOrderId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public AirTransportOrder updateAirTransportOrderStatus(String airTransportOrderId, Status status) {
-		AirTransportOrder AirTransportOrder = findAirTransportOrder(airTransportOrderId);
-		AirTransportOrder.setStatus(status);
-		return airTransportOrderRepository.save(AirTransportOrder);
+	public AirTransportOrder updateAirTransportOrderStatus(String orderId, Status status) {
+		return updateOrderStatus(orderId, status);
 	}
 
 	@Override
 	public Page<AirTransportOrder> listUserAirTransportOrders(String userId, Order.Status status, int page,
 			int pageSize) {
-		if (status == null) {
-			return Pages.adapt(airTransportOrderRepository.findByOwnerIdOrderByCreationDateDesc(userId,
-					Pages.createPageRequest(page, pageSize)));
-		}
-		return Pages.adapt(airTransportOrderRepository.findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
-				Pages.createPageRequest(page, pageSize)));
+		return listUserOrders(userId, status, page, pageSize);
 	}
 
 	@Override
 	public Page<AirTransportOrder> listTenantAirTransportOrders(String tenantId, Order.Status status, int page,
 			int pageSize) {
-		if (status == null) {
-			return Pages.adapt(airTransportOrderRepository.findByVendorIdOrderByCreationDateDesc(tenantId,
-					Pages.createPageRequest(page, pageSize)));
-		}
-		return Pages.adapt(airTransportOrderRepository.findByVendorIdAndStatusOrderByCreationDateDesc(tenantId, status,
-				Pages.createPageRequest(page, pageSize)));
+		return listTenantOrders(tenantId, status, page, pageSize);
 	}
 
 	@Override
 	public Page<AirTransportOrder> listAirTransportOrders(Order.Status status, int page, int pageSize) {
-		if (status == null) {
-			return Pages.adapt(airTransportOrderRepository
-					.findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
-		}
-		return Pages.adapt(airTransportOrderRepository.findByStatusOrderByCreationDateDesc(status,
-				Pages.createPageRequest(page, pageSize)));
+		return listAllOrders(status, page, pageSize);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTransportOrderId")
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public void deleteAirTransportOrder(String airTransportOrderId) {
-		airTransportOrderRepository.delete(airTransportOrderId);
+	public void deleteAirTransportOrder(String orderId) {
+		deleteOrder(orderId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME)
 	@Override
 	public void deleteAirTransportOrders(String userId) {
-		airTransportOrderRepository.deleteByOwnerId(userId);
+		deleteOrders(userId);
+	}
+
+	@Override
+	protected VendorAwareOrderRepository<AirTransportOrder> getOrderRepository() {
+		return airTransportOrderRepository;
+	}
+
+	@Override
+	protected Code orderNotFoundCode() {
+		return Codes.AIRTRANSPORT_ORDER_NOT_FOUND;
 	}
 
 }

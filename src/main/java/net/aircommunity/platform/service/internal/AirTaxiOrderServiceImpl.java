@@ -1,6 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,16 +11,16 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.AirTaxiOrder;
 import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
-import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.repository.AirTaxiOrderRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
+import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.AirTaxiOrderService;
 import net.aircommunity.platform.service.AirTaxiService;
 
@@ -32,8 +31,9 @@ import net.aircommunity.platform.service.AirTaxiService;
  */
 @Service
 @Transactional
-public class AirTaxiOrderServiceImpl extends AbstractServiceSupport implements AirTaxiOrderService {
-	private static final String CACHE_NAME = "cache.airtaxiorder";
+public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<AirTaxiOrder>
+		implements AirTaxiOrderService {
+	private static final String CACHE_NAME = "cache.airtaxi-order";
 
 	@Resource
 	private AirTaxiOrderRepository airTaxiOrderRepository;
@@ -45,37 +45,26 @@ public class AirTaxiOrderServiceImpl extends AbstractServiceSupport implements A
 	private AirTaxiService airTaxiService;
 
 	@Override
-	public AirTaxiOrder createAirTaxiOrder(String userId, AirTaxiOrder AirTaxiOrder) {
-		User owner = findAccount(userId, User.class);
-		AirTaxiOrder newAirTaxiOrder = new AirTaxiOrder();
-		newAirTaxiOrder.setCreationDate(new Date());
-		newAirTaxiOrder.setStatus(Status.PENDING);
-		copyProperties(AirTaxiOrder, newAirTaxiOrder);
-		// set vendor
-		newAirTaxiOrder.setOwner(owner);
-		return airTaxiOrderRepository.save(newAirTaxiOrder);
+	public AirTaxiOrder createAirTaxiOrder(String userId, AirTaxiOrder order) {
+		return createOrder(userId, order);
+
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
-	public AirTaxiOrder findAirTaxiOrder(String airTaxiOrderId) {
-		AirTaxiOrder airTaxiOrder = airTaxiOrderRepository.findOne(airTaxiOrderId);
-		if (airTaxiOrder == null) {
-			throw new AirException(Codes.TAXI_ORDER_NOT_FOUND,
-					String.format("AirTaxiOrder %s is not found", airTaxiOrderId));
-		}
-		return airTaxiOrder;
+	public AirTaxiOrder findAirTaxiOrder(String orderId) {
+		return findOrder(orderId);
+
 	}
 
-	@CachePut(cacheNames = CACHE_NAME, key = "#airTaxiOrderId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public AirTaxiOrder updateAirTaxiOrder(String airTaxiOrderId, AirTaxiOrder newAirTaxiOrder) {
-		AirTaxiOrder airTaxiOrder = findAirTaxiOrder(airTaxiOrderId);
-		copyProperties(newAirTaxiOrder, airTaxiOrder);
-		return airTaxiOrderRepository.save(airTaxiOrder);
+	public AirTaxiOrder updateAirTaxiOrder(String orderId, AirTaxiOrder newOrder) {
+		return updateOrder(orderId, newOrder);
 	}
 
-	private void copyProperties(AirTaxiOrder src, AirTaxiOrder tgt) {
+	@Override
+	protected void copyProperties(AirTaxiOrder src, AirTaxiOrder tgt) {
 		AirTaxi airTaxi = airTaxiService.findAirTaxi(src.getAirTaxi().getId());
 		tgt.setAirTaxi(airTaxi);
 		tgt.setNote(src.getNote());
@@ -90,54 +79,47 @@ public class AirTaxiOrderServiceImpl extends AbstractServiceSupport implements A
 		}
 	}
 
-	@CachePut(cacheNames = CACHE_NAME, key = "#airTaxiOrderId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public AirTaxiOrder updateAirTaxiOrderStatus(String airTaxiOrderId, Status status) {
-		AirTaxiOrder airTaxiOrder = findAirTaxiOrder(airTaxiOrderId);
-		airTaxiOrder.setStatus(status);
-		return airTaxiOrderRepository.save(airTaxiOrder);
+	public AirTaxiOrder updateAirTaxiOrderStatus(String orderId, Status status) {
+		return updateOrderStatus(orderId, status);
 	}
 
 	@Override
 	public Page<AirTaxiOrder> listUserAirTaxiOrders(String userId, Status status, int page, int pageSize) {
-		if (status == null) {
-			return Pages.adapt(airTaxiOrderRepository.findByOwnerIdOrderByCreationDateDesc(userId,
-					Pages.createPageRequest(page, pageSize)));
-		}
-		return Pages.adapt(airTaxiOrderRepository.findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
-				Pages.createPageRequest(page, pageSize)));
+		return listUserOrders(userId, status, page, pageSize);
 	}
 
 	@Override
 	public Page<AirTaxiOrder> listTenantAirTaxiOrders(String tenantId, Status status, int page, int pageSize) {
-		if (status == null) {
-			return Pages.adapt(airTaxiOrderRepository.findByVendorIdOrderByCreationDateDesc(tenantId,
-					Pages.createPageRequest(page, pageSize)));
-		}
-		return Pages.adapt(airTaxiOrderRepository.findByVendorIdAndStatusOrderByCreationDateDesc(tenantId, status,
-				Pages.createPageRequest(page, pageSize)));
+		return listTenantOrders(tenantId, status, page, pageSize);
 	}
 
 	@Override
 	public Page<AirTaxiOrder> listAirTaxiOrders(Status status, int page, int pageSize) {
-		if (status == null) {
-			return Pages.adapt(
-					airTaxiOrderRepository.findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
-		}
-		return Pages.adapt(airTaxiOrderRepository.findByStatusOrderByCreationDateDesc(status,
-				Pages.createPageRequest(page, pageSize)));
+		return listAllOrders(status, page, pageSize);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTaxiOrderId")
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public void deleteAirTaxiOrder(String airTaxiOrderId) {
-		airTaxiOrderRepository.delete(airTaxiOrderId);
+	public void deleteAirTaxiOrder(String orderId) {
+		deleteOrder(orderId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME)
 	@Override
 	public void deleteAirTaxiOrders(String userId) {
-		airTaxiOrderRepository.deleteByOwnerId(userId);
+		deleteOrders(userId);
+	}
+
+	@Override
+	protected VendorAwareOrderRepository<AirTaxiOrder> getOrderRepository() {
+		return airTaxiOrderRepository;
+	}
+
+	@Override
+	protected Code orderNotFoundCode() {
+		return Codes.TAXI_ORDER_NOT_FOUND;
 	}
 
 }

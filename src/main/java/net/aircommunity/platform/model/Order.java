@@ -131,7 +131,12 @@ public abstract class Order extends Persistable {
 	 */
 	public enum Status {
 		// TODO check if PUBLISHED needed
-		PUBLISHED, PENDING, PAID, FINISHED, CANCELLED;
+		PUBLISHED, PENDING, PAID, FINISHED, CANCELLED,
+
+		/**
+		 * Not visible to user or tenant, only available to platform admin
+		 */
+		DELETED;
 
 		public static Status of(String value) {
 			for (Status e : values()) {

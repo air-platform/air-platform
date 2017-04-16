@@ -32,6 +32,11 @@ public class FerryFlightServiceImpl extends AbstractServiceSupport implements Fe
 	@Override
 	public FerryFlight createFerryFlight(String tenantId, FerryFlight ferryFlight) {
 		Tenant tenant = findAccount(tenantId, Tenant.class);
+		FerryFlight existing = ferryFlightRepository.findByFlightNo(ferryFlight.getFlightNo());
+		if (existing != null) {
+			throw new AirException(Codes.FERRYFLIGHTI_ALREADY_EXISTS,
+					String.format("FerryFlight Flight NO: %s is already exists", ferryFlight.getFlightNo()));
+		}
 		// create new
 		FerryFlight newFerryFlight = new FerryFlight();
 		copyProperties(ferryFlight, newFerryFlight);

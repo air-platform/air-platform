@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest;
+package net.aircommunity.platform.rest.test;
 
 import java.net.URI;
 
@@ -40,9 +40,10 @@ import net.aircommunity.rest.annotation.RESTful;
  * 
  * @author Bin.Zhang
  */
-@RESTful
+// @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_USER })
+@Deprecated
 public class JetOrderResource {
 	private static final Logger LOG = LoggerFactory.getLogger(JetOrderResource.class);
 

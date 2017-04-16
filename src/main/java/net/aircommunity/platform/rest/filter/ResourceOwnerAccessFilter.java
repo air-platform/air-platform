@@ -55,6 +55,7 @@ public class ResourceOwnerAccessFilter implements ContainerRequestFilter {
 		// for tenant resource without tenantId passed from URI, but append it automatically
 		if (securityContext.isUserInRole(Role.TENANT.name())) {
 			pathParams.add(TENANT_ID_PATH_PARAM, securityContext.getUserPrincipal().getName());
+			// TODO check tenant resource permission
 		}
 
 		if (securityContext.isUserInRole(Role.USER.name())) {

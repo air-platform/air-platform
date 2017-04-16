@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * FerryFlight order.
@@ -27,6 +28,7 @@ public class FerryFlightOrder extends VendorAwareOrder {
 	@Embedded
 	protected Contact contact;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "ferryflight_id", nullable = false)
 	private FerryFlight ferryFlight;

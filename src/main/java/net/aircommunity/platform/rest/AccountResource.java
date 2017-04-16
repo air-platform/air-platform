@@ -41,10 +41,8 @@ import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.AccountRequest;
-import net.aircommunity.platform.model.Address;
 import net.aircommunity.platform.model.AuthcRequest;
 import net.aircommunity.platform.model.EmailRequest;
-import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.PasswordRequest;
 import net.aircommunity.platform.model.PasswordResetRequest;
 import net.aircommunity.platform.model.Role;
@@ -370,95 +368,6 @@ public class AccountResource {
 		}
 		accountService.deleteAccount(account.getId());
 		return Response.noContent().build();
-	}
-
-	// ****************
-	// TODO MOVE to UserResource
-	// ****************
-	/**
-	 * List all User addresses
-	 */
-	@GET
-	@Path("addresses")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
-	public Response listUserAddresses(@Context SecurityContext context) {
-		String accountId = context.getUserPrincipal().getName();
-		return Response.ok(accountService.listUserAddresses(accountId)).build();
-	}
-
-	/**
-	 * Add User address
-	 */
-	@POST
-	@Path("addresses")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Authenticated
-	public Response addUserAddress(@NotNull @Valid Address address, @Context SecurityContext context) {
-		String accountId = context.getUserPrincipal().getName();
-		accountService.addUserAddress(accountId, address);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * Delete User address
-	 */
-	@DELETE
-	@Path("addresses/{addressId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
-	public Response removeUserAddress(@PathParam("addressId") String addressId, @Context SecurityContext context) {
-		String accountId = context.getUserPrincipal().getName();
-		accountService.removeUserAddress(accountId, addressId);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * List all User passengers
-	 */
-	@GET
-	@Path("passengers")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
-	public Response listUserPassengers(@Context SecurityContext context) {
-		String accountId = context.getUserPrincipal().getName();
-		return Response.ok(accountService.listUserPassengers(accountId)).build();
-	}
-
-	/**
-	 * Add User passenger
-	 */
-	@POST
-	@Path("passengers")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Authenticated
-	public Response addPassenger(@NotNull @Valid Passenger passenger, @Context SecurityContext context) {
-		String accountId = context.getUserPrincipal().getName();
-		accountService.addUserPassenger(accountId, passenger);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * Delete User passenger
-	 */
-	@DELETE
-	@Path("passengers/{passengerId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
-	public Response removeUserPassenger(@PathParam("passengerId") String passengerId,
-			@Context SecurityContext context) {
-		String accountId = context.getUserPrincipal().getName();
-		accountService.removeUserPassenger(accountId, passengerId);
-		return Response.noContent().build();
-	}
-
-	// Orders
-	@Resource
-	private JetOrderResource jetOrderResource;
-
-	@Path("{userId}/orders")
-	public JetOrderResource orders(@PathParam("userId") String userId) {
-		return jetOrderResource;
 	}
 
 }
