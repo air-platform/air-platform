@@ -37,7 +37,9 @@ public class AirTaxiServiceImpl extends AbstractProductService<AirTaxi> implemen
 
 	@Override
 	public AirTaxi createAirTaxi(String tenantId, AirTaxi airTaxi) {
-		return createProduct(tenantId, airTaxi);
+		AirTaxi created = createProduct(tenantId, airTaxi);
+		addAircraftItems(airTaxi, created);
+		return airTaxiRepository.save(created);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -60,6 +62,9 @@ public class AirTaxiServiceImpl extends AbstractProductService<AirTaxi> implemen
 		tgt.setArrivalLoc(src.getArrivalLoc());
 		tgt.setDeparture(src.getDeparture());
 		tgt.setDepartLoc(src.getDepartLoc());
+	}
+
+	private void addAircraftItems(AirTaxi src, AirTaxi tgt) {
 		Set<AircraftItem> aircraftItems = src.getAircraftItems();
 		if (aircraftItems != null) {
 			aircraftItems.stream().forEach(aircraftItem -> {

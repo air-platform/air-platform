@@ -92,7 +92,7 @@ public class AircraftItem extends Persistable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((aircraft == null) ? 0 : aircraft.getId().hashCode());
-		result = prime * result + ((product == null) ? 0 : product.getId().hashCode());
+		result = prime * result + ((product == null) ? 0 : product.isNew() ? 0 : product.getId().hashCode());
 		return result;
 	}
 

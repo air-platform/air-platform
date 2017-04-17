@@ -36,7 +36,9 @@ public class AirTourServiceImpl extends AbstractProductService<AirTour> implemen
 
 	@Override
 	public AirTour createAirTour(String tenantId, AirTour airTour) {
-		return createProduct(tenantId, airTour);
+		AirTour created = createProduct(tenantId, airTour);
+		addAircraftItems(airTour, created);
+		return airTourRepository.save(created);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -62,6 +64,9 @@ public class AirTourServiceImpl extends AbstractProductService<AirTour> implemen
 		tgt.setTraffic(src.getTraffic());
 		tgt.setName(src.getName());
 		tgt.setDescription(src.getDescription());
+	}
+
+	private void addAircraftItems(AirTour src, AirTour tgt) {
 		Set<AircraftItem> aircraftItems = src.getAircraftItems();
 		if (aircraftItems != null) {
 			aircraftItems.stream().forEach(aircraftItem -> {

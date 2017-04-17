@@ -12,6 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -45,6 +46,7 @@ public class Comment extends Persistable {
 	private String content;
 
 	// make comment on a product
+	@NotNull
 	@XmlJavaTypeAdapter(ProductAdapter.class)
 	@ManyToOne
 	@JoinColumn(name = "product_id", nullable = false)

@@ -39,7 +39,9 @@ public class AirTransportServiceImpl extends AbstractProductService<AirTransport
 
 	@Override
 	public AirTransport createAirTransport(String tenantId, AirTransport airTransport) {
-		return createProduct(tenantId, airTransport);
+		AirTransport created = createProduct(tenantId, airTransport);
+		addAircraftItems(airTransport, created);
+		return airTransportRepository.save(created);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -64,6 +66,9 @@ public class AirTransportServiceImpl extends AbstractProductService<AirTransport
 		tgt.setFamily(src.getFamily());
 		tgt.setTimeEstimation(src.getTimeEstimation());
 		tgt.setFlightRoute(src.getFlightRoute());
+	}
+
+	private void addAircraftItems(AirTransport src, AirTransport tgt) {
 		Set<AircraftItem> aircraftItems = src.getAircraftItems();
 		if (aircraftItems != null) {
 			aircraftItems.stream().forEach(aircraftItem -> {
@@ -73,7 +78,7 @@ public class AirTransportServiceImpl extends AbstractProductService<AirTransport
 					aircraftItem.setAircraft(aircraft);
 				}
 			});
-			tgt.setAircraftItems(src.getAircraftItems());
+			tgt.setAircraftItems(aircraftItems);
 		}
 	}
 
