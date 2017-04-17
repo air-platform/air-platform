@@ -306,8 +306,8 @@ public class AccountServiceImpl implements AccountService {
 			conn.disconnect();
 		}
 		catch (Exception e) {
-			// TODO handle ex
 			e.printStackTrace();
+			throw new AirException(Codes.INTERNAL_ERROR, "Failed to create NodeBB user:" + e.getMessage(), e);
 		}
 	}
 
@@ -324,7 +324,7 @@ public class AccountServiceImpl implements AccountService {
 			String json = Json.createObjectBuilder().add("uid", userID).add("new", newPassWord).add("_uid", "1").build()
 					.toString();
 			OutputStream os = conn.getOutputStream();
-			os.write(json.toString().getBytes());
+			os.write(json.getBytes());
 			os.flush();
 
 			int respCode = conn.getResponseCode();
@@ -335,8 +335,8 @@ public class AccountServiceImpl implements AccountService {
 			conn.disconnect();
 		}
 		catch (Exception e) {
-			// TODO handle ex
 			e.printStackTrace();
+			throw new AirException(Codes.INTERNAL_ERROR, "Failed to update NodeBB user password:" + e.getMessage(), e);
 		}
 	}
 
@@ -353,7 +353,7 @@ public class AccountServiceImpl implements AccountService {
 
 			String json = Json.createObjectBuilder().add("email", email).add("_uid", "1").build().toString();
 			OutputStream os = conn.getOutputStream();
-			os.write(json.toString().getBytes());
+			os.write(json.getBytes());
 			os.flush();
 
 			int respCode = conn.getResponseCode();
@@ -365,8 +365,8 @@ public class AccountServiceImpl implements AccountService {
 
 		}
 		catch (Exception e) {
-			// TODO handle ex
 			e.printStackTrace();
+			throw new AirException(Codes.INTERNAL_ERROR, "Failed to update NodeBB user email:" + e.getMessage(), e);
 		}
 	}
 
@@ -394,8 +394,8 @@ public class AccountServiceImpl implements AccountService {
 
 		}
 		catch (Exception e) {
-			// TODO handle ex
 			e.printStackTrace();
+			throw new AirException(Codes.INTERNAL_ERROR, "Failed to delete NodeBB user:" + e.getMessage(), e);
 		}
 	}
 
@@ -430,8 +430,8 @@ public class AccountServiceImpl implements AccountService {
 
 		}
 		catch (Exception e) {
-			// TODO handle ex
 			e.printStackTrace();
+			throw new AirException(Codes.INTERNAL_ERROR, "Failed to get NodeBB user ID:" + e.getMessage(), e);
 		}
 		return userID;
 	}
