@@ -83,6 +83,11 @@ public class AirTransportOrder extends VendorAwareOrder {
 	}
 
 	@Override
+	public Product getProduct() {
+		return airTransport;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTransportOrder [date=").append(date).append(", timeSlot=").append(timeSlot)

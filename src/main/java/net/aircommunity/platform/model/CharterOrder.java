@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -69,6 +70,19 @@ public class CharterOrder extends Order {
 			fleetCandidates.stream().filter(candidate -> candidate.getId().equals(fleetCandidateId)).findFirst()
 					.ifPresent(candidate -> candidate.setStatus(FleetCandidate.Status.SELECTED));
 		}
+	}
+
+	@Override
+	public Product getProduct() {
+		if (fleetCandidates == null || fleetCandidates.isEmpty()) {
+			return null;
+		}
+		Optional<FleetCandidate> candidate = fleetCandidates.stream()
+				.filter(fleetCandidate -> fleetCandidate.getStatus() == FleetCandidate.Status.SELECTED).findFirst();
+		if (candidate.isPresent()) {
+			return candidate.get().getFleet();
+		}
+		return null;
 	}
 
 	@Override

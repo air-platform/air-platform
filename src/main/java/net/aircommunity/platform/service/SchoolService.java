@@ -61,4 +61,11 @@ public interface SchoolService {
 	 */
 	void deleteSchool(@Nonnull String schoolId);
 
+	/**
+	 * Delete all Schools.
+	 * 
+	 * @param tenantId the tenantId
+	 */
+	void deleteSchools(@Nonnull String tenantId);
+
 }

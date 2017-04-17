@@ -1,112 +1,62 @@
 package net.aircommunity.platform.service;
 
-import net.aircommunity.platform.model.Course;
-import net.aircommunity.platform.model.Page;
+import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
+
+import net.aircommunity.platform.model.Course;
+import net.aircommunity.platform.model.Page;
 
 /**
  * Created by guankai on 11/04/2017.
  */
 public interface CourseService {
-    @Nonnull
-    Page<Course> getAllCourses(int page, int pageSize);
 
-    /**
-     * get all courses by school
-     *
-     * @param schoolId
-     * @param page
-     * @param pageSize
-     * @return
-     */
-    @Nonnull
-    Page<Course> getAllCourseBySchool(@Nonnull String schoolId, int page, int pageSize);
+	@Nonnull
+	Course createCourse(@Nonnull String schoolId, @Nonnull Course course);
 
-    /**
-     * get all courses by tenant
-     *
-     * @param tenantId
-     * @param page
-     * @param pageSize
-     * @return
-     */
-    @NotNull
-    Page<Course> getAllCourseByTenant(@Nonnull String tenantId, int page, int pageSize);
+	@Nonnull
+	Course findCourse(@Nonnull String courseId);
 
-    /**
-     * get courses by school the date between startDate and endDate
-     *
-     * @param schoolId
-     * @param page
-     * @param pageSize
-     * @return
-     */
-    @Nonnull
-    Page<Course> getCourseBySchool(@Nonnull String schoolId, int page, int pageSize);
+	@Nonnull
+	Course updateCourse(@Nonnull String courseId, @Nonnull Course newCourse);
 
-    /**
-     * get course by tenant the date between startDate and endDate
-     *
-     * @param tenantId
-     * @param page
-     * @param pageSize
-     * @return
-     */
-    @Nonnull
-    Page<Course> getCourseByTenant(@Nonnull String tenantId, int page, int pageSize);
+	/**
+	 * List all courses (of all tenants) for ADMIN
+	 */
+	@Nonnull
+	Page<Course> listCourses(int page, int pageSize);
 
-    /**
-     * get hot courses
-     *
-     * @param page
-     * @param pageSize
-     * @return
-     */
-    @Nonnull
-    Page<Course> getHotCourses(int page, int pageSize);
+	/**
+	 * List all courses for TENANT
+	 */
+	@Nonnull
+	Page<Course> listCourses(@Nonnull String tenantId, int page, int pageSize);
 
-    /**
-     * create a course
-     *
-     * @param course
-     * @param schoolId
-     * @param tenantId
-     * @return
-     */
-    @Nonnull
-    Course createCourse(@Nonnull Course course, @Nonnull String schoolId, @Nonnull String tenantId);
+	/**
+	 * List hot courses (top10 valid courses) for USER
+	 */
+	@Nonnull
+	List<Course> listTop10HotCourses();
 
-    /**
-     * update a course
-     *
-     * @param course
-     * @param schoolId
-     * @return
-     */
-    @Nonnull
-    Course updateCourse(@Nonnull Course course, @Nonnull String schoolId);
+	@Nonnull
+	Page<Course> listCoursesBySchool(@Nonnull String schoolId, int page, int pageSize);
 
-    /**
-     * delete a course
-     *
-     * @param courseId
-     */
-    @Nonnull
-    void deleteCourse(@Nonnull String courseId);
+	@Nonnull
+	Page<Course> listCoursesByAirType(@Nonnull String airType, int page, int pageSize);
 
-    /**
-     * get course by id
-     *
-     * @param courseId
-     * @return
-     */
-    @Nonnull
-    Course getCourseById(@Nonnull String courseId);
+	/**
+	 * delete a course
+	 *
+	 * @param courseId
+	 */
+	void deleteCourse(@Nonnull String courseId);
 
-    @Nonnull
-    Page<Course> getCourseByAirType(@Nonnull String airType, int page, int pageSize);
-
+	/**
+	 * delete all courses of a school
+	 *
+	 * @param schoolId
+	 */
+	void deleteCourses(@Nonnull String schoolId);
 
 }

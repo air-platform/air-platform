@@ -8,26 +8,28 @@ import javax.annotation.Nonnull;
  * Created by guankai on 13/04/2017.
  */
 public interface EnrollmentService {
-    @Nonnull
-    Page<Enrollment> getAllEnrollment(int page, int pageSize);
 
-    @Nonnull
-    Page<Enrollment> getEnrollmentByUser(String userId, int page, int pageSize);
+	@Nonnull
+	Enrollment createEnrollment(@Nonnull String userId, @Nonnull String courseId, @Nonnull Enrollment enrollment);
 
-    @Nonnull
-    Page<Enrollment> getEnrollmentByTenant(String tenantId, int page, int pageSize);
+	@Nonnull
+	Enrollment findEnrollment(@Nonnull String enrollmentId);
 
-    @Nonnull
-    Page<Enrollment> getEnrollmentByCourse(String courseId, int page, int pageSize);
+	@Nonnull
+	Enrollment cancelEnrollment(@Nonnull String enrollmentId);
 
-    @Nonnull
-    Enrollment createEnrollment(Enrollment enrollment, String courseId, String userId);
+	@Nonnull
+	Page<Enrollment> listEnrollments(int page, int pageSize);
 
-//    @Nonnull
-//    Enrollment updateEnrollment(Enrollment enrollment, String courseId, String userId);
+	@Nonnull
+	Page<Enrollment> listUserEnrollments(@Nonnull String userId, int page, int pageSize);
 
-    void deleteEnrollment(String enrollmentId);
+	@Nonnull
+	Page<Enrollment> listEnrollmentsForTenant(@Nonnull String tenantId, int page, int pageSize);
 
-    void cancelEnrollment(String enrollmentId);
+	@Nonnull
+	Page<Enrollment> listEnrollmentsByCourse(@Nonnull String courseId, int page, int pageSize);
+
+	void deleteEnrollment(@Nonnull String enrollmentId);
 
 }

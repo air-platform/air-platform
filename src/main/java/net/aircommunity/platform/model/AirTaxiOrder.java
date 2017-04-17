@@ -76,6 +76,11 @@ public class AirTaxiOrder extends VendorAwareOrder {
 	}
 
 	@Override
+	public Product getProduct() {
+		return airTaxi;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTaxiOrder [date=").append(date).append(", timeSlot=").append(timeSlot).append(", orderNo=")
@@ -84,4 +89,5 @@ public class AirTaxiOrder extends VendorAwareOrder {
 				.append(", note=").append(note).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
+
 }

@@ -55,6 +55,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		newOrder.setCreationDate(new Date());
 		newOrder.setStatus(Order.Status.PENDING);
+		newOrder.setCommented(false);
 		copyProperties(order, newOrder);
 		// set vendor
 		newOrder.setOwner(owner);

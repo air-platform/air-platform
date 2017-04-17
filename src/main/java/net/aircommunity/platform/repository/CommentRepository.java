@@ -32,7 +32,7 @@ public interface CommentRepository extends JpaRepository<Comment, String> {
 	 * @param pageable the page request
 	 * @return page of comment
 	 */
-	Page<Comment> findByProductId(String productId, Pageable pageable);
+	Page<Comment> findByProductIdOrderByDateDesc(String productId, Pageable pageable);
 
 	long deleteByProductId(String productId);
 

@@ -42,6 +42,9 @@ public abstract class Order extends Persistable {
 	@Enumerated(EnumType.STRING)
 	protected Status status;
 
+	@Column(name = "is_commented", nullable = false)
+	protected Boolean commented = Boolean.FALSE;
+
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
 	protected Date creationDate;
@@ -83,6 +86,14 @@ public abstract class Order extends Persistable {
 		this.status = status;
 	}
 
+	public Boolean getCommented() {
+		return commented;
+	}
+
+	public void setCommented(Boolean commented) {
+		this.commented = commented;
+	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -122,6 +133,9 @@ public abstract class Order extends Persistable {
 	public void setOwner(User owner) {
 		this.owner = owner;
 	}
+
+	// @XmlTransient
+	public abstract Product getProduct();
 
 	/**
 	 * Order status

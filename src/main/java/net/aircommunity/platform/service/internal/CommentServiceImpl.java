@@ -1,7 +1,6 @@
 package net.aircommunity.platform.service.internal;
 
 import java.util.Date;
-import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -14,9 +13,11 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Comment;
+import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.repository.CommentRepository;
+import net.aircommunity.platform.repository.OrderRepository;
 import net.aircommunity.platform.repository.ProductRepository;
 import net.aircommunity.platform.service.CommentService;
 
@@ -37,25 +38,46 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	@Resource
 	private ProductRepository productRepository;
 
+	@Resource
+	private OrderRepository orderRepository;
+
 	@Override
-	public boolean canComment(String accountId, String productId) {
-		Optional<Comment> comment = commentRepository.findByOwnerIdAndProductId(accountId, productId);
-		return false;
+	public boolean isCommentAllowed(String accountId, String orderId) {
+		Order order = findOrder(orderId);
+		boolean isOrderOwner = accountId.equals(order.getOwner().getId());
+		return !order.getCommented() && isOrderOwner;
 	}
 
 	@Override
-	public Comment createComment(String accountId, String productId, Comment comment) {
+	public Comment createComment(String accountId, String orderId, Comment comment) {
 		Account owner = findAccount(accountId, Account.class);
-		Product product = findProduct(productId);
+		Order order = findOrder(orderId);
+		boolean isOrderOwner = accountId.equals(order.getOwner().getId());
+		if (order.getCommented() || !isOrderOwner) {
+			throw new AirException(Codes.COMMENT_NOT_ALLOWED, String.format(
+					"Comment on order %s is not allowed, already commented or your are not order owner", orderId));
+		}
+		Product product = order.getProduct();
+		if (product == null) {
+			throw new AirException(Codes.PRODUCT_NOT_FOUND,
+					String.format("Comment failed, product of order %s not found", orderId));
+		}
 		// create new
 		Comment newComment = new Comment();
 		newComment.setDate(new Date());
 		newComment.setContent(comment.getContent());
 		newComment.setRate(comment.getRate());
-		// set vendor
 		newComment.setOwner(owner);
 		newComment.setProduct(product);
-		return commentRepository.save(newComment);
+		Comment savedComment = commentRepository.save(newComment);
+		double score = product.getScore();
+		if (savedComment.getRate() > 0) {
+			product.setScore((score + savedComment.getRate()) / 2.0);
+		}
+		order.setCommented(true);
+		orderRepository.save(order);
+		productRepository.save(product);
+		return savedComment;
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -68,17 +90,26 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		return comment;
 	}
 
-	private Product findProduct(String productId) {
-		Product product = productRepository.findOne(productId);
-		if (product == null) {
-			throw new AirException(Codes.PRODUCT_NOT_FOUND, String.format("Product %s is not found", productId));
+	private Order findOrder(String orderId) {
+		Order order = orderRepository.findOne(orderId);
+		if (order == null) {
+			throw new AirException(Codes.ORDER_NOT_FOUND, String.format("Order %s is not found", orderId));
 		}
-		return product;
+		return order;
 	}
+
+	// private Product findProduct(String productId) {
+	// Product product = productRepository.findOne(productId);
+	// if (product == null) {
+	// throw new AirException(Codes.PRODUCT_NOT_FOUND, String.format("Product %s is not found", productId));
+	// }
+	// return product;
+	// }
 
 	@Override
 	public Page<Comment> listComments(String productId, int page, int pageSize) {
-		return Pages.adapt(commentRepository.findByProductId(productId, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(
+				commentRepository.findByProductIdOrderByDateDesc(productId, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#commentId")
@@ -87,7 +118,7 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		commentRepository.delete(commentId);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteComments(String productId) {
 		commentRepository.deleteByProductId(productId);

@@ -59,6 +59,11 @@ public class FerryFlightOrder extends VendorAwareOrder {
 	}
 
 	@Override
+	public Product getProduct() {
+		return ferryFlight;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("FerryFlightOrder [passengers=").append(passengers).append(", orderNo=").append(orderNo)

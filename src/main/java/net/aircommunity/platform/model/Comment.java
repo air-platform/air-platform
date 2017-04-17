@@ -47,15 +47,15 @@ public class Comment extends Persistable {
 
 	// make comment on a product
 	@NotNull
-	@XmlJavaTypeAdapter(ProductAdapter.class)
 	@ManyToOne
 	@JoinColumn(name = "product_id", nullable = false)
+	@XmlJavaTypeAdapter(ProductAdapter.class)
 	private Product product;
 
 	// owner
-	@XmlJavaTypeAdapter(AccountAdapter.class)
 	@ManyToOne
 	@JoinColumn(name = "account_id", nullable = false)
+	@XmlJavaTypeAdapter(AccountAdapter.class)
 	private Account owner;
 
 	public int getRate() {

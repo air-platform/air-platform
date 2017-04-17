@@ -44,6 +44,11 @@ public class JetCardOrder extends VendorAwareOrder {
 	}
 
 	@Override
+	public Product getProduct() {
+		return jetCard;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("JetCardOrder [contact=").append(contact).append(", orderNo=").append(orderNo)

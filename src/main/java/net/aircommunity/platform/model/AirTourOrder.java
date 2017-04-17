@@ -76,6 +76,11 @@ public class AirTourOrder extends VendorAwareOrder {
 	}
 
 	@Override
+	public Product getProduct() {
+		return airTour;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTourOrder [date=").append(date).append(", timeSlot=").append(timeSlot).append(", orderNo=")
