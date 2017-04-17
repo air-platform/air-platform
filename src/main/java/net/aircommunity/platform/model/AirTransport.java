@@ -39,7 +39,6 @@ public class AirTransport extends Product {
 	private Set<AircraftItem> aircraftItems = new HashSet<>();
 
 	public AirTransport() {
-
 	}
 
 	public AirTransport(String id) {

@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import net.aircommunity.platform.model.constraint.NotEmpty;
+
 /**
  * Jet Card Product
  * 
@@ -15,6 +17,7 @@ public class JetCard extends PricedProduct {
 	private static final long serialVersionUID = 1L;
 
 	// card type
+	@NotEmpty
 	@Column(name = "type", nullable = false)
 	private String type;
 

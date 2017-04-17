@@ -8,6 +8,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import net.aircommunity.platform.model.constraint.NotEmpty;
 
 /**
  * Empty Legs, preferential charter.
@@ -24,10 +27,12 @@ public class FerryFlight extends PricedProduct {
 	// price: whole price (full load)
 
 	// Flight NO.
+	@NotEmpty
 	@Column(name = "flight_no", nullable = false, unique = true)
 	private String flightNo;
 
 	// e.g. Gulfstream 450
+	@NotEmpty
 	@Column(name = "aircraft_type", nullable = false)
 	private String aircraftType;
 
@@ -53,6 +58,7 @@ public class FerryFlight extends PricedProduct {
 	private int minPassengers;
 
 	// departure date, e.g. 2017-5-1
+	@NotNull
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "date", nullable = false)
 	private Date date;
@@ -61,7 +67,6 @@ public class FerryFlight extends PricedProduct {
 	@Column(name = "time_slot", nullable = false)
 	private String timeSlot;
 
-	// TODO a better name
 	// the image of this flight
 	@Column(name = "image")
 	private String image;

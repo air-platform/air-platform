@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * JetCard Order on a {@code JetCard}.
@@ -20,6 +21,7 @@ public class JetCardOrder extends VendorAwareOrder {
 	@Embedded
 	private Contact contact;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "jetcard_id", nullable = false)
 	private JetCard jetCard;

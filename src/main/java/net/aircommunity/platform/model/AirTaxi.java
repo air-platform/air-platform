@@ -1,8 +1,14 @@
 package net.aircommunity.platform.model;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * AirTaxi
@@ -11,9 +17,6 @@ import java.util.Set;
 @Table(name = "air_platfrom_airtaxi")
 public class AirTaxi extends Product {
 	private static final long serialVersionUID = 1L;
-
-	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private Set<AircraftItem> aircraftItems = new HashSet<>();
 
 	@Column(name = "departure", nullable = false)
 	private String departure;
@@ -26,6 +29,9 @@ public class AirTaxi extends Product {
 
 	@Column(name = "arrival_loc", nullable = false)
 	private String arrivalLoc;
+
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private Set<AircraftItem> aircraftItems = new HashSet<>();
 
 	public AirTaxi() {
 	}
@@ -75,5 +81,15 @@ public class AirTaxi extends Product {
 			aircraftItems.stream().forEach(item -> item.setProduct(this));
 			this.aircraftItems = aircraftItems;
 		}
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("AirTaxi [departure=").append(departure).append(", arrival=").append(arrival)
+				.append(", departLoc=").append(departLoc).append(", arrivalLoc=").append(arrivalLoc).append(", name=")
+				.append(name).append(", score=").append(score).append(", creationDate=").append(creationDate)
+				.append(", description=").append(description).append(", id=").append(id).append("]");
+		return builder.toString();
 	}
 }

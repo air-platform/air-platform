@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -36,10 +37,12 @@ public class AircraftItem extends Persistable {
 	@Enumerated(EnumType.STRING)
 	private CurrencyUnit currencyUnit = CurrencyUnit.RMB;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "aircraft_id")
 	private Aircraft aircraft;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;

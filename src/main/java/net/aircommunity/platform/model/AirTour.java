@@ -22,27 +22,28 @@ public class AirTour extends Product {
 
 	@Column(name = "city", nullable = false)
 	private String city;
-	@Column(name = "tour_point", nullable = false)
+
+	@Column(name = "tour_point")
 	private String tourPoint;
 
-	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private Set<AircraftItem> aircraftItems = new HashSet<>();
-
-	@Column(name = "tour_distance", nullable = false)
+	@Column(name = "tour_distance")
 	private String tourDistance;
 
-	@Column(name = "tour_time", nullable = false)
+	@Column(name = "tour_time")
 	private String tourTime;
 
 	@Lob
-	@Column(name = "tour_show", nullable = false)
+	@Column(name = "tour_show")
 	private String tourShow;
 
-	@Column(name = "boarding_loc", nullable = false)
+	@Column(name = "boarding_loc")
 	private String boardingLoc;
 
-	@Column(name = "traffic", nullable = false)
+	@Column(name = "traffic")
 	private String traffic;
+
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private Set<AircraftItem> aircraftItems = new HashSet<>();
 
 	public AirTour() {
 	}
@@ -65,17 +66,6 @@ public class AirTour extends Product {
 
 	public void setTourPoint(String tourPoint) {
 		this.tourPoint = tourPoint;
-	}
-
-	public Set<AircraftItem> getAircraftItems() {
-		return aircraftItems;
-	}
-
-	public void setAircraftItems(Set<AircraftItem> aircraftItems) {
-		if (aircraftItems != null) {
-			aircraftItems.stream().forEach(item -> item.setProduct(this));
-			this.aircraftItems = aircraftItems;
-		}
 	}
 
 	public String getTourDistance() {
@@ -116,5 +106,27 @@ public class AirTour extends Product {
 
 	public void setTraffic(String traffic) {
 		this.traffic = traffic;
+	}
+
+	public Set<AircraftItem> getAircraftItems() {
+		return aircraftItems;
+	}
+
+	public void setAircraftItems(Set<AircraftItem> aircraftItems) {
+		if (aircraftItems != null) {
+			aircraftItems.stream().forEach(item -> item.setProduct(this));
+			this.aircraftItems = aircraftItems;
+		}
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("AirTour [city=").append(city).append(", tourPoint=").append(tourPoint).append(", tourDistance=")
+				.append(tourDistance).append(", tourTime=").append(tourTime).append(", tourShow=").append(tourShow)
+				.append(", boardingLoc=").append(boardingLoc).append(", traffic=").append(traffic).append(", name=")
+				.append(name).append(", score=").append(score).append(", creationDate=").append(creationDate)
+				.append(", description=").append(description).append(", id=").append(id).append("]");
+		return builder.toString();
 	}
 }

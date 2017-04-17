@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by guankai on 15/04/2017.
@@ -23,6 +24,7 @@ public class AirTaxiOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	// departure date, e.g. 2017-5-1
+	@NotNull
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "date", nullable = false)
 	private Date date;
@@ -31,6 +33,7 @@ public class AirTaxiOrder extends VendorAwareOrder {
 	@Column(name = "time_slot", nullable = false)
 	private String timeSlot;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "airtaxi_id", nullable = false)
 	private AirTaxi airTaxi;
@@ -70,5 +73,15 @@ public class AirTaxiOrder extends VendorAwareOrder {
 	public void setAirTaxi(AirTaxi airTaxi) {
 		this.airTaxi = airTaxi;
 		this.vendor = airTaxi.getVendor();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("AirTaxiOrder [date=").append(date).append(", timeSlot=").append(timeSlot).append(", orderNo=")
+				.append(orderNo).append(", status=").append(status).append(", creationDate=").append(creationDate)
+				.append(", paymentDate=").append(paymentDate).append(", finishedDate=").append(finishedDate)
+				.append(", note=").append(note).append(", id=").append(id).append("]");
+		return builder.toString();
 	}
 }

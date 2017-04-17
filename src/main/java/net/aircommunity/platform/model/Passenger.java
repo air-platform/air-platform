@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import net.aircommunity.platform.model.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
@@ -23,14 +24,17 @@ public class Passenger extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// Passenger name
+	@NotEmpty
 	@Column(name = "name")
 	private String name;
 
 	// Passenger mobile
+	@NotEmpty
 	@Column(name = "mobile")
 	private String mobile;
 
 	// e.g. ID Card number
+	@NotEmpty
 	@Column(name = "identity")
 	private String identity;
 

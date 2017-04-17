@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
+import net.aircommunity.platform.model.constraint.NotEmpty;
+
 /**
  * Aircraft.
  * 
@@ -16,6 +18,7 @@ public class Aircraft extends Product {
 	private static final long serialVersionUID = 1L;
 
 	// Flight NO. global unique, e.g. 353252
+	@NotEmpty
 	@Column(name = "flight_no", nullable = false, unique = true)
 	private String flightNo;
 
