@@ -87,7 +87,7 @@ public class AirTourServiceImpl extends AbstractProductService<AirTour> implemen
 
 	@Override
 	public Page<AirTour> listAirTours(String tenantId, int page, int pageSize) {
-		return this.listAirTours(tenantId, page, pageSize);
+		return listTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Override

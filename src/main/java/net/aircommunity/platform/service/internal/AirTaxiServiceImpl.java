@@ -80,13 +80,13 @@ public class AirTaxiServiceImpl extends AbstractProductService<AirTaxi> implemen
 
 	@Override
 	public Page<AirTaxi> listAirTaxis(int page, int pageSize) {
-		return listAirTaxis(page, pageSize);
+		return listAllProducts(page, pageSize);
 	}
 
 	@Nonnull
 	@Override
 	public Page<AirTaxi> listAirTaxis(String tenantId, int page, int pageSize) {
-		return listAirTaxis(tenantId, page, pageSize);
+		return listTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Nonnull
