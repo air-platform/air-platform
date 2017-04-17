@@ -26,7 +26,7 @@ import net.aircommunity.rest.annotation.RESTful;
  * @author Bin.Zhang
  */
 @RESTful
-@PermitAll
+
 @Path("transports")
 public class AirTransportResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTransportResource.class);
@@ -42,6 +42,7 @@ public class AirTransportResource {
 	 * List all TODO query by
 	 */
 	@GET
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
@@ -54,6 +55,7 @@ public class AirTransportResource {
 	 * Find
 	 */
 	@GET
+	@PermitAll
 	@Path("{transportId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public AirTransport find(@PathParam("transportId") String transportId) {
