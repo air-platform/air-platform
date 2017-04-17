@@ -45,9 +45,9 @@ public abstract class Product extends Persistable {
 	@Column(name = "description")
 	protected String description;
 
-	@XmlJavaTypeAdapter(AccountAdapter.class)
 	@ManyToOne
 	@JoinColumn(name = "tenant_id", nullable = false)
+	@XmlJavaTypeAdapter(AccountAdapter.class)
 	protected Tenant vendor;
 
 	public String getName() {
