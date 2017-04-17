@@ -33,9 +33,9 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 	public Aircraft createAircraft(String tenantId, Aircraft aircraft) {
 		Tenant tenant = findAccount(tenantId, Tenant.class);
 		Aircraft aircraftExisting = aircraftRepository.findByFlightNo(aircraft.getFlightNo());
-		if (aircraftExisting == null) {
+		if (aircraftExisting != null) {
 			throw new AirException(Codes.AIRCRAFT_ALREADY_EXISTS,
-					String.format("Aircraft Flight NO: %s is not found", aircraft.getFlightNo()));
+					String.format("Aircraft Flight NO: %s already exist", aircraft.getFlightNo()));
 		}
 		// create new
 		Aircraft newAircraft = new Aircraft();
@@ -94,7 +94,7 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 		aircraftRepository.delete(aircraftId);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAircrafts(String tenantId) {
 		Tenant tenant = findAccount(tenantId, Tenant.class);
