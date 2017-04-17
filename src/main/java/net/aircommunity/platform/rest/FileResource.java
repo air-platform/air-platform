@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.nio.file.Paths;
 
 import javax.annotation.Resource;
-import javax.annotation.security.PermitAll;
 import javax.json.Json;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -27,6 +26,7 @@ import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.common.base.UUIDs;
 import net.aircommunity.platform.common.io.MoreFiles;
 import net.aircommunity.platform.model.FileUploadResult;
+import net.aircommunity.platform.model.StreamingImageFile;
 import net.aircommunity.platform.service.FileUploadService;
 import net.aircommunity.rest.annotation.Authenticated;
 import net.aircommunity.rest.annotation.RESTful;
@@ -59,9 +59,8 @@ public class FileResource {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-//	@Authenticated
-	@PermitAll
-	public Response uploadFileToCloud(@MultipartForm StreamingInputFile inputFile, @Context SecurityContext context) {
+	@Authenticated
+	public Response uploadFileToCloud(@MultipartForm StreamingImageFile inputFile, @Context SecurityContext context) {
 		try {
 			LOG.debug("Uploading file {} to cloud", inputFile.getFileName());
 			String extension = MoreFiles.getExtension(inputFile.getFileName());
