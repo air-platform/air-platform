@@ -1,56 +1,66 @@
 package net.aircommunity.platform.repository;
 
-import net.aircommunity.platform.model.Course;
-import net.aircommunity.platform.model.School;
-import net.aircommunity.platform.model.Tenant;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-import java.util.Date;
+import net.aircommunity.platform.model.Course;
 
 /**
  * Created by guankai on 12/04/2017.
  */
 public interface CourseRepository extends JpaRepository<Course, String> {
-    /**
-     * find courses by tenant
-     *
-     * @param tenant
-     * @param pageable
-     * @return
-     */
-    Page<Course> findByVendor(Tenant tenant, Pageable pageable);
 
-    /**
-     * find courses by school
-     * @param school
-     * @param pageable
-     * @return
-     */
-    Page<Course> findBySchool(School school, Pageable pageable);
+	// For ADMIN
 
-    /**
-     * find courses by school
-     *
-     * @param school
-     * @param pageable
-     * @return
-     */
-    @Query("select t from Course t where t.endDate >= :now and t.school = :sc order by t.startDate desc")
-    Page<Course> findBySchool2(@Param("sc") School school, @Param("now") Date now, Pageable pageable);
+	/**
+	 * List all courses
+	 */
+	Page<Course> findAllByOrderByStartDateDesc(Pageable pageable);
 
-    @Query("select t from Course t where t.endDate >= :now and t.vendor = :te order by t.startDate desc")
-    Page<Course> findByTenant2(@Param("te") Tenant tenant, @Param("now") Date now,Pageable pageable);
+	// For TENANT
 
-    /**
-     * get course by airType
-     * @param airType
-     * @param pageable
-     * @return
-     */
-    Page<Course> findByAirTypeContaining(String airType,Pageable pageable);
+	/**
+	 * List courses for tenant
+	 */
+	Page<Course> findByVendorIdOrderByStartDateDesc(String tenantId, Pageable pageable);
+
+	// For USER (always findByEndDateGreaterThan)
+
+	/**
+	 * Hot Top 10
+	 */
+	List<Course> findTop10ByEndDateGreaterThanEqualOrderByEnrollNumDesc(Date endDate);
+
+	/**
+	 * List courses for user (only valid courses), filter type airType
+	 */
+	Page<Course> findByEndDateGreaterThanEqualOrderByStartDateDesc(Date endDate, Pageable pageable);
+
+	Page<Course> findByEndDateGreaterThanEqualAndAirTypeContainingOrderByStartDateDesc(Date endDate, String airType,
+			Pageable pageable);
+
+	/**
+	 * List courses for user (only valid courses) of a school
+	 */
+	Page<Course> findBySchoolIdAndEndDateGreaterThanEqualOrderByStartDateDesc(String schoolId, Date endDate,
+			Pageable pageable);
+
+	long deleteBySchoolId(String schoolId);
+
+	// TODO REMOVE
+	// @Query("select t from Course t where t.endDate >= :now and t.school = :sc order by t.startDate desc")
+	// Page<Course> findBySchool2(@Param("sc") School school, @Param("now") Date now, Pageable pageable);
+	//
+	// @Query("select t from Course t where t.endDate >= :now and t.airType like %:airType% order by t.startDate desc")
+	// Page<Course> findValidCourses(@Param("airType") String airType, @Param("now") Date now, Pageable pageable);
+	//
+	// @Query("select t from #{#entityName} t where t.endDate >= :now and t.vendor = :te and t.airType like %:airType%
+	// order by t.startDate desc")
+	// Page<Course> findTenantValidCourses2(@Param("te") Tenant tenant, @Param("airType") String airType,
+	// @Param("now") Date now, Pageable pageable);
 
 }

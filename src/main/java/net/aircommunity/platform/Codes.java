@@ -54,7 +54,9 @@ public final class Codes {
 	public static final Code AIRTRANSPORT_ORDER_NOT_FOUND = Code.notFound(11_003_0002);
 
 	public static final Code COMMENT_NOT_FOUND = Code.notFound(11_003_0002);
+	public static final Code COMMENT_NOT_ALLOWED = Code.notAuthorized(11_003_0002);
 	public static final Code PRODUCT_NOT_FOUND = Code.notFound(11_003_0002);
+	public static final Code ORDER_NOT_FOUND = Code.notFound(11_003_0002);
 
 	// school
 	public static final Code SCHOOL_NOT_FOUND = Code.notFound(11_004_0001);

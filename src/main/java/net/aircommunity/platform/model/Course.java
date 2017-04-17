@@ -9,10 +9,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import net.aircommunity.platform.model.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
@@ -24,22 +26,20 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
 public class Course extends PricedProduct {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "image_url", nullable = false)
-	private String imageUrl;
-
+	@NotNull
 	@XmlJavaTypeAdapter(DateAdapter.class)
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "start_date", nullable = false)
 	private Date startDate;
 
+	@NotNull
 	@XmlJavaTypeAdapter(DateAdapter.class)
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "end_date", nullable = false)
 	private Date endDate;
 
-	@ManyToOne
-	@JoinColumn(name = "school_id", nullable = false)
-	private School school;
+	@Column(name = "image")
+	private String image;
 
 	@Column(name = "enrollment")
 	private String enrollment;
@@ -53,22 +53,21 @@ public class Course extends PricedProduct {
 	@Column(name = "enroll_num")
 	private int enrollNum;
 
+	@NotEmpty
 	@Column(name = "air_type", nullable = false)
 	private String airType;
 
+	@NotEmpty
 	@Column(name = "license", nullable = false)
 	private String license;
 
+	@NotEmpty
 	@Column(name = "location", nullable = false)
 	private String location;
 
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
+	@ManyToOne
+	@JoinColumn(name = "school_id", nullable = false)
+	private School school;
 
 	public Date getStartDate() {
 		return startDate;
@@ -84,14 +83,6 @@ public class Course extends PricedProduct {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
-	}
-
-	public School getSchool() {
-		return school;
-	}
-
-	public void setSchool(School school) {
-		this.school = school;
 	}
 
 	public String getEnrollment() {
@@ -150,4 +141,33 @@ public class Course extends PricedProduct {
 		this.location = location;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public School getSchool() {
+		return school;
+	}
+
+	public void setSchool(School school) {
+		this.school = school;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Course [startDate=").append(startDate).append(", endDate=").append(endDate).append(", image=")
+				.append(image).append(", enrollment=").append(enrollment).append(", courseService=")
+				.append(courseService).append(", totalNum=").append(totalNum).append(", enrollNum=").append(enrollNum)
+				.append(", airType=").append(airType).append(", license=").append(license).append(", location=")
+				.append(location).append(", price=").append(price).append(", currencyUnit=").append(currencyUnit)
+				.append(", name=").append(name).append(", score=").append(score).append(", creationDate=")
+				.append(creationDate).append(", description=").append(description).append(", id=").append(id)
+				.append("]");
+		return builder.toString();
+	}
 }

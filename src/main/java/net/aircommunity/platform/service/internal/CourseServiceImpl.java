@@ -1,21 +1,25 @@
 package net.aircommunity.platform.service.internal;
 
-import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.Course;
-import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.School;
-import net.aircommunity.platform.model.Tenant;
-import net.aircommunity.platform.repository.CourseRepository;
-import net.aircommunity.platform.repository.SchoolRepository;
-import net.aircommunity.platform.service.CourseService;
-import org.springframework.data.domain.Sort;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Resource;
-import java.util.Date;
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Course;
+import net.aircommunity.platform.model.CurrencyUnit;
+import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.School;
+import net.aircommunity.platform.repository.CourseRepository;
+import net.aircommunity.platform.service.CourseService;
+import net.aircommunity.platform.service.SchoolService;
 
 /**
  * Created by guankai on 12/04/2017.
@@ -23,123 +27,103 @@ import java.util.Date;
 @Service
 @Transactional
 public class CourseServiceImpl extends AbstractServiceSupport implements CourseService {
-    @Resource
-    private CourseRepository courseRepository;
-    @Resource
-    private SchoolRepository schoolRepository;
+	private static final String CACHE_NAME = "cache.course";
 
-    @Nonnull
-    @Override
-    public Page<Course> getAllCourses(int page, int pageSize) {
-        return Pages.adapt(courseRepository.findAll(Pages.createPageRequest(page, pageSize)));
-    }
+	@Resource
+	private CourseRepository courseRepository;
 
-    @Nonnull
-    @Override
-    public Page<Course> getCourseBySchool(@Nonnull String schoolId, int page, int pageSize) {
-        School school = schoolRepository.findOne(schoolId);
-        if (school == null) {
-            throw new AirException(Codes.SCHOOL_NOT_FOUND, String.format("school %s is not found", schoolId));
-        }
-        Date now = new Date();
-        return Pages.adapt(courseRepository.findBySchool2(school, now, Pages.createPageRequest(page, pageSize)));
-    }
+	@Resource
+	private SchoolService schoolService;
 
-    @Nonnull
-    @Override
-    public Page<Course> getCourseByTenant(@Nonnull String tenantId, int page, int pageSize) {
-        Tenant tenant = findAccount(tenantId, Tenant.class);
-        Date now = new Date();
-        return Pages.adapt(courseRepository.findByTenant2(tenant, now, Pages.createPageRequest(page, pageSize)));
-    }
+	@Override
+	public Course createCourse(String schoolId, Course course) {
+		School school = schoolService.findSchool(schoolId);
+		Course newCourse = new Course();
+		copyProperties(course, newCourse);
+		newCourse.setCreationDate(new Date());
+		newCourse.setEnrollNum(0);
+		newCourse.setVendor(school.getVendor());
+		newCourse.setSchool(school);
+		return courseRepository.save(newCourse);
+	}
 
-    @Nonnull
-    @Override
-    public Page<Course> getHotCourses(int page, int pageSize) {
-        Sort sort = new Sort(Sort.Direction.DESC, "enrollNum");
-        return Pages.adapt(courseRepository.findAll(Pages.createPageRequest(page, pageSize, sort)));
-    }
+	private void copyProperties(Course src, Course tgt) {
+		tgt.setName(src.getName());
+		tgt.setDescription(src.getDescription());
+		tgt.setAirType(src.getAirType());
+		tgt.setCourseService(src.getCourseService());
+		tgt.setEnrollment(src.getEnrollment());
+		tgt.setImage(src.getImage());
+		tgt.setLicense(src.getLicense());
+		tgt.setLocation(src.getLocation());
+		tgt.setStartDate(src.getStartDate());
+		tgt.setEndDate(src.getEndDate());
+		tgt.setTotalNum(src.getTotalNum());
+		tgt.setPrice(src.getPrice());
+		tgt.setCurrencyUnit(src.getCurrencyUnit() == null ? CurrencyUnit.RMB : src.getCurrencyUnit());
+	}
 
-    @Nonnull
-    @Override
-    public Course createCourse(@Nonnull Course course, @Nonnull String schoolId, @Nonnull String tenantId) {
-        School school = schoolRepository.findOne(schoolId);
-        if (school == null) {
-            throw new AirException(Codes.SCHOOL_NOT_FOUND, String.format("school %s is not found", schoolId));
-        }
-        Tenant tenant = findAccount(tenantId, Tenant.class);
-        course.setVendor(tenant);
-        course.setSchool(school);
-        Course courseCreated = courseRepository.save(course);
-        return courseCreated;
-    }
+	@Cacheable(cacheNames = CACHE_NAME)
+	@Override
+	public Course findCourse(String courseId) {
+		Course course = courseRepository.findOne(courseId);
+		if (course == null) {
+			throw new AirException(Codes.COURSE_NOT_FOUND, String.format("course %s not found", courseId));
+		}
+		return course;
+	}
 
-    @Nonnull
-    @Override
-    public Course updateCourse(@Nonnull Course request, @Nonnull String schoolId) {
-        Course course = courseRepository.findOne(request.getId());
-        if (course == null) {
-            throw new AirException(Codes.COURSE_NOT_FOUND, String.format("Course %s not found", request.getId()));
-        }
-        School school = schoolRepository.findOne(schoolId);
-        if (school == null) {
-            throw new AirException(Codes.SCHOOL_NOT_FOUND, String.format("school %s is not found", schoolId));
-        }
-        course.setSchool(school);
-        course.setAirType(request.getAirType());
-        course.setCourseService(request.getCourseService());
-        course.setEndDate(request.getEndDate());
-        course.setEnrollment(request.getEnrollment());
-        course.setLocation(request.getLocation());
-        course.setLicense(request.getLicense());
-        course.setTotalNum(request.getTotalNum());
-        course.setStartDate(request.getStartDate());
-        course.setCurrencyUnit(request.getCurrencyUnit());
-        course.setDescription(request.getDescription());
-        course.setName(request.getName());
-        course.setPrice(request.getPrice());
-        Course courseUpdate = courseRepository.save(course);
-        return courseUpdate;
-    }
+	@CachePut(cacheNames = CACHE_NAME, key = "#courseId")
+	@Override
+	public Course updateCourse(String courseId, Course newCourse) {
+		Course course = findCourse(courseId);
+		copyProperties(newCourse, course);
+		return courseRepository.save(course);
+	}
 
-    @Nonnull
-    @Override
-    public void deleteCourse(@Nonnull String courseId) {
-        Course course = courseRepository.findOne(courseId);
-        if (course != null) {
-            courseRepository.delete(course);
-        }
-    }
+	@Override
+	public Page<Course> listCourses(int page, int pageSize) {
+		return Pages.adapt(courseRepository.findAllByOrderByStartDateDesc(Pages.createPageRequest(page, pageSize)));
+	}
 
-    @Nonnull
-    @Override
-    public Page<Course> getAllCourseBySchool(@Nonnull String schoolId, int page, int pageSize) {
-        School school = schoolRepository.findOne(schoolId);
-        if (school == null) {
-            throw new AirException(Codes.SCHOOL_NOT_FOUND, String.format("school %s is not found", schoolId));
-        }
-        return Pages.adapt(courseRepository.findBySchool(school, Pages.createPageRequest(page, pageSize)));
-    }
+	@Override
+	public Page<Course> listCourses(String tenantId, int page, int pageSize) {
+		return Pages.adapt(
+				courseRepository.findByVendorIdOrderByStartDateDesc(tenantId, Pages.createPageRequest(page, pageSize)));
+	}
 
-    @Override
-    public Page<Course> getAllCourseByTenant(@Nonnull String tenantId, int page, int pageSize) {
-        Tenant tenant = findAccount(tenantId, Tenant.class);
-        return Pages.adapt(courseRepository.findByVendor(tenant, Pages.createPageRequest(page, pageSize)));
-    }
+	@Override
+	public List<Course> listTop10HotCourses() {
+		return courseRepository.findTop10ByEndDateGreaterThanEqualOrderByEnrollNumDesc(new Date());
+	}
 
-    @Nonnull
-    @Override
-    public Course getCourseById(@Nonnull String courseId) {
-        Course course = courseRepository.findOne(courseId);
-        if (course == null) {
-            throw new AirException(Codes.COURSE_NOT_FOUND, String.format("course %s not found", courseId));
-        }
-        return course;
-    }
+	@Override
+	public Page<Course> listCoursesBySchool(String schoolId, int page, int pageSize) {
+		return Pages.adapt(courseRepository.findBySchoolIdAndEndDateGreaterThanEqualOrderByStartDateDesc(schoolId,
+				new Date()/* now */, Pages.createPageRequest(page, pageSize)));
+	}
 
-    @Nonnull
-    @Override
-    public Page<Course> getCourseByAirType(@Nonnull String airType, int page, int pageSize) {
-        return Pages.adapt(courseRepository.findByAirTypeContaining(airType, Pages.createPageRequest(page, pageSize)));
-    }
+	@Override
+	public Page<Course> listCoursesByAirType(String airType, int page, int pageSize) {
+		Date now = new Date();
+		if (airType == null) {
+			return Pages.adapt(courseRepository.findByEndDateGreaterThanEqualOrderByStartDateDesc(now,
+					Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(courseRepository.findByEndDateGreaterThanEqualAndAirTypeContainingOrderByStartDateDesc(now,
+				airType, Pages.createPageRequest(page, pageSize)));
+	}
+
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#courseId")
+	@Override
+	public void deleteCourse(String courseId) {
+		courseRepository.delete(courseId);
+	}
+
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
+	@Override
+	public void deleteCourses(String schoolId) {
+		courseRepository.deleteBySchoolId(schoolId);
+	}
+
 }

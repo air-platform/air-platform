@@ -1,11 +1,17 @@
 package net.aircommunity.platform.model;
 
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import net.aircommunity.platform.model.constraint.NotEmpty;
+import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
  * Created by guankai on 11/04/2017.
@@ -16,49 +22,52 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class School extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "school_name", nullable = false)
-	private String schoolName;
+	@NotEmpty
+	@Column(name = "name", nullable = false)
+	private String name;
 
-	@Lob
-	@Column(name = "school_decs", nullable = false)
-	private String schoolDesc;
+	@Column(name = "image")
+	private String image;
 
-	@Column(name = "image_url", nullable = false)
-	private String imageUrl;
-
+	@NotEmpty
 	@Column(name = "address")
 	private String address;
 
+	@NotEmpty
 	@Column(name = "contact")
 	private String contact;
+
+	@Lob
+	@Column(name = "description")
+	private String description;
 
 	@XmlJavaTypeAdapter(AccountAdapter.class)
 	@ManyToOne
 	@JoinColumn(name = "tenant_id", nullable = false)
-	private Tenant tenant;
+	private Tenant vendor;
 
-	public String getSchoolName() {
-		return schoolName;
+	public String getName() {
+		return name;
 	}
 
-	public void setSchoolName(String schoolName) {
-		this.schoolName = schoolName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getSchoolDesc() {
-		return schoolDesc;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setSchoolDesc(String schoolDesc) {
-		this.schoolDesc = schoolDesc;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public String getImageUrl() {
-		return imageUrl;
+	public String getImage() {
+		return image;
 	}
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public String getAddress() {
@@ -77,12 +86,12 @@ public class School extends Persistable {
 		this.contact = contact;
 	}
 
-	public Tenant getTenant() {
-		return tenant;
+	public Tenant getVendor() {
+		return vendor;
 	}
 
-	public void setTenant(Tenant tenant) {
-		this.tenant = tenant;
+	public void setVendor(Tenant vendor) {
+		this.vendor = vendor;
 	}
 
 }

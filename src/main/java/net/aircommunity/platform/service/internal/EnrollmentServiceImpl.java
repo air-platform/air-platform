@@ -1,19 +1,26 @@
 package net.aircommunity.platform.service.internal;
 
-import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.*;
-import net.aircommunity.platform.repository.CourseRepository;
-import net.aircommunity.platform.repository.EnrollmentRepository;
-import net.aircommunity.platform.repository.SchoolRepository;
-import net.aircommunity.platform.service.EnrollmentService;
-import org.springframework.data.domain.Sort;
+import java.util.Date;
+
+import javax.annotation.Resource;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Resource;
-import java.util.Date;
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Course;
+import net.aircommunity.platform.model.Enrollment;
+import net.aircommunity.platform.model.Order;
+import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.User;
+import net.aircommunity.platform.repository.EnrollmentRepository;
+import net.aircommunity.platform.repository.SchoolRepository;
+import net.aircommunity.platform.service.CourseService;
+import net.aircommunity.platform.service.EnrollmentService;
 
 /**
  * Created by guankai on 13/04/2017.
@@ -21,93 +28,88 @@ import java.util.Date;
 @Service
 @Transactional
 public class EnrollmentServiceImpl extends AbstractServiceSupport implements EnrollmentService {
+	private static final String CACHE_NAME = "cache.course-enrollment";
 
-    @Resource
-    private EnrollmentRepository enrollmentRepository;
-    @Resource
-    private CourseRepository courseRepository;
-    @Resource
-    private SchoolRepository schoolRepository;
+	@Resource
+	private EnrollmentRepository enrollmentRepository;
 
-    @Nonnull
-    @Override
-    public Page<Enrollment> getAllEnrollment(int page, int pageSize) {
-        Sort sort = new Sort(Sort.Direction.DESC, "creationDate");
-        return Pages.adapt(enrollmentRepository.findAll(Pages.createPageRequest(page, pageSize, sort)));
-    }
+	@Resource
+	private CourseService courseService;
 
-    @Nonnull
-    @Override
-    public Page<Enrollment> getEnrollmentByUser(String userId, int page, int pageSize) {
-        Sort sort = new Sort(Sort.Direction.DESC, "creationDate");
-        return Pages.adapt(enrollmentRepository.findByOwnerId(userId, Pages.createPageRequest(page, pageSize, sort)));
-    }
+	@Resource
+	private SchoolRepository schoolRepository;
 
-    @Nonnull
-    @Override
-    public Page<Enrollment> getEnrollmentByTenant(String tenantId, int page, int pageSize) {
-        Sort sort = new Sort(Sort.Direction.DESC, "creationDate");
-        Tenant tenant = findAccount(tenantId, Tenant.class);
-        return Pages.adapt(enrollmentRepository.findByTenant(tenant, Pages.createPageRequest(page, pageSize, sort)));
-    }
+	@Override
+	public Enrollment createEnrollment(String userId, String courseId, Enrollment enrollment) {
+		User user = findAccount(userId, User.class);
+		Course course = courseService.findCourse(courseId);
 
-    @Nonnull
-    @Override
-    public Page<Enrollment> getEnrollmentByCourse(String courseId, int page, int pageSize) {
-        Sort sort = new Sort(Sort.Direction.DESC, "creationDate");
-        Course course = courseRepository.findOne(courseId);
-        if (course == null) {
-            throw new AirException(Codes.COURSE_NOT_FOUND, String.format("course %s not found", courseId));
-        }
-        return Pages.adapt(enrollmentRepository.findByCourse(course, Pages.createPageRequest(page, pageSize, sort)));
-    }
+		Enrollment newEnrollment = new Enrollment();
+		copyProperties(enrollment, newEnrollment);
+		newEnrollment.setCreationDate(new Date());
+		newEnrollment.setCommented(false);
+		newEnrollment.setStatus(Order.Status.PENDING);
+		//
+		newEnrollment.setOwner(user);
+		newEnrollment.setCourse(course);
+		return enrollmentRepository.save(newEnrollment);
+	}
 
-    @Nonnull
-    @Override
-    public Enrollment createEnrollment(Enrollment enrollment, String courseId, String userId) {
-        User user = findAccount(userId, User.class);
-        Course course = courseRepository.findOne(courseId);
-        if (course == null) {
-            throw new AirException(Codes.COURSE_NOT_FOUND, String.format("course %s not found", courseId));
-        }
-        Date now = new Date();
-        enrollment.setCreationDate(now);
-        enrollment.setStatus(Order.Status.PUBLISHED);
-        enrollment.setOwner(user);
-        enrollment.setCourse(course);
-        Enrollment enrollCreated = enrollmentRepository.save(enrollment);
-        return enrollCreated;
-    }
+	private void copyProperties(Enrollment src, Enrollment tgt) {
+		tgt.setAirType(src.getAirType());
+		tgt.setIdentity(src.getIdentity());
+		tgt.setLicense(src.getLicense());
+		tgt.setLocation(src.getLocation());
+		tgt.setNote(src.getNote());
+		tgt.setPerson(src.getPerson());
+	}
 
-//    @Nonnull
-//    @Override
-//    public Enrollment updateEnrollment(Enrollment enrollment, String courseId, String userId) {
-//        User user = findAccount(userId, User.class);
-//        Course course = courseRepository.findOne(courseId);
-//        if (course == null) {
-//            throw new AirException(Codes.COURSE_NOT_FOUND, String.format("course %s not found", courseId));
-//        }
-//        enrollment.setOwner(user);
-//        enrollment.setCourse(course);
-//        Enrollment enrollUpdated = enrollmentRepository.save(enrollment);
-//        return enrollUpdated;
-//    }
+	@Cacheable(cacheNames = CACHE_NAME)
+	@Override
+	public Enrollment findEnrollment(String enrollmentId) {
+		Enrollment enrollment = enrollmentRepository.findOne(enrollmentId);
+		if (enrollment == null) {
+			throw new AirException(Codes.ENROLLMENT_NOT_FOUND, String.format("Enrollment %s not found", enrollmentId));
+		}
+		return enrollment;
+	}
 
-    @Override
-    public void deleteEnrollment(String enrollmentId) {
-        Enrollment enrollment = enrollmentRepository.findOne(enrollmentId);
-        if (enrollment != null) {
-            enrollmentRepository.delete(enrollment);
-        }
-    }
+	@CachePut(cacheNames = CACHE_NAME, key = "#enrollmentId")
+	@Override
+	public Enrollment cancelEnrollment(String enrollmentId) {
+		Enrollment enrollment = findEnrollment(enrollmentId);
+		enrollment.setStatus(Order.Status.CANCELLED);
+		return enrollmentRepository.save(enrollment);
+	}
 
-    @Override
-    public void cancelEnrollment(String enrollmentId) {
-        Enrollment enrollment = enrollmentRepository.findOne(enrollmentId);
-        if (enrollment == null) {
-            throw new AirException(Codes.ENROLLMENT_NOT_FOUND, String.format("enrollment %s not found", enrollmentId));
-        }
-        enrollment.setStatus(Order.Status.CANCELLED);
-        enrollmentRepository.save(enrollment);
-    }
+	@Override
+	public Page<Enrollment> listEnrollments(int page, int pageSize) {
+		return Pages
+				.adapt(enrollmentRepository.findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<Enrollment> listUserEnrollments(String userId, int page, int pageSize) {
+		return Pages.adapt(enrollmentRepository.findByOwnerIdOrderByCreationDateDesc(userId,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<Enrollment> listEnrollmentsForTenant(String tenantId, int page, int pageSize) {
+		return Pages.adapt(enrollmentRepository.findByCourseVendorIdOrderByCreationDateDesc(tenantId,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<Enrollment> listEnrollmentsByCourse(String courseId, int page, int pageSize) {
+		return Pages.adapt(enrollmentRepository.findByCourseIdOrderByCreationDateDesc(courseId,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#enrollmentId")
+	@Override
+	public void deleteEnrollment(String enrollmentId) {
+		enrollmentRepository.delete(enrollmentId);
+	}
+
 }

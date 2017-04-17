@@ -8,33 +8,43 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import net.aircommunity.platform.model.constraint.NotEmpty;
+
 /**
+ * {@code Course} Enrollment of a {@code School}
+ * 
  * Created by guankai on 12/04/2017.
  */
 @Entity
 @XmlAccessorType(XmlAccessType.FIELD)
-@Table(name = "air_platform_enrollment")
+@Table(name = "air_platform_course_enrollment")
 public class Enrollment extends Order {
 	private static final long serialVersionUID = 1L;
 
+	@NotEmpty
 	@Column(name = "air_type", nullable = false)
 	private String airType;
 
+	@NotEmpty
 	@Column(name = "license", nullable = false)
 	private String license;
 
+	@NotEmpty
 	@Column(name = "location", nullable = false)
 	private String location;
+
+	// person name
+	@NotEmpty
+	@Column(name = "person", nullable = false)
+	private String person;
+
+	@NotEmpty
+	@Column(name = "identity")
+	private String identity;
 
 	@ManyToOne
 	@JoinColumn(name = "course_id", nullable = false)
 	private Course course;
-
-	@Column(name = "name")
-	private String name;
-
-	@Column(name = "identify")
-	private String identify;
 
 	public String getAirType() {
 		return airType;
@@ -68,20 +78,37 @@ public class Enrollment extends Order {
 		this.course = course;
 	}
 
-	public String getName() {
-		return name;
+	public String getPerson() {
+		return person;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setPerson(String person) {
+		this.person = person;
 	}
 
-	public String getIdentify() {
-		return identify;
+	public String getIdentity() {
+		return identity;
 	}
 
-	public void setIdentify(String identify) {
-		this.identify = identify;
+	public void setIdentity(String identity) {
+		this.identity = identity;
+	}
+
+	@Override
+	public Product getProduct() {
+		return course;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Enrollment [airType=").append(airType).append(", license=").append(license)
+				.append(", location=").append(location).append(", person=").append(person).append(", identity=")
+				.append(identity).append(", orderNo=").append(orderNo).append(", status=").append(status)
+				.append(", creationDate=").append(creationDate).append(", paymentDate=").append(paymentDate)
+				.append(", finishedDate=").append(finishedDate).append(", note=").append(note).append(", id=")
+				.append(id).append("]");
+		return builder.toString();
 	}
 
 }

@@ -181,4 +181,15 @@ public class UserResource {
 		return airTourOrderResource;
 	}
 
+	// ***********************
+	// Course
+	// ***********************
+	@Resource
+	private UserEnrollmentResource userEnrollmentResource;
+
+	@Path("course/enrollments")
+	public UserEnrollmentResource enrollments() {
+		return userEnrollmentResource;
+	}
+
 }

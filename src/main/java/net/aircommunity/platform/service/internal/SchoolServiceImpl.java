@@ -40,7 +40,7 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 		Tenant tenant = findAccount(tenantId, Tenant.class);
 		School newSchool = new School();
 		copyProperties(school, newSchool);
-		newSchool.setTenant(tenant);
+		newSchool.setVendor(tenant);
 		return schoolRepository.save(newSchool);
 	}
 
@@ -65,9 +65,9 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 	private void copyProperties(School src, School tgt) {
 		tgt.setAddress(src.getAddress());
 		tgt.setContact(src.getContact());
-		tgt.setImageUrl(src.getImageUrl());
-		tgt.setSchoolDesc(src.getSchoolDesc());
-		tgt.setSchoolName(src.getSchoolName());
+		tgt.setImage(src.getImage());
+		tgt.setDescription(src.getDescription());
+		tgt.setName(src.getName());
 	}
 
 	@Override
@@ -77,13 +77,18 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 
 	@Override
 	public Page<School> listSchools(String tenantId, int page, int pageSize) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		return Pages.adapt(schoolRepository.findByTenant(tenant, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(schoolRepository.findByVendorId(tenantId, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#schoolId")
 	@Override
 	public void deleteSchool(String schoolId) {
 		schoolRepository.delete(schoolId);
+	}
+
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
+	@Override
+	public void deleteSchools(String tenantId) {
+		schoolRepository.deleteByVendorId(tenantId);
 	}
 }

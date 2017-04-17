@@ -6,7 +6,6 @@ import javax.ws.rs.Path;
 
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.CommentResource;
-import net.aircommunity.platform.rest.SchoolResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.rest.annotation.RESTful;
 
@@ -97,11 +96,27 @@ public class TenantResource {
 	// ***********************
 
 	@Resource
-	private SchoolResource schoolResource;
+	private TenantSchoolResource tenantSchoolResource;
 
 	@Path("schools")
-	public SchoolResource schools() {
-		return schoolResource;
+	public TenantSchoolResource schools() {
+		return tenantSchoolResource;
+	}
+
+	@Resource
+	private TenantCourseResource tenantCourseResource;
+
+	@Path("courses")
+	public TenantCourseResource courses() {
+		return tenantCourseResource;
+	}
+
+	@Resource
+	private TenantEnrollmentResource tenantEnrollmentResource;
+
+	@Path("enrollments")
+	public TenantEnrollmentResource enrollments() {
+		return tenantEnrollmentResource;
 	}
 
 	// ***********************

@@ -98,7 +98,7 @@ public class AirTransportServiceImpl extends AbstractProductService<AirTransport
 		deleteProduct(airTransportId);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAirTransports(String tenantId) {
 		deleteProducts(tenantId);

@@ -31,14 +31,15 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.CommentResource;
-import net.aircommunity.platform.rest.SchoolResource;
 import net.aircommunity.platform.rest.tenant.TenantAirTaxiResource;
 import net.aircommunity.platform.rest.tenant.TenantAirTourResourse;
 import net.aircommunity.platform.rest.tenant.TenantAirTransportResource;
 import net.aircommunity.platform.rest.tenant.TenantAircraftResource;
+import net.aircommunity.platform.rest.tenant.TenantCourseResource;
 import net.aircommunity.platform.rest.tenant.TenantFerryFlightResource;
 import net.aircommunity.platform.rest.tenant.TenantFleetResource;
 import net.aircommunity.platform.rest.tenant.TenantJetCardResource;
+import net.aircommunity.platform.rest.tenant.TenantSchoolResource;
 import net.aircommunity.platform.rest.user.AirTaxiOrderResource;
 import net.aircommunity.platform.rest.user.AirTourOrderResource;
 import net.aircommunity.platform.rest.user.AirTransportOrderResource;
@@ -238,11 +239,19 @@ public class AdminResource {
 	// TODO
 	// school
 	@Resource
-	private SchoolResource schoolResource;
+	private TenantSchoolResource tenantSchoolResource;
 
 	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/schools")
-	public SchoolResource schools(@PathParam("tenantId") String tenantId) {
-		return schoolResource;
+	public TenantSchoolResource schools(@PathParam("tenantId") String tenantId) {
+		return tenantSchoolResource;
+	}
+
+	@Resource
+	private TenantCourseResource tenantCourseResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/courses")
+	public TenantCourseResource courses(@PathParam("tenantId") String tenantId) {
+		return tenantCourseResource;
 	}
 
 	// ***********************
