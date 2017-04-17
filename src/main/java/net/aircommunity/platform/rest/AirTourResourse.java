@@ -25,7 +25,7 @@ import net.aircommunity.rest.annotation.RESTful;
  * Created by guankai on 15/04/2017.
  */
 @RESTful
-@PermitAll
+
 @Path("tours")
 public class AirTourResourse {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTourResourse.class);
@@ -41,6 +41,7 @@ public class AirTourResourse {
 	 * List all TODO query by
 	 */
 	@GET
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listAll(@QueryParam("city") String city, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
@@ -59,6 +60,7 @@ public class AirTourResourse {
 	 * Find
 	 */
 	@GET
+	@PermitAll
 	@Path("{airTourId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public AirTour find(@PathParam("airTourId") String airTourId) {
