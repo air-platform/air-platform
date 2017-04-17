@@ -78,8 +78,17 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return order;
 	}
 
+	protected T findOrderByOrderNo(String orderNo) {
+		T order = getOrderRepository().findByOrderNo(orderNo);
+		if (order == null) {
+			throw new AirException(orderNotFoundCode(),
+					String.format("%s: NO: %s is not found", type.getSimpleName(), orderNo));
+		}
+		return order;
+	}
+
 	protected T updateOrder(String orderId, T newOrder) {
-		T order = findOrder(orderId);
+		T order = findOrder(orderId); // FIXME findOrder is NOT cached?
 		copyProperties(newOrder, order);
 		try {
 			return getOrderRepository().save(order);

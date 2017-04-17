@@ -1,7 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.Date;
-
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -10,15 +8,15 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.JetCard;
 import net.aircommunity.platform.model.JetCardOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.repository.JetCardOrderRepository;
+import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.JetCardOrderService;
 import net.aircommunity.platform.service.JetCardService;
 
@@ -29,8 +27,9 @@ import net.aircommunity.platform.service.JetCardService;
  */
 @Service
 @Transactional
-public class JetCardOrderServiceImpl extends AbstractServiceSupport implements JetCardOrderService {
-	private static final String CACHE_NAME = "cache.jetcardorder";
+public class JetCardOrderServiceImpl extends AbstractVendorAwareOrderService<JetCardOrder>
+		implements JetCardOrderService {
+	private static final String CACHE_NAME = "cache.jetcard-order";
 
 	@Resource
 	private JetCardOrderRepository jetCardOrderRepository;
@@ -39,37 +38,24 @@ public class JetCardOrderServiceImpl extends AbstractServiceSupport implements J
 	private JetCardService jetCardService;
 
 	@Override
-	public JetCardOrder createJetCardOrder(String userId, JetCardOrder jetCardOrder) {
-		User owner = findAccount(userId, User.class);
-		JetCardOrder newJetCardOrder = new JetCardOrder();
-		newJetCardOrder.setCreationDate(new Date());
-		newJetCardOrder.setStatus(Order.Status.PENDING);
-		copyProperties(jetCardOrder, newJetCardOrder);
-		// set vendor
-		newJetCardOrder.setOwner(owner);
-		return jetCardOrderRepository.save(newJetCardOrder);
+	public JetCardOrder createJetCardOrder(String userId, JetCardOrder order) {
+		return createOrder(userId, order);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
-	public JetCardOrder findJetCardOrder(String jetCardOrderId) {
-		JetCardOrder jetCardOrder = jetCardOrderRepository.findOne(jetCardOrderId);
-		if (jetCardOrder == null) {
-			throw new AirException(Codes.JETCARD_ORDER_NOT_FOUND,
-					String.format("JetCardOrder %s is not found", jetCardOrderId));
-		}
-		return jetCardOrder;
+	public JetCardOrder findJetCardOrder(String orderId) {
+		return findOrder(orderId);
 	}
 
-	@CachePut(cacheNames = CACHE_NAME, key = "#jetCardOrderId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public JetCardOrder updateJetCardOrder(String jetCardOrderId, JetCardOrder newJetCardOrder) {
-		JetCardOrder jetCardOrder = findJetCardOrder(jetCardOrderId);
-		copyProperties(newJetCardOrder, jetCardOrder);
-		return jetCardOrderRepository.save(jetCardOrder);
+	public JetCardOrder updateJetCardOrder(String orderId, JetCardOrder newOrder) {
+		return updateOrder(orderId, newOrder);
 	}
 
-	private void copyProperties(JetCardOrder src, JetCardOrder tgt) {
+	@Override
+	protected void copyProperties(JetCardOrder src, JetCardOrder tgt) {
 		tgt.setContact(src.getContact());
 		tgt.setNote(src.getNote());
 		JetCard jetCard = tgt.getJetCard();
@@ -79,54 +65,47 @@ public class JetCardOrderServiceImpl extends AbstractServiceSupport implements J
 		}
 	}
 
-	@CachePut(cacheNames = CACHE_NAME, key = "#jetCardOrderId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public JetCardOrder updateJetCardOrderStatus(String jetCardOrderId, Status status) {
-		JetCardOrder jetCardOrder = findJetCardOrder(jetCardOrderId);
-		jetCardOrder.setStatus(status);
-		return jetCardOrderRepository.save(jetCardOrder);
+	public JetCardOrder updateJetCardOrderStatus(String orderId, Status status) {
+		return updateOrderStatus(orderId, status);
 	}
 
 	@Override
 	public Page<JetCardOrder> listUserJetCardOrders(String userId, Order.Status status, int page, int pageSize) {
-		if (status == null) {
-			return Pages.adapt(jetCardOrderRepository.findByOwnerIdOrderByCreationDateDesc(userId,
-					Pages.createPageRequest(page, pageSize)));
-		}
-		return Pages.adapt(jetCardOrderRepository.findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
-				Pages.createPageRequest(page, pageSize)));
+		return listUserOrders(userId, status, page, pageSize);
 	}
 
 	@Override
 	public Page<JetCardOrder> listTenantJetCardOrders(String tenantId, Order.Status status, int page, int pageSize) {
-		if (status == null) {
-			return Pages.adapt(jetCardOrderRepository.findByVendorIdOrderByCreationDateDesc(tenantId,
-					Pages.createPageRequest(page, pageSize)));
-		}
-		return Pages.adapt(jetCardOrderRepository.findByVendorIdAndStatusOrderByCreationDateDesc(tenantId, status,
-				Pages.createPageRequest(page, pageSize)));
+		return listTenantOrders(tenantId, status, page, pageSize);
 	}
 
 	@Override
 	public Page<JetCardOrder> listJetCardOrders(Order.Status status, int page, int pageSize) {
-		if (status == null) {
-			return Pages.adapt(
-					jetCardOrderRepository.findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
-		}
-		return Pages.adapt(jetCardOrderRepository.findByStatusOrderByCreationDateDesc(status,
-				Pages.createPageRequest(page, pageSize)));
+		return listAllOrders(status, page, pageSize);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME, key = "#jetCardOrderId")
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public void deleteJetCardOrder(String jetCardOrderId) {
-		jetCardOrderRepository.delete(jetCardOrderId);
+	public void deleteJetCardOrder(String orderId) {
+		deleteOrder(orderId);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteJetCardOrders(String userId) {
-		jetCardOrderRepository.deleteByOwnerId(userId);
+		deleteOrders(userId);
+	}
+
+	@Override
+	protected VendorAwareOrderRepository<JetCardOrder> getOrderRepository() {
+		return jetCardOrderRepository;
+	}
+
+	@Override
+	protected Code orderNotFoundCode() {
+		return Codes.JETCARD_ORDER_NOT_FOUND;
 	}
 
 }

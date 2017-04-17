@@ -10,14 +10,14 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTransport;
 import net.aircommunity.platform.model.Aircraft;
 import net.aircommunity.platform.model.AircraftItem;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.repository.AirTransportRepository;
+import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.service.AirTransportService;
 import net.aircommunity.platform.service.AircraftService;
 
@@ -28,7 +28,7 @@ import net.aircommunity.platform.service.AircraftService;
  */
 @Service
 @Transactional
-public class AirTransportServiceImpl extends AbstractServiceSupport implements AirTransportService {
+public class AirTransportServiceImpl extends AbstractProductService<AirTransport> implements AirTransportService {
 	private static final String CACHE_NAME = "cache.airtransport";
 
 	@Resource
@@ -39,38 +39,26 @@ public class AirTransportServiceImpl extends AbstractServiceSupport implements A
 
 	@Override
 	public AirTransport createAirTransport(String tenantId, AirTransport airTransport) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		// create new
-		AirTransport newAirTransport = new AirTransport();
-		copyProperties(airTransport, newAirTransport);
-		// set vendor
-		newAirTransport.setVendor(tenant);
-		return airTransportRepository.save(newAirTransport);
+		return createProduct(tenantId, airTransport);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public AirTransport findAirTransport(String airTransportId) {
-		AirTransport airTransport = airTransportRepository.findOne(airTransportId);
-		if (airTransport == null) {
-			throw new AirException(Codes.AIRTRANSPORT_NOT_FOUND,
-					String.format("AirTransport %s is not found", airTransportId));
-		}
-		return airTransport;
+		return findProduct(airTransportId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#airTransportId")
 	@Override
 	public AirTransport updateAirTransport(String airTransportId, AirTransport newAirTransport) {
-		AirTransport AirTransport = findAirTransport(airTransportId);
-		copyProperties(newAirTransport, AirTransport);
-		return airTransportRepository.save(AirTransport);
+		return updateProduct(airTransportId, newAirTransport);
 	}
 
 	/**
 	 * Copy properties from src to tgt without ID
 	 */
-	private void copyProperties(AirTransport src, AirTransport tgt) {
+	@Override
+	protected void copyProperties(AirTransport src, AirTransport tgt) {
 		tgt.setName(src.getName());
 		tgt.setDescription(src.getDescription());
 		tgt.setFamily(src.getFamily());
@@ -91,26 +79,34 @@ public class AirTransportServiceImpl extends AbstractServiceSupport implements A
 
 	@Override
 	public Page<AirTransport> listAirTransports(String tenantId, int page, int pageSize) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		return Pages.adapt(airTransportRepository.findByVendor(tenant, Pages.createPageRequest(page, pageSize)));
+		return listTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Override
 	public Page<AirTransport> listAirTransports(int page, int pageSize) {
-		return Pages.adapt(airTransportRepository.findAll(Pages.createPageRequest(page, pageSize)));
+		return listAllProducts(page, pageSize);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTransportId")
 	@Override
 	public void deleteAirTransport(String airTransportId) {
-		airTransportRepository.delete(airTransportId);
+		deleteProduct(airTransportId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME)
 	@Override
 	public void deleteAirTransports(String tenantId) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		airTransportRepository.deleteByVendor(tenant);
+		deleteProducts(tenantId);
+	}
+
+	@Override
+	protected Code productNotFoundCode() {
+		return Codes.AIRTRANSPORT_NOT_FOUND;
+	}
+
+	@Override
+	protected BaseProductRepository<AirTransport> getProductRepository() {
+		return airTransportRepository;
 	}
 
 }

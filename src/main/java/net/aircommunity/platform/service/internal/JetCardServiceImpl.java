@@ -8,11 +8,11 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.JetCard;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Tenant;
+import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.JetCardRepository;
 import net.aircommunity.platform.service.JetCardService;
 
@@ -23,7 +23,7 @@ import net.aircommunity.platform.service.JetCardService;
  */
 @Service
 @Transactional
-public class JetCardServiceImpl extends AbstractServiceSupport implements JetCardService {
+public class JetCardServiceImpl extends AbstractProductService<JetCard> implements JetCardService {
 	private static final String CACHE_NAME = "cache.jetcard";
 
 	@Resource
@@ -31,37 +31,26 @@ public class JetCardServiceImpl extends AbstractServiceSupport implements JetCar
 
 	@Override
 	public JetCard createJetCard(String tenantId, JetCard jetCard) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		// create new
-		JetCard newCard = new JetCard();
-		copyProperties(jetCard, newCard);
-		// set vendor
-		newCard.setVendor(tenant);
-		return jetCardRepository.save(newCard);
+		return createProduct(tenantId, jetCard);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public JetCard findJetCard(String jetCardId) {
-		JetCard card = jetCardRepository.findOne(jetCardId);
-		if (card == null) {
-			throw new AirException(Codes.JETCARD_NOT_FOUND, String.format("JetCard %s is not found", jetCardId));
-		}
-		return card;
+		return findProduct(jetCardId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#jetCardId")
 	@Override
 	public JetCard updateJetCard(String jetCardId, JetCard newJetCard) {
-		JetCard card = findJetCard(jetCardId);
-		copyProperties(newJetCard, card);
-		return jetCardRepository.save(card);
+		return updateProduct(jetCardId, newJetCard);
 	}
 
 	/**
 	 * Copy properties from src to tgt without ID
 	 */
-	private void copyProperties(JetCard src, JetCard tgt) {
+	@Override
+	protected void copyProperties(JetCard src, JetCard tgt) {
 		tgt.setName(src.getName());
 		tgt.setType(src.getType());
 		tgt.setDescription(src.getDescription());
@@ -72,26 +61,34 @@ public class JetCardServiceImpl extends AbstractServiceSupport implements JetCar
 
 	@Override
 	public Page<JetCard> listJetCards(String tenantId, int page, int pageSize) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		return Pages.adapt(jetCardRepository.findByVendor(tenant, Pages.createPageRequest(page, pageSize)));
+		return listTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Override
 	public Page<JetCard> listJetCards(int page, int pageSize) {
-		return Pages.adapt(jetCardRepository.findAll(Pages.createPageRequest(page, pageSize)));
+		return listAllProducts(page, pageSize);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME)
 	@Override
 	public void deleteJetCard(String jetCardId) {
-		jetCardRepository.delete(jetCardId);
+		deleteProduct(jetCardId);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteJetCards(String tenantId) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		jetCardRepository.deleteByVendor(tenant);
+		deleteProducts(tenantId);
+	}
+
+	@Override
+	protected Code productNotFoundCode() {
+		return Codes.JETCARD_NOT_FOUND;
+	}
+
+	@Override
+	protected BaseProductRepository<JetCard> getProductRepository() {
+		return jetCardRepository;
 	}
 
 }

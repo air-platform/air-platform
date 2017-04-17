@@ -5,18 +5,19 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.Aircraft;
 import net.aircommunity.platform.model.AircraftItem;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.repository.AirTaxiRepository;
+import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.service.AirTaxiService;
 import net.aircommunity.platform.service.AircraftService;
 
@@ -25,7 +26,7 @@ import net.aircommunity.platform.service.AircraftService;
  */
 @Service
 @Transactional
-public class AirTaxiServiceImpl extends AbstractServiceSupport implements AirTaxiService {
+public class AirTaxiServiceImpl extends AbstractProductService<AirTaxi> implements AirTaxiService {
 	private static final String CACHE_NAME = "cache.airtaxi";
 
 	@Resource
@@ -35,33 +36,24 @@ public class AirTaxiServiceImpl extends AbstractServiceSupport implements AirTax
 	private AircraftService aircraftService;
 
 	@Override
-	public AirTaxi createAirTaxi(String tenantId, @Nonnull AirTaxi airTaxi) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		AirTaxi newAirTaxi = new AirTaxi();
-		copyProperties(airTaxi, newAirTaxi);
-		airTaxi.setVendor(tenant);
-		return airTaxiRepository.save(airTaxi);
+	public AirTaxi createAirTaxi(String tenantId, AirTaxi airTaxi) {
+		return createProduct(tenantId, airTaxi);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public AirTaxi findAirTaxi(String taxiId) {
-		AirTaxi airTaxi = airTaxiRepository.findOne(taxiId);
-		if (airTaxi == null) {
-			throw new AirException(Codes.TAXI_NOT_FOUND, String.format("air taxi %s not found...", taxiId));
-		}
-		return airTaxi;
+		return findProduct(taxiId);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME, key = "#taxiId")
 	@Override
 	public AirTaxi updateAirTaxi(String taxiId, AirTaxi newAirTaxi) {
-		AirTaxi airTaxi = findAirTaxi(taxiId);
-		copyProperties(newAirTaxi, airTaxi);
-		return airTaxiRepository.save(airTaxi);
+		return updateProduct(taxiId, newAirTaxi);
 	}
 
-	private void copyProperties(AirTaxi src, AirTaxi tgt) {
+	@Override
+	protected void copyProperties(AirTaxi src, AirTaxi tgt) {
 		tgt.setName(src.getName());
 		tgt.setDescription(src.getDescription());
 		tgt.setArrival(src.getArrival());
@@ -83,14 +75,13 @@ public class AirTaxiServiceImpl extends AbstractServiceSupport implements AirTax
 
 	@Override
 	public Page<AirTaxi> listAirTaxis(int page, int pageSize) {
-		return Pages.adapt(airTaxiRepository.findAll(Pages.createPageRequest(page, pageSize)));
+		return listAirTaxis(page, pageSize);
 	}
 
 	@Nonnull
 	@Override
 	public Page<AirTaxi> listAirTaxis(String tenantId, int page, int pageSize) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		return Pages.adapt(airTaxiRepository.findByVendor(tenant, Pages.createPageRequest(page, pageSize)));
+		return listAirTaxis(tenantId, page, pageSize);
 	}
 
 	@Nonnull
@@ -99,14 +90,26 @@ public class AirTaxiServiceImpl extends AbstractServiceSupport implements AirTax
 		return Pages.adapt(airTaxiRepository.findByDeparture(departure, Pages.createPageRequest(page, pageSize)));
 	}
 
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTaxiId")
 	@Override
 	public void deleteAirTaxi(String airTaxiId) {
-		airTaxiRepository.delete(airTaxiId);
+		deleteProduct(airTaxiId);
+	}
+
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
+	@Override
+	public void deleteAirTaxis(String tenantId) {
+		deleteProducts(tenantId);
 	}
 
 	@Override
-	public void deleteAirTaxis(String tenantId) {
-		airTaxiRepository.deleteByVendorId(tenantId);
+	protected Code productNotFoundCode() {
+		return Codes.TAXI_NOT_FOUND;
+	}
+
+	@Override
+	protected BaseProductRepository<AirTaxi> getProductRepository() {
+		return airTaxiRepository;
 	}
 
 }

@@ -5,17 +5,18 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTour;
 import net.aircommunity.platform.model.Aircraft;
 import net.aircommunity.platform.model.AircraftItem;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.repository.AirTourRepository;
+import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.service.AirTourService;
 import net.aircommunity.platform.service.AircraftService;
 
@@ -24,7 +25,7 @@ import net.aircommunity.platform.service.AircraftService;
  */
 @Service
 @Transactional
-public class AirTourServiceImpl extends AbstractServiceSupport implements AirTourService {
+public class AirTourServiceImpl extends AbstractProductService<AirTour> implements AirTourService {
 	private static final String CACHE_NAME = "cache.airtour";
 
 	@Resource
@@ -35,32 +36,23 @@ public class AirTourServiceImpl extends AbstractServiceSupport implements AirTou
 
 	@Override
 	public AirTour createAirTour(String tenantId, AirTour airTour) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		AirTour newAirTour = new AirTour();
-		copyProperties(airTour, newAirTour);
-		airTour.setVendor(tenant);
-		return airTourRepository.save(airTour);
+		return createProduct(tenantId, airTour);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public AirTour findAirTour(String airTourId) {
-		AirTour airTour = airTourRepository.findOne(airTourId);
-		if (airTour == null) {
-			throw new AirException(Codes.TOUR_NOT_FOUND, String.format("Air tour %s not found", airTourId));
-		}
-		return airTour;
+		return findProduct(airTourId);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME, key = "#airTourId")
 	@Override
 	public AirTour updateAirTour(String airTourId, AirTour newAirTour) {
-		AirTour airTour = findAirTour(airTourId);
-		copyProperties(newAirTour, airTour);
-		return airTourRepository.save(airTour);
+		return updateProduct(airTourId, newAirTour);
 	}
 
-	private void copyProperties(AirTour src, AirTour tgt) {
+	@Override
+	protected void copyProperties(AirTour src, AirTour tgt) {
 		tgt.setCity(src.getCity());
 		tgt.setTourDistance(src.getTourDistance());
 		tgt.setBoardingLoc(src.getBoardingLoc());
@@ -85,13 +77,12 @@ public class AirTourServiceImpl extends AbstractServiceSupport implements AirTou
 
 	@Override
 	public Page<AirTour> listAirTours(int page, int pageSize) {
-		return Pages.adapt(airTourRepository.findAll(Pages.createPageRequest(page, pageSize)));
+		return listAllProducts(page, pageSize);
 	}
 
 	@Override
 	public Page<AirTour> listAirTours(String tenantId, int page, int pageSize) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		return Pages.adapt(airTourRepository.findByVendor(tenant, Pages.createPageRequest(page, pageSize)));
+		return this.listAirTours(tenantId, page, pageSize);
 	}
 
 	@Override
@@ -99,14 +90,26 @@ public class AirTourServiceImpl extends AbstractServiceSupport implements AirTou
 		return Pages.adapt(airTourRepository.findByCity(city, Pages.createPageRequest(page, pageSize)));
 	}
 
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTourId")
 	@Override
 	public void deleteAirTour(String airTourId) {
-		airTourRepository.delete(airTourId);
+		deleteProduct(airTourId);
+	}
+
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
+	@Override
+	public void deleteAirTours(String tenantId) {
+		deleteProducts(tenantId);
 	}
 
 	@Override
-	public void deleteAirTours(String tenantId) {
-		airTourRepository.deleteByVendorId(tenantId);
+	protected Code productNotFoundCode() {
+		return Codes.TOUR_NOT_FOUND;
+	}
+
+	@Override
+	protected BaseProductRepository<AirTour> getProductRepository() {
+		return airTourRepository;
 	}
 
 }

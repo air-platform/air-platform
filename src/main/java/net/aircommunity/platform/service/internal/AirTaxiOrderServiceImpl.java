@@ -106,7 +106,7 @@ public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 		deleteOrder(orderId);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAirTaxiOrders(String userId) {
 		deleteOrders(userId);

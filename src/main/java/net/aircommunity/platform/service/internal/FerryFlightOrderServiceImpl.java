@@ -95,7 +95,7 @@ public class FerryFlightOrderServiceImpl extends AbstractVendorAwareOrderService
 		deleteOrder(orderId);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteFerryFlightOrders(String userId) {
 		deleteOrders(userId);

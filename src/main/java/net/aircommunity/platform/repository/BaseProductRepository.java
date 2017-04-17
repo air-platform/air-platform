@@ -16,13 +16,21 @@ import net.aircommunity.platform.model.Tenant;
 public interface BaseProductRepository<T extends Product> extends JpaRepository<T, String> {
 
 	/**
+	 * Find all products.
+	 * 
+	 * @param pageable the page request
+	 * @return page of products
+	 */
+	Page<T> findAllByOrderByCreationDateDesc(Pageable pageable);
+
+	/**
 	 * Find by products by vendor.
 	 * 
 	 * @param vendor the vendor
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<T> findByVendor(Tenant vendor, Pageable pageable);
+	Page<T> findByVendorOrderByCreationDateDesc(Tenant vendor, Pageable pageable);
 
 	/**
 	 * Find by products by vendor.
@@ -31,7 +39,7 @@ public interface BaseProductRepository<T extends Product> extends JpaRepository<
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<T> findByVendorId(String tenantId, Pageable pageable);
+	Page<T> findByVendorIdOrderByCreationDateDesc(String tenantId, Pageable pageable);
 
 	/**
 	 * Delete all the orders of a vendor.

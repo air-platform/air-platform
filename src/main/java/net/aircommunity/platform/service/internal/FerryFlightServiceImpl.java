@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Tenant;
+import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.FerryFlightRepository;
 import net.aircommunity.platform.service.FerryFlightService;
 
@@ -23,7 +24,7 @@ import net.aircommunity.platform.service.FerryFlightService;
  */
 @Service
 @Transactional
-public class FerryFlightServiceImpl extends AbstractServiceSupport implements FerryFlightService {
+public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> implements FerryFlightService {
 	private static final String CACHE_NAME = "cache.ferryflight";
 
 	@Resource
@@ -31,43 +32,32 @@ public class FerryFlightServiceImpl extends AbstractServiceSupport implements Fe
 
 	@Override
 	public FerryFlight createFerryFlight(String tenantId, FerryFlight ferryFlight) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
+		// TODO shared
 		FerryFlight existing = ferryFlightRepository.findByFlightNo(ferryFlight.getFlightNo());
 		if (existing != null) {
 			throw new AirException(Codes.FERRYFLIGHTI_ALREADY_EXISTS,
 					String.format("FerryFlight Flight NO: %s is already exists", ferryFlight.getFlightNo()));
 		}
-		// create new
-		FerryFlight newFerryFlight = new FerryFlight();
-		copyProperties(ferryFlight, newFerryFlight);
-		// set vendor
-		newFerryFlight.setVendor(tenant);
-		return ferryFlightRepository.save(newFerryFlight);
+		return createProduct(tenantId, ferryFlight);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public FerryFlight findFerryFlight(String ferryFlightId) {
-		FerryFlight ferryFlight = ferryFlightRepository.findOne(ferryFlightId);
-		if (ferryFlight == null) {
-			throw new AirException(Codes.FERRYFLIGHTI_NOT_FOUND,
-					String.format("FerryFlight %s is not found", ferryFlightId));
-		}
-		return ferryFlight;
+		return findProduct(ferryFlightId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#ferryFlightId")
 	@Override
 	public FerryFlight updateFerryFlight(String ferryFlightId, FerryFlight newFerryFlight) {
-		FerryFlight ferryFlight = findFerryFlight(ferryFlightId);
-		copyProperties(newFerryFlight, ferryFlight);
-		return ferryFlightRepository.save(ferryFlight);
+		return updateProduct(ferryFlightId, newFerryFlight);
 	}
 
 	/**
 	 * Copy properties from src to tgt without ID
 	 */
-	private void copyProperties(FerryFlight src, FerryFlight tgt) {
+	@Override
+	protected void copyProperties(FerryFlight src, FerryFlight tgt) {
 		tgt.setAircraftType(src.getAircraftType());
 		tgt.setArrival(src.getArrival());
 		tgt.setTimeSlot(src.getTimeSlot());
@@ -86,26 +76,34 @@ public class FerryFlightServiceImpl extends AbstractServiceSupport implements Fe
 
 	@Override
 	public Page<FerryFlight> listFerryFlights(String tenantId, int page, int pageSize) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		return Pages.adapt(ferryFlightRepository.findByVendor(tenant, Pages.createPageRequest(page, pageSize)));
+		return listTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Override
 	public Page<FerryFlight> listFerryFlights(int page, int pageSize) {
-		return Pages.adapt(ferryFlightRepository.findAll(Pages.createPageRequest(page, pageSize)));
+		return listAllProducts(page, pageSize);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#ferryFlightId")
 	@Override
 	public void deleteFerryFlight(String ferryFlightId) {
-		ferryFlightRepository.delete(ferryFlightId);
+		deleteProduct(ferryFlightId);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteFerryFlights(String tenantId) {
-		Tenant tenant = findAccount(tenantId, Tenant.class);
-		ferryFlightRepository.deleteByVendor(tenant);
+		deleteProducts(tenantId);
+	}
+
+	@Override
+	protected Code productNotFoundCode() {
+		return Codes.FERRYFLIGHTI_NOT_FOUND;
+	}
+
+	@Override
+	protected BaseProductRepository<FerryFlight> getProductRepository() {
+		return ferryFlightRepository;
 	}
 
 }

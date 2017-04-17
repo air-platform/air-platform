@@ -1,5 +1,7 @@
 package net.aircommunity.platform.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -7,6 +9,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -32,6 +36,10 @@ public abstract class Product extends Persistable {
 	@Column(name = "score", nullable = false)
 	protected double score;
 
+	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "creation_date", nullable = false)
+	protected Date creationDate;
+
 	// product description
 	@Lob
 	@Column(name = "description")
@@ -56,6 +64,14 @@ public abstract class Product extends Persistable {
 
 	public void setScore(double score) {
 		this.score = score;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 
 	public String getDescription() {
