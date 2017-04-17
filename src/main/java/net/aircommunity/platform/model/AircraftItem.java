@@ -11,6 +11,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import net.aircommunity.platform.model.jaxb.ProductAdapter;
 
 /**
  * Aircraft Item
@@ -45,6 +48,7 @@ public class AircraftItem extends Persistable {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "product_id")
+	@XmlJavaTypeAdapter(ProductAdapter.class)
 	private Product product;
 
 	public int getPrice() {
