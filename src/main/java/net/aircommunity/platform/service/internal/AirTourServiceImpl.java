@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +48,7 @@ public class AirTourServiceImpl extends AbstractProductService<AirTour> implemen
 		return findProduct(airTourId);
 	}
 
-	@Cacheable(cacheNames = CACHE_NAME, key = "#airTourId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#airTourId")
 	@Override
 	public AirTour updateAirTour(String airTourId, AirTour newAirTour) {
 		return updateProduct(airTourId, newAirTour);

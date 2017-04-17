@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -36,7 +37,13 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	@Resource
 	private ProductRepository productRepository;
 
-	// @Override
+	@Override
+	public boolean canComment(String accountId, String productId) {
+		Optional<Comment> comment = commentRepository.findByOwnerIdAndProductId(accountId, productId);
+		return false;
+	}
+
+	@Override
 	public Comment createComment(String accountId, String productId, Comment comment) {
 		Account owner = findAccount(accountId, Account.class);
 		Product product = findProduct(productId);

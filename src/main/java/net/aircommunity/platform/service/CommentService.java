@@ -14,8 +14,18 @@ import net.aircommunity.platform.model.Page;
 public interface CommentService {
 
 	/**
+	 * Check if the account can comment on the product.
+	 * 
+	 * @param accountId the accountId
+	 * @param productId the productId
+	 * @return true if the account can comment on the product, false otherwise
+	 */
+	boolean canComment(@Nonnull String accountId, @Nonnull String productId);
+
+	/**
 	 * Create a Comment.
 	 * 
+	 * @param accountId the accountId
 	 * @param productId the productId
 	 * @param comment the comment to be created
 	 * @return Comment created

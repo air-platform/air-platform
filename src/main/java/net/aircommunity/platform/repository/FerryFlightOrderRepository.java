@@ -12,4 +12,7 @@ import net.aircommunity.platform.model.FerryFlightOrder;
  */
 public interface FerryFlightOrderRepository extends VendorAwareOrderRepository<FerryFlightOrder> {
 
+	// XXX
+	// long countByOwnerIdAndProductId(String userId, String productId);
+
 }

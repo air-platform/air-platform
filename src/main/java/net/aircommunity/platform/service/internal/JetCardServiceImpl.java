@@ -69,7 +69,7 @@ public class JetCardServiceImpl extends AbstractProductService<JetCard> implemen
 		return listAllProducts(page, pageSize);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME)
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#jetCardId")
 	@Override
 	public void deleteJetCard(String jetCardId) {
 		deleteProduct(jetCardId);
