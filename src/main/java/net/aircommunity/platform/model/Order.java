@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import net.aircommunity.platform.common.base.UUIDs;
+import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
@@ -32,9 +32,11 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
 public abstract class Order extends Persistable {
 	private static final long serialVersionUID = 1L;
 
+	private static final transient OrderNoGenerator ORDERNO_GENERATOR = OrderNoGenerator.INSTANCE;
+
 	// Order Number
 	@Column(name = "order_no", nullable = false, unique = true)
-	protected String orderNo;
+	protected Long orderNo;
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -65,17 +67,12 @@ public abstract class Order extends Persistable {
 	@PrePersist
 	private void generateOrderNo() {
 		if (orderNo == null) {
-			// TODO a reasonable order number generation
-			orderNo = UUIDs.shortTimebased();
+			orderNo = ORDERNO_GENERATOR.nextOrderNo();
 		}
 	}
 
-	public String getOrderNo() {
+	public Long getOrderNo() {
 		return orderNo;
-	}
-
-	public void setOrderNo(String orderNo) {
-		this.orderNo = orderNo;
 	}
 
 	public Status getStatus() {
