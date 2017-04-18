@@ -30,6 +30,7 @@ public final class Codes {
 	public static final Code ACCOUNT_NOT_FOUND = Code.notFound(11_001_0006);
 	public static final Code ACCOUNT_ALREADY_EXISTS = Code.alreadyExists(11_001_0007);
 	public static final Code ACCOUNT_MOBILE_ALREADY_EXISTS = Code.alreadyExists(11_001_0008);
+	public static final Code ACCOUNT_MOBILE_NOT_FOUND = Code.notFound(11_001_0008);
 	public static final Code ACCOUNT_EMAIL_ALREADY_EXISTS = Code.alreadyExists(11_001_0009);
 	public static final Code ACCOUNT_USERNAME_ALREADY_EXISTS = Code.alreadyExists(11_001_0010);
 	public static final Code ACCOUNT_EMAIL_NOT_BIND = Code.notAuthorized(11_001_0011);

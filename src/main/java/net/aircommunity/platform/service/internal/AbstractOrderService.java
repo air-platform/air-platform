@@ -4,6 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Date;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.User;
@@ -25,6 +27,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractOrderService.class);
 
 	protected Class<T> type;
+
+	@Resource
+	private OrderNoGenerator orderNoGenerator;
 
 	@PostConstruct
 	@SuppressWarnings("unchecked")
@@ -56,6 +61,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		newOrder.setCreationDate(new Date());
 		newOrder.setStatus(Order.Status.PENDING);
 		newOrder.setCommented(false);
+		newOrder.setOrderNo(orderNoGenerator.next());
 		copyProperties(order, newOrder);
 		// set vendor
 		newOrder.setOwner(owner);

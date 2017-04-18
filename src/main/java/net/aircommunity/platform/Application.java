@@ -21,6 +21,7 @@ import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
+import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.common.crypto.bcrypt.BCryptPasswordEncoder;
 import net.aircommunity.platform.common.crypto.password.PasswordEncoder;
 import net.aircommunity.platform.repository.SettingsRepository;
@@ -53,6 +54,12 @@ public class Application {
 
 	private static final String KEY_ID = "air.access_token_key";
 
+	@Value("${air.dc-id}")
+	private long datacenterId;
+
+	@Value("${air.node-id}")
+	private long nodeId;
+
 	@Value("${air.security.access-token-expiration-time}")
 	private long expirationTimeSeconds = 60 * 60 * 24 * 7; // 7 Days
 
@@ -61,6 +68,11 @@ public class Application {
 
 	@Resource
 	private TokenVerificationService appkeyVerificationService;
+
+	@Bean
+	public OrderNoGenerator orderNoGenerator() {
+		return new OrderNoGenerator(datacenterId, nodeId);
+	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {

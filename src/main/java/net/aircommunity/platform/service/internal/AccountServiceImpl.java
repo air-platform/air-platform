@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -517,7 +518,8 @@ public class AccountServiceImpl implements AccountService {
 		if (account.getRole() != Role.USER) {
 			return Collections.emptyList();
 		}
-		return User.class.cast(account).getAddresses();
+		List<Address> addresses = User.class.cast(account).getAddresses();
+		return addresses.stream().collect(Collectors.toList());
 	}
 
 	@Override
@@ -550,7 +552,8 @@ public class AccountServiceImpl implements AccountService {
 		if (account.getRole() != Role.USER) {
 			return Collections.emptyList();
 		}
-		return User.class.cast(account).getPassengers();
+		List<Passenger> passengers = User.class.cast(account).getPassengers();
+		return passengers.stream().collect(Collectors.toList());
 	}
 
 	@Override
@@ -684,6 +687,17 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Account resetPasswordTo(String accountId, String newPassword) {
 		Account account = findAccount(accountId);
+		account.setPassword(passwordEncoder.encode(newPassword));
+		return accountRepository.save(account);
+	}
+
+	@Override
+	public Account resetPasswordViaMobile(String mobile, String newPassword) {
+		AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(AuthType.MOBILE, mobile);
+		if (auth == null) {
+			throw new AirException(Codes.ACCOUNT_MOBILE_NOT_FOUND, String.format("Mobile %s not found", mobile));
+		}
+		Account account = auth.getAccount();
 		account.setPassword(passwordEncoder.encode(newPassword));
 		return accountRepository.save(account);
 	}

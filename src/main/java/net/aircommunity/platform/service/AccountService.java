@@ -8,8 +8,8 @@ import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Account;
-import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.Account.Status;
+import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.Address;
 import net.aircommunity.platform.model.Page;
@@ -230,6 +230,16 @@ public interface AccountService {
 	 */
 	@Nonnull
 	Account resetPasswordTo(@Nonnull String accountId, @Nonnull String newPassword);
+
+	/**
+	 * Reset password to a new password
+	 * 
+	 * @param mobile the mobile
+	 * @param newPassword the newPassword
+	 * @return update account
+	 */
+	@Nonnull
+	Account resetPasswordViaMobile(@Nonnull String mobile, @Nonnull String newPassword);
 
 	/**
 	 * Reset password with a random value and send via email
