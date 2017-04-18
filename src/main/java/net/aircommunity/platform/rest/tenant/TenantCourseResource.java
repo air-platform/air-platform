@@ -51,9 +51,8 @@ public class TenantCourseResource {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response create(@NotNull @QueryParam("school") String schoolId, @NotNull @Valid Course request,
-			@Context UriInfo uriInfo) {
-		Course created = courseService.createCourse(schoolId, request);
+	public Response create(@NotNull @Valid Course request, @Context UriInfo uriInfo) {
+		Course created = courseService.createCourse(request.getSchool().getId(), request);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created: {}", uri);
 		return Response.created(uri).build();
@@ -95,7 +94,7 @@ public class TenantCourseResource {
 	 * Delete
 	 */
 	@DELETE
-	@Path("{jetCardId}")
+	@Path("{courseId}")
 	public Response delete(@PathParam("courseId") String courseId) {
 		courseService.deleteCourse(courseId);
 		return Response.noContent().build();
