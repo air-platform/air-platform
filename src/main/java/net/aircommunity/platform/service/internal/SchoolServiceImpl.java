@@ -68,6 +68,7 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 		tgt.setImage(src.getImage());
 		tgt.setDescription(src.getDescription());
 		tgt.setName(src.getName());
+		tgt.setBaseDesc(src.getBaseDesc());
 	}
 
 	@Override
