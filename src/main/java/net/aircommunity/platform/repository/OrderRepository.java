@@ -1,5 +1,7 @@
 package net.aircommunity.platform.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.model.Order;
@@ -12,4 +14,7 @@ import net.aircommunity.platform.model.Order;
  */
 public interface OrderRepository extends JpaRepository<Order, String> {
 
+	Page<Order> findByStatusNotOrderByCreationDateDesc(Pageable pageable);
+
+	Page<Order> findByStatusOrderByCreationDateDesc(Pageable pageable);
 }

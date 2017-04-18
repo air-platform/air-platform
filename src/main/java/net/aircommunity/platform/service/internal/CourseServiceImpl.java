@@ -77,7 +77,9 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
 	@Override
 	public Course updateCourse(String courseId, Course newCourse) {
 		Course course = findCourse(courseId);
+		School newSchool = schoolService.findSchool(newCourse.getSchool().getId());
 		copyProperties(newCourse, course);
+		course.setSchool(newSchool);
 		return courseRepository.save(course);
 	}
 
