@@ -8,6 +8,11 @@ package net.aircommunity.platform;
 @SuppressWarnings("javadoc")
 public final class Constants {
 
+	private static final String TEMPLATE_DIR = "template";
+	public static final String TEMPLATE_MAIL_VERIFICATION = TEMPLATE_DIR + "/mail-verification.template";
+	public static final String TEMPLATE_MAIL_RESET_PASSOWRD = TEMPLATE_DIR + "/mail-reset-password.template";
+
+	//
 	public static final String CLAIM_API_KEY = "claim.apikey";
 	public static final String DEFAULT_ADMIN_USERNAME = "admin";
 	public static final String DEFAULT_ADMIN_PASSWORD = "p0o9i8u7";

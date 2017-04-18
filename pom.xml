@@ -23,6 +23,7 @@
 		<!-- 3rd party API -->
 		<alidayu.version>1.0</alidayu.version>
 		<qiniu.sdk.version>7.2.6</qiniu.sdk.version>
+		<jinjava.version>2.1.14</jinjava.version>
 	</properties>
 
 	<dependencies>
@@ -37,6 +38,12 @@
 			<version>${alidayu.version}</version>
 			<scope>system</scope>
 			<systemPath>${lib-path}/com/alidayu/${alidayu.version}/taobao-sdk-java-auto_1455552377940-20160607.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.hubspot.jinjava</groupId>
+			<artifactId>jinjava</artifactId>
+			<version>${jinjava.version}</version>
 		</dependency>
 
 		<dependency>
@@ -62,7 +69,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-
 
 		<!-- utils -->
 		<dependency>

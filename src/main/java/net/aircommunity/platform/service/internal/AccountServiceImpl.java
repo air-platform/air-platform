@@ -6,7 +6,9 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,6 +52,7 @@ import net.aircommunity.platform.repository.AccountAuthRepository;
 import net.aircommunity.platform.repository.AccountRepository;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.MailService;
+import net.aircommunity.platform.service.TemplateService;
 import net.aircommunity.platform.service.VerificationService;
 import net.aircommunity.rest.core.security.AccessTokenService;
 import net.aircommunity.rest.core.security.Claims;
@@ -64,10 +67,18 @@ import net.aircommunity.rest.core.security.Claims;
 public class AccountServiceImpl implements AccountService {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountServiceImpl.class);
 
-	private static final int PASSWORD_LENGTH = 20;
-	// TODO configure full link
-	private static final String EMAIL_CONFIRMATION_LINK_FORMAT = "account/email/confirm?token=%s&code=%s";
 	private static final String CACHE_NAME_ACCOUNT = "cache.account";
+	private static final int PASSWORD_LENGTH = 20;
+
+	// FORMAT: http://host:port/context/api-version/account/email/confirm?token=xxx&code=xxx
+	private static final String EMAIL_CONFIRMATION_LINK_BASE_FORMAT = "http://%s:%d%s/%s/account/email/confirm?%s";
+	private static final String EMAIL_CONFIRMATION_LINK_PARAMS = "token=%s&code=%s";
+	private static final String EMAIL_BINDING_USERNAME = "username";
+	private static final String EMAIL_BINDING_COMPANY = "company";
+	private static final String EMAIL_BINDING_WEBSITE = "website";
+	private static final String EMAIL_BINDING_VERIFICATIONLINK = "verificationLink";
+	private static final String EMAIL_BINDING_RNDPASSWORD = "rndPassword";
+	private static final String EMAIL_BINDING_RESETPASSWORDLINK = "resetPasswordLink";
 	// private static final String CACHE_NAME_APIKEY = "cache.account_apikey";
 
 	@Resource
@@ -86,10 +97,15 @@ public class AccountServiceImpl implements AccountService {
 	private MailService mailService;
 
 	@Resource
+	private TemplateService templateService;
+
+	@Resource
 	private VerificationService verificationService;
 
 	@Resource
 	private AccessTokenService accessTokenService;
+
+	private String emailConfirmationLink;
 
 	@PostConstruct
 	private void init() {
@@ -101,6 +117,9 @@ public class AccountServiceImpl implements AccountService {
 			createAccount("user1", "p0o9i8u7", Role.USER);
 			LOG.debug("Created default admin account");
 		}
+		emailConfirmationLink = String.format(EMAIL_CONFIRMATION_LINK_BASE_FORMAT, configuration.getPublicHost(),
+				configuration.getPublicPort(), configuration.getContextPath(), configuration.getApiVersion(),
+				EMAIL_CONFIRMATION_LINK_PARAMS);
 	}
 
 	@Override
@@ -205,7 +224,7 @@ public class AccountServiceImpl implements AccountService {
 		default: // noop
 		}
 		// generate an api key
-		newAccount.setNickName(principal); // TODO
+		newAccount.setNickName(principal);
 		newAccount.setApiKey(UUIDs.shortRandom());
 		newAccount.setRole(role);
 		newAccount.setCreationDate(new Date());
@@ -307,7 +326,7 @@ public class AccountServiceImpl implements AccountService {
 			conn.disconnect();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Failed to create NodeBB user:" + e.getMessage(), e);
 			throw new AirException(Codes.INTERNAL_ERROR, "Failed to create NodeBB user:" + e.getMessage(), e);
 		}
 	}
@@ -332,11 +351,10 @@ public class AccountServiceImpl implements AccountService {
 			if (respCode != HttpURLConnection.HTTP_OK) {
 				LOG.debug("update NodeBB user password Failed : HTTP error code : " + respCode);
 			}
-
 			conn.disconnect();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Failed to update NodeBB user password:" + e.getMessage(), e);
 			throw new AirException(Codes.INTERNAL_ERROR, "Failed to update NodeBB user password:" + e.getMessage(), e);
 		}
 	}
@@ -363,10 +381,9 @@ public class AccountServiceImpl implements AccountService {
 			}
 
 			conn.disconnect();
-
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Failed to update NodeBB user email:" + e.getMessage(), e);
 			throw new AirException(Codes.INTERNAL_ERROR, "Failed to update NodeBB user email:" + e.getMessage(), e);
 		}
 	}
@@ -392,10 +409,9 @@ public class AccountServiceImpl implements AccountService {
 				LOG.debug("Deleting NodeBB user Failed : HTTP error code : " + respCode);
 			}
 			conn.disconnect();
-
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Failed to delete NodeBB user:" + e.getMessage(), e);
 			throw new AirException(Codes.INTERNAL_ERROR, "Failed to delete NodeBB user:" + e.getMessage(), e);
 		}
 	}
@@ -431,7 +447,7 @@ public class AccountServiceImpl implements AccountService {
 
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Failed to get NodeBB user ID:" + e.getMessage(), e);
 			throw new AirException(Codes.INTERNAL_ERROR, "Failed to get NodeBB user ID:" + e.getMessage(), e);
 		}
 		return userID;
@@ -641,13 +657,20 @@ public class AccountServiceImpl implements AccountService {
 		updateNodeBBAccountProfile(account.getNickName(), email);
 	}
 
+	/**
+	 * Send credential via email to allow user to confirm
+	 */
 	private void sendConfirmationEmail(String email, String verificationCode, Account account, long expires) {
-		// send credential via email to allow user to confirm
 		String token = accessTokenService.generateToken(account.getId(), ImmutableMap.of(Claims.CLAIM_ROLES,
 				ImmutableSet.of(account.getRole().name()), Claims.CLAIM_EXPIRY, expires));
-		String link = String.format(EMAIL_CONFIRMATION_LINK_FORMAT, token, verificationCode);
-		// TODO build email body and full confirmation link
-		mailService.sendMail(email, "Email Confirm", "TODO: build and email body with full link: " + link);
+		String verificationLink = String.format(emailConfirmationLink, token, verificationCode);
+		Map<String, Object> bindings = new HashMap<>(4);
+		bindings.put(EMAIL_BINDING_USERNAME, account.getNickName());
+		bindings.put(EMAIL_BINDING_COMPANY, configuration.getCompany());
+		bindings.put(EMAIL_BINDING_WEBSITE, configuration.getWebsite());
+		bindings.put(EMAIL_BINDING_VERIFICATIONLINK, verificationLink);
+		String mailVerificationBody = templateService.renderFile(Constants.TEMPLATE_MAIL_VERIFICATION, bindings);
+		mailService.sendMail(email, configuration.getMailVerificationSubject(), mailVerificationBody);
 	}
 
 	@Override
@@ -708,14 +731,20 @@ public class AccountServiceImpl implements AccountService {
 		Account account = findAccount(accountId);
 		AccountAuth auth = accountAuthRepository.findByAccountIdAndType(accountId, AuthType.EMAIL);
 		if (auth == null) {
-			throw new AirException(Codes.ACCOUNT_EMAIL_NOT_BIND, "Email is not set");
+			throw new AirException(Codes.ACCOUNT_EMAIL_NOT_BIND,
+					"Email is not bound, cannot reset password via email.");
 		}
 		String rndPassword = Randoms.randomAlphanumeric(PASSWORD_LENGTH);
 		account.setPassword(passwordEncoder.encode(rndPassword));
 		Account accountUpdated = accountRepository.save(account);
-		// TODO
-		mailService.sendMail(auth.getPrincipal(), "Reset Password",
-				"TODO: build and email body with password inside: " + rndPassword);
+		Map<String, Object> bindings = new HashMap<>(4);
+		bindings.put(EMAIL_BINDING_USERNAME, account.getNickName());
+		bindings.put(EMAIL_BINDING_COMPANY, configuration.getCompany());
+		bindings.put(EMAIL_BINDING_WEBSITE, configuration.getWebsite());
+		bindings.put(EMAIL_BINDING_RNDPASSWORD, rndPassword);
+		bindings.put(EMAIL_BINDING_RESETPASSWORDLINK, "#TODO"); // TODO
+		String mailBody = templateService.renderFile(Constants.TEMPLATE_MAIL_RESET_PASSOWRD, bindings);
+		mailService.sendMail(auth.getPrincipal(), configuration.getMailResetPasswordSubject(), mailBody);
 		return accountUpdated;
 	}
 
@@ -739,7 +768,6 @@ public class AccountServiceImpl implements AccountService {
 
 			// delete NodeBB account
 			deleteNodeBBAccount(account.getNickName());
-
 			LOG.info("Delete account: {}", account);
 		}
 	}

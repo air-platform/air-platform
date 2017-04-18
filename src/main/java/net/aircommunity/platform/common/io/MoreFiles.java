@@ -171,7 +171,7 @@ public final class MoreFiles {
 	 */
 	public static String toString(String filePath) throws IOException {
 		Reader reader = toReader(filePath);
-		if (reader == null) {
+		if (reader != null) {
 			return toString(reader);
 		}
 		return null;
