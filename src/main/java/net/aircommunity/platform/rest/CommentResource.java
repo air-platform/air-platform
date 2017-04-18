@@ -62,7 +62,7 @@ public class CommentResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@NotNull @QueryParam("productId") String productId,
+	public Response list(@NotNull @QueryParam("product") String productId,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		Page<Comment> result = commentService.listComments(productId, page, pageSize);
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
@@ -91,7 +91,7 @@ public class CommentResource {
 	@HEAD
 	@Authenticated
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response canComment(@NotNull @QueryParam("orderId") String orderId, @Context SecurityContext context) {
+	public Response canComment(@NotNull @QueryParam("order") String orderId, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		boolean canComment = commentService.isCommentAllowed(accountId, orderId);
 		return Response.noContent().header(HEADER_COMMENT_ALLOWED, canComment).build();
@@ -103,7 +103,7 @@ public class CommentResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response create(@NotNull @QueryParam("orderId") String orderId, @NotNull @Valid Comment comment,
+	public Response create(@NotNull @QueryParam("order") String orderId, @NotNull @Valid Comment comment,
 			@Context UriInfo uriInfo, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		Comment created = commentService.createComment(accountId, orderId, comment);
@@ -133,7 +133,7 @@ public class CommentResource {
 	 */
 	@DELETE
 	@RolesAllowed(Roles.ROLE_ADMIN)
-	public Response deleteAll(@QueryParam("productId") String productId, @Context SecurityContext context) {
+	public Response deleteAll(@QueryParam("product") String productId, @Context SecurityContext context) {
 		if (!context.isUserInRole(Role.ADMIN.name())) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
