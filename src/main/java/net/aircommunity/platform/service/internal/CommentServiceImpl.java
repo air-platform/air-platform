@@ -1,5 +1,6 @@
 package net.aircommunity.platform.service.internal;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.common.math.Maths;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Comment;
 import net.aircommunity.platform.model.Order;
@@ -72,7 +74,14 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		Comment savedComment = commentRepository.save(newComment);
 		double score = product.getScore();
 		if (savedComment.getRate() > 0) {
-			product.setScore((score + savedComment.getRate()) / 2.0);
+			double productScore = product.getScore();
+			if (productScore > 0) {
+				score = (score + savedComment.getRate()) / 2.0;
+				product.setScore(Maths.round(score, 2, BigDecimal.ROUND_HALF_UP));
+			}
+			else {
+				product.setScore(savedComment.getRate());
+			}
 		}
 		order.setCommented(true);
 		orderRepository.save(order);

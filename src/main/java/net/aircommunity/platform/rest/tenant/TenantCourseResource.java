@@ -75,7 +75,7 @@ public class TenantCourseResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("page") @DefaultValue("10") int pageSize) {
+			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		Page<Course> coursePage = courseService.listCourses(tenantId, page, pageSize);
 		return Response.ok(coursePage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(coursePage))
 				.build();
