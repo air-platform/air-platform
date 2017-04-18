@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import net.aircommunity.platform.model.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
@@ -29,8 +30,14 @@ public abstract class Product extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// product name
+	@NotEmpty
 	@Column(name = "name", nullable = false)
 	protected String name;
+
+	// product image
+	@NotEmpty
+	@Column(name = "image", nullable = false)
+	protected String image;
 
 	// product score
 	@Column(name = "score", nullable = false)
@@ -56,6 +63,14 @@ public abstract class Product extends Persistable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public double getScore() {

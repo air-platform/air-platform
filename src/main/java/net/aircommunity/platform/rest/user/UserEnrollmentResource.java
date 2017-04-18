@@ -50,10 +50,10 @@ public class UserEnrollmentResource {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response create(@PathParam("userId") String userId, @QueryParam("course") String courseId,
-			@NotNull @Valid Enrollment request, @Context UriInfo uriInfo) {
+	public Response create(@PathParam("userId") String userId, @NotNull @Valid Enrollment request,
+			@Context UriInfo uriInfo) {
 		LOG.debug("create enrollment {}", request);
-		Enrollment created = enrollmentService.createEnrollment(userId, courseId, request);
+		Enrollment created = enrollmentService.createEnrollment(userId, request.getCourse().getId(), request);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created: {}", uri);
 		return Response.created(uri).build();

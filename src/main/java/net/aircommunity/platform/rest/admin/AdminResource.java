@@ -36,6 +36,7 @@ import net.aircommunity.platform.rest.tenant.TenantAirTourResourse;
 import net.aircommunity.platform.rest.tenant.TenantAirTransportResource;
 import net.aircommunity.platform.rest.tenant.TenantAircraftResource;
 import net.aircommunity.platform.rest.tenant.TenantCourseResource;
+import net.aircommunity.platform.rest.tenant.TenantEnrollmentResource;
 import net.aircommunity.platform.rest.tenant.TenantFerryFlightResource;
 import net.aircommunity.platform.rest.tenant.TenantFleetResource;
 import net.aircommunity.platform.rest.tenant.TenantJetCardResource;
@@ -46,6 +47,7 @@ import net.aircommunity.platform.rest.user.AirTransportOrderResource;
 import net.aircommunity.platform.rest.user.ChaterOrderResource;
 import net.aircommunity.platform.rest.user.FerryFlightOrderResource;
 import net.aircommunity.platform.rest.user.JetcardOrderResource;
+import net.aircommunity.platform.rest.user.UserEnrollmentResource;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.rest.annotation.RESTful;
 import net.aircommunity.rest.core.security.AccessTokenService;
@@ -236,8 +238,9 @@ public class AdminResource {
 		return tenantAircraftResource;
 	}
 
-	// TODO
-	// school
+	// ***********************
+	// School/Course
+	// ***********************
 	@Resource
 	private TenantSchoolResource tenantSchoolResource;
 
@@ -254,16 +257,12 @@ public class AdminResource {
 		return tenantCourseResource;
 	}
 
-	// ***********************
-	// Comments TODO
-	// ***********************
-
 	@Resource
-	private CommentResource commentResource;
+	private TenantEnrollmentResource tenantEnrollmentResource;
 
-	@Path("comments")
-	public CommentResource comments() {
-		return commentResource;
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/enrollments")
+	public TenantEnrollmentResource enrollments(@PathParam("tenantId") String tenantId) {
+		return tenantEnrollmentResource;
 	}
 
 	// ***********************
@@ -328,6 +327,29 @@ public class AdminResource {
 	@Path(USERS_PATH_PREFIX + "/{userId}/airtour/orders")
 	public AirTourOrderResource airTourOrders(@PathParam("userId") String userId) {
 		return airTourOrderResource;
+	}
+
+	// ***********************
+	// Air Tour
+	// ***********************
+	@Resource
+	private UserEnrollmentResource userEnrollmentResource;
+
+	@Path(USERS_PATH_PREFIX + "/{userId}/course/enrollments")
+	public UserEnrollmentResource userEnrollments(@PathParam("userId") String userId) {
+		return userEnrollmentResource;
+	}
+
+	// ***********************
+	// Comments
+	// ***********************
+
+	@Resource
+	private CommentResource commentResource;
+
+	@Path("comments")
+	public CommentResource comments() {
+		return commentResource;
 	}
 
 }

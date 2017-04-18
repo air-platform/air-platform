@@ -53,8 +53,11 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			throw new AirException(Codes.INTERNAL_ERROR,
 					String.format("Failed to create instance %s", type.getSimpleName()));
 		}
+		newProduct.setName(product.getName());
+		newProduct.setImage(product.getImage());
+		newProduct.setDescription(product.getDescription());
 		copyProperties(product, newProduct);
-		// set props
+		// set props cannot be overridden by subclass
 		newProduct.setCreationDate(new Date());
 		newProduct.setVendor(vendor);
 		try {

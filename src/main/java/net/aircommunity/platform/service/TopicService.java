@@ -1,12 +1,13 @@
 package net.aircommunity.platform.service;
 
+import java.util.List;
+
 import net.aircommunity.platform.model.Topic;
-import java.util.ArrayList;
 
 /**
  * Created by luocheng on 2017/4/17.
  */
 public interface TopicService {
 
-    ArrayList<Topic> getRecentTopics();
+	List<Topic> listRecentTopics();
 }

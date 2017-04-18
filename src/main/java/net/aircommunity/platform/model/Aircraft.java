@@ -40,9 +40,6 @@ public class Aircraft extends Product {
 	@Column(name = "min_passengers")
 	private int minPassengers;
 
-	@Column(name = "image")
-	private String image;
-
 	public Aircraft() {
 	}
 
@@ -88,14 +85,6 @@ public class Aircraft extends Product {
 
 	public void setMinPassengers(int minPassengers) {
 		this.minPassengers = minPassengers;
-	}
-
-	public String getImage() {
-		return image;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
 	}
 
 	@Override

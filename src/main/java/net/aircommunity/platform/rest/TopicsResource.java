@@ -1,24 +1,21 @@
 package net.aircommunity.platform.rest;
 
-
-import net.aircommunity.platform.model.Topic;
-import net.aircommunity.rest.annotation.RESTful;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import net.aircommunity.platform.model.Topic;
 import net.aircommunity.platform.service.TopicService;
-
-import java.util.ArrayList;
+import net.aircommunity.rest.annotation.RESTful;
 
 /**
- * Account RESTful API.
+ * AirBB Topics RESTful API.
  *
  * @author luocheng
  */
@@ -26,16 +23,14 @@ import java.util.ArrayList;
 @Path("topics")
 public class TopicsResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JetCardResource.class);
+	@Resource
+	private TopicService topicService;
 
-    @Resource
-    private TopicService topicService;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRecentTopics() {
-
-        ArrayList<Topic> result = topicService.getRecentTopics();
-        return Response.ok(result).build();
-    }
+	@GET
+	@PermitAll
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response list() {
+		List<Topic> result = topicService.listRecentTopics();
+		return Response.ok(result).build();
+	}
 }

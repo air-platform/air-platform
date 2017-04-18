@@ -1,7 +1,6 @@
 package net.aircommunity.platform.service.internal;
 
 import javax.annotation.Resource;
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
@@ -30,12 +29,7 @@ public class MailServiceImpl implements MailService {
 
 	@Override
 	public void sendMail(String email, String subject, String content) {
-		LOG.debug("Sending mail {}, content {}.", email, content);
-		/*
-		 * SimpleMailMessage message = new SimpleMailMessage(); message.setFrom(configuration.getMailFrom());
-		 * message.setTo(email); message.setSubject(subject); message.setText(content); mailSender.send(message);
-		 */
-
+		LOG.debug("Sending mail to {} with subject: {}, content: {}.", email, subject, content);
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		MimeMessageHelper helper = null;
 		try {
@@ -48,8 +42,9 @@ public class MailServiceImpl implements MailService {
 			helper.setFrom(configuration.getMailFrom());
 			mailSender.send(mimeMessage);
 		}
-		catch (MessagingException e) {
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to send email:" + e.getMessage(), e);
+		catch (Exception e) {
+			LOG.error(String.format("Failed to send email to: %s,  cause: %s", email, e.getMessage()), e);
+			throw new AirException(Codes.INTERNAL_ERROR, "Failed to send email to:" + email, e);
 		}
 	}
 

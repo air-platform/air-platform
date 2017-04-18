@@ -34,7 +34,8 @@ public class AirTransport extends Product {
 	@Embedded
 	private FlightRoute flightRoute;
 
-	@NotEmpty
+	// TODO
+	// @NotEmpty
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<AircraftItem> aircraftItems = new HashSet<>();
 

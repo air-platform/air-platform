@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "air_platfrom_ferryflight_order")
-public class FerryFlightOrder extends VendorAwareOrder {
+public class FerryFlightOrder extends CharterableOrder {
 	private static final long serialVersionUID = 1L;
 
 	// the number of passengers
@@ -66,9 +66,12 @@ public class FerryFlightOrder extends VendorAwareOrder {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("FerryFlightOrder [passengers=").append(passengers).append(", orderNo=").append(orderNo)
-				.append(", contact=").append(contact).append(", note=").append(note).append(", id=").append(id)
-				.append("]");
+		builder.append("FerryFlightOrder [passengers=").append(passengers).append(", contact=").append(contact)
+				.append(", ferryFlight=").append(ferryFlight).append(", chartered=").append(chartered)
+				.append(", orderNo=").append(orderNo).append(", status=").append(status).append(", commented=")
+				.append(commented).append(", creationDate=").append(creationDate).append(", paymentDate=")
+				.append(paymentDate).append(", finishedDate=").append(finishedDate).append(", note=").append(note)
+				.append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

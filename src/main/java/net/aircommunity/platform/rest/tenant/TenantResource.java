@@ -53,7 +53,7 @@ public class TenantResource {
 	@Resource
 	private TenantAirTransportResource tenantAirTransportResource;
 
-	@Path("airTransports")
+	@Path("airtransports")
 	public TenantAirTransportResource airTransports() {
 		return tenantAirTransportResource;
 	}

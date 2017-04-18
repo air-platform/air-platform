@@ -38,9 +38,6 @@ public class Course extends PricedProduct {
 	@Column(name = "end_date", nullable = false)
 	private Date endDate;
 
-	@Column(name = "image")
-	private String image;
-
 	@Column(name = "enrollment")
 	private String enrollment;
 
@@ -140,14 +137,6 @@ public class Course extends PricedProduct {
 
 	public void setLocation(String location) {
 		this.location = location;
-	}
-
-	public String getImage() {
-		return image;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
 	}
 
 	public School getSchool() {

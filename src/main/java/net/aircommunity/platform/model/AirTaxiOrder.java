@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "air_platfrom_airtaxi_order")
-public class AirTaxiOrder extends VendorAwareOrder {
+public class AirTaxiOrder extends CharterableOrder {
 	private static final long serialVersionUID = 1L;
 
 	// departure date, e.g. 2017-5-1
@@ -83,11 +83,12 @@ public class AirTaxiOrder extends VendorAwareOrder {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AirTaxiOrder [date=").append(date).append(", timeSlot=").append(timeSlot).append(", orderNo=")
-				.append(orderNo).append(", status=").append(status).append(", creationDate=").append(creationDate)
+		builder.append("AirTaxiOrder [chartered=").append(chartered).append(", date=").append(date)
+				.append(", timeSlot=").append(timeSlot).append(", airTaxi=").append(airTaxi).append(", passengers=")
+				.append(passengers).append(", orderNo=").append(orderNo).append(", status=").append(status)
+				.append(", commented=").append(commented).append(", creationDate=").append(creationDate)
 				.append(", paymentDate=").append(paymentDate).append(", finishedDate=").append(finishedDate)
 				.append(", note=").append(note).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
-
 }
