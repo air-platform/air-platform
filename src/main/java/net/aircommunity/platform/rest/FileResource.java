@@ -59,7 +59,8 @@ public class FileResource {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
+	// TODO enable Authenticated, once markdown editor can support auth
+	// @Authenticated
 	public Response uploadFileToCloud(@MultipartForm StreamingImageFile inputFile, @Context SecurityContext context) {
 		try {
 			LOG.debug("Uploading file {} to cloud", inputFile.getFileName());
