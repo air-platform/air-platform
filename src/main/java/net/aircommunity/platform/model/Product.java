@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.constraint.NotEmpty;
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
+import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
  * Product of an {@code Tenant} (AKA. vendor). TODO need set accountManagers (a1@company.com,a2@company.com)
@@ -54,7 +54,7 @@ public abstract class Product extends Persistable {
 
 	@ManyToOne
 	@JoinColumn(name = "tenant_id", nullable = false)
-	@XmlJavaTypeAdapter(AccountAdapter.class)
+	@XmlJavaTypeAdapter(TenantAdapter.class)
 	protected Tenant vendor;
 
 	public String getName() {

@@ -320,7 +320,7 @@ public class AccountResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@PermitAll
 	public Response resetPassword(@NotNull @Valid PasswordResetRequest request) {
-		if (verificationService.verifyCode(request.getMobile(), request.getVerificationCode())) {
+		if (!verificationService.verifyCode(request.getMobile(), request.getVerificationCode())) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 		accountService.resetPasswordViaMobile(request.getMobile(), request.getNewPassword());
