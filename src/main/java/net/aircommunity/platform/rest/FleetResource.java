@@ -42,11 +42,18 @@ public class FleetResource {
 	 * List all TODO query
 	 */
 	@GET
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
+	public Response listAll(@QueryParam("type") String type, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all fleets");
-		Page<Fleet> result = fleetService.listFleets(page, pageSize);
+		Page<Fleet> result = Page.emptyPage(page, pageSize);
+		if (type != null) {
+			result = fleetService.listFleetsByType(type, page, pageSize);
+		}
+		else {
+			result = fleetService.listFleets(page, pageSize);
+		}
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
 	}
 
@@ -54,6 +61,7 @@ public class FleetResource {
 	 * Find
 	 */
 	@GET
+	@PermitAll
 	@Path("{fleetId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Fleet find(@PathParam("fleetId") String fleetId) {

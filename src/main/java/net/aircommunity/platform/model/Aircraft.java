@@ -8,7 +8,7 @@ import javax.validation.constraints.Min;
 import net.aircommunity.platform.model.constraint.NotEmpty;
 
 /**
- * Aircraft.
+ * Aircraft for (Taxi, Transportation, Tour).
  * 
  * @author Bin.Zhang
  */

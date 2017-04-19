@@ -25,7 +25,7 @@ import net.aircommunity.rest.annotation.RESTful;
  * Created by guankai on 15/04/2017.
  */
 @RESTful
-
+@PermitAll
 @Path("tours")
 public class AirTourResourse {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTourResourse.class);

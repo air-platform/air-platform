@@ -26,6 +26,7 @@ import net.aircommunity.rest.annotation.RESTful;
  * @author Bin.Zhang
  */
 @RESTful
+@PermitAll
 @Path("aircrafts")
 public class AircraftResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AircraftResource.class);

@@ -44,6 +44,7 @@ public class JetCardResource {
 	 * List all TODO query by
 	 */
 	@GET
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
@@ -56,6 +57,7 @@ public class JetCardResource {
 	 * Find
 	 */
 	@GET
+	@PermitAll
 	@Path("{jetCardId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public JetCard find(@PathParam("jetCardId") String jetCardId) {

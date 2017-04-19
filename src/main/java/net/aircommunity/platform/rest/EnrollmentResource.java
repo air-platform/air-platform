@@ -49,8 +49,8 @@ public class EnrollmentResource {
 	 * Find
 	 */
 	@GET
-	@Path("{enrollmentId}")
 	@PermitAll
+	@Path("{enrollmentId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Enrollment find(@PathParam("enrollmentId") String enrollmentId) {
 		return enrollmentService.findEnrollment(enrollmentId);

@@ -43,8 +43,8 @@ public class CourseResource {
 	 * List by air type
 	 */
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response list(@QueryParam("airType") String airType, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("page") @DefaultValue("10") int pageSize) {
 		LOG.debug("list all courses with airType: {}", airType);
@@ -56,8 +56,8 @@ public class CourseResource {
 	 * Top10 Hot courses
 	 */
 	@GET
-	@Path("hot")
 	@PermitAll
+	@Path("hot")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response top10Hot(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("page") @DefaultValue("10") int pageSize) {
@@ -69,9 +69,9 @@ public class CourseResource {
 	 * List courses of a school
 	 */
 	@GET
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("school")
-	@PermitAll
 	public Response listBySchool(@NotNull @QueryParam("id") String schoolId,
 			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("page") @DefaultValue("10") int pageSize) {
 		Page<Course> coursePage = courseService.listCoursesBySchool(schoolId, page, pageSize);

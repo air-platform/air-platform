@@ -85,6 +85,12 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 		return listAllProducts(page, pageSize);
 	}
 
+	@Override
+	public Page<Fleet> listFleetsByType(String type, int page, int pageSize) {
+		return Pages.adapt(fleetRepository.findByAircraftTypeOrderByCreationDateDesc(type,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#fleetId")
 	@Override
 	public void deleteFleet(String fleetId) {

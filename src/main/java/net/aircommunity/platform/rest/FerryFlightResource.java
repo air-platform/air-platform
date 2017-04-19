@@ -42,6 +42,7 @@ public class FerryFlightResource {
 	 * List all TODO query by departure/arrival/date/timeSlot
 	 */
 	@GET
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
@@ -54,6 +55,7 @@ public class FerryFlightResource {
 	 * Find one
 	 */
 	@GET
+	@PermitAll
 	@Path("{ferryFlightId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {

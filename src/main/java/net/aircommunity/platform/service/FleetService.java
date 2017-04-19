@@ -65,6 +65,17 @@ public interface FleetService {
 	Page<Fleet> listFleets(int page, int pageSize);
 
 	/**
+	 * List all fleets by type and pagination.
+	 * 
+	 * @param type the fleet type
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of fleets or empty
+	 */
+	@Nonnull
+	Page<Fleet> listFleetsByType(String type, int page, int pageSize);
+
+	/**
 	 * Delete a fleet.
 	 * 
 	 * @param fleetId the fleetId

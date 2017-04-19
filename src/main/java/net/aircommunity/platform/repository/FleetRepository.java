@@ -1,5 +1,7 @@
 package net.aircommunity.platform.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.model.Fleet;
@@ -13,5 +15,7 @@ import net.aircommunity.platform.model.Fleet;
 public interface FleetRepository extends BaseProductRepository<Fleet> {
 
 	Fleet findByFlightNo(String flightNo);
+
+	Page<Fleet> findByAircraftTypeOrderByCreationDateDesc(String aircraftType, Pageable pageable);
 
 }

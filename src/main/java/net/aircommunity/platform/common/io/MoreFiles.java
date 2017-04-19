@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -143,7 +144,10 @@ public final class MoreFiles {
 
 		// try class path resource
 		try {
-			path = Paths.get(ClassLoader.getSystemResource(filePath).toURI());
+			URI uri = ClassLoader.getSystemResource(filePath).toURI();
+			if (uri != null) {
+				path = Paths.get(uri);
+			}
 			if (path != null && path.toFile().exists()) {
 				return Files.newBufferedReader(path, StandardCharsets.UTF_8);
 			}

@@ -25,7 +25,7 @@ import net.aircommunity.rest.annotation.RESTful;
  * Created by guankai on 15/04/2017.
  */
 @RESTful
-
+@PermitAll
 @Path("taxis")
 public class AirTaxiResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTaxiResource.class);

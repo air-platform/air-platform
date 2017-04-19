@@ -25,6 +25,8 @@
 				<include>CHANGELOG*</include>
 				<include>config/**</include>
 				<include>template/**</include>
+				<include>data/**</include>
+				<include>images/**</include>
 			</includes>
 		</fileSet>
 		<fileSet>

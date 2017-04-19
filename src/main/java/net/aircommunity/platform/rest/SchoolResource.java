@@ -57,8 +57,8 @@ public class SchoolResource {
 	 * Find
 	 */
 	@GET
-	@Path("{schoolId}")
 	@PermitAll
+	@Path("{schoolId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public School find(@PathParam("schoolId") String schoolId) {
 		return schoolService.findSchool(schoolId);

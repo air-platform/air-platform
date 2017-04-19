@@ -26,7 +26,7 @@ import net.aircommunity.rest.annotation.RESTful;
  * @author Bin.Zhang
  */
 @RESTful
-
+@PermitAll
 @Path("transports")
 public class AirTransportResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTransportResource.class);
