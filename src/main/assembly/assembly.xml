@@ -23,6 +23,7 @@
 			<outputDirectory></outputDirectory>
 			<includes>
 				<include>CHANGELOG*</include>
+				<include>apidoc*</include>
 				<include>config/**</include>
 				<include>template/**</include>
 				<include>data/**</include>

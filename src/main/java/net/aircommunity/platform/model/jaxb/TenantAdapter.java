@@ -1,7 +1,8 @@
 package net.aircommunity.platform.model.jaxb;
 
-import javax.json.Json;
-import javax.json.JsonObject;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import net.aircommunity.platform.model.Tenant;
@@ -11,16 +12,22 @@ import net.aircommunity.platform.model.Tenant;
  * 
  * @author Bin.Zhang
  */
-public class TenantAdapter extends XmlAdapter<JsonObject, Tenant> {
+public class TenantAdapter extends XmlAdapter<Map<String, Object>, Tenant> {
 
 	@Override
-	public JsonObject marshal(Tenant tenant) throws Exception {
-		return Json.createObjectBuilder().add("id", tenant.getId()).add("name", tenant.getNickName())
-				.add("avatar", tenant.getAvatar()).build();
+	public Map<String, Object> marshal(Tenant tenant) throws Exception {
+		return new HashMap<String, Object>(4) {
+			private static final long serialVersionUID = 1L;
+			{
+				put("id", tenant.getId());
+				put("name", tenant.getNickName());
+				put("avatar", tenant.getAvatar());
+			}
+		};
 	}
 
 	@Override
-	public Tenant unmarshal(JsonObject tenant) throws Exception {
+	public Tenant unmarshal(Map<String, Object> tenant) throws Exception {
 		// we don't need unmarshal
 		return null;
 	}

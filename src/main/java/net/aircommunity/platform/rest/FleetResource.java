@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.Page;
@@ -28,6 +29,7 @@ import net.aircommunity.rest.annotation.RESTful;
 @RESTful
 @PermitAll
 @Path("fleets")
+@Api("fleets")
 public class FleetResource {
 	private static final Logger LOG = LoggerFactory.getLogger(FleetResource.class);
 

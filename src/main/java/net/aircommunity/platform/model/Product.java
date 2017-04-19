@@ -35,8 +35,7 @@ public abstract class Product extends Persistable {
 	protected String name;
 
 	// product image
-	@NotEmpty
-	@Column(name = "image", nullable = false)
+	@Column(name = "image")
 	protected String image;
 
 	// product score

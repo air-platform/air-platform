@@ -18,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
+import io.swagger.annotations.Api;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Address;
 import net.aircommunity.platform.model.Order;
@@ -36,6 +37,7 @@ import net.aircommunity.rest.annotation.RESTful;
  */
 @RESTful
 @Path("user")
+@Api("user")
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
 public class UserResource {
 

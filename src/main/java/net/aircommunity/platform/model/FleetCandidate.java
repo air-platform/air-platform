@@ -9,6 +9,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import net.aircommunity.platform.model.jaxb.OrderAdapter;
+import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
  * The user preferred candidate fleets of an {@code CharterOrder}.
@@ -29,15 +33,18 @@ public class FleetCandidate extends Persistable {
 	// TODO add nullable = false?
 
 	@ManyToOne
-	@JoinColumn(name = "order_id")
+	@JoinColumn(name = "order_id", nullable = false)
+	@XmlJavaTypeAdapter(OrderAdapter.class)
 	private CharterOrder order;
 
+	// TODO add adapter to return less information, e.g. name ?
 	@ManyToOne
 	@JoinColumn(name = "fleet_id")
 	private Fleet fleet;
 
 	@ManyToOne
 	@JoinColumn(name = "tenant_id")
+	@XmlJavaTypeAdapter(TenantAdapter.class)
 	private Tenant vendor;
 
 	public Status getStatus() {

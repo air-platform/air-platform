@@ -32,7 +32,7 @@ public class CharterOrder extends Order {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<FlightLeg> flightLegs = new HashSet<>();
 
-	@OneToMany(mappedBy = "fleet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<FleetCandidate> fleetCandidates = new HashSet<>();
 
 	public Contact getContact() {

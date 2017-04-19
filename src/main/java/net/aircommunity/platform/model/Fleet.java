@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Index;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import net.aircommunity.platform.model.constraint.NotEmpty;
@@ -45,6 +46,7 @@ public class Fleet extends PricedProduct {
 	@Column(name = "status")
 	private Status status = Status.AVAILABLE;
 
+	// TODO should be int for a specific fleet with same aircaftType, e.g. G550 ?
 	// e.g. 11 - 14 guests
 	@Column(name = "capacity")
 	private String capacity;
@@ -62,10 +64,12 @@ public class Fleet extends PricedProduct {
 	private int fullloadRange;
 
 	// e.g. Satellite phone, WIFI, wine cooler, DVD/CD player, external IPOD player, LCD monitor.
+	@Lob
 	@Column(name = "facilities")
 	private String facilities;
 
 	// images of this Aircraft, comma separated, image1.png,image2/png
+	@Lob
 	@Column(name = "appearances")
 	private String appearances;
 

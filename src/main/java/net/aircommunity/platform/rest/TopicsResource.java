@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Topic;
 import net.aircommunity.platform.service.TopicService;
 import net.aircommunity.rest.annotation.RESTful;
@@ -20,7 +21,9 @@ import net.aircommunity.rest.annotation.RESTful;
  * @author luocheng
  */
 @RESTful
+@PermitAll
 @Path("topics")
+@Api("topics")
 public class TopicsResource {
 
 	@Resource

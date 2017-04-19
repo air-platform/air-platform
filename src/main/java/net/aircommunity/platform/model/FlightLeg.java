@@ -50,9 +50,9 @@ public class FlightLeg extends Persistable {
 	@Column(name = "passengers")
 	private int passengers;
 
-	@XmlJavaTypeAdapter(OrderAdapter.class)
 	@ManyToOne
 	@JoinColumn(name = "order_id", nullable = false)
+	@XmlJavaTypeAdapter(OrderAdapter.class)
 	private CharterOrder order;
 
 	public String getDeparture() {

@@ -26,6 +26,7 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Comment;
 import net.aircommunity.platform.model.Page;
@@ -43,6 +44,7 @@ import net.aircommunity.rest.annotation.RESTful;
  */
 @RESTful
 @Path("comments")
+@Api("comments")
 @AllowResourceOwner
 public class CommentResource {
 	private static final Logger LOG = LoggerFactory.getLogger(CommentResource.class);

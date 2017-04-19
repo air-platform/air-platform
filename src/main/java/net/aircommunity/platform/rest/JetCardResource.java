@@ -16,6 +16,7 @@ import javax.ws.rs.core.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.JetCard;
 import net.aircommunity.platform.model.Page;
@@ -30,6 +31,7 @@ import net.aircommunity.rest.annotation.RESTful;
 @RESTful
 @PermitAll
 @Path("jetcards")
+@Api("jetcards")
 public class JetCardResource {
 	private static final Logger LOG = LoggerFactory.getLogger(JetCardResource.class);
 
