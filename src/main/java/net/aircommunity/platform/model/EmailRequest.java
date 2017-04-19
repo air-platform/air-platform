@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import net.aircommunity.platform.model.constraint.Email;
+import io.micro.annotation.constraint.Email;
 
 /**
  * Email update request.

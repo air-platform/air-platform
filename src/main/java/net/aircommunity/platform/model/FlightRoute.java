@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import net.aircommunity.platform.model.constraint.NotEmpty;
+import io.micro.annotation.constraint.NotEmpty;
 
 /**
  * Flight Route.

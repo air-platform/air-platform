@@ -14,22 +14,23 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.FleetService;
-import net.aircommunity.rest.annotation.RESTful;
 
 /**
  * Fleet RESTful API allows list/find/query for ANYONE
  * 
  * @author Bin.Zhang
  */
+@Api
 @RESTful
 @PermitAll
 @Path("fleets")
-@Api("fleets")
 public class FleetResource {
 	private static final Logger LOG = LoggerFactory.getLogger(FleetResource.class);
 
@@ -45,6 +46,7 @@ public class FleetResource {
 	 */
 	@GET
 	@PermitAll
+	@ApiOperation(value = "List All Fleets", response = Fleet.class, responseContainer = "List")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listAll(@QueryParam("type") String type, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {

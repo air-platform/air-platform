@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import net.aircommunity.platform.model.constraint.NotEmpty;
+import io.micro.annotation.constraint.NotEmpty;
 
 /**
  * {@code Course} Enrollment of a {@code School}

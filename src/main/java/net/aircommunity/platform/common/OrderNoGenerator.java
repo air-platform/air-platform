@@ -4,14 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import net.aircommunity.platform.common.base.DateFormats;
-import net.aircommunity.platform.common.base.SnowFlake;
+import io.micro.common.DateFormats;
+import io.micro.common.SnowFlake;
 
 /**
  * Order NO. generator.
+ * 
+ * @author Bin.Zhang
  */
 public class OrderNoGenerator {
-	private static final SimpleDateFormat DATE_FORMAT = DateFormats.simple("yyMMdd");
+	private static final SimpleDateFormat SAFE_FORMATTER = DateFormats.simple("yyMMdd");
 	private final SnowFlake snowflake;
 
 	public OrderNoGenerator(long datacenterId, long nodeId) {
@@ -20,9 +22,11 @@ public class OrderNoGenerator {
 
 	/**
 	 * Generate next order NO.
+	 * 
+	 * @return generated order number
 	 */
 	public String next() {
-		return new StringBuilder().append(DATE_FORMAT.format(new Date())).append(Long.toString(snowflake.nextId(), 32))
-				.toString().toUpperCase(Locale.ENGLISH);
+		return new StringBuilder().append(SAFE_FORMATTER.format(new Date()))
+				.append(Long.toString(snowflake.nextId(), 32)).toString().toUpperCase(Locale.ENGLISH);
 	}
 }

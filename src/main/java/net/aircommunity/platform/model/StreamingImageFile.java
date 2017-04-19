@@ -6,8 +6,8 @@ import java.io.Serializable;
 
 import javax.ws.rs.FormParam;
 
-import net.aircommunity.rest.annotation.multipart.MultipartFilename;
-import net.aircommunity.rest.annotation.multipart.MultipartType;
+import io.micro.annotation.multipart.MultipartFilename;
+import io.micro.annotation.multipart.MultipartType;
 
 /**
  * Streaming input file model, must have input name <tt>file</tt>

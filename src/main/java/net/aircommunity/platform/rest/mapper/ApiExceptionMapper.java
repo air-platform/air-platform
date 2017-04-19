@@ -12,8 +12,8 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.micro.model.ErrorResponse;
 import net.aircommunity.platform.AirException;
-import net.aircommunity.rest.model.ErrorResponse;
 
 /**
  * Exception mapper for mapping a Exception that was thrown from an application into a human readable message and error

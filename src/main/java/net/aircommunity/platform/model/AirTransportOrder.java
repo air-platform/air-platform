@@ -16,7 +16,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import net.aircommunity.platform.model.constraint.NotEmpty;
+import io.micro.annotation.constraint.NotEmpty;
+
 
 /**
  * AirTransport Order on a {@code AirTransport}.

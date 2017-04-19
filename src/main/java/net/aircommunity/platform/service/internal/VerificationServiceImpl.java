@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import net.aircommunity.platform.common.base.Randoms;
+import io.micro.common.Randoms;
 import net.aircommunity.platform.service.VerificationService;
 
 /**

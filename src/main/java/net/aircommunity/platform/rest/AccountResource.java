@@ -38,6 +38,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import io.micro.annotation.Authenticated;
+import io.micro.annotation.RESTful;
+import io.micro.annotation.TokenSecured;
+import io.micro.core.security.AccessTokenService;
+import io.micro.core.security.Claims;
+import io.micro.core.security.SimplePrincipal;
+import io.swagger.annotations.Api;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AccessToken;
@@ -55,18 +62,13 @@ import net.aircommunity.platform.model.UsernameRequest;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.SmsService;
 import net.aircommunity.platform.service.VerificationService;
-import net.aircommunity.rest.annotation.Authenticated;
-import net.aircommunity.rest.annotation.RESTful;
-import net.aircommunity.rest.annotation.TokenSecured;
-import net.aircommunity.rest.core.security.AccessTokenService;
-import net.aircommunity.rest.core.security.Claims;
-import net.aircommunity.rest.core.security.SimplePrincipal;
 
 /**
  * Account RESTful API.
  * 
  * @author Bin.Zhang
  */
+@Api
 @RESTful
 @Path("account")
 public class AccountResource {

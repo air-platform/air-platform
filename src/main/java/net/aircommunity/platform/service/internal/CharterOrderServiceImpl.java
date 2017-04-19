@@ -12,9 +12,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micro.common.collect.ImmutableCollectors;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.common.collect.ImmutableCollectors;
 import net.aircommunity.platform.model.CharterOrder;
 import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.FleetCandidate;

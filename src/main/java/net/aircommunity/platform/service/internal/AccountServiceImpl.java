@@ -30,14 +30,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import io.micro.common.Randoms;
+import io.micro.common.Strings;
+import io.micro.common.UUIDs;
+import io.micro.common.crypto.password.PasswordEncoder;
+import io.micro.core.security.AccessTokenService;
+import io.micro.core.security.Claims;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.Constants;
-import net.aircommunity.platform.common.base.Randoms;
-import net.aircommunity.platform.common.base.Strings;
-import net.aircommunity.platform.common.base.UUIDs;
-import net.aircommunity.platform.common.crypto.password.PasswordEncoder;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Account.Status;
 import net.aircommunity.platform.model.AccountAuth;
@@ -54,8 +56,6 @@ import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.MailService;
 import net.aircommunity.platform.service.TemplateService;
 import net.aircommunity.platform.service.VerificationService;
-import net.aircommunity.rest.core.security.AccessTokenService;
-import net.aircommunity.rest.core.security.Claims;
 
 /**
  * Account service implementation.

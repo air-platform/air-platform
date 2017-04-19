@@ -2,7 +2,8 @@ package net.aircommunity.platform.model;
 
 import java.io.Serializable;
 
-import net.aircommunity.platform.model.constraint.NotEmpty;
+import io.micro.annotation.constraint.NotEmpty;
+
 
 /**
  * Authentication request via internal or external (3rd party).

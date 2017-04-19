@@ -20,23 +20,23 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.AirJet;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.service.AirJetService;
-import net.aircommunity.rest.annotation.RESTful;
 
 /**
  * AirJet RESTful API allows list/find/query for ANYONE.
  * 
  * @author Bin.Zhang
  */
+@Api
 @RESTful
 @PermitAll
 @Path("airjets")
-@Api("airjets")
 public class AirJetResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AirJetResource.class);
 

@@ -4,8 +4,9 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import net.aircommunity.platform.model.constraint.Password;
-import net.aircommunity.platform.model.constraint.Username;
+import io.micro.annotation.constraint.Password;
+import io.micro.annotation.constraint.Username;
+
 
 /**
  * Account (tenant/user) registration request by admin via console.

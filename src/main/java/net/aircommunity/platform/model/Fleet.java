@@ -9,7 +9,7 @@ import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
-import net.aircommunity.platform.model.constraint.NotEmpty;
+import io.micro.annotation.constraint.NotEmpty;
 
 /**
  * Fleet Information for {@code Charter}

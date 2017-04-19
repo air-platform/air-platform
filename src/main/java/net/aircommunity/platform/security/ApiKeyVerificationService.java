@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import io.micro.core.security.Claims;
+import io.micro.core.security.TokenVerificationService;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.service.AccountService;
-import net.aircommunity.rest.core.security.Claims;
-import net.aircommunity.rest.core.security.TokenVerificationService;
 
 /**
  * Verify API calls.

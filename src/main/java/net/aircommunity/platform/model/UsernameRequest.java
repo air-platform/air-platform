@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import net.aircommunity.platform.model.constraint.Username;
+import io.micro.annotation.constraint.Username;
 
 /**
  * Username update request.

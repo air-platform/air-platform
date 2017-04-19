@@ -2,9 +2,9 @@ package net.aircommunity.platform.model;
 
 import java.io.Serializable;
 
-import net.aircommunity.platform.model.constraint.Mobile;
-import net.aircommunity.platform.model.constraint.NotEmpty;
-import net.aircommunity.platform.model.constraint.Password;
+import io.micro.annotation.constraint.Mobile;
+import io.micro.annotation.constraint.NotEmpty;
+import io.micro.annotation.constraint.Password;
 
 /**
  * Password reset request via mobile verification code.

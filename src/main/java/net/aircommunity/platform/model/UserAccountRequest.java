@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import net.aircommunity.platform.model.constraint.Mobile;
-import net.aircommunity.platform.model.constraint.NotEmpty;
-import net.aircommunity.platform.model.constraint.Password;
+import io.micro.annotation.constraint.Mobile;
+import io.micro.annotation.constraint.NotEmpty;
+import io.micro.annotation.constraint.Password;
 
 /**
  * Account registration request by user via mobile.

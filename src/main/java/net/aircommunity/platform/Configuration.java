@@ -11,6 +11,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class Configuration {
 
+	// REST
+	@Value("${micro.rest.context-path}")
+	private String contextPath;
+
+	@Value("${micro.rest.api-version}")
+	private String apiVersion;
+
+	// AIR
+
 	@Value("${air.name}")
 	private String company;
 
@@ -22,12 +31,6 @@ public class Configuration {
 
 	@Value("${air.public-port}")
 	private int publicPort;
-
-	@Value("${air.rest.context-path}")
-	private String contextPath;
-
-	@Value("${air.rest.api-version}")
-	private String apiVersion;
 
 	// for local file upload
 	@Value("${air.fileupload.dir}")

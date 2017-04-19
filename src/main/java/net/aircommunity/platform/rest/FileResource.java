@@ -20,24 +20,26 @@ import javax.ws.rs.core.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.micro.annotation.Authenticated;
+import io.micro.annotation.RESTful;
+import io.micro.annotation.multipart.MultipartForm;
+import io.micro.common.UUIDs;
+import io.micro.common.io.MoreFiles;
+import io.micro.support.StreamingInputFile;
+import io.swagger.annotations.Api;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
-import net.aircommunity.platform.common.base.UUIDs;
-import net.aircommunity.platform.common.io.MoreFiles;
 import net.aircommunity.platform.model.FileUploadResult;
 import net.aircommunity.platform.model.StreamingImageFile;
 import net.aircommunity.platform.service.FileUploadService;
-import net.aircommunity.rest.annotation.Authenticated;
-import net.aircommunity.rest.annotation.RESTful;
-import net.aircommunity.rest.annotation.multipart.MultipartForm;
-import net.aircommunity.rest.support.StreamingInputFile;
 
 /**
  * Files RESTful API.
  * 
  * @author Bin.Zhang
  */
+@Api
 @RESTful
 @Path("files")
 public class FileResource {

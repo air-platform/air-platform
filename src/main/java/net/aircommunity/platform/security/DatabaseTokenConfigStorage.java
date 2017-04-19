@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.micro.core.security.AccessTokenConfig;
+import io.micro.core.security.AccessTokenConfigStorage;
 import net.aircommunity.platform.model.Settings;
 import net.aircommunity.platform.repository.SettingsRepository;
-import net.aircommunity.rest.core.security.AccessTokenConfig;
-import net.aircommunity.rest.core.security.AccessTokenConfigStorage;
 
 /**
  * Database AccessTokenConfigStorage

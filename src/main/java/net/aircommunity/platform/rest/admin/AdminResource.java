@@ -24,6 +24,9 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.micro.annotation.RESTful;
+import io.micro.core.security.AccessTokenService;
+import io.swagger.annotations.Api;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountRequest;
@@ -49,14 +52,13 @@ import net.aircommunity.platform.rest.user.FerryFlightOrderResource;
 import net.aircommunity.platform.rest.user.JetcardOrderResource;
 import net.aircommunity.platform.rest.user.UserEnrollmentResource;
 import net.aircommunity.platform.service.AccountService;
-import net.aircommunity.rest.annotation.RESTful;
-import net.aircommunity.rest.core.security.AccessTokenService;
 
 /**
  * Admin RESTful API.
  * 
  * @author Bin.Zhang
  */
+@Api
 @RESTful
 @Path("platform")
 @RolesAllowed(Roles.ROLE_ADMIN)

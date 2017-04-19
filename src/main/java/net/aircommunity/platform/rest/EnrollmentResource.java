@@ -14,20 +14,20 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Enrollment;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.EnrollmentService;
-import net.aircommunity.rest.annotation.RESTful;
 
 /**
  * Created by guankai on 13/04/2017. (TODO useful?)
  */
+@Api
 @RESTful
 @PermitAll
 @Path("enrollments")
-@Api("enrollments")
 public class EnrollmentResource {
 	private static final Logger LOG = LoggerFactory.getLogger(EnrollmentResource.class);
 

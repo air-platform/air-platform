@@ -169,7 +169,6 @@ public class AccountAuth extends Persistable {
 			}
 			return internalAuths;
 		}
-
 	}
 
 }

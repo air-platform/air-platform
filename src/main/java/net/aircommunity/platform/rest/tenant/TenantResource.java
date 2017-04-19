@@ -4,16 +4,18 @@ import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Path;
 
+import io.micro.annotation.RESTful;
+import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.CommentResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.rest.annotation.RESTful;
 
 /**
  * Tenant resource.
  * 
  * @author Bin.Zhang
  */
+@Api
 @RESTful
 @Path("tenant")
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
@@ -120,7 +122,7 @@ public class TenantResource {
 	}
 
 	// ***********************
-	// comments TODO
+	// comments
 	// ***********************
 
 	@Resource

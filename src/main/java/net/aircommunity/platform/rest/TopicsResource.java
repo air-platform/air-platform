@@ -10,20 +10,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Topic;
 import net.aircommunity.platform.service.TopicService;
-import net.aircommunity.rest.annotation.RESTful;
 
 /**
  * AirBB Topics RESTful API.
  *
  * @author luocheng
  */
+@Api
 @RESTful
 @PermitAll
 @Path("topics")
-@Api("topics")
 public class TopicsResource {
 
 	@Resource

@@ -22,22 +22,24 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.micro.annotation.RESTful;
+import io.swagger.annotations.Api;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.TrainingBanner;
 import net.aircommunity.platform.service.TrainingService;
-import net.aircommunity.rest.annotation.RESTful;
 
 /**
  * Created by guankai on 11/04/2017.
  */
+@Api
 @RESTful
 @Path("trainings")
 @PermitAll
 public class TrainingResource {
-
 	private static final Logger LOG = LoggerFactory.getLogger(TrainingResource.class);
+
 	@Resource
 	private TrainingService trainingService;
 

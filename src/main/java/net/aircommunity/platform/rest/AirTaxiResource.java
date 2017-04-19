@@ -13,22 +13,22 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.AirTaxiService;
-import net.aircommunity.rest.annotation.RESTful;
 
 /**
  * AirTaxi RESTful API allows list/find/query for ANYONE.
  * 
  * Created by guankai on 15/04/2017.
  */
+@Api
 @RESTful
 @PermitAll
 @Path("taxis")
-@Api("taxis")
 public class AirTaxiResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTaxiResource.class);
 

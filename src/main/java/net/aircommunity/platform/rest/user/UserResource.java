@@ -18,6 +18,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
+import io.micro.annotation.Authenticated;
+import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Address;
@@ -27,17 +29,15 @@ import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CommonOrderService;
-import net.aircommunity.rest.annotation.Authenticated;
-import net.aircommunity.rest.annotation.RESTful;
 
 /**
  * User resource.
  * 
  * @author Bin.Zhang
  */
+@Api
 @RESTful
 @Path("user")
-@Api("user")
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
 public class UserResource {
 

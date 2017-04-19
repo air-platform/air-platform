@@ -2,7 +2,7 @@ package net.aircommunity.platform.nls;
 
 import java.util.Locale;
 
-import net.aircommunity.platform.common.base.NLSResource;
+import io.micro.common.NLSResource;
 
 /**
  * NLS Messages.
@@ -10,14 +10,8 @@ import net.aircommunity.platform.common.base.NLSResource;
  * @author Bin.Zhang
  */
 public class LocalizedMessages extends NLSResource {
-
 	// NLS resource bundle
 	private static final String RESOURCE_BUNDLE_BASENAME = LocalizedMessages.class.getPackage().getName() + ".message";
-
-	public static String SYS_FALLBACK_DEFAULT_SPEECH;
-	public static String USR_FALLBACK_DEFAULT_SPEECHES;
-	public static String PROMPT_UNSUPPORTED_LANGUAGE;
-	public static String PROMPT_MISSING_PARAMETER;
 
 	// internal server error
 	public static String INTERNAL_SERVER_ERROR;

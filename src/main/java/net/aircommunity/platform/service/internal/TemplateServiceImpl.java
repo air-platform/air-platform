@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.JinjavaConfig;
 
-import net.aircommunity.platform.common.io.MoreFiles;
+import io.micro.common.io.MoreFiles;
 import net.aircommunity.platform.service.TemplateService;
 
 /**

@@ -20,38 +20,16 @@
 		<start-class>net.aircommunity.platform.Application</start-class>
 		<lib-path>${project.basedir}/lib</lib-path>
 
+		<jsr353.version>1.0.4</jsr353.version>
+
 		<!-- 3rd party API -->
+		<micro.version>0.1.0</micro.version>
 		<alidayu.version>1.0</alidayu.version>
 		<qiniu.sdk.version>7.2.6</qiniu.sdk.version>
 		<jinjava.version>2.1.14</jinjava.version>
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>net.aircommunity</groupId>
-			<artifactId>air-platform-rest</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.alidayu</groupId>
-			<artifactId>alidayu</artifactId>
-			<version>${alidayu.version}</version>
-			<scope>system</scope>
-			<systemPath>${lib-path}/com/alidayu/${alidayu.version}/taobao-sdk-java-auto_1455552377940-20160607.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>com.hubspot.jinjava</groupId>
-			<artifactId>jinjava</artifactId>
-			<version>${jinjava.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.qiniu</groupId>
-			<artifactId>qiniu-java-sdk</artifactId>
-			<version>${qiniu.sdk.version}</version>
-		</dependency>
-
 		<!-- spring boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -69,6 +47,108 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>com.hubspot.jinjava</groupId>
+			<artifactId>jinjava</artifactId>
+			<version>${jinjava.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.qiniu</groupId>
+			<artifactId>qiniu-java-sdk</artifactId>
+			<version>${qiniu.sdk.version}</version>
+		</dependency>
+
+		<!-- 3rd -->
+		<dependency>
+			<groupId>io.micro</groupId>
+			<artifactId>micro</artifactId>
+			<version>${micro.version}</version>
+			<scope>system</scope>
+			<systemPath>${lib-path}/io/micro/${micro.version}/micro-${micro.version}.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.alidayu</groupId>
+			<artifactId>alidayu</artifactId>
+			<version>${alidayu.version}</version>
+			<scope>system</scope>
+			<systemPath>${lib-path}/com/alidayu/${alidayu.version}/taobao-sdk-java-auto_1455552377940-20160607.jar</systemPath>
+		</dependency>
+
+		<!-- BEGIN DEPENDENCY -->
+		<!-- swagger -->
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-jaxrs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.undertow</groupId>
+			<artifactId>undertow-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.undertow</groupId>
+			<artifactId>undertow-servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.undertow</groupId>
+			<artifactId>undertow-websockets-jsr</artifactId>
+		</dependency>
+
+		<!-- resteasy undertow jax-rs -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-undertow</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson2-provider</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.james</groupId>
+			<artifactId>apache-mime4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>javax.json</artifactId>
+			<version>${jsr353.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr353</artifactId>
+		</dependency>
+
+		<!-- validation -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.bval</groupId>
+			<artifactId>bval-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.bval</groupId>
+			<artifactId>bval-jsr</artifactId>
+		</dependency>
+
+		<!-- jwt -->
+		<dependency>
+			<groupId>org.bitbucket.b_c</groupId>
+			<artifactId>jose4j</artifactId>
+		</dependency>
+		<!-- END DEPENDENCY -->
 
 		<!-- utils -->
 		<dependency>
