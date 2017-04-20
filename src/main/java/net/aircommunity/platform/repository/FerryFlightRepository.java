@@ -2,6 +2,8 @@ package net.aircommunity.platform.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.model.FerryFlight;
@@ -19,5 +21,13 @@ public interface FerryFlightRepository extends BaseProductRepository<FerryFlight
 	List<FerryFlight> findTop3ByOrderByCreationDateDesc();
 
 	List<FerryFlight> findTop3ByDepartureOrderByCreationDateDesc(String departure);
+
+	/**
+	 * Find all by departure.
+	 * 
+	 * @param pageable the page request
+	 * @return page of FerryFlight
+	 */
+	Page<FerryFlight> findByDepartureOrderByCreationDateDesc(String departure, Pageable pageable);
 
 }

@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.nio.file.Paths;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 import javax.json.Json;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -20,7 +21,6 @@ import javax.ws.rs.core.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.micro.annotation.multipart.MultipartForm;
 import io.micro.common.UUIDs;
@@ -61,6 +61,7 @@ public class FileResource {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
 	// TODO enable Authenticated, once markdown editor can support auth
 	// @Authenticated
 	public Response uploadFileToCloud(@MultipartForm StreamingImageFile inputFile, @Context SecurityContext context) {
@@ -85,7 +86,7 @@ public class FileResource {
 	@Path("local")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
+	@PermitAll
 	public Response uploadFileToLocal(@QueryParam("replace") boolean replaceExisting,
 			@MultipartForm StreamingInputFile inputFile, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();

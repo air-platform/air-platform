@@ -68,6 +68,9 @@ public interface FerryFlightService {
 	Page<FerryFlight> listFerryFlights(int page, int pageSize);
 
 	@Nonnull
+	Page<FerryFlight> listFerryFlightsByDeparture(@Nonnull String departure, int page, int pageSize);
+
+	@Nonnull
 	List<FerryFlight> listTop3FerryFlights(@Nullable String departure);
 
 	/**

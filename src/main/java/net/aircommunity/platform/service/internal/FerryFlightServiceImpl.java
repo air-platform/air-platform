@@ -87,9 +87,18 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 	}
 
 	@Override
+	public Page<FerryFlight> listFerryFlightsByDeparture(String departure, int page, int pageSize) {
+		if (departure == null) {
+			return listFerryFlights(page, pageSize);
+		}
+		return Pages.adapt(ferryFlightRepository.findByDepartureOrderByCreationDateDesc(departure,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
 	public List<FerryFlight> listTop3FerryFlights(String departure) {
 		if (departure == null) {
-			ferryFlightRepository.findTop3ByOrderByCreationDateDesc();
+			return ferryFlightRepository.findTop3ByOrderByCreationDateDesc();
 		}
 		return ferryFlightRepository.findTop3ByDepartureOrderByCreationDateDesc(departure);
 	}
