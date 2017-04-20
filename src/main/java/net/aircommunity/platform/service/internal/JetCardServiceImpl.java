@@ -51,9 +51,7 @@ public class JetCardServiceImpl extends AbstractProductService<JetCard> implemen
 	 */
 	@Override
 	protected void copyProperties(JetCard src, JetCard tgt) {
-		tgt.setName(src.getName());
 		tgt.setType(src.getType());
-		tgt.setDescription(src.getDescription());
 		tgt.setCurrencyUnit(src.getCurrencyUnit());
 		tgt.setSummary(src.getSummary());
 		tgt.setPrice(src.getPrice());

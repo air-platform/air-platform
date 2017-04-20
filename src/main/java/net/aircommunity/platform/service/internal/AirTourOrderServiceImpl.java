@@ -63,11 +63,12 @@ public class AirTourOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 
 	@Override
 	protected void copyProperties(AirTourOrder src, AirTourOrder tgt) {
-		AirTour airTour = airTourService.findAirTour(src.getAirTour().getId());
-		tgt.setAirTour(airTour);
 		tgt.setNote(src.getNote());
 		tgt.setDate(src.getDate());
 		tgt.setTimeSlot(src.getTimeSlot());
+		//
+		AirTour airTour = airTourService.findAirTour(src.getAirTour().getId());
+		tgt.setAirTour(airTour);
 		Set<Passenger> passengers = src.getPassengers();
 		if (passengers != null) {
 			// TODO better use service and throw NOT FOUND

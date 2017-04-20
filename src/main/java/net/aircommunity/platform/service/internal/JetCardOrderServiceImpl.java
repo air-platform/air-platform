@@ -58,6 +58,7 @@ public class JetCardOrderServiceImpl extends AbstractVendorAwareOrderService<Jet
 	protected void copyProperties(JetCardOrder src, JetCardOrder tgt) {
 		tgt.setContact(src.getContact());
 		tgt.setNote(src.getNote());
+		//
 		JetCard jetCard = src.getJetCard();
 		if (jetCard != null) {
 			jetCard = jetCardService.findJetCard(jetCard.getId());

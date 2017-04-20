@@ -35,7 +35,6 @@ public class AirTaxiServiceImpl extends AircraftAwareService<AirTaxi> implements
 	@Override
 	public AirTaxi createAirTaxi(String tenantId, AirTaxi airTaxi) {
 		AirTaxi created = createProduct(tenantId, airTaxi);
-		created.setAircraftItems(applyAircraftItems(airTaxi.getAircraftItems()));
 		return airTaxiRepository.save(created);
 	}
 
@@ -48,14 +47,11 @@ public class AirTaxiServiceImpl extends AircraftAwareService<AirTaxi> implements
 	@CachePut(cacheNames = CACHE_NAME, key = "#taxiId")
 	@Override
 	public AirTaxi updateAirTaxi(String taxiId, AirTaxi newAirTaxi) {
-		newAirTaxi.setAircraftItems(applyAircraftItems(newAirTaxi.getAircraftItems()));
 		return updateProduct(taxiId, newAirTaxi);
 	}
 
 	@Override
-	protected void copyProperties(AirTaxi src, AirTaxi tgt) {
-		tgt.setName(src.getName());
-		tgt.setDescription(src.getDescription());
+	protected void doCopyProperties(AirTaxi src, AirTaxi tgt) {
 		tgt.setArrival(src.getArrival());
 		tgt.setArrivalLoc(src.getArrivalLoc());
 		tgt.setDeparture(src.getDeparture());

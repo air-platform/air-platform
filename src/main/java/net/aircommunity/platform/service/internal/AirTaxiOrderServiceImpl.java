@@ -65,12 +65,13 @@ public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 
 	@Override
 	protected void copyProperties(AirTaxiOrder src, AirTaxiOrder tgt) {
-		AirTaxi airTaxi = airTaxiService.findAirTaxi(src.getAirTaxi().getId());
-		tgt.setAirTaxi(airTaxi);
 		tgt.setNote(src.getNote());
 		tgt.setDate(src.getDate());
 		tgt.setTimeSlot(src.getTimeSlot());
 		Set<Passenger> passengers = src.getPassengers();
+		//
+		AirTaxi airTaxi = airTaxiService.findAirTaxi(src.getAirTaxi().getId());
+		tgt.setAirTaxi(airTaxi);
 		if (passengers != null) {
 			// TODO better use service and throw NOT FOUND
 			passengers = passengers.stream().map(passenger -> passengerRepository.findOne(passenger.getId()))

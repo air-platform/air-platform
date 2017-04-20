@@ -68,17 +68,15 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 	 */
 	@Override
 	protected void copyProperties(Fleet src, Fleet tgt) {
+		tgt.setFlightNo(src.getFlightNo());
 		tgt.setAircraftType(src.getAircraftType());
 		tgt.setLocation(src.getLocation());
 		tgt.setStatus(src.getStatus());
 		tgt.setBeds(src.getBeds());
 		tgt.setCapacity(src.getCapacity());
 		tgt.setCurrencyUnit(src.getCurrencyUnit());
-		tgt.setDescription(src.getDescription());
 		tgt.setFacilities(src.getFacilities());
-		tgt.setFlightNo(src.getFlightNo());
 		tgt.setFullloadRange(src.getFullloadRange());
-		tgt.setName(src.getName());
 		tgt.setPrice(src.getPrice());
 		tgt.setWeight(src.getWeight());
 		tgt.setAppearances(src.getAppearances());

@@ -16,14 +16,16 @@ public class AirTour extends AircraftAwareProduct {
 	@Column(name = "city", nullable = false)
 	private String city;
 
-	@Column(name = "tour_point")
-	private String tourPoint;
-
 	@Column(name = "tour_distance")
 	private String tourDistance;
 
+	// e.g. time in minutes
 	@Column(name = "tour_time")
-	private String tourTime;
+	private int tourTime;
+
+	@Lob
+	@Column(name = "tour_point")
+	private String tourPoint;
 
 	@Lob
 	@Column(name = "tour_show")
@@ -32,9 +34,11 @@ public class AirTour extends AircraftAwareProduct {
 	@Column(name = "boarding_loc")
 	private String boardingLoc;
 
+	@Lob
 	@Column(name = "traffic")
 	private String traffic;
 
+	@Lob
 	@Column(name = "tour_route")
 	private String tourRoute;
 
@@ -69,11 +73,11 @@ public class AirTour extends AircraftAwareProduct {
 		this.tourDistance = tourDistance;
 	}
 
-	public String getTourTime() {
+	public int getTourTime() {
 		return tourTime;
 	}
 
-	public void setTourTime(String tourTime) {
+	public void setTourTime(int tourTime) {
 		this.tourTime = tourTime;
 	}
 

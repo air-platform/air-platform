@@ -38,7 +38,7 @@ public class AirTransportOrder extends CharterableOrder {
 	@Column(name = "date", nullable = false)
 	private Date date;
 
-	// e.g. 8:00-9:00
+	// e.g. 08:00-09:00, HHmm
 	@NotEmpty
 	@Column(name = "time_slot", nullable = false)
 	private String timeSlot;

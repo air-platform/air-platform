@@ -33,9 +33,7 @@ public class AirTourServiceImpl extends AircraftAwareService<AirTour> implements
 
 	@Override
 	public AirTour createAirTour(String tenantId, AirTour airTour) {
-		AirTour created = createProduct(tenantId, airTour);
-		created.setAircraftItems(applyAircraftItems(airTour.getAircraftItems()));
-		return airTourRepository.save(created);
+		return createProduct(tenantId, airTour);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -47,12 +45,11 @@ public class AirTourServiceImpl extends AircraftAwareService<AirTour> implements
 	@CachePut(cacheNames = CACHE_NAME, key = "#airTourId")
 	@Override
 	public AirTour updateAirTour(String airTourId, AirTour newAirTour) {
-		newAirTour.setAircraftItems(applyAircraftItems(newAirTour.getAircraftItems()));
 		return updateProduct(airTourId, newAirTour);
 	}
 
 	@Override
-	protected void copyProperties(AirTour src, AirTour tgt) {
+	protected void doCopyProperties(AirTour src, AirTour tgt) {
 		tgt.setCity(src.getCity());
 		tgt.setTourDistance(src.getTourDistance());
 		tgt.setBoardingLoc(src.getBoardingLoc());
@@ -60,9 +57,7 @@ public class AirTourServiceImpl extends AircraftAwareService<AirTour> implements
 		tgt.setTourShow(src.getTourShow());
 		tgt.setTourTime(src.getTourTime());
 		tgt.setTraffic(src.getTraffic());
-		tgt.setName(src.getName());
 		tgt.setTourRoute(src.getTourRoute());
-		tgt.setDescription(src.getDescription());
 	}
 
 	@Override

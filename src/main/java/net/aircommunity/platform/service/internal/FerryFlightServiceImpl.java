@@ -60,17 +60,14 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 	 */
 	@Override
 	protected void copyProperties(FerryFlight src, FerryFlight tgt) {
+		tgt.setFlightNo(src.getFlightNo());
 		tgt.setAircraftType(src.getAircraftType());
 		tgt.setArrival(src.getArrival());
 		tgt.setTimeSlot(src.getTimeSlot());
-		tgt.setImage(src.getImage());
-		tgt.setCurrencyUnit(src.getCurrencyUnit());
 		tgt.setDate(src.getDate());
 		tgt.setDeparture(src.getDeparture());
-		tgt.setDescription(src.getDescription());
-		tgt.setFlightNo(src.getFlightNo());
 		tgt.setMinPassengers(src.getMinPassengers());
-		tgt.setName(src.getName());
+		tgt.setCurrencyUnit(src.getCurrencyUnit());
 		tgt.setPrice(src.getPrice());
 		tgt.setSeatPrice(src.getSeatPrice());
 		tgt.setSeats(src.getSeats());

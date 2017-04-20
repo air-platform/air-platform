@@ -59,6 +59,7 @@ public class FerryFlightOrderServiceImpl extends AbstractVendorAwareOrderService
 		tgt.setContact(src.getContact());
 		tgt.setNote(src.getNote());
 		tgt.setPassengers(src.getPassengers());
+		//
 		FerryFlight ferryFlight = src.getFerryFlight();
 		if (ferryFlight != null) {
 			ferryFlight = ferryFlightService.findFerryFlight(ferryFlight.getId());

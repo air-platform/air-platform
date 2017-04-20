@@ -82,6 +82,9 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 
 	protected T updateProduct(String productId, T newProduct) {
 		T product = findProduct(productId);
+		product.setName(newProduct.getName());
+		product.setImage(newProduct.getImage());
+		product.setDescription(newProduct.getDescription());
 		copyProperties(newProduct, product);
 		try {
 			return getProductRepository().save(product);

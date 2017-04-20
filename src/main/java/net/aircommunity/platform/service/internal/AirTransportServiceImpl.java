@@ -35,9 +35,7 @@ public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> 
 
 	@Override
 	public AirTransport createAirTransport(String tenantId, AirTransport airTransport) {
-		AirTransport created = createProduct(tenantId, airTransport);
-		created.setAircraftItems(applyAircraftItems(airTransport.getAircraftItems()));
-		return airTransportRepository.save(created);
+		return createProduct(tenantId, airTransport);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -49,17 +47,11 @@ public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> 
 	@CachePut(cacheNames = CACHE_NAME, key = "#airTransportId")
 	@Override
 	public AirTransport updateAirTransport(String airTransportId, AirTransport newAirTransport) {
-		newAirTransport.setAircraftItems(applyAircraftItems(newAirTransport.getAircraftItems()));
 		return updateProduct(airTransportId, newAirTransport);
 	}
 
-	/**
-	 * Copy properties from src to tgt without ID
-	 */
 	@Override
-	protected void copyProperties(AirTransport src, AirTransport tgt) {
-		tgt.setName(src.getName());
-		tgt.setDescription(src.getDescription());
+	protected void doCopyProperties(AirTransport src, AirTransport tgt) {
 		tgt.setFamily(src.getFamily());
 		tgt.setTimeEstimation(src.getTimeEstimation());
 		tgt.setFlightRoute(src.getFlightRoute());

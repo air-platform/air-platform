@@ -68,11 +68,13 @@ public class AirTransportOrderServiceImpl extends AbstractVendorAwareOrderServic
 
 	@Override
 	protected void copyProperties(AirTransportOrder src, AirTransportOrder tgt) {
-		AirTransport airTransport = airTransportService.findAirTransport(src.getAirTransport().getId());
-		tgt.setAirTransport(airTransport);
 		tgt.setDate(src.getDate());
 		tgt.setNote(src.getNote());
+		tgt.setPassengerNum(src.getPassengerNum());
 		tgt.setTimeSlot(src.getTimeSlot());
+		//
+		AirTransport airTransport = airTransportService.findAirTransport(src.getAirTransport().getId());
+		tgt.setAirTransport(airTransport);
 		Set<Passenger> passengers = src.getPassengers();
 		if (passengers != null) {
 			// TODO better use service and throw NOT FOUND

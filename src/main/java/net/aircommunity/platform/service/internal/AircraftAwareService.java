@@ -5,8 +5,8 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import net.aircommunity.platform.model.Aircraft;
+import net.aircommunity.platform.model.AircraftAwareProduct;
 import net.aircommunity.platform.model.AircraftItem;
-import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.service.AircraftService;
 
 /**
@@ -14,7 +14,7 @@ import net.aircommunity.platform.service.AircraftService;
  * 
  * @author Bin.Zhang
  */
-abstract class AircraftAwareService<T extends Product> extends AbstractProductService<T> {
+abstract class AircraftAwareService<T extends AircraftAwareProduct> extends AbstractProductService<T> {
 
 	@Resource
 	protected AircraftService aircraftService;
@@ -30,6 +30,15 @@ abstract class AircraftAwareService<T extends Product> extends AbstractProductSe
 			});
 		}
 		return srcAircraftItems;
+	}
+
+	@Override
+	protected final void copyProperties(T src, T tgt) {
+		tgt.setAircraftItems(applyAircraftItems(src.getAircraftItems()));
+		doCopyProperties(src, tgt);
+	}
+
+	protected void doCopyProperties(T src, T tgt) {
 	}
 
 }
