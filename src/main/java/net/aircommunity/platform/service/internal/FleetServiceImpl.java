@@ -47,6 +47,16 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 		return findProduct(fleetId);
 	}
 
+	@Override
+	public Fleet findFleetByFlightNo(String flightNo) {
+		Fleet fleet = fleetRepository.findByFlightNo(flightNo);
+		if (fleet == null) {
+			throw new AirException(productNotFoundCode(),
+					String.format("%s: %s is not found", type.getSimpleName(), fleet));
+		}
+		return fleet;
+	}
+
 	@CachePut(cacheNames = CACHE_NAME, key = "#fleetId")
 	@Override
 	public Fleet updateFleet(String fleetId, Fleet newFleet) {

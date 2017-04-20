@@ -72,4 +72,15 @@ public class FleetResource {
 		return fleetService.findFleet(fleetId);
 	}
 
+	/**
+	 * Find by flightNo
+	 */
+	@GET
+	@PermitAll
+	@Path("flightno/{flightNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Fleet findFlightNo(@PathParam("flightNo") String flightNo) {
+		return fleetService.findFleetByFlightNo(flightNo);
+	}
+
 }

@@ -33,6 +33,9 @@ public interface FleetService {
 	@Nonnull
 	Fleet findFleet(@Nonnull String fleetId);
 
+	@Nonnull
+	Fleet findFleetByFlightNo(@Nonnull String flightNo);
+
 	/**
 	 * Update a fleet.
 	 * 
