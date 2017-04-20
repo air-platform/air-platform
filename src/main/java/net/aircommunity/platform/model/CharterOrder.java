@@ -86,6 +86,11 @@ public class CharterOrder extends Order {
 	}
 
 	@Override
+	protected Class<?> getProductType() {
+		return Fleet.class;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("CharterOrder [contact=").append(contact).append(", flightLegs=").append(flightLegs)
