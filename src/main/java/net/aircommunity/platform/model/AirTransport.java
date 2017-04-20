@@ -1,18 +1,11 @@
 package net.aircommunity.platform.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import io.micro.annotation.constraint.NotEmpty;
-
 
 /**
  * Air Transport
@@ -21,7 +14,7 @@ import io.micro.annotation.constraint.NotEmpty;
  */
 @Entity
 @Table(name = "air_platfrom_airtransport")
-public class AirTransport extends Product {
+public class AirTransport extends AircraftAwareProduct {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
@@ -34,11 +27,6 @@ public class AirTransport extends Product {
 
 	@Embedded
 	private FlightRoute flightRoute;
-
-	// TODO
-	// @NotEmpty
-	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private Set<AircraftItem> aircraftItems = new HashSet<>();
 
 	public AirTransport() {
 	}
@@ -69,32 +57,6 @@ public class AirTransport extends Product {
 
 	public void setFlightRoute(FlightRoute flightRoute) {
 		this.flightRoute = flightRoute;
-	}
-
-	public Set<AircraftItem> getAircraftItems() {
-		return aircraftItems;
-	}
-
-	public void setAircraftItems(Set<AircraftItem> aircraftItems) {
-		if (aircraftItems != null) {
-			aircraftItems.stream().forEach(item -> item.setProduct(this));
-			this.aircraftItems = aircraftItems;
-		}
-	}
-
-	public boolean addAircraftItem(AircraftItem item) {
-		if (aircraftItems.contains(item)) {
-			return false;
-		}
-		item.setProduct(this);
-		return aircraftItems.add(item);
-	}
-
-	public boolean removeAircraftItem(AircraftItem item) {
-		if (!aircraftItems.contains(item)) {
-			return false;
-		}
-		return aircraftItems.remove(item);
 	}
 
 	@Override

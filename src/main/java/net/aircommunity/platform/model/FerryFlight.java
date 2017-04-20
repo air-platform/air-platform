@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -67,6 +68,11 @@ public class FerryFlight extends PricedProduct {
 	// departure timeSlot, e.g. 8:00-9:00
 	@Column(name = "time_slot", nullable = false)
 	private String timeSlot;
+
+	// images of this flight, comma separated, image1.png,image2/png
+	@Lob
+	@Column(name = "appearances")
+	private String appearances;
 
 	public FerryFlight() {
 	}
@@ -147,12 +153,12 @@ public class FerryFlight extends PricedProduct {
 		this.timeSlot = timeSlot;
 	}
 
-	public String getImage() {
-		return image;
+	public String getAppearances() {
+		return appearances;
 	}
 
-	public void setImage(String image) {
-		this.image = image;
+	public void setAppearances(String appearances) {
+		this.appearances = appearances;
 	}
 
 	@Override
@@ -161,9 +167,11 @@ public class FerryFlight extends PricedProduct {
 		builder.append("FerryFlight [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)
 				.append(", departure=").append(departure).append(", arrival=").append(arrival).append(", seatPrice=")
 				.append(seatPrice).append(", seats=").append(seats).append(", minPassengers=").append(minPassengers)
-				.append(", date=").append(date).append(", timeSlot=").append(timeSlot).append(", image=").append(image)
-				.append(", price=").append(price).append(", currencyUnit=").append(currencyUnit).append(", name=")
-				.append(name).append(", description=").append(description).append(", id=").append(id).append("]");
+				.append(", date=").append(date).append(", timeSlot=").append(timeSlot).append(", appearances=")
+				.append(appearances).append(", price=").append(price).append(", currencyUnit=").append(currencyUnit)
+				.append(", name=").append(name).append(", image=").append(image).append(", score=").append(score)
+				.append(", creationDate=").append(creationDate).append(", description=").append(description)
+				.append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

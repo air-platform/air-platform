@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public abstract class CharterableOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
-	// true: 包机, false: 拼座
+	// true: charter, false: not-chartered
 	@Column(name = "chartered", nullable = false)
 	protected boolean chartered;
 

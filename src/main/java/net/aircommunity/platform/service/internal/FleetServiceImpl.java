@@ -52,7 +52,7 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 		Fleet fleet = fleetRepository.findByFlightNo(flightNo);
 		if (fleet == null) {
 			throw new AirException(productNotFoundCode(),
-					String.format("%s: %s is not found", type.getSimpleName(), fleet));
+					String.format("%s NO.: %s is not found", type.getSimpleName(), flightNo));
 		}
 		return fleet;
 	}

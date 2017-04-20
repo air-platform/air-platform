@@ -38,9 +38,9 @@ public class Passenger extends Persistable {
 	@Column(name = "identity")
 	private String identity;
 
-	@XmlJavaTypeAdapter(AccountAdapter.class)
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
+	@XmlJavaTypeAdapter(AccountAdapter.class)
 	private User owner;
 
 	public Passenger() {

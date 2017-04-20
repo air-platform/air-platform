@@ -77,7 +77,7 @@ public class FleetResource {
 	 */
 	@GET
 	@PermitAll
-	@Path("flightno/{flightNo}")
+	@Path("query/flightno/{flightNo}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Fleet findFlightNo(@PathParam("flightNo") String flightNo) {
 		return fleetService.findFleetByFlightNo(flightNo);
