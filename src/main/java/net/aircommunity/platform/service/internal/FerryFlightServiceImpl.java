@@ -74,6 +74,7 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 		tgt.setPrice(src.getPrice());
 		tgt.setSeatPrice(src.getSeatPrice());
 		tgt.setSeats(src.getSeats());
+		tgt.setAppearances(src.getAppearances());
 	}
 
 	@Override
