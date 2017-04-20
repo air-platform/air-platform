@@ -33,6 +33,8 @@ import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.rest.AirJetResource;
+import net.aircommunity.platform.rest.AirportResource;
 import net.aircommunity.platform.rest.CommentResource;
 import net.aircommunity.platform.rest.tenant.TenantAirTaxiResource;
 import net.aircommunity.platform.rest.tenant.TenantAirTourResourse;
@@ -163,6 +165,25 @@ public class AdminResource {
 	public Response deleteAccount(@PathParam("accountId") String accountId) {
 		accountService.deleteAccount(accountId);
 		return Response.noContent().build();
+	}
+
+	// *************
+	// Common
+	// *************
+	@Resource
+	private AirJetResource airJetResource;
+
+	@Path("airjets")
+	public AirJetResource airjets() {
+		return airJetResource;
+	}
+
+	@Resource
+	private AirportResource airportResource;
+
+	@Path("airports")
+	public AirportResource airports() {
+		return airportResource;
 	}
 
 	// *************

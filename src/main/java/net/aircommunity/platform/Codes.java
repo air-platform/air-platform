@@ -47,6 +47,9 @@ public final class Codes {
 	public static final Code AIRJET_NOT_FOUND = Code.notFound(11_003_0005);
 	public static final Code AIRCRAFT_ALREADY_EXISTS = Code.alreadyExists(11_003_0006);
 	public static final Code AIRCRAFT_NOT_FOUND = Code.notFound(11_003_0007);
+	public static final Code AIRPORT_NOT_FOUND = Code.notFound(11_003_0008);
+	public static final Code AIRPORT_ALREADY_EXISTS = Code.notFound(11_003_0009);
+	public static final Code AIRPORT_INVALID_CODE = Code.invalidArgument(11_003_0010);
 
 	// fleet
 	public static final Code FLEET_NOT_FOUND = Code.notFound(11_004_0001);

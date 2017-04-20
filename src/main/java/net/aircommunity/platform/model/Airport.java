@@ -1,5 +1,28 @@
 package net.aircommunity.platform.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+/**
+ * Airport information.
+ * 
+ * @author Bin.Zhang
+ */
+@Entity
+//@formatter:off
+@Table(name = "air_platfrom_airport", indexes = { 
+	@Index(name = "idx_name", columnList = "name"),
+	@Index(name = "idx_city_and_name", columnList = "city,name"),
+	@Index(name = "idx_icao4", columnList = "icao4"), 
+	@Index(name = "idx_iata3", columnList = "iata3"),
+	@Index(name = "idx_city", columnList = "city") 
+})
+//@formatter:on
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Airport extends Persistable {
 	private static final long serialVersionUID = 1L;
 
@@ -16,7 +39,17 @@ public class Airport extends Persistable {
 	private String iata3;
 
 	// ICAO 4-Letter Code
+	@Column(name = "icao4", nullable = false, unique = true)
 	private String icao4;
+
+	// Decimal degrees, usually to six significant digits. Negative is South, positive is North.
+	private double latitude;
+
+	// Decimal degrees, usually to six significant digits. Negative is West, positive is East.
+	private double longitude;
+
+	// Hours offset from UTC. Fractional hours are expressed as decimals, eg. India is 5.5.
+	private String timezone;
 
 	public String getName() {
 		return name;
@@ -58,12 +91,38 @@ public class Airport extends Persistable {
 		this.icao4 = icao4;
 	}
 
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Airport [name=").append(name).append(", city=").append(city).append(", country=")
-				.append(country).append(", iata3=").append(iata3).append(", icao4=").append(icao4).append(", id=")
-				.append(id).append("]");
+				.append(country).append(", iata3=").append(iata3).append(", icao4=").append(icao4).append(", latitude=")
+				.append(latitude).append(", longitude=").append(longitude).append(", timezone=").append(timezone)
+				.append(", id=").append(id).append("]");
 		return builder.toString();
 	}
+
 }
