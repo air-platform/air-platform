@@ -181,6 +181,29 @@ public class UserResource {
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
 	}
 
+	@GET
+	@Path("orders/{orderId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Order findOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
+		return commonOrderService.findOrder(orderId);
+	}
+
+	@POST
+	@Path("orders/{orderId}/cancel")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response cancelOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
+		commonOrderService.cancelOrder(orderId);
+		return Response.noContent().build();
+	}
+
+	@DELETE
+	@Path("orders/{orderId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
+		commonOrderService.deleteOrder(orderId);
+		return Response.noContent().build();
+	}
+
 	// ***********************
 	// Air Jet
 	// ***********************

@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -82,6 +84,14 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 	@Override
 	public Page<FerryFlight> listFerryFlights(int page, int pageSize) {
 		return listAllProducts(page, pageSize);
+	}
+
+	@Override
+	public List<FerryFlight> listTop3FerryFlights(String departure) {
+		if (departure == null) {
+			ferryFlightRepository.findTop3ByOrderByCreationDateDesc();
+		}
+		return ferryFlightRepository.findTop3ByDepartureOrderByCreationDateDesc(departure);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#ferryFlightId")

@@ -1,6 +1,9 @@
 package net.aircommunity.platform.service;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.FerryFlight;
@@ -63,6 +66,9 @@ public interface FerryFlightService {
 	 */
 	@Nonnull
 	Page<FerryFlight> listFerryFlights(int page, int pageSize);
+
+	@Nonnull
+	List<FerryFlight> listTop3FerryFlights(@Nullable String departure);
 
 	/**
 	 * Delete a FerryFlight.

@@ -1,5 +1,7 @@
 package net.aircommunity.platform.rest;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
@@ -51,6 +53,19 @@ public class FerryFlightResource {
 		LOG.debug("List all ferryFlights");
 		Page<FerryFlight> result = ferryFlightService.listFerryFlights(page, pageSize);
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+	}
+
+	/**
+	 * Top3 recommended
+	 */
+	@GET
+	@Path("recommended")
+	@PermitAll
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<FerryFlight> listTop(@QueryParam("departure") String departure,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		LOG.debug("List recommended ferryFlights for departure: {}", departure);
+		return ferryFlightService.listTop3FerryFlights(departure);
 	}
 
 	/**

@@ -78,7 +78,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	protected T findOrder(String orderId) {
 		T order = getOrderRepository().findOne(orderId);
-		if (order == null) {
+		if (order == null || order.getStatus() == Order.Status.DELETED) {
 			throw new AirException(orderNotFoundCode(),
 					String.format("%s: %s is not found", type.getSimpleName(), orderId));
 		}
@@ -87,9 +87,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	protected T findOrderByOrderNo(String orderNo) {
 		T order = getOrderRepository().findByOrderNo(orderNo);
-		if (order == null) {
+		if (order == null || order.getStatus() == Order.Status.DELETED) {
 			throw new AirException(orderNotFoundCode(),
-					String.format("%s: NO: %s is not found", type.getSimpleName(), orderNo));
+					String.format("%s: NO.: %s is not found", type.getSimpleName(), orderNo));
 		}
 		return order;
 	}

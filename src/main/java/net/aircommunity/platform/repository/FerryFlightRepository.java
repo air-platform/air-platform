@@ -1,5 +1,7 @@
 package net.aircommunity.platform.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.model.FerryFlight;
@@ -13,5 +15,9 @@ import net.aircommunity.platform.model.FerryFlight;
 public interface FerryFlightRepository extends BaseProductRepository<FerryFlight> {
 
 	FerryFlight findByFlightNo(String flightNo);
+
+	List<FerryFlight> findTop3ByOrderByCreationDateDesc();
+
+	List<FerryFlight> findTop3ByDepartureOrderByCreationDateDesc(String departure);
 
 }

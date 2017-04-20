@@ -1,8 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
@@ -14,10 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountServiceImpl.class);
 
 	private static final String CACHE_NAME_ACCOUNT = "cache.account";
-	private static final int PASSWORD_LENGTH = 20;
+	// private static final String CACHE_NAME_APIKEY = "cache.account_apikey";
 
 	// FORMAT: http://host:port/context/api-version/account/email/confirm?token=xxx&code=xxx
 	private static final String EMAIL_CONFIRMATION_LINK_BASE_FORMAT = "http://%s:%d%s/%s/account/email/confirm?%s";
@@ -78,8 +71,8 @@ public class AccountServiceImpl implements AccountService {
 	private static final String EMAIL_BINDING_WEBSITE = "website";
 	private static final String EMAIL_BINDING_VERIFICATIONLINK = "verificationLink";
 	private static final String EMAIL_BINDING_RNDPASSWORD = "rndPassword";
-	private static final String EMAIL_BINDING_RESETPASSWORDLINK = "resetPasswordLink";
-	// private static final String CACHE_NAME_APIKEY = "cache.account_apikey";
+	// private static final String EMAIL_BINDING_RESETPASSWORDLINK = "resetPasswordLink";
+	private static final int PASSWORD_LENGTH = 20;
 
 	@Resource
 	private Configuration configuration;
@@ -104,6 +97,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Resource
 	private AccessTokenService accessTokenService;
+
+	@Resource
+	private AirBBAccountService airBBAccountService;
 
 	private String emailConfirmationLink;
 
@@ -171,7 +167,7 @@ public class AccountServiceImpl implements AccountService {
 			}
 			break;
 
-		default:
+		default: // noop
 		}
 		return account;
 	}
@@ -296,161 +292,9 @@ public class AccountServiceImpl implements AccountService {
 		auth.setCreationDate(new Date());
 		auth.setLastAccessedDate(auth.getCreationDate());
 		accountAuthRepository.save(auth);
-
 		// create account in NodeBB
-		createNodeBBAccount(principal, password);
-
+		airBBAccountService.createAccount(principal, password);
 		return accountCreated;
-	}
-
-	private void createNodeBBAccount(String userName, String passWord) {
-		try {
-			URL url = new URL(configuration.getNodebbUrl() + "/api/v1/users");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
-
-			String json = Json.createObjectBuilder().add("username", userName).add("password", passWord)
-					.add("email", "").add("_uid", "1").build().toString();
-
-			OutputStream os = conn.getOutputStream();
-			os.write(json.getBytes());
-			os.flush();
-
-			int respCode = conn.getResponseCode();
-			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("Creating NodeBB user Failed : HTTP error code : " + respCode);
-			}
-			conn.disconnect();
-		}
-		catch (Exception e) {
-			LOG.error("Failed to create NodeBB user:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to create NodeBB user:" + e.getMessage(), e);
-		}
-	}
-
-	private void updateNodeBBAccountPassword(String userName, String newPassWord) {
-		try {
-			String userID = getNodeBBUserID(userName);
-			URL url = new URL(configuration.getNodebbUrl() + "/api/v1/users/" + userID + "/password");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("PUT");
-			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
-
-			String json = Json.createObjectBuilder().add("uid", userID).add("new", newPassWord).add("_uid", "1").build()
-					.toString();
-			OutputStream os = conn.getOutputStream();
-			os.write(json.getBytes());
-			os.flush();
-
-			int respCode = conn.getResponseCode();
-			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("update NodeBB user password Failed : HTTP error code : " + respCode);
-			}
-			conn.disconnect();
-		}
-		catch (Exception e) {
-			LOG.error("Failed to update NodeBB user password:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to update NodeBB user password:" + e.getMessage(), e);
-		}
-	}
-
-	private void updateNodeBBAccountProfile(String userName, String email) {
-
-		try {
-			String userID = getNodeBBUserID(userName);
-			URL url = new URL(configuration.getNodebbUrl() + "/api/v1/users/" + userID);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("PUT");
-			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
-
-			String json = Json.createObjectBuilder().add("email", email).add("_uid", "1").build().toString();
-			OutputStream os = conn.getOutputStream();
-			os.write(json.getBytes());
-			os.flush();
-
-			int respCode = conn.getResponseCode();
-			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("update NodeBB user profile Failed : HTTP error code : " + respCode);
-			}
-
-			conn.disconnect();
-		}
-		catch (Exception e) {
-			LOG.error("Failed to update NodeBB user email:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to update NodeBB user email:" + e.getMessage(), e);
-		}
-	}
-
-	private void deleteNodeBBAccount(String userName) {
-
-		try {
-			String userID = getNodeBBUserID(userName);
-			URL url = new URL(configuration.getNodebbUrl() + "/api/v1/users/" + userID);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("DELETE");
-			conn.setRequestProperty("Content-Type", "application/json");
-			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
-
-			String json = Json.createObjectBuilder().add("_uid", "1").build().toString();
-			OutputStream os = conn.getOutputStream();
-			os.write(json.toString().getBytes());
-			os.flush();
-
-			int respCode = conn.getResponseCode();
-			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("Deleting NodeBB user Failed : HTTP error code : " + respCode);
-			}
-			conn.disconnect();
-		}
-		catch (Exception e) {
-			LOG.error("Failed to delete NodeBB user:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to delete NodeBB user:" + e.getMessage(), e);
-		}
-	}
-
-	private String getNodeBBUserID(String userName) {
-		String userID = "";
-		try {
-			URL url = new URL(configuration.getNodebbUrl() + "/api/users/");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("GET");
-
-			int respCode = conn.getResponseCode();
-			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("Deleting NodeBB user Failed : HTTP error code : " + respCode);
-			}
-
-			JsonReader jsonReader = Json.createReader(conn.getInputStream());
-			JsonObject jsonObj = jsonReader.readObject();
-
-			JsonArray userArray = jsonObj.getJsonArray("users");
-			for (int i = 0; i < userArray.size(); i++) {
-				JsonObject user = userArray.getJsonObject(i);
-				String un = user.getString("username");
-				if (un.equals(userName)) {
-					String uid = user.get("uid").toString();
-					userID = uid;
-					break;
-				}
-			}
-			jsonReader.close();
-			conn.disconnect();
-
-		}
-		catch (Exception e) {
-			LOG.error("Failed to get NodeBB user ID:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to get NodeBB user ID:" + e.getMessage(), e);
-		}
-		return userID;
 	}
 
 	@Override
@@ -538,8 +382,9 @@ public class AccountServiceImpl implements AccountService {
 		return addresses.stream().collect(Collectors.toList());
 	}
 
+	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
 	@Override
-	public void addUserAddress(String accountId, Address address) {
+	public Account addUserAddress(String accountId, Address address) {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.USER) {
 			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
@@ -547,11 +392,12 @@ public class AccountServiceImpl implements AccountService {
 		}
 		User user = User.class.cast(account);
 		user.addAddress(address);
-		accountRepository.save(user);
+		return accountRepository.save(user);
 	}
 
+	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
 	@Override
-	public void removeUserAddress(String accountId, String addressId) {
+	public Account removeUserAddress(String accountId, String addressId) {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.USER) {
 			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
@@ -559,7 +405,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 		User user = User.class.cast(account);
 		user.removeAddressById(addressId);
-		accountRepository.save(user);
+		return accountRepository.save(user);
 	}
 
 	@Override
@@ -572,8 +418,9 @@ public class AccountServiceImpl implements AccountService {
 		return passengers.stream().collect(Collectors.toList());
 	}
 
+	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
 	@Override
-	public void addUserPassenger(String accountId, Passenger passenger) {
+	public Account addUserPassenger(String accountId, Passenger passenger) {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.USER) {
 			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
@@ -581,11 +428,12 @@ public class AccountServiceImpl implements AccountService {
 		}
 		User user = User.class.cast(account);
 		user.addPassenger(passenger);
-		accountRepository.save(user);
+		return accountRepository.save(user);
 	}
 
+	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
 	@Override
-	public void removeUserPassenger(String accountId, String passengerId) {
+	public Account removeUserPassenger(String accountId, String passengerId) {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.USER) {
 			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
@@ -593,7 +441,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 		User user = User.class.cast(account);
 		user.removePassengerById(passengerId);
-		accountRepository.save(user);
+		return accountRepository.save(user);
 	}
 
 	@Override
@@ -654,7 +502,7 @@ public class AccountServiceImpl implements AccountService {
 		sendConfirmationEmail(email, verificationCode, account, AccountAuth.EXPIRES_IN_ONE_DAY);
 
 		// update NodeBB user email
-		updateNodeBBAccountProfile(account.getNickName(), email);
+		airBBAccountService.updateAccountProfile(account.getNickName(), email);
 	}
 
 	/**
@@ -701,8 +549,7 @@ public class AccountServiceImpl implements AccountService {
 		account.setPassword(passwordEncoder.encode(newPassword));
 
 		// update NodeBB account password
-		updateNodeBBAccountPassword(account.getNickName(), newPassword);
-
+		airBBAccountService.updateAccountPassword(account.getNickName(), newPassword);
 		return accountRepository.save(account);
 	}
 
@@ -742,7 +589,7 @@ public class AccountServiceImpl implements AccountService {
 		bindings.put(EMAIL_BINDING_COMPANY, configuration.getCompany());
 		bindings.put(EMAIL_BINDING_WEBSITE, configuration.getWebsite());
 		bindings.put(EMAIL_BINDING_RNDPASSWORD, rndPassword);
-		bindings.put(EMAIL_BINDING_RESETPASSWORDLINK, "#TODO"); // TODO
+		// bindings.put(EMAIL_BINDING_RESETPASSWORDLINK, "#TODO"); // XXX NOT USED FOR NOW
 		String mailBody = templateService.renderFile(Constants.TEMPLATE_MAIL_RESET_PASSOWRD, bindings);
 		mailService.sendMail(auth.getPrincipal(), configuration.getMailResetPasswordSubject(), mailBody);
 		return accountUpdated;
@@ -767,7 +614,7 @@ public class AccountServiceImpl implements AccountService {
 			accountRepository.delete(account);
 
 			// delete NodeBB account
-			deleteNodeBBAccount(account.getNickName());
+			airBBAccountService.deleteAccount(account.getNickName());
 			LOG.info("Delete account: {}", account);
 		}
 	}

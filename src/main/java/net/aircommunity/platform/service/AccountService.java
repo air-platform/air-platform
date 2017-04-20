@@ -152,9 +152,11 @@ public interface AccountService {
 	@Nonnull
 	List<Address> listUserAddresses(@Nonnull String accountId);
 
-	void addUserAddress(@Nonnull String accountId, @Nonnull Address address);
+	@Nonnull
+	Account addUserAddress(@Nonnull String accountId, @Nonnull Address address);
 
-	void removeUserAddress(@Nonnull String accountId, @Nonnull String addressId);
+	@Nonnull
+	Account removeUserAddress(@Nonnull String accountId, @Nonnull String addressId);
 
 	/**
 	 * List all Passengers of an user.
@@ -166,9 +168,11 @@ public interface AccountService {
 	@Nonnull
 	List<Passenger> listUserPassengers(@Nonnull String accountId);
 
-	void addUserPassenger(@Nonnull String accountId, @Nonnull Passenger passenger);
+	@Nonnull
+	Account addUserPassenger(@Nonnull String accountId, @Nonnull Passenger passenger);
 
-	void removeUserPassenger(@Nonnull String accountId, @Nonnull String passengerId);
+	@Nonnull
+	Account removeUserPassenger(@Nonnull String accountId, @Nonnull String passengerId);
 
 	/**
 	 * List All Accounts by pagination

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -18,7 +19,7 @@ import io.micro.annotation.constraint.NotEmpty;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_ferryflight")
+@Table(name = "air_platfrom_ferryflight", indexes = { @Index(name = "idx_departure", columnList = "departure") })
 public class FerryFlight extends PricedProduct {
 	private static final long serialVersionUID = 1L;
 
