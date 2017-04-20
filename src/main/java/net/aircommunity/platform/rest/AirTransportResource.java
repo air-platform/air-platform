@@ -41,15 +41,15 @@ public class AirTransportResource {
 	// ***********************
 
 	/**
-	 * List all TODO query by
+	 * List all
 	 */
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
+	public Response listAll(@QueryParam("family") String family, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		LOG.debug("List all air transports");
-		Page<AirTransport> result = airTransportService.listAirTransports(page, pageSize);
+		LOG.debug("List all air transports for family: {}", family);
+		Page<AirTransport> result = airTransportService.listAirTransportsByFamily(family, page, pageSize);
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
 	}
 

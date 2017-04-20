@@ -65,6 +65,17 @@ public interface AirTransportService {
 	Page<AirTransport> listAirTransports(int page, int pageSize);
 
 	/**
+	 * List all AirTransports by family and pagination.
+	 * 
+	 * @param family the family
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of AirTransports or empty
+	 */
+	@Nonnull
+	Page<AirTransport> listAirTransportsByFamily(@Nonnull String family, int page, int pageSize);
+
+	/**
 	 * Delete a AirTransport.
 	 * 
 	 * @param airTransportId the airTransportId

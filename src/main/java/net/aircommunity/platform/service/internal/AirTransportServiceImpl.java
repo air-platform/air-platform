@@ -75,6 +75,15 @@ public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> 
 		return listAllProducts(page, pageSize);
 	}
 
+	@Override
+	public Page<AirTransport> listAirTransportsByFamily(String family, int page, int pageSize) {
+		if (family == null) {
+			return listAirTransports(page, pageSize);
+		}
+		return Pages.adapt(airTransportRepository.findByFamilyOrderByCreationDateDesc(family,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTransportId")
 	@Override
 	public void deleteAirTransport(String airTransportId) {

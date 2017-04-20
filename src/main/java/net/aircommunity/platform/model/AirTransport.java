@@ -3,6 +3,7 @@ package net.aircommunity.platform.model;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 import io.micro.annotation.constraint.NotEmpty;
@@ -13,7 +14,7 @@ import io.micro.annotation.constraint.NotEmpty;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_airtransport")
+@Table(name = "air_platfrom_airtransport", indexes = { @Index(name = "idx_family", columnList = "family") })
 public class AirTransport extends AircraftAwareProduct {
 	private static final long serialVersionUID = 1L;
 
