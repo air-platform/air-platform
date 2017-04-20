@@ -1,7 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.Set;
-
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -13,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTransport;
-import net.aircommunity.platform.model.Aircraft;
-import net.aircommunity.platform.model.AircraftItem;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.repository.AirTransportRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
@@ -28,7 +24,7 @@ import net.aircommunity.platform.service.AircraftService;
  */
 @Service
 @Transactional
-public class AirTransportServiceImpl extends AbstractProductService<AirTransport> implements AirTransportService {
+public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> implements AirTransportService {
 	private static final String CACHE_NAME = "cache.airtransport";
 
 	@Resource
@@ -40,7 +36,7 @@ public class AirTransportServiceImpl extends AbstractProductService<AirTransport
 	@Override
 	public AirTransport createAirTransport(String tenantId, AirTransport airTransport) {
 		AirTransport created = createProduct(tenantId, airTransport);
-		addAircraftItems(airTransport, created);
+		created.setAircraftItems(applyAircraftItems(airTransport.getAircraftItems()));
 		return airTransportRepository.save(created);
 	}
 
@@ -53,6 +49,7 @@ public class AirTransportServiceImpl extends AbstractProductService<AirTransport
 	@CachePut(cacheNames = CACHE_NAME, key = "#airTransportId")
 	@Override
 	public AirTransport updateAirTransport(String airTransportId, AirTransport newAirTransport) {
+		newAirTransport.setAircraftItems(applyAircraftItems(newAirTransport.getAircraftItems()));
 		return updateProduct(airTransportId, newAirTransport);
 	}
 
@@ -66,20 +63,6 @@ public class AirTransportServiceImpl extends AbstractProductService<AirTransport
 		tgt.setFamily(src.getFamily());
 		tgt.setTimeEstimation(src.getTimeEstimation());
 		tgt.setFlightRoute(src.getFlightRoute());
-	}
-
-	private void addAircraftItems(AirTransport src, AirTransport tgt) {
-		Set<AircraftItem> aircraftItems = src.getAircraftItems();
-		if (aircraftItems != null) {
-			aircraftItems.stream().forEach(aircraftItem -> {
-				Aircraft aircraft = aircraftItem.getAircraft();
-				if (aircraft != null) {
-					aircraft = aircraftService.findAircraft(aircraft.getId());
-					aircraftItem.setAircraft(aircraft);
-				}
-			});
-			tgt.setAircraftItems(aircraftItems);
-		}
 	}
 
 	@Override

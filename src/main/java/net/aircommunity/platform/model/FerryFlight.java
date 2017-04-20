@@ -68,10 +68,6 @@ public class FerryFlight extends PricedProduct {
 	@Column(name = "time_slot", nullable = false)
 	private String timeSlot;
 
-	// the image of this flight
-	@Column(name = "image")
-	private String image;
-
 	public FerryFlight() {
 	}
 

@@ -18,7 +18,6 @@ import javax.validation.constraints.NotNull;
 
 import io.micro.annotation.constraint.NotEmpty;
 
-
 /**
  * AirTransport Order on a {@code AirTransport}.
  * 
@@ -28,6 +27,10 @@ import io.micro.annotation.constraint.NotEmpty;
 @Table(name = "air_platfrom_airtransport_order")
 public class AirTransportOrder extends CharterableOrder {
 	private static final long serialVersionUID = 1L;
+
+	// the number of passengers if NOT chartered
+	@Column(name = "passenger_num")
+	private int passengerNum;
 
 	// departure date, e.g. 2017-5-1
 	@NotNull
@@ -49,6 +52,14 @@ public class AirTransportOrder extends CharterableOrder {
 	@NotEmpty
 	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<Passenger> passengers = new HashSet<>();
+
+	public int getPassengerNum() {
+		return passengerNum;
+	}
+
+	public void setPassengerNum(int passengerNum) {
+		this.passengerNum = passengerNum;
+	}
 
 	public Date getDate() {
 		return date;

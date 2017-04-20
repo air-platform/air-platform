@@ -1,7 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 
@@ -14,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTaxi;
-import net.aircommunity.platform.model.Aircraft;
-import net.aircommunity.platform.model.AircraftItem;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.repository.AirTaxiRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
@@ -27,7 +23,7 @@ import net.aircommunity.platform.service.AircraftService;
  */
 @Service
 @Transactional
-public class AirTaxiServiceImpl extends AbstractProductService<AirTaxi> implements AirTaxiService {
+public class AirTaxiServiceImpl extends AircraftAwareService<AirTaxi> implements AirTaxiService {
 	private static final String CACHE_NAME = "cache.airtaxi";
 
 	@Resource
@@ -39,7 +35,7 @@ public class AirTaxiServiceImpl extends AbstractProductService<AirTaxi> implemen
 	@Override
 	public AirTaxi createAirTaxi(String tenantId, AirTaxi airTaxi) {
 		AirTaxi created = createProduct(tenantId, airTaxi);
-		addAircraftItems(airTaxi, created);
+		created.setAircraftItems(applyAircraftItems(airTaxi.getAircraftItems()));
 		return airTaxiRepository.save(created);
 	}
 
@@ -52,6 +48,7 @@ public class AirTaxiServiceImpl extends AbstractProductService<AirTaxi> implemen
 	@CachePut(cacheNames = CACHE_NAME, key = "#taxiId")
 	@Override
 	public AirTaxi updateAirTaxi(String taxiId, AirTaxi newAirTaxi) {
+		newAirTaxi.setAircraftItems(applyAircraftItems(newAirTaxi.getAircraftItems()));
 		return updateProduct(taxiId, newAirTaxi);
 	}
 
@@ -65,20 +62,6 @@ public class AirTaxiServiceImpl extends AbstractProductService<AirTaxi> implemen
 		tgt.setDepartLoc(src.getDepartLoc());
 		tgt.setDistance(src.getDistance());
 		tgt.setDuration(src.getDuration());
-	}
-
-	private void addAircraftItems(AirTaxi src, AirTaxi tgt) {
-		Set<AircraftItem> aircraftItems = src.getAircraftItems();
-		if (aircraftItems != null) {
-			aircraftItems.stream().forEach(aircraftItem -> {
-				Aircraft aircraft = aircraftItem.getAircraft();
-				if (aircraft != null) {
-					aircraft = aircraftService.findAircraft(aircraft.getId());
-					aircraftItem.setAircraft(aircraft);
-				}
-			});
-			tgt.setAircraftItems(aircraftItems);
-		}
 	}
 
 	@Override
