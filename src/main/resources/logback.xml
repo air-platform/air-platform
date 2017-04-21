@@ -5,8 +5,86 @@
     <property name="FILE_LOG_PATTERN" value="[${PID:- }] [%d{ISO8601}] [%thread] [%-5level] [%logger{36}] - %msg%n"/>
     <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    
+    <property name="logging.dir" value="logs" />
+    <property name="logging.suffix" value="platform" />
+    <property name="max_file_size" value="10MB" />
+    <property name="max_history" value="20" />
+    <property name="access_log_pattern" value="[${PID:-}] [%d{ISO8601}] [%-5level] [ACCESS] - %msg%n" />
+    <property name="normal_log_pattern" value="[${PID:-}] [%d{ISO8601}] [%thread] [%-5level] [%15.15t][%-40.40logger{39}] - %msg%n" />
+    <property name="err_log_pattern" value="[${PID:-}] [%d{ISO8601}] [%thread] [%-5level] [%15.15t][%-40.40logger{39}] - %msg%n" />
+    
+    <!-- appenders -->
+    <appender name="ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.dir}/air-${logging.suffix}.access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logging.dir}/air-${logging.suffix}.access-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${max_file_size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${max_history}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${access_log_pattern}</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="NORMAL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.dir}/air-${logging.suffix}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logging.dir}/air-${logging.suffix}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${max_file_size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${max_history}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${normal_log_pattern}</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.dir}/air-${logging.suffix}.error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logging.dir}/air-${logging.suffix}-%d{yyyy-MM-dd}.%i.error.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${max_file_size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${max_history}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${err_log_pattern}</pattern>
+        </encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+    </appender>
+    
+    <!-- Console -->
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%clr([${PID:-}]){magenta} %clr([%d{ISO8601}]){faint} %clr([%-5level]) %clr([%15.15t]){faint} %clr([%-40.40logger{39}]){cyan} %clr(-){faint} %m%n</pattern>
+		</encoder>
+	</appender>
+    
+    <logger name="ch.qos.logback" level="OFF"/>
+    <logger name="com.fasterxml.jackson" level="WARN"/>
+    <logger name="org.jboss.resteasy" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="io.micro" level="INFO"/>
+
+    <logger name="net.aircommunity.platform" level="INFO" additivity="false">
+           <appender-ref ref="NORMAL" />
+           <appender-ref ref="ERROR" />
+    </logger>
+    <logger name="net.aircommunity.platform.rest.filter" level="INFO" additivity="false">
+         <appender-ref ref="ACCESS" />
+    </logger>
+    
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE" />
     </root>
 </configuration>

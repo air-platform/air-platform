@@ -35,6 +35,13 @@ public class Tenant extends Account {
 	@Column(name = "description")
 	private String description;
 
+	public Tenant() {
+	}
+
+	public Tenant(String id) {
+		this.id = id;
+	}
+
 	@PrePersist
 	private void beforeSave() {
 		role = Role.TENANT;

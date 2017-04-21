@@ -77,8 +77,6 @@ public class Fleet extends PricedProduct {
 	@Column(name = "interior")
 	private String interior;
 
-	// TODO accountManagers
-
 	public Fleet() {
 	}
 

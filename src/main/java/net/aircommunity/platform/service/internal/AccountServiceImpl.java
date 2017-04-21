@@ -231,6 +231,7 @@ public class AccountServiceImpl implements AccountService {
 		newAccount.setRole(role);
 		newAccount.setCreationDate(new Date());
 		newAccount.setStatus(Status.ENABLED);
+		newAccount.setAvatar(configuration.getDefaultAvatar());
 
 		// save for nodebb user
 		String password = credential;

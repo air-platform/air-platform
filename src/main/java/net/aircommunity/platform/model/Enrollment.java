@@ -48,6 +48,13 @@ public class Enrollment extends Order {
 	@JoinColumn(name = "course_id", nullable = false)
 	private Course course;
 
+	public Enrollment() {
+	}
+
+	public Enrollment(String id) {
+		this.id = id;
+	}
+
 	public String getAirType() {
 		return airType;
 	}

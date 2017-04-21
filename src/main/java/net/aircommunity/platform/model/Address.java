@@ -42,6 +42,13 @@ public class Address extends Persistable {
 	@JoinColumn(name = "account_id", nullable = false)
 	private User owner;
 
+	public Address() {
+	}
+
+	public Address(String id) {
+		this.id = id;
+	}
+
 	public String getContact() {
 		return contact;
 	}

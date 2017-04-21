@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
+import net.aircommunity.platform.model.jaxb.CommenterAdapter;
 import net.aircommunity.platform.model.jaxb.ProductAdapter;
 
 /**
@@ -53,7 +53,7 @@ public class Comment extends Persistable {
 	// owner
 	@ManyToOne
 	@JoinColumn(name = "account_id", nullable = false)
-	@XmlJavaTypeAdapter(AccountAdapter.class)
+	@XmlJavaTypeAdapter(CommenterAdapter.class)
 	private Account owner;
 
 	public int getRate() {

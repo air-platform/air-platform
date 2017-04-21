@@ -47,7 +47,6 @@ public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 	@Override
 	public AirTaxiOrder createAirTaxiOrder(String userId, AirTaxiOrder order) {
 		return createOrder(userId, order);
-
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)

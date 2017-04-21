@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import io.micro.annotation.constraint.NotEmpty;
 
-
 /**
  * The information of {@code Fleet}.
  * 
@@ -53,6 +52,13 @@ public class AirJet extends Persistable {
 	@Lob
 	@Column(name = "description")
 	private String description;
+
+	public AirJet() {
+	}
+
+	public AirJet(String id) {
+		this.id = id;
+	}
 
 	public String getType() {
 		return type;

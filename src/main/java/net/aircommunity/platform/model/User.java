@@ -72,6 +72,13 @@ public class User extends Account {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", orphanRemoval = true)
 	private List<Passenger> passengers = new ArrayList<>();
 
+	public User() {
+	}
+
+	public User(String id) {
+		this.id = id;
+	}
+
 	@PrePersist
 	private void beforeSave() {
 		role = Role.USER;

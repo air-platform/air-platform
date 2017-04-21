@@ -47,6 +47,13 @@ public class FleetCandidate extends Persistable {
 	@XmlJavaTypeAdapter(TenantAdapter.class)
 	private Tenant vendor;
 
+	public FleetCandidate() {
+	}
+
+	public FleetCandidate(String id) {
+		this.id = id;
+	}
+
 	public Status getStatus() {
 		return status;
 	}

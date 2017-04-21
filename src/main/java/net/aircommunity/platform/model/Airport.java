@@ -51,6 +51,13 @@ public class Airport extends Persistable {
 	// Hours offset from UTC. Fractional hours are expressed as decimals, eg. India is 5.5.
 	private String timezone;
 
+	public Airport() {
+	}
+
+	public Airport(String id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}

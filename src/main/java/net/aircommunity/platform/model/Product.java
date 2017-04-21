@@ -1,6 +1,10 @@
 package net.aircommunity.platform.model;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +17,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
 
 import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
@@ -28,6 +36,8 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Product extends Persistable {
 	private static final long serialVersionUID = 1L;
+	private static final String CLIENT_MANAGER_INFO_SEPARATOR = ":";
+	private static final String CLIENT_MANAGER_SEPARATOR = ",";
 
 	// product name
 	@NotEmpty
@@ -51,6 +61,10 @@ public abstract class Product extends Persistable {
 	@Lob
 	@Column(name = "client_managers")
 	protected String clientManagers;
+
+	// NOTED: hold the info for local usage
+	@XmlTransient
+	private transient Set<Contact> clientManagerContacts = new HashSet<>();
 
 	// product description
 	@Lob
@@ -99,7 +113,26 @@ public abstract class Product extends Persistable {
 	}
 
 	public void setClientManagers(String clientManagers) {
-		this.clientManagers = clientManagers;
+		if (clientManagers != null) {
+			// XXX NOTE: will throw IllegalArgumentException when splitting if the format is not valid
+			Map<String, String> contacts = Splitter.on(CLIENT_MANAGER_SEPARATOR).trimResults().omitEmptyStrings()
+					.withKeyValueSeparator(CLIENT_MANAGER_INFO_SEPARATOR).split(clientManagers);
+			this.clientManagers = clientManagers;
+			contacts.forEach((person, email) -> {
+				Contact contact = new Contact();
+				contact.setEmail(email.trim());
+				contact.setPerson(person.trim());
+				clientManagerContacts.add(contact);
+			});
+			clientManagerContacts = ImmutableSet.copyOf(clientManagerContacts);
+		}
+	}
+
+	public Set<Contact> getClientManagerContacts() {
+		if (clientManagerContacts.isEmpty()) {
+			return Collections.emptySet();
+		}
+		return clientManagerContacts;
 	}
 
 	public String getDescription() {

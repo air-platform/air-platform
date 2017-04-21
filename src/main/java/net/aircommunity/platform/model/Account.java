@@ -59,6 +59,13 @@ public class Account extends Persistable {
 	// @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	// private List<AccountAuth> auths;
 
+	public Account() {
+	}
+
+	public Account(String id) {
+		this.id = id;
+	}
+
 	public String getNickName() {
 		return nickName;
 	}

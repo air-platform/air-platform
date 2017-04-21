@@ -55,6 +55,13 @@ public class FlightLeg extends Persistable {
 	@XmlJavaTypeAdapter(OrderAdapter.class)
 	private CharterOrder order;
 
+	public FlightLeg() {
+	}
+
+	public FlightLeg(String id) {
+		this.id = id;
+	}
+
 	public String getDeparture() {
 		return departure;
 	}

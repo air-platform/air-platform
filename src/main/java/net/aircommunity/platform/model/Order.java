@@ -61,6 +61,11 @@ public abstract class Order extends Persistable {
 	@Column(name = "finished_date")
 	protected Date finishedDate;
 
+	@XmlElement
+	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "cancelled_date")
+	protected Date cancelledDate;
+
 	// customer extra information for an order
 	@XmlElement
 	@Lob
@@ -119,6 +124,14 @@ public abstract class Order extends Persistable {
 
 	public void setFinishedDate(Date finishedDate) {
 		this.finishedDate = finishedDate;
+	}
+
+	public Date getCancelledDate() {
+		return cancelledDate;
+	}
+
+	public void setCancelledDate(Date cancelledDate) {
+		this.cancelledDate = cancelledDate;
 	}
 
 	public String getNote() {

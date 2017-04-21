@@ -67,6 +67,13 @@ public class Course extends PricedProduct {
 	@JoinColumn(name = "school_id", nullable = false)
 	private School school;
 
+	public Course() {
+	}
+
+	public Course(String id) {
+		this.id = id;
+	}
+
 	public Date getStartDate() {
 		return startDate;
 	}

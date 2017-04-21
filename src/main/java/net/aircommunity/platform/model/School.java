@@ -49,6 +49,13 @@ public class School extends Persistable {
 	@JoinColumn(name = "tenant_id", nullable = false)
 	private Tenant vendor;
 
+	public School() {
+	}
+
+	public School(String id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}

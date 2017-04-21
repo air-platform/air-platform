@@ -51,6 +51,13 @@ public class AircraftItem extends Persistable {
 	@XmlJavaTypeAdapter(ProductAdapter.class)
 	private Product product;
 
+	public AircraftItem() {
+	}
+
+	public AircraftItem(String id) {
+		this.id = id;
+	}
+
 	public int getPrice() {
 		return price;
 	}

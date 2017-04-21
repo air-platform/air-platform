@@ -17,6 +17,7 @@ import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.repository.BaseOrderRepository;
+import net.aircommunity.platform.service.OrderNotificationService;
 
 /**
  * Abstract Order service support.
@@ -27,6 +28,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractOrderService.class);
 
 	protected Class<T> type;
+
+	@Resource
+	private OrderNotificationService orderNotificationService;
 
 	@Resource
 	private OrderNoGenerator orderNoGenerator;
@@ -66,7 +70,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		// set vendor
 		newOrder.setOwner(owner);
 		try {
-			return getOrderRepository().save(newOrder);
+			T orderSaved = getOrderRepository().save(newOrder);
+			//orderSaved.getProduct().getClientManagerContacts();
+//			orderNotificationService.notifyClientManager(clientManagers, orderSaved);
+			return orderSaved;
 		}
 		catch (Exception e) {
 			LOG.error(String.format("Create %s: %s for user %s failed, cause: ", type.getSimpleName(), userId,
@@ -114,6 +121,24 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	protected T updateOrderStatus(String orderId, Order.Status status) {
 		T order = findOrder(orderId);
 		order.setStatus(status);
+		switch (status) {
+		case PENDING:
+			break;
+
+		case PAID:
+			order.setPaymentDate(new Date());
+			break;
+
+		case FINISHED:
+			order.setFinishedDate(new Date());
+			break;
+
+		case CANCELLED:
+			order.setCancelledDate(new Date());
+			break;
+
+		default:// noop
+		}
 		return getOrderRepository().save(order);
 	}
 

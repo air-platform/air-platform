@@ -2,6 +2,7 @@ package net.aircommunity.platform.rest.filter;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Set;
 
 import javax.annotation.Priority;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,11 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableSet;
+
+import io.micro.core.security.SimplePrincipal;
+
 /**
  * Log all REST API request.
  * 
@@ -25,7 +31,8 @@ import org.slf4j.LoggerFactory;
 public class AccessLoggingFilter implements ContainerRequestFilter {
 	private static final Logger LOG = LoggerFactory.getLogger(AccessLoggingFilter.class);
 
-	private static final String ANONYMOUS = "anonymous";
+	private static final Set<String> LOOPBACK_ADDRESSES = ImmutableSet.of("127.0.0.1", "0:0:0:0:0:0:0:1");
+	private static final String ANONYMOUS = "ANONYMOUS";
 	private static final String HEADER_X_FORWARDED_FOR = "X-Forwarded-For";
 
 	@Context
@@ -43,14 +50,20 @@ public class AccessLoggingFilter implements ContainerRequestFilter {
 		catch (Exception ignored) {
 		}
 		String username = ANONYMOUS;
+		String role = ANONYMOUS;
 		Principal principal = requestContext.getSecurityContext().getUserPrincipal();
 		if (principal != null) {
 			username = principal.getName();
+			role = Joiner.on(",").join(SimplePrincipal.class.cast(principal).getClaims().getRoles());
 		}
 		// TODO check if request.getRemoteAddr() and local server IP address is the same subnet
 		// And just use forwardIp for client IP in this case
 		// e.g. 192.168.100.195 106.37.175.130
-		LOG.info("[{} {}] [{}] {} {}", request.getRemoteAddr(), forwardIp, username, requestContext.getMethod(),
+		String ip = request.getRemoteAddr();
+		if (LOOPBACK_ADDRESSES.contains(ip)) {
+			ip = forwardIp;
+		}
+		LOG.info("[{}] [{}] [{}] {} {}", ip, username, role, requestContext.getMethod(),
 				requestContext.getUriInfo().getRequestUri().getPath());
 	}
 

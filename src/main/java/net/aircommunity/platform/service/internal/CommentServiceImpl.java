@@ -59,16 +59,16 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 			throw new AirException(Codes.COMMENT_NOT_ALLOWED, String.format(
 					"Comment on order %s is not allowed, already commented or your are not order owner", orderId));
 		}
+		if (order.getStatus() != Order.Status.FINISHED) {
+			throw new AirException(Codes.COMMENT_NOT_ALLOWED,
+					String.format("Comment on order %s is not allowed, order is not FINISHED", orderId));
+		}
+		// only
 		Product product = order.getProduct();
 		if (product == null) {
 			throw new AirException(Codes.PRODUCT_NOT_FOUND,
 					String.format("Comment failed, product of order %s not found", orderId));
 		}
-		if (order.getStatus() != Order.Status.FINISHED) {
-			throw new AirException(Codes.COMMENT_NOT_ALLOWED,
-					String.format("Comment on order %s is not allowed, order is not FINISHED", orderId));
-		}
-
 		// create new
 		Comment newComment = new Comment();
 		newComment.setDate(new Date());

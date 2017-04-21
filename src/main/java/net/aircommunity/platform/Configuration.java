@@ -32,6 +32,9 @@ public class Configuration {
 	@Value("${air.public-port}")
 	private int publicPort;
 
+	@Value("${air.account.default-avatar}")
+	private String defaultAvatar;
+
 	// for local file upload
 	@Value("${air.fileupload.dir}")
 	private String fileUploadDir;
@@ -48,6 +51,9 @@ public class Configuration {
 
 	@Value("${air.fileload.secret-key}")
 	private String fileUploadSecretKey;
+
+	@Value("${air.order.email-notification}")
+	private boolean orderEmailNotificationEnabled;
 
 	@Value("${air.mobile.verification}")
 	private boolean mobileVerificationEnabled;
@@ -117,6 +123,10 @@ public class Configuration {
 		return apiVersion;
 	}
 
+	public String getDefaultAvatar() {
+		return defaultAvatar;
+	}
+
 	public String getFileUploadDir() {
 		return fileUploadDir;
 	}
@@ -135,6 +145,10 @@ public class Configuration {
 
 	public String getFileUploadSecretKey() {
 		return fileUploadSecretKey;
+	}
+
+	public boolean isOrderEmailNotificationEnabled() {
+		return orderEmailNotificationEnabled;
 	}
 
 	public boolean isMobileVerificationEnabled() {

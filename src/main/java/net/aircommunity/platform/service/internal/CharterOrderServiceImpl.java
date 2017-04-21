@@ -1,6 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -71,26 +70,7 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public CharterOrder updateCharterOrderStatus(String orderId, Order.Status status) {
-		CharterOrder charterOrder = findCharterOrder(orderId);
-		charterOrder.setStatus(status);
-		switch (status) {
-		case PENDING:
-			break;
-
-		case PAID:
-			charterOrder.setPaymentDate(new Date());
-			break;
-
-		case FINISHED:
-			charterOrder.setFinishedDate(new Date());
-			break;
-
-		case CANCELLED:
-			break;
-
-		default:
-		}
-		return charterOrderRepository.save(charterOrder);
+		return updateOrderStatus(orderId, status);
 	}
 
 	/**
