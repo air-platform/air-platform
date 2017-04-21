@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import io.micro.annotation.RESTful;
 import io.micro.core.security.AccessTokenService;
 import io.swagger.annotations.Api;
+import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountRequest;
@@ -133,7 +134,17 @@ public class AdminResource {
 	@POST
 	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/password/reset")
 	public Response resetAccountPassword(@PathParam("accountId") String accountId) {
-		accountService.resetPassword(accountId);
+		accountService.resetPasswordViaEmail(accountId);
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Reset password for a account to default password
+	 */
+	@POST
+	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/password/reset/default")
+	public Response resetAccountPasswordTo(@PathParam("accountId") String accountId) {
+		accountService.resetPasswordTo(accountId, Constants.DEFAULT_PASSWORD);
 		return Response.noContent().build();
 	}
 
@@ -173,7 +184,7 @@ public class AdminResource {
 	@Resource
 	private AirJetResource airJetResource;
 
-	@Path("airjets")
+	@Path("") // path already in the resource
 	public AirJetResource airjets() {
 		return airJetResource;
 	}
@@ -181,7 +192,7 @@ public class AdminResource {
 	@Resource
 	private AirportResource airportResource;
 
-	@Path("airports")
+	@Path("") // path already in the resource
 	public AirportResource airports() {
 		return airportResource;
 	}

@@ -49,6 +49,9 @@ public class Configuration {
 	@Value("${air.fileload.secret-key}")
 	private String fileUploadSecretKey;
 
+	@Value("${air.mobile.verification}")
+	private boolean mobileVerificationEnabled;
+
 	@Value("${air.mail.from}")
 	private String mailFrom;
 
@@ -132,6 +135,10 @@ public class Configuration {
 
 	public String getFileUploadSecretKey() {
 		return fileUploadSecretKey;
+	}
+
+	public boolean isMobileVerificationEnabled() {
+		return mobileVerificationEnabled;
 	}
 
 	public String getMailFrom() {

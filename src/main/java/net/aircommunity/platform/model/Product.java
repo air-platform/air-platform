@@ -19,7 +19,7 @@ import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
- * Product of an {@code Tenant} (AKA. vendor). TODO need set accountManagers (a1@company.com,a2@company.com)
+ * Product of an {@code Tenant} (AKA. vendor).
  * 
  * @author Bin.Zhang
  */
@@ -45,6 +45,12 @@ public abstract class Product extends Persistable {
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
 	protected Date creationDate;
+
+	// client managers for this product
+	// MUST IN FORMAT OF: person1:email1, person2:email2, ..., personN:emailN
+	@Lob
+	@Column(name = "client_managers")
+	protected String clientManagers;
 
 	// product description
 	@Lob
@@ -86,6 +92,14 @@ public abstract class Product extends Persistable {
 
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+
+	public String getClientManagers() {
+		return clientManagers;
+	}
+
+	public void setClientManagers(String clientManagers) {
+		this.clientManagers = clientManagers;
 	}
 
 	public String getDescription() {

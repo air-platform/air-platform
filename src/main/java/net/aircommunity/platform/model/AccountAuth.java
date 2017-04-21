@@ -71,9 +71,9 @@ public class AccountAuth extends Persistable {
 	@Column(name = "last_accessed_ip")
 	private String lastAccessedIp;
 
-	@XmlJavaTypeAdapter(AccountAdapter.class)
 	@ManyToOne
 	@JoinColumn(name = "account_id", nullable = false)
+	@XmlJavaTypeAdapter(AccountAdapter.class)
 	private Account account;
 
 	// TODO from which source: app, browser etc.?

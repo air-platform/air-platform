@@ -47,6 +47,7 @@ import io.micro.core.security.SimplePrincipal;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.AccessToken;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountAuth;
@@ -88,6 +89,9 @@ public class AccountResource {
 
 	@Resource
 	private SmsService smsService;
+
+	@Resource
+	private Configuration configuration;
 
 	/**
 	 * Create user (registration)
@@ -164,8 +168,10 @@ public class AccountResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
 	public Response requestVerification(@NotNull @QueryParam("mobile") String mobile) {
-		String code = verificationService.generateCode(mobile);
-		smsService.sendSms(mobile, code);
+		if (configuration.isMobileVerificationEnabled()) {
+			String code = verificationService.generateCode(mobile);
+			smsService.sendSms(mobile, code);
+		}
 		return Response.noContent().build();
 	}
 
@@ -322,6 +328,11 @@ public class AccountResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@PermitAll
 	public Response resetPassword(@NotNull @Valid PasswordResetRequest request) {
+		if (!configuration.isMobileVerificationEnabled()) {
+			LOG.warn(
+					"Mobiel verification is not enabled, cannot reset password via mobile, please use email to reset.");
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 		if (!verificationService.verifyCode(request.getMobile(), request.getVerificationCode())) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
@@ -337,7 +348,7 @@ public class AccountResource {
 	@Authenticated
 	public Response resetPassword(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		accountService.resetPassword(accountId);
+		accountService.resetPasswordViaEmail(accountId);
 		return Response.noContent().build();
 	}
 

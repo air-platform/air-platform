@@ -138,7 +138,13 @@ public class AccountServiceImpl implements AccountService {
 		boolean valid = false;
 		// OTP is available for mobile
 		if (isOtp) {
-			valid = verificationService.verifyCode(credential, credential);
+			if (configuration.isMobileVerificationEnabled()) {
+				valid = verificationService.verifyCode(credential, credential);
+			}
+			else {
+				LOG.warn("Mobiel verification is not enabled, verification skipped.");
+				valid = true;
+			}
 		}
 		else {
 			valid = passwordEncoder.matches(credential, account.getPassword());
@@ -253,11 +259,13 @@ public class AccountServiceImpl implements AccountService {
 
 		// need to be verified before creation
 		case MOBILE:
-			verified = verificationService.verifyCode(principal, verificationCode);
-			if (!verified) {
-				throw new AirException(Codes.ACCOUNT_CREATION_FAILURE,
-						String.format("Failed to create account with %s: %s, invalid verification code: %s", type,
-								principal, verificationCode));
+			if (configuration.isMobileVerificationEnabled()) {
+				verified = verificationService.verifyCode(principal, verificationCode);
+				if (!verified) {
+					throw new AirException(Codes.ACCOUNT_CREATION_FAILURE,
+							String.format("Failed to create account with %s: %s, invalid verification code: %s", type,
+									principal, verificationCode));
+				}
 			}
 			newAccount.setPassword(passwordEncoder.encode(credential));
 			expires = AccountAuth.EXPIRES_NERVER;
@@ -574,7 +582,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
 	@Override
-	public Account resetPassword(String accountId) {
+	public Account resetPasswordViaEmail(String accountId) {
 		Account account = findAccount(accountId);
 		AccountAuth auth = accountAuthRepository.findByAccountIdAndType(accountId, AuthType.EMAIL);
 		if (auth == null) {

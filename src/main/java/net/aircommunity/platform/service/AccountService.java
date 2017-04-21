@@ -252,7 +252,7 @@ public interface AccountService {
 	 * @return update account
 	 */
 	@Nonnull
-	Account resetPassword(@Nonnull String accountId);
+	Account resetPasswordViaEmail(@Nonnull String accountId);
 
 	/**
 	 * Refresh apiKey

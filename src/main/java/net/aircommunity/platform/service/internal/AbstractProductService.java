@@ -55,6 +55,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		}
 		newProduct.setName(product.getName());
 		newProduct.setImage(product.getImage());
+		newProduct.setClientManagers(product.getClientManagers());
 		newProduct.setDescription(product.getDescription());
 		copyProperties(product, newProduct);
 		// set props cannot be overridden by subclass
@@ -84,6 +85,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		T product = findProduct(productId);
 		product.setName(newProduct.getName());
 		product.setImage(newProduct.getImage());
+		product.setClientManagers(newProduct.getClientManagers());
 		product.setDescription(newProduct.getDescription());
 		copyProperties(newProduct, product);
 		try {

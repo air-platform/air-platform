@@ -18,7 +18,6 @@ import net.aircommunity.platform.service.VerificationService;
 @Service
 public class VerificationServiceImpl implements VerificationService {
 	private static final int VERIFICATION_CODE_LENGTH = 6;
-
 	// account verification code
 	private static final String VERIFICATION_CODD_KEY_FORMAT = "account:vc:%s";
 
