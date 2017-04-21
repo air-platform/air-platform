@@ -14,7 +14,7 @@ import net.aircommunity.platform.model.Page;
 public interface CommonOrderService {
 
 	/**
-	 * Find order
+	 * Find order (DELETED status considered as NOT FOUND)
 	 * 
 	 * @param orderId the orderId
 	 * @return order found
@@ -23,33 +23,60 @@ public interface CommonOrderService {
 	Order findOrder(@Nonnull String orderId);
 
 	/**
-	 * List all user orders with status.
+	 * Update order status
+	 * 
+	 * @param orderId the orderId
+	 * @param status the order status
+	 * @return order updated
+	 */
+	@Nonnull
+	Order updateOrderStatus(@Nonnull String orderId, @Nonnull Order.Status status);
+
+	/**
+	 * Hard delete from DB
+	 * 
+	 * @param orderId the orderId
+	 */
+	void deleteOrder(@Nonnull String orderId);
+
+	/**
+	 * Hard delete from DB
+	 * 
+	 * @param userId the userId
+	 */
+	void deleteOrders(@Nonnull String userId);
+
+	/**
+	 * List all user orders with status. (for ADMIN)
+	 * 
+	 * @param status the order status
+	 * @param page the page number
+	 * @param pageSize the page size
+	 * @return a page of orders
+	 */
+	Page<Order> listAllOrders(Order.Status status, int page, int pageSize);
+
+	/**
+	 * List all orders of a user with all status. (for ADMIN)
 	 * 
 	 * @param userId the userId
 	 * @param status the order status
 	 * @param page the page number
 	 * @param pageSize the page size
-	 * @return
+	 * @return a page of orders
 	 */
-	@Nonnull
-	Page<Order> listAllUserOrders(@Nonnull String userId, @Nullable Order.Status status, int page, int pageSize);
+	Page<Order> listAllUserOrders(String userId, Order.Status status, int page, int pageSize);
 
 	/**
-	 * Mark status as cancelled.
+	 * List all orders of a user without status in DELETED. (for USER)
 	 * 
-	 * @param orderId the orderId
-	 * @return order status updated
+	 * @param userId the userId
+	 * @param status the order status
+	 * @param page the page number
+	 * @param pageSize the page size
+	 * @return a page of orders
 	 */
 	@Nonnull
-	Order cancelOrder(@Nonnull String orderId);
-
-	/**
-	 * Mark status as deleted.
-	 * 
-	 * @param orderId the orderId
-	 * @return order status updated
-	 */
-	@Nonnull
-	Order deleteOrder(@Nonnull String orderId);
+	Page<Order> listUserOrders(@Nonnull String userId, @Nullable Order.Status status, int page, int pageSize);
 
 }

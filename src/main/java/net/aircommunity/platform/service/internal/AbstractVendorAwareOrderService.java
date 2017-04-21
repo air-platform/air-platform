@@ -18,7 +18,7 @@ abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> exten
 	/**
 	 * For TENANT (Exclude orders in DELETED status)
 	 */
-	protected Page<T> listTenantOrders(String tenantId, Order.Status status, int page, int pageSize) {
+	protected Page<T> doListTenantOrders(String tenantId, Order.Status status, int page, int pageSize) {
 		if (Order.Status.DELETED == status) {
 			return Page.emptyPage(page, pageSize);
 		}
@@ -33,7 +33,7 @@ abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> exten
 	/**
 	 * For ADMIN (orders in any status)
 	 */
-	protected Page<T> listAllTenantOrders(String tenantId, Order.Status status, int page, int pageSize) {
+	protected Page<T> doListAllTenantOrders(String tenantId, Order.Status status, int page, int pageSize) {
 		if (status == null) {
 			return Pages.adapt(getOrderRepository().findByVendorIdOrderByCreationDateDesc(tenantId,
 					Pages.createPageRequest(page, pageSize)));

@@ -1,7 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.Date;
-
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -10,15 +8,16 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.Enrollment;
 import net.aircommunity.platform.model.Order;
+import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.repository.EnrollmentRepository;
 import net.aircommunity.platform.repository.SchoolRepository;
+import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.CourseService;
 import net.aircommunity.platform.service.EnrollmentService;
 
@@ -27,7 +26,7 @@ import net.aircommunity.platform.service.EnrollmentService;
  */
 @Service
 @Transactional
-public class EnrollmentServiceImpl extends AbstractServiceSupport implements EnrollmentService {
+public class EnrollmentServiceImpl extends AbstractVendorAwareOrderService<Enrollment> implements EnrollmentService {
 	private static final String CACHE_NAME = "cache.course-enrollment";
 
 	@Resource
@@ -40,64 +39,38 @@ public class EnrollmentServiceImpl extends AbstractServiceSupport implements Enr
 	private SchoolRepository schoolRepository;
 
 	@Override
-	public Enrollment createEnrollment(String userId, String courseId, Enrollment enrollment) {
-		User user = findAccount(userId, User.class);
-		Course course = courseService.findCourse(courseId);
-
-		Enrollment newEnrollment = new Enrollment();
-		copyProperties(enrollment, newEnrollment);
-		newEnrollment.setCreationDate(new Date());
-		newEnrollment.setCommented(false);
-		newEnrollment.setStatus(Order.Status.PENDING);
-		//
-		newEnrollment.setOwner(user);
-		newEnrollment.setCourse(course);
-		return enrollmentRepository.save(newEnrollment);
+	public Enrollment createEnrollment(String userId, Enrollment enrollment) {
+		return doCreateOrder(userId, enrollment);
 	}
 
-	private void copyProperties(Enrollment src, Enrollment tgt) {
+	@Override
+	protected void copyProperties(Enrollment src, Enrollment tgt) {
 		tgt.setAirType(src.getAirType());
 		tgt.setIdentity(src.getIdentity());
 		tgt.setLicense(src.getLicense());
 		tgt.setLocation(src.getLocation());
 		tgt.setNote(src.getNote());
 		tgt.setPerson(src.getPerson());
+		//
+		Course course = courseService.findCourse(src.getCourse().getId());
+		tgt.setCourse(course);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public Enrollment findEnrollment(String enrollmentId) {
-		Enrollment enrollment = enrollmentRepository.findOne(enrollmentId);
-		if (enrollment == null) {
-			throw new AirException(Codes.ENROLLMENT_NOT_FOUND, String.format("Enrollment %s not found", enrollmentId));
-		}
-		return enrollment;
+		return doFindOrder(enrollmentId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#enrollmentId")
 	@Override
-	public Enrollment cancelEnrollment(String enrollmentId) {
-		Enrollment enrollment = findEnrollment(enrollmentId);
-		enrollment.setStatus(Order.Status.CANCELLED);
-		return enrollmentRepository.save(enrollment);
+	public Enrollment updateEnrollmentStatus(String enrollmentId, Status status) {
+		return doUpdateOrderStatus(enrollmentId, status);
 	}
 
 	@Override
-	public Page<Enrollment> listEnrollments(int page, int pageSize) {
-		return Pages
-				.adapt(enrollmentRepository.findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
-	}
-
-	@Override
-	public Page<Enrollment> listUserEnrollments(String userId, int page, int pageSize) {
-		return Pages.adapt(enrollmentRepository.findByOwnerIdOrderByCreationDateDesc(userId,
-				Pages.createPageRequest(page, pageSize)));
-	}
-
-	@Override
-	public Page<Enrollment> listEnrollmentsForTenant(String tenantId, int page, int pageSize) {
-		return Pages.adapt(enrollmentRepository.findByCourseVendorIdOrderByCreationDateDesc(tenantId,
-				Pages.createPageRequest(page, pageSize)));
+	public Page<Enrollment> listEnrollments(Order.Status status, int page, int pageSize) {
+		return doListAllOrders(status, page, pageSize);
 	}
 
 	@Override
@@ -106,10 +79,44 @@ public class EnrollmentServiceImpl extends AbstractServiceSupport implements Enr
 				Pages.createPageRequest(page, pageSize)));
 	}
 
+	@Override
+	public Page<Enrollment> listUserEnrollments(String userId, Order.Status status, int page, int pageSize) {
+		return doListAllUserOrders(userId, status, page, pageSize);
+	}
+
+	@Override
+	public Page<Enrollment> listEnrollmentsForTenant(String tenantId, Order.Status status, int page, int pageSize) {
+		return doListTenantOrders(tenantId, status, page, pageSize);
+	}
+
+	@Override
+	public Page<Enrollment> listEnrollmentsForTenantByCourse(String tenantId, String courseId, Order.Status status,
+			int page, int pageSize) {
+		if (Order.Status.DELETED == status) {
+			return Page.emptyPage(page, pageSize);
+		}
+		if (status == null) {
+			return Pages.adapt(enrollmentRepository.findByVendorIdAndCourseIdAndStatusNotOrderByCreationDateDesc(
+					tenantId, courseId, Order.Status.DELETED, Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(enrollmentRepository.findByVendorIdAndCourseIdAndStatusOrderByCreationDateDesc(tenantId,
+				courseId, status, Pages.createPageRequest(page, pageSize)));
+	}
+
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#enrollmentId")
 	@Override
 	public void deleteEnrollment(String enrollmentId) {
-		enrollmentRepository.delete(enrollmentId);
+		doDeleteOrder(enrollmentId);
+	}
+
+	@Override
+	protected Code orderNotFoundCode() {
+		return Codes.ENROLLMENT_NOT_FOUND;
+	}
+
+	@Override
+	protected VendorAwareOrderRepository<Enrollment> getOrderRepository() {
+		return enrollmentRepository;
 	}
 
 }

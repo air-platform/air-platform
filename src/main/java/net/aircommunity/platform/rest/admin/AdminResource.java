@@ -19,6 +19,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountRequest;
+import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
@@ -42,11 +44,17 @@ import net.aircommunity.platform.rest.tenant.TenantAirTourResourse;
 import net.aircommunity.platform.rest.tenant.TenantAirTransportResource;
 import net.aircommunity.platform.rest.tenant.TenantAircraftResource;
 import net.aircommunity.platform.rest.tenant.TenantCourseResource;
-import net.aircommunity.platform.rest.tenant.TenantEnrollmentResource;
 import net.aircommunity.platform.rest.tenant.TenantFerryFlightResource;
 import net.aircommunity.platform.rest.tenant.TenantFleetResource;
 import net.aircommunity.platform.rest.tenant.TenantJetCardResource;
 import net.aircommunity.platform.rest.tenant.TenantSchoolResource;
+import net.aircommunity.platform.rest.tenant.order.TenantAirTaxiOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantAirTourOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantAirTransportOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantEnrollmentResource;
+import net.aircommunity.platform.rest.tenant.order.TenantFerryFlightOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantFleetOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantJetCardOrderResource;
 import net.aircommunity.platform.rest.user.AirTaxiOrderResource;
 import net.aircommunity.platform.rest.user.AirTourOrderResource;
 import net.aircommunity.platform.rest.user.AirTransportOrderResource;
@@ -55,6 +63,7 @@ import net.aircommunity.platform.rest.user.FerryFlightOrderResource;
 import net.aircommunity.platform.rest.user.JetcardOrderResource;
 import net.aircommunity.platform.rest.user.UserEnrollmentResource;
 import net.aircommunity.platform.service.AccountService;
+import net.aircommunity.platform.service.CommonOrderService;
 
 /**
  * Admin RESTful API.
@@ -197,6 +206,62 @@ public class AdminResource {
 		return airportResource;
 	}
 
+	// ***********************
+	// Generic Orders Operations
+	// ***********************
+	@Resource
+	private CommonOrderService commonOrderService;
+
+	@GET
+	@Path("orders")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response listAllOrders(@QueryParam("user") String userId, @QueryParam("status") String status,
+			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+		Order.Status orderStatus = Order.Status.of(status);
+		Page<Order> result = commonOrderService.listAllUserOrders(userId, orderStatus, page, pageSize);
+		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+	}
+
+	@GET
+	@Path("orders/{orderId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Order findOrder(@PathParam("orderId") String orderId) {
+		return commonOrderService.findOrder(orderId);
+	}
+
+	@POST
+	@Path("orders/{orderId}/status")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateOrderStatus(@PathParam("orderId") String orderId,
+			@NotNull @QueryParam("status") String status) {
+		Order.Status orderStatus = Order.Status.of(status);
+		if (orderStatus == null) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		commonOrderService.updateOrderStatus(orderId, orderStatus);
+		return Response.noContent().build();
+	}
+
+	@DELETE
+	@Path("orders/{orderId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteOrder(@PathParam("orderId") String orderId) {
+		commonOrderService.deleteOrder(orderId);
+		return Response.noContent().build();
+	}
+
+	// ***********************
+	// Comments
+	// ***********************
+
+	@Resource
+	private CommentResource commentResource;
+
+	@Path("comments")
+	public CommentResource comments() {
+		return commentResource;
+	}
+
 	// *************
 	// Tenant
 	// *************
@@ -300,6 +365,62 @@ public class AdminResource {
 	}
 
 	// ***********************
+	// Tenant orders
+	// ***********************
+
+	// Air Jet
+	@Resource
+	private TenantFleetOrderResource tenantFleetOrderResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/charter/orders")
+	public TenantFleetOrderResource tenantCharterOrders(@PathParam("tenantId") String tenantId) {
+		return tenantFleetOrderResource;
+	}
+
+	@Resource
+	private TenantFerryFlightOrderResource tenantFerryFlightOrderResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/ferryflight/orders")
+	public TenantFerryFlightOrderResource tenantFerryFlightOrders(@PathParam("tenantId") String tenantId) {
+		return tenantFerryFlightOrderResource;
+	}
+
+	@Resource
+	private TenantJetCardOrderResource tenantJetCardOrderResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/jetcard/orders")
+	public TenantJetCardOrderResource tenantJetCardOrders(@PathParam("tenantId") String tenantId) {
+		return tenantJetCardOrderResource;
+	}
+
+	// Air Transport
+	@Resource
+	private TenantAirTransportOrderResource tenantAirTransportOrderResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/airtransport/orders")
+	public TenantAirTransportOrderResource tenantAirtransportOrders(@PathParam("tenantId") String tenantId) {
+		return tenantAirTransportOrderResource;
+	}
+
+	// Air Taxi
+	@Resource
+	private TenantAirTaxiOrderResource tenantAirTaxiOrderResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/airtaxi/orders")
+	public TenantAirTaxiOrderResource tenantAirtaxiOrders(@PathParam("tenantId") String tenantId) {
+		return tenantAirTaxiOrderResource;
+	}
+
+	// Air Tour
+	@Resource
+	private TenantAirTourOrderResource tenantAirTourOrderResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/airtour/orders")
+	public TenantAirTourOrderResource tenantAirtoursOrders(@PathParam("tenantId") String tenantId) {
+		return tenantAirTourOrderResource;
+	}
+
+	// ***********************
 	// User orders
 	// ***********************
 
@@ -372,18 +493,6 @@ public class AdminResource {
 	@Path(USERS_PATH_PREFIX + "/{userId}/course/enrollments")
 	public UserEnrollmentResource userEnrollments(@PathParam("userId") String userId) {
 		return userEnrollmentResource;
-	}
-
-	// ***********************
-	// Comments
-	// ***********************
-
-	@Resource
-	private CommentResource commentResource;
-
-	@Path("comments")
-	public CommentResource comments() {
-		return commentResource;
 	}
 
 }

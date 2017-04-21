@@ -5,17 +5,17 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import net.aircommunity.platform.model.User;
+import net.aircommunity.platform.model.Account;
 
 /**
- * Adapt a User object to a product comment owner presentation
+ * Adapt a Account object to a product comment owner presentation
  * 
  * @author Bin.Zhang
  */
-public class CommenterAdapter extends XmlAdapter<Map<String, Object>, User> {
+public class CommenterAdapter extends XmlAdapter<Map<String, Object>, Account> {
 
 	@Override
-	public Map<String, Object> marshal(User user) throws Exception {
+	public Map<String, Object> marshal(Account user) throws Exception {
 		return new HashMap<String, Object>(4) {
 			private static final long serialVersionUID = 1L;
 			{
@@ -27,7 +27,7 @@ public class CommenterAdapter extends XmlAdapter<Map<String, Object>, User> {
 	}
 
 	@Override
-	public User unmarshal(Map<String, Object> userId) throws Exception {
+	public Account unmarshal(Map<String, Object> userId) throws Exception {
 		// we don't need unmarshal
 		return null;
 	}

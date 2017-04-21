@@ -63,7 +63,7 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 			throw new AirException(Codes.COMMENT_NOT_ALLOWED,
 					String.format("Comment on order %s is not allowed, order is not FINISHED", orderId));
 		}
-		// only
+		// only can be null if CharterOrder
 		Product product = order.getProduct();
 		if (product == null) {
 			throw new AirException(Codes.PRODUCT_NOT_FOUND,

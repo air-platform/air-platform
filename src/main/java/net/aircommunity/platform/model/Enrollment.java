@@ -19,7 +19,7 @@ import io.micro.annotation.constraint.NotEmpty;
 @Entity
 @XmlAccessorType(XmlAccessType.FIELD)
 @Table(name = "air_platform_course_enrollment")
-public class Enrollment extends Order {
+public class Enrollment extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty

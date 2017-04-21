@@ -2,13 +2,29 @@ package net.aircommunity.platform.rest.tenant;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
+import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.CommentResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
+import net.aircommunity.platform.rest.tenant.order.TenantAirTaxiOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantAirTourOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantAirTransportOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantEnrollmentResource;
+import net.aircommunity.platform.rest.tenant.order.TenantFerryFlightOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantFleetOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantJetCardOrderResource;
+import net.aircommunity.platform.service.CommonOrderService;
 
 /**
  * Tenant resource.
@@ -136,6 +152,16 @@ public class TenantResource {
 	// *******//
 	// Orders //
 	// *******//
+	@Resource
+	private CommonOrderService commonOrderService;
+
+	@POST
+	@Path("orders/{orderId}/finish")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response finishOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
+		commonOrderService.updateOrderStatus(orderId, Order.Status.FINISHED);
+		return Response.noContent().build();
+	}
 
 	// ***********************
 	// Air Jet

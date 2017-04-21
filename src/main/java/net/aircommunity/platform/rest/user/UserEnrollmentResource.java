@@ -7,11 +7,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -24,10 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Enrollment;
+import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.rest.BaseOrderResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.EnrollmentService;
 
@@ -39,7 +38,7 @@ import net.aircommunity.platform.service.EnrollmentService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
-public class UserEnrollmentResource {
+public class UserEnrollmentResource extends BaseOrderResource<Enrollment> {
 	private static final Logger LOG = LoggerFactory.getLogger(UserEnrollmentResource.class);
 
 	@Resource
@@ -53,20 +52,10 @@ public class UserEnrollmentResource {
 	public Response create(@PathParam("userId") String userId, @NotNull @Valid Enrollment request,
 			@Context UriInfo uriInfo) {
 		LOG.debug("create enrollment {}", request);
-		Enrollment created = enrollmentService.createEnrollment(userId, request.getCourse().getId(), request);
+		Enrollment created = enrollmentService.createEnrollment(userId, request);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created: {}", uri);
 		return Response.created(uri).build();
-	}
-
-	/**
-	 * Find
-	 */
-	@GET
-	@Path("{enrollmentId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Enrollment find(@PathParam("enrollmentId") String enrollmentId) {
-		return enrollmentService.findEnrollment(enrollmentId);
 	}
 
 	/**
@@ -74,30 +63,42 @@ public class UserEnrollmentResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("userId") String userId, @QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		Page<Enrollment> result = enrollmentService.listUserEnrollments(userId, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+	public Response list(@PathParam("userId") String userId, @QueryParam("status") String status,
+			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+		Page<Enrollment> result = enrollmentService.listUserEnrollments(userId, Order.Status.of(status), page,
+				pageSize);
+		return buildPageResponse(result);
 	}
 
-	@POST
-	@Path("{enrollmentId}/cancel")
-	public Response cancelEnrollment(@PathParam("enrollmentId") String enrollmentId) {
-		enrollmentService.cancelEnrollment(enrollmentId);
-		return Response.noContent().build();
-	}
-
+	// /**
+	// * Cancel
+	// */
+	// @POST
+	// @Path("{enrollmentId}/cancel")
+	// public Response cancelEnrollment(@PathParam("enrollmentId") String enrollmentId) {
+	// enrollmentService.updateEnrollmentStatus(enrollmentId, Order.Status.CANCELLED);
+	// return Response.noContent().build();
+	// }
 	// ADMIN ONLY
-
-	/**
-	 * Delete
-	 */
-	@DELETE
-	@Path("{enrollmentId}/force")
-	@RolesAllowed(Roles.ROLE_ADMIN)
-	public Response forceDelete(@PathParam("enrollmentId") String enrollmentId) {
-		enrollmentService.deleteEnrollment(enrollmentId);
-		return Response.noContent().build();
-	}
+	// /**
+	// * Find
+	// */
+	// @GET
+	// @Path("{enrollmentId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public Enrollment find(@PathParam("enrollmentId") String enrollmentId) {
+	// return enrollmentService.findEnrollment(enrollmentId);
+	// }
+	//
+	// /**
+	// * Delete
+	// */
+	// @DELETE
+	// @Path("{enrollmentId}/force")
+	// @RolesAllowed(Roles.ROLE_ADMIN)
+	// public Response forceDelete(@PathParam("enrollmentId") String enrollmentId) {
+	// enrollmentService.deleteEnrollment(enrollmentId);
+	// return Response.noContent().build();
+	// }
 
 }

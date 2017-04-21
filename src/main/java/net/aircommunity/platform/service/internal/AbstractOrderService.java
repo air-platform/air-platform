@@ -42,7 +42,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		type = (Class<T>) pt.getActualTypeArguments()[0];
 	}
 
-	protected abstract Code orderNotFoundCode();
+	protected Code orderNotFoundCode() {
+		return Codes.ORDER_NOT_FOUND;
+	}
 
 	protected abstract BaseOrderRepository<T> getOrderRepository();
 
@@ -50,7 +52,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	// Generic CRUD shared
 	// *********************
 
-	protected T createOrder(String userId, T order) {
+	protected T doCreateOrder(String userId, T order) {
 		User owner = findAccount(userId, User.class);
 		T newOrder = null;
 		try {
@@ -71,8 +73,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		newOrder.setOwner(owner);
 		try {
 			T orderSaved = getOrderRepository().save(newOrder);
-			//orderSaved.getProduct().getClientManagerContacts();
-//			orderNotificationService.notifyClientManager(clientManagers, orderSaved);
+			// orderSaved.getProduct().getClientManagerContacts();
+			// orderNotificationService.notifyClientManager(clientManagers, orderSaved);
 			return orderSaved;
 		}
 		catch (Exception e) {
@@ -83,7 +85,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 	}
 
-	protected T findOrder(String orderId) {
+	protected T doFindOrder(String orderId) {
 		T order = getOrderRepository().findOne(orderId);
 		if (order == null || order.getStatus() == Order.Status.DELETED) {
 			throw new AirException(orderNotFoundCode(),
@@ -92,7 +94,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return order;
 	}
 
-	protected T findOrderByOrderNo(String orderNo) {
+	protected T doFindOrderByOrderNo(String orderNo) {
 		T order = getOrderRepository().findByOrderNo(orderNo);
 		if (order == null || order.getStatus() == Order.Status.DELETED) {
 			throw new AirException(orderNotFoundCode(),
@@ -101,8 +103,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return order;
 	}
 
-	protected T updateOrder(String orderId, T newOrder) {
-		T order = findOrder(orderId); // FIXME findOrder is NOT cached?
+	protected T doUpdateOrder(String orderId, T newOrder) {
+		T order = doFindOrder(orderId); // FIXME findOrder is NOT cached?
 		copyProperties(newOrder, order);
 		try {
 			return getOrderRepository().save(order);
@@ -118,23 +120,39 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	protected void copyProperties(T src, T tgt) {
 	}
 
-	protected T updateOrderStatus(String orderId, Order.Status status) {
-		T order = findOrder(orderId);
+	protected T doUpdateOrderStatus(String orderId, Order.Status status) {
+		T order = doFindOrder(orderId);
 		order.setStatus(status);
 		switch (status) {
 		case PENDING:
-			break;
+			throwInvalidOrderStatus(orderId, status);
 
 		case PAID:
+			if (order.getStatus() != Order.Status.PENDING || order.getStatus() != Order.Status.PUBLISHED) {
+				throwInvalidOrderStatus(orderId, status);
+			}
 			order.setPaymentDate(new Date());
 			break;
 
 		case FINISHED:
+			if (order.getStatus() != Order.Status.PAID) {
+				throwInvalidOrderStatus(orderId, status);
+			}
 			order.setFinishedDate(new Date());
 			break;
 
 		case CANCELLED:
+			if (order.getStatus() != Order.Status.PENDING || order.getStatus() != Order.Status.PUBLISHED) {
+				throwInvalidOrderStatus(orderId, status);
+			}
 			order.setCancelledDate(new Date());
+			break;
+
+		case DELETED:
+			if (order.getStatus() == Order.Status.PAID) {
+				throwInvalidOrderStatus(orderId, status);
+			}
+			order.setDeletedDate(new Date());
 			break;
 
 		default:// noop
@@ -142,10 +160,15 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return getOrderRepository().save(order);
 	}
 
+	private void throwInvalidOrderStatus(String orderId, Order.Status status) {
+		throw new AirException(Codes.ORDER_ILLEGAL_STATUS,
+				String.format("%s (%s) order cannot be update to status %s", type.getSimpleName(), orderId, status));
+	}
+
 	/**
 	 * For USER (Exclude orders in DELETED status)
 	 */
-	protected Page<T> listUserOrders(String userId, Order.Status status, int page, int pageSize) {
+	protected Page<T> doListUserOrders(String userId, Order.Status status, int page, int pageSize) {
 		if (Order.Status.DELETED == status) {
 			return Page.emptyPage(page, pageSize);
 		}
@@ -160,7 +183,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	/**
 	 * For ADMIN for a user (orders in any status)
 	 */
-	protected Page<T> listAllUserOrders(String userId, Order.Status status, int page, int pageSize) {
+	protected Page<T> doListAllUserOrders(String userId, Order.Status status, int page, int pageSize) {
 		if (status == null) {
 			return Pages.adapt(getOrderRepository().findByOwnerIdOrderByCreationDateDesc(userId,
 					Pages.createPageRequest(page, pageSize)));
@@ -172,7 +195,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	/**
 	 * For ADMIN (orders in any status)
 	 */
-	protected Page<T> listAllOrders(Order.Status status, int page, int pageSize) {
+	protected Page<T> doListAllOrders(Order.Status status, int page, int pageSize) {
 		if (status == null) {
 			return Pages.adapt(
 					getOrderRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
@@ -184,14 +207,14 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	/**
 	 * For ADMIN
 	 */
-	protected void deleteOrder(String orderId) {
+	protected void doDeleteOrder(String orderId) {
 		getOrderRepository().delete(orderId);
 	}
 
 	/**
 	 * For ADMIN
 	 */
-	protected void deleteOrders(String userId) {
+	protected void doDeleteOrders(String userId) {
 		getOrderRepository().deleteByOwnerId(userId);
 	}
 }

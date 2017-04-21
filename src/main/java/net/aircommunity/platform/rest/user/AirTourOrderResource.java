@@ -7,7 +7,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -25,11 +24,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.AirTourOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.rest.BaseOrderResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.AirTourOrderService;
 
@@ -41,7 +40,7 @@ import net.aircommunity.platform.service.AirTourOrderService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
-public class AirTourOrderResource {
+public class AirTourOrderResource extends BaseOrderResource<AirTourOrder> {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTourOrderResource.class);
 
 	@Resource
@@ -61,16 +60,6 @@ public class AirTourOrderResource {
 	}
 
 	/**
-	 * Find
-	 */
-	@GET
-	@Path("{orderId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public AirTourOrder find(@PathParam("orderId") String orderId) {
-		return airTourOrderService.findAirTourOrder(orderId);
-	}
-
-	/**
 	 * List TODO query
 	 */
 	@GET
@@ -79,7 +68,7 @@ public class AirTourOrderResource {
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		Page<AirTourOrder> result = airTourOrderService.listUserAirTourOrders(userId, Order.Status.of(status), page,
 				pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return buildPageResponse(result);
 	}
 
 	/**
@@ -93,70 +82,69 @@ public class AirTourOrderResource {
 		return airTourOrderService.updateAirTourOrder(orderId, newOrder);
 	}
 
-	/**
-	 * Cancel order
-	 */
-	@POST
-	@Path("{orderId}/cancel")
-	public Response cancelOrder(@PathParam("orderId") String orderId) {
-		airTourOrderService.updateAirTourOrderStatus(orderId, Order.Status.CANCELLED);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * Finish order (TODO who finish it?)
-	 */
-	@POST
-	@Path("{orderId}/finish")
-	public Response finishOrder(@PathParam("orderId") String orderId) {
-		airTourOrderService.updateAirTourOrderStatus(orderId, Order.Status.FINISHED);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * Delete (mark order as DELETED)
-	 */
-	@DELETE
-	@Path("{orderId}")
-	public Response delete(@PathParam("orderId") String orderId) {
-		airTourOrderService.updateAirTourOrderStatus(orderId, Order.Status.DELETED);
-		return Response.noContent().build();
-	}
-
-	// **************
-	// ADMIN ONLY
-	// **************
-
-	/**
-	 * Mark order as Paid
-	 */
-	@POST
-	@Path("{orderId}/paid")
-	@RolesAllowed(Roles.ROLE_ADMIN)
-	public Response markPaidOrder(@PathParam("orderId") String orderId) {
-		airTourOrderService.updateAirTourOrderStatus(orderId, Order.Status.PAID);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * Delete
-	 */
-	@DELETE
-	@Path("{orderId}")
-	@RolesAllowed(Roles.ROLE_ADMIN)
-	public Response forceDelete(@PathParam("orderId") String orderId) {
-		airTourOrderService.deleteAirTourOrder(orderId);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * Delete all
-	 */
-	@DELETE
-	@RolesAllowed(Roles.ROLE_ADMIN)
-	public Response deleteAll(@PathParam("userId") String userId) {
-		airTourOrderService.deleteAirTourOrders(userId);
-		return Response.noContent().build();
-	}
+	// /**
+	// * Find
+	// */
+	// @GET
+	// @Path("{orderId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public AirTourOrder find(@PathParam("orderId") String orderId) {
+	// return airTourOrderService.findAirTourOrder(orderId);
+	// }
+	// /**
+	// * Cancel order
+	// */
+	// @POST
+	// @Path("{orderId}/cancel")
+	// public Response cancelOrder(@PathParam("orderId") String orderId) {
+	// airTourOrderService.updateAirTourOrderStatus(orderId, Order.Status.CANCELLED);
+	// return Response.noContent().build();
+	// }
+	//
+	// /**
+	// * Delete (mark order as DELETED)
+	// */
+	// @DELETE
+	// @Path("{orderId}")
+	// public Response delete(@PathParam("orderId") String orderId) {
+	// airTourOrderService.updateAirTourOrderStatus(orderId, Order.Status.DELETED);
+	// return Response.noContent().build();
+	// }
+	//
+	// // **************
+	// // ADMIN ONLY
+	// // **************
+	//
+	// /**
+	// * Mark order as Paid
+	// */
+	// @POST
+	// @Path("{orderId}/paid")
+	// @RolesAllowed(Roles.ROLE_ADMIN)
+	// public Response markPaidOrder(@PathParam("orderId") String orderId) {
+	// airTourOrderService.updateAirTourOrderStatus(orderId, Order.Status.PAID);
+	// return Response.noContent().build();
+	// }
+	//
+	// /**
+	// * Delete
+	// */
+	// @DELETE
+	// @Path("{orderId}")
+	// @RolesAllowed(Roles.ROLE_ADMIN)
+	// public Response forceDelete(@PathParam("orderId") String orderId) {
+	// airTourOrderService.deleteAirTourOrder(orderId);
+	// return Response.noContent().build();
+	// }
+	//
+	// /**
+	// * Delete all
+	// */
+	// @DELETE
+	// @RolesAllowed(Roles.ROLE_ADMIN)
+	// public Response deleteAll(@PathParam("userId") String userId) {
+	// airTourOrderService.deleteAirTourOrders(userId);
+	// return Response.noContent().build();
+	// }
 
 }

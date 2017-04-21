@@ -177,7 +177,7 @@ public class UserResource {
 
 	private Response buildOrdersResponse(Order.Status status, int page, int pageSize, SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		Page<Order> result = commonOrderService.listAllUserOrders(accountId, status, page, pageSize);
+		Page<Order> result = commonOrderService.listUserOrders(accountId, status, page, pageSize);
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
 	}
 
@@ -189,10 +189,18 @@ public class UserResource {
 	}
 
 	@POST
+	@Path("orders/{orderId}/pay")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response payOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
+		commonOrderService.updateOrderStatus(orderId, Order.Status.PAID);
+		return Response.noContent().build();
+	}
+
+	@POST
 	@Path("orders/{orderId}/cancel")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response cancelOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
-		commonOrderService.cancelOrder(orderId);
+		commonOrderService.updateOrderStatus(orderId, Order.Status.CANCELLED);
 		return Response.noContent().build();
 	}
 
@@ -200,7 +208,7 @@ public class UserResource {
 	@Path("orders/{orderId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
-		commonOrderService.deleteOrder(orderId);
+		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
 		return Response.noContent().build();
 	}
 

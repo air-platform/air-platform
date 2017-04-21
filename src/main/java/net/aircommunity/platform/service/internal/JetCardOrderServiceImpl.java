@@ -39,19 +39,19 @@ public class JetCardOrderServiceImpl extends AbstractVendorAwareOrderService<Jet
 
 	@Override
 	public JetCardOrder createJetCardOrder(String userId, JetCardOrder order) {
-		return createOrder(userId, order);
+		return doCreateOrder(userId, order);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public JetCardOrder findJetCardOrder(String orderId) {
-		return findOrder(orderId);
+		return doFindOrder(orderId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public JetCardOrder updateJetCardOrder(String orderId, JetCardOrder newOrder) {
-		return updateOrder(orderId, newOrder);
+		return doUpdateOrder(orderId, newOrder);
 	}
 
 	@Override
@@ -69,34 +69,34 @@ public class JetCardOrderServiceImpl extends AbstractVendorAwareOrderService<Jet
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public JetCardOrder updateJetCardOrderStatus(String orderId, Status status) {
-		return updateOrderStatus(orderId, status);
+		return doUpdateOrderStatus(orderId, status);
 	}
 
 	@Override
 	public Page<JetCardOrder> listUserJetCardOrders(String userId, Order.Status status, int page, int pageSize) {
-		return listUserOrders(userId, status, page, pageSize);
+		return doListUserOrders(userId, status, page, pageSize);
 	}
 
 	@Override
 	public Page<JetCardOrder> listTenantJetCardOrders(String tenantId, Order.Status status, int page, int pageSize) {
-		return listTenantOrders(tenantId, status, page, pageSize);
+		return doListTenantOrders(tenantId, status, page, pageSize);
 	}
 
 	@Override
 	public Page<JetCardOrder> listJetCardOrders(Order.Status status, int page, int pageSize) {
-		return listAllOrders(status, page, pageSize);
+		return doListAllOrders(status, page, pageSize);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public void deleteJetCardOrder(String orderId) {
-		deleteOrder(orderId);
+		doDeleteOrder(orderId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteJetCardOrders(String userId) {
-		deleteOrders(userId);
+		doDeleteOrders(userId);
 	}
 
 	@Override

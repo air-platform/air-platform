@@ -43,6 +43,7 @@ public final class Codes {
 	// AIR JET
 	public static final Code PRODUCT_NOT_FOUND = Code.notFound(11_003_0001);
 	public static final Code ORDER_NOT_FOUND = Code.notFound(11_003_0002);
+	public static final Code ORDER_ILLEGAL_STATUS = Code.illegalAccess(11_003_0003);
 	public static final Code AIRJET_ALREADY_EXISTS = Code.alreadyExists(11_003_0004);
 	public static final Code AIRJET_NOT_FOUND = Code.notFound(11_003_0005);
 	public static final Code AIRCRAFT_ALREADY_EXISTS = Code.alreadyExists(11_003_0006);

@@ -47,30 +47,30 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 
 	@Override
 	public CharterOrder createCharterOrder(String userId, CharterOrder order) {
-		return createOrder(userId, order);
+		return doCreateOrder(userId, order);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public CharterOrder findCharterOrder(String orderId) {
-		return findOrder(orderId);
+		return doFindOrder(orderId);
 	}
 
 	@Override
 	public CharterOrder findCharterOrderByOrderNo(String orderNo) {
-		return findOrderByOrderNo(orderNo);
+		return doFindOrderByOrderNo(orderNo);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public CharterOrder updateCharterOrder(String orderId, CharterOrder newOrder) {
-		return updateOrder(orderId, newOrder);
+		return doUpdateOrder(orderId, newOrder);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public CharterOrder updateCharterOrderStatus(String orderId, Order.Status status) {
-		return updateOrderStatus(orderId, status);
+		return doUpdateOrderStatus(orderId, status);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 
 	@Override
 	public Page<CharterOrder> listUserCharterOrders(String userId, Status status, int page, int pageSize) {
-		return listUserOrders(userId, status, page, pageSize);
+		return doListUserOrders(userId, status, page, pageSize);
 	}
 
 	@Override
@@ -135,19 +135,19 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 
 	@Override
 	public Page<CharterOrder> listCharterOrders(Status status, int page, int pageSize) {
-		return listAllOrders(status, page, pageSize);
+		return doListAllOrders(status, page, pageSize);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public void deleteCharterOrder(String orderId) {
-		deleteOrder(orderId);
+		doDeleteOrder(orderId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteCharterOrders(String userId) {
-		deleteOrders(userId);
+		doDeleteOrders(userId);
 	}
 
 	@Override
