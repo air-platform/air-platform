@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,6 +29,8 @@ import net.aircommunity.platform.service.AirportService;
 @Service
 @Transactional
 public class AirportServiceImpl implements AirportService {
+	private static final Logger LOG = LoggerFactory.getLogger(AirportServiceImpl.class);
+
 	private static final String CACHE_NAME = "cache.airport";
 	private static final String CACHE_NAME_ICAO4 = "cache.airport-icao4";
 	private static final String CACHE_NAME_IATA3 = "cache.airport-iata3";
@@ -43,14 +47,16 @@ public class AirportServiceImpl implements AirportService {
 	}
 
 	private void checkExistence(Airport airport) {
-		Airport airportExisting = airportRepository.findByIcao4(airport.getIcao4());
+		Airport airportExisting = airportRepository.findByIcao4IgnoreCase(airport.getIcao4());
 		if (airportExisting != null) {
+			LOG.error("airport ICAO4 exist:{}", airport);
 			throw new AirException(Codes.AIRPORT_ALREADY_EXISTS,
 					String.format("Airport ICAO: %s already exist", airport.getIcao4()));
 		}
 		if (Strings.isNotBlank(airport.getIata3())) {
-			airportExisting = airportRepository.findByIata3(airport.getIata3());
+			airportExisting = airportRepository.findByIata3IgnoreCase(airport.getIata3());
 			if (airportExisting != null) {
+				LOG.error("airport IATA3 exist:{}", airport);
 				throw new AirException(Codes.AIRPORT_ALREADY_EXISTS,
 						String.format("Airport IATA: %s already exist", airport.getIata3()));
 			}
@@ -82,7 +88,7 @@ public class AirportServiceImpl implements AirportService {
 	@Cacheable(cacheNames = CACHE_NAME_IATA3)
 	@Override
 	public Airport findAirportByIata3(String iata3) {
-		Airport airport = airportRepository.findByIata3(iata3);
+		Airport airport = airportRepository.findByIata3IgnoreCase(iata3);
 		if (airport == null) {
 			throw new AirException(Codes.AIRPORT_NOT_FOUND, String.format("Airport IATA: %s not found", iata3));
 		}
@@ -92,7 +98,7 @@ public class AirportServiceImpl implements AirportService {
 	@Cacheable(cacheNames = CACHE_NAME_ICAO4)
 	@Override
 	public Airport findAirportByIcao4(String icao4) {
-		Airport airport = airportRepository.findByIcao4(icao4);
+		Airport airport = airportRepository.findByIcao4IgnoreCase(icao4);
 		if (airport == null) {
 			throw new AirException(Codes.AIRPORT_NOT_FOUND, String.format("Airport ICAO: %s not found", icao4));
 		}
@@ -104,13 +110,13 @@ public class AirportServiceImpl implements AirportService {
 			@CachePut(value = CACHE_NAME_ICAO4, key = "#result.icao4") })
 	@Override
 	public Airport updateAirport(String airportId, Airport newAirport) {
-		Airport airportExisting = airportRepository.findByIcao4(newAirport.getIcao4());
+		Airport airportExisting = airportRepository.findByIcao4IgnoreCase(newAirport.getIcao4());
 		if (airportExisting != null && !airportExisting.getId().equals(airportId)) {
 			throw new AirException(Codes.AIRPORT_ALREADY_EXISTS,
 					String.format("Airport ICAO: %s already exist", newAirport.getIcao4()));
 		}
 		if (Strings.isNotBlank(newAirport.getIata3())) {
-			airportExisting = airportRepository.findByIata3(newAirport.getIata3());
+			airportExisting = airportRepository.findByIata3IgnoreCase(newAirport.getIata3());
 			if (airportExisting != null && !airportExisting.getId().equals(airportId)) {
 				throw new AirException(Codes.AIRPORT_ALREADY_EXISTS,
 						String.format("Airport IATA: %s already exist", newAirport.getIata3()));

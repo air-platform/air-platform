@@ -20,7 +20,7 @@ public interface AirportRepository extends JpaRepository<Airport, String> {
 
 	List<Airport> findByCityContainingAndNameContaining(String city, String name);
 
-	Airport findByIata3(String iata3);
+	Airport findByIata3IgnoreCase(String iata3);
 
-	Airport findByIcao4(String icao4);
+	Airport findByIcao4IgnoreCase(String icao4);
 }

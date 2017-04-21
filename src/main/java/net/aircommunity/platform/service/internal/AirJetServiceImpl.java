@@ -62,7 +62,7 @@ public class AirJetServiceImpl implements AirJetService {
 			for (AirJet jet : airjets) {
 				jet.setImage(String.format(BASE_URL_FORMAT, configuration.getPublicHost(),
 						configuration.getPublicPort(), jet.getImage()));
-				AirJet found = airjetRepository.findByType(jet.getType());
+				AirJet found = airjetRepository.findByTypeIgnoreCase(jet.getType());
 				if (found == null) {
 					createAirJet(jet);
 				}
@@ -78,7 +78,7 @@ public class AirJetServiceImpl implements AirJetService {
 
 	@Override
 	public AirJet createAirJet(AirJet airJet) {
-		AirJet airJetExisting = airjetRepository.findByType(airJet.getType());
+		AirJet airJetExisting = airjetRepository.findByTypeIgnoreCase(airJet.getType());
 		if (airJetExisting != null) {
 			throw new AirException(Codes.AIRJET_ALREADY_EXISTS,
 					String.format("AirJet type: %s already exist", airJet.getType()));
@@ -110,7 +110,7 @@ public class AirJetServiceImpl implements AirJetService {
 
 	@Override
 	public AirJet findAirJetByType(String type) {
-		AirJet airJet = airjetRepository.findByType(type);
+		AirJet airJet = airjetRepository.findByTypeIgnoreCase(type);
 		if (airJet == null) {
 			throw new AirException(Codes.AIRJET_NOT_FOUND, String.format("AirJet type: %s not found", type));
 		}
@@ -121,7 +121,7 @@ public class AirJetServiceImpl implements AirJetService {
 	@Override
 	public AirJet updateAirJet(String airJetId, AirJet newAirJet) {
 		AirJet airJet = findAirJet(airJetId);
-		AirJet airJetExisting = airjetRepository.findByType(newAirJet.getType());
+		AirJet airJetExisting = airjetRepository.findByTypeIgnoreCase(newAirJet.getType());
 		if (airJetExisting != null && !airJetExisting.getId().equals(airJetId)) {
 			throw new AirException(Codes.AIRJET_ALREADY_EXISTS,
 					String.format("AirJet type: %s already exist", airJet.getType()));

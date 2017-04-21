@@ -12,5 +12,5 @@ import net.aircommunity.platform.model.AirJet;
  */
 public interface AirJetRepository extends JpaRepository<AirJet, String> {
 
-	AirJet findByType(String type);
+	AirJet findByTypeIgnoreCase(String type);
 }
