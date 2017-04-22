@@ -95,6 +95,11 @@ public class AirTransportOrder extends CharterableOrder {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.AIRTRANSPORT;
+	}
+
+	@Override
 	public Product getProduct() {
 		return airTransport;
 	}

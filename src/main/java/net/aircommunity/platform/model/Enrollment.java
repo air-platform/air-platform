@@ -79,14 +79,6 @@ public class Enrollment extends VendorAwareOrder {
 		this.location = location;
 	}
 
-	public Course getCourse() {
-		return course;
-	}
-
-	public void setCourse(Course course) {
-		this.course = course;
-	}
-
 	public String getPerson() {
 		return person;
 	}
@@ -101,6 +93,20 @@ public class Enrollment extends VendorAwareOrder {
 
 	public void setIdentity(String identity) {
 		this.identity = identity;
+	}
+
+	public Course getCourse() {
+		return course;
+	}
+
+	public void setCourse(Course course) {
+		this.course = course;
+		this.vendor = course.getVendor();
+	}
+
+	@Override
+	public Type getType() {
+		return Type.COURSE;
 	}
 
 	@Override

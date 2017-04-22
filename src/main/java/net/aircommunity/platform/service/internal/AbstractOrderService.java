@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.eventbus.EventBus;
+
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
@@ -17,7 +19,6 @@ import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.repository.BaseOrderRepository;
-import net.aircommunity.platform.service.OrderNotificationService;
 
 /**
  * Abstract Order service support.
@@ -30,7 +31,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	protected Class<T> type;
 
 	@Resource
-	private OrderNotificationService orderNotificationService;
+	private EventBus eventBus;
 
 	@Resource
 	private OrderNoGenerator orderNoGenerator;
@@ -73,8 +74,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		newOrder.setOwner(owner);
 		try {
 			T orderSaved = getOrderRepository().save(newOrder);
-			// orderSaved.getProduct().getClientManagerContacts();
-			// orderNotificationService.notifyClientManager(clientManagers, orderSaved);
+			eventBus.post(new OrderEvent(OrderEvent.EventType.CREATION, orderSaved));
 			return orderSaved;
 		}
 		catch (Exception e) {
@@ -122,13 +122,12 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	protected T doUpdateOrderStatus(String orderId, Order.Status status) {
 		T order = doFindOrder(orderId);
-		order.setStatus(status);
 		switch (status) {
 		case PENDING:
 			throwInvalidOrderStatus(orderId, status);
 
 		case PAID:
-			if (order.getStatus() != Order.Status.PENDING || order.getStatus() != Order.Status.PUBLISHED) {
+			if (order.getStatus() != Order.Status.PENDING) {
 				throwInvalidOrderStatus(orderId, status);
 			}
 			order.setPaymentDate(new Date());
@@ -142,7 +141,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			break;
 
 		case CANCELLED:
-			if (order.getStatus() != Order.Status.PENDING || order.getStatus() != Order.Status.PUBLISHED) {
+			if (order.getStatus() != Order.Status.PENDING) {
 				throwInvalidOrderStatus(orderId, status);
 			}
 			order.setCancelledDate(new Date());
@@ -157,6 +156,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 		default:// noop
 		}
+		order.setStatus(status);
 		return getOrderRepository().save(order);
 	}
 

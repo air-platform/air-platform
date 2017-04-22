@@ -1,6 +1,5 @@
 package net.aircommunity.platform.model;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,15 +12,14 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.PostLoad;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableSet;
 
 import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
@@ -63,8 +61,8 @@ public abstract class Product extends Persistable {
 	protected String clientManagers;
 
 	// NOTED: hold the info for local usage
-	@XmlTransient
-	private transient Set<Contact> clientManagerContacts = new HashSet<>();
+	// @XmlTransient
+	// private transient Set<Contact> clientManagerContacts = new HashSet<>();
 
 	// product description
 	@Lob
@@ -75,6 +73,11 @@ public abstract class Product extends Persistable {
 	@JoinColumn(name = "tenant_id", nullable = false)
 	@XmlJavaTypeAdapter(TenantAdapter.class)
 	protected Tenant vendor;
+
+	@PostLoad
+	private void onLoad() {
+		setClientManagers(clientManagers);
+	}
 
 	public String getName() {
 		return name;
@@ -115,23 +118,23 @@ public abstract class Product extends Persistable {
 	public void setClientManagers(String clientManagers) {
 		if (clientManagers != null) {
 			// XXX NOTE: will throw IllegalArgumentException when splitting if the format is not valid
-			Map<String, String> contacts = Splitter.on(CLIENT_MANAGER_SEPARATOR).trimResults().omitEmptyStrings()
+			Splitter.on(CLIENT_MANAGER_SEPARATOR).trimResults().omitEmptyStrings()
 					.withKeyValueSeparator(CLIENT_MANAGER_INFO_SEPARATOR).split(clientManagers);
-			this.clientManagers = clientManagers;
-			contacts.forEach((person, email) -> {
-				Contact contact = new Contact();
-				contact.setEmail(email.trim());
-				contact.setPerson(person.trim());
-				clientManagerContacts.add(contact);
-			});
-			clientManagerContacts = ImmutableSet.copyOf(clientManagerContacts);
 		}
+		this.clientManagers = clientManagers;
 	}
 
 	public Set<Contact> getClientManagerContacts() {
-		if (clientManagerContacts.isEmpty()) {
-			return Collections.emptySet();
-		}
+		Set<Contact> clientManagerContacts = new HashSet<>();
+		// XXX NOTE: will throw IllegalArgumentException when splitting if the format is not valid
+		Map<String, String> contacts = Splitter.on(CLIENT_MANAGER_SEPARATOR).trimResults().omitEmptyStrings()
+				.withKeyValueSeparator(CLIENT_MANAGER_INFO_SEPARATOR).split(clientManagers);
+		contacts.forEach((person, email) -> {
+			Contact contact = new Contact();
+			contact.setEmail(email.trim());
+			contact.setPerson(person.trim());
+			clientManagerContacts.add(contact);
+		});
 		return clientManagerContacts;
 	}
 
@@ -150,5 +153,4 @@ public abstract class Product extends Persistable {
 	public void setVendor(Tenant vendor) {
 		this.vendor = vendor;
 	}
-
 }

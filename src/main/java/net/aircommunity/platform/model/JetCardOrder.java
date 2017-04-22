@@ -44,6 +44,11 @@ public class JetCardOrder extends VendorAwareOrder {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.JETCARD;
+	}
+
+	@Override
 	public Product getProduct() {
 		return jetCard;
 	}

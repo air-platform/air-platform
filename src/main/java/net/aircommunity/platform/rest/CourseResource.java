@@ -48,7 +48,7 @@ public class CourseResource {
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response list(@QueryParam("airType") String airType, @QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("page") @DefaultValue("10") int pageSize) {
+			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		LOG.debug("list all courses with airType: {}", airType);
 		Page<Course> courses = courseService.listCoursesByAirType(airType, page, pageSize);
 		return Response.ok(courses).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(courses)).build();
@@ -62,7 +62,7 @@ public class CourseResource {
 	@Path("hot")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response top10Hot(@QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("page") @DefaultValue("10") int pageSize) {
+			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		List<Course> courses = courseService.listTop10HotCourses();
 		return Response.ok(courses).build();
 	}
@@ -75,7 +75,7 @@ public class CourseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("school")
 	public Response listBySchool(@NotNull @QueryParam("id") String schoolId,
-			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("page") @DefaultValue("10") int pageSize) {
+			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		Page<Course> coursePage = courseService.listCoursesBySchool(schoolId, page, pageSize);
 		return Response.ok(coursePage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(coursePage))
 				.build();

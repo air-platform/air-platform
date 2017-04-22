@@ -76,6 +76,11 @@ public class AirTaxiOrder extends CharterableOrder {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.AIRTAXI;
+	}
+
+	@Override
 	public Product getProduct() {
 		return airTaxi;
 	}

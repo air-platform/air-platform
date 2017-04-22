@@ -38,7 +38,7 @@ public class AirJetServiceImpl implements AirJetService {
 	private static final String CACHE_NAME = "cache.airjet";
 	private static final String AIRJETS_INFO = "data/airjet.json";
 	// FORMAT: http://host:port/airjet/image/xxx.jpeg
-	private static final String BASE_URL_FORMAT = "http://%s:%d/%s";
+	// private static final String BASE_URL_FORMAT = "http://%s:%d/%s";
 
 	@Resource
 	private ObjectMapper objectMapper;
@@ -60,8 +60,9 @@ public class AirJetServiceImpl implements AirJetService {
 			List<AirJet> airjets = objectMapper.readValue(json, new TypeReference<List<AirJet>>() {
 			});
 			for (AirJet jet : airjets) {
-				jet.setImage(String.format(BASE_URL_FORMAT, configuration.getPublicHost(),
-						configuration.getPublicPort(), jet.getImage()));
+				// XXX NOT USE LOCAL FILE
+				// jet.setImage(String.format(BASE_URL_FORMAT, configuration.getPublicHost(),
+				// configuration.getPublicPort(), jet.getImage()));
 				AirJet found = airjetRepository.findByTypeIgnoreCase(jet.getType());
 				if (found == null) {
 					createAirJet(jet);

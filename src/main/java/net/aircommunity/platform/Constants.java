@@ -11,6 +11,7 @@ public final class Constants {
 	private static final String TEMPLATE_DIR = "template";
 	public static final String TEMPLATE_MAIL_VERIFICATION = TEMPLATE_DIR + "/mail-verification.template";
 	public static final String TEMPLATE_MAIL_RESET_PASSOWRD = TEMPLATE_DIR + "/mail-reset-password.template";
+	public static final String TEMPLATE_MAIL_ORDER_NOTIFICATION = TEMPLATE_DIR + "/mail-%s-order.template";
 
 	//
 	public static final String CLAIM_API_KEY = "claim.apikey";

@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.AirException;
@@ -66,6 +68,11 @@ public interface FleetService {
 	 */
 	@Nonnull
 	Page<Fleet> listFleets(int page, int pageSize);
+
+	@Nonnull
+	default List<Fleet> listFleets() {
+		return listFleets(1, Integer.MAX_VALUE).getContent();
+	}
 
 	/**
 	 * List all fleets by type and pagination.

@@ -28,7 +28,7 @@ import net.aircommunity.platform.service.MailService;
 public class MailServiceImpl implements MailService {
 	private static final Logger LOG = LoggerFactory.getLogger(MailServiceImpl.class);
 
-	private volatile boolean running;
+	private volatile boolean running = true;
 	private BlockingQueue<MailItem> mailItems;
 	private ExecutorService executorService;
 
@@ -47,7 +47,9 @@ public class MailServiceImpl implements MailService {
 		executorService.submit(() -> {
 			while (running) {
 				try {
+					LOG.debug("Mailer running...");
 					MailItem item = mailItems.take();
+					LOG.debug("Mailer got...{}", item);
 					doSend(item);
 				}
 				catch (InterruptedException e) {

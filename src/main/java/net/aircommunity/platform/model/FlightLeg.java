@@ -82,6 +82,10 @@ public class FlightLeg extends Persistable {
 		return date;
 	}
 
+	public String getDateFormatted() {
+		return SAFE_FORMATTER.format(date);
+	}
+
 	public void setDate(Date date) {
 		this.date = date;
 	}

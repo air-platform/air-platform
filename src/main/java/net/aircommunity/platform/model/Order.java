@@ -17,7 +17,10 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
@@ -164,34 +167,34 @@ public abstract class Order extends Persistable {
 	}
 
 	// order type (used by for RESTful API, not persisted)
-	@XmlElement
-	public String getType() {
-		Class<?> type = null;
-		Product product = getProduct();
-		if (product != null) {
-			type = product.getClass();
-		}
-		else {
-			type = getProductType();
-		}
-		return type == null ? null : type.getSimpleName().toLowerCase(Locale.ENGLISH);
+	@XmlElement(name = "type")
+	public String getTypeAsString() {
+		return getType().name().toLowerCase(Locale.ENGLISH);
 	}
 
+	// Not sure why this enum cannot be serialized to JSON (event with @XmlElement), so just use getTypeString instead
+	@XmlTransient
+	public abstract Type getType();
+
+	@XmlTransient
 	public abstract Product getProduct();
 
-	// used by CharterOrder
-	protected Class<?> getProductType() {
-		return null;
+	/**
+	 * Order product type
+	 */
+	public enum Type {
+		FLEET, FERRYFLIGHT, JETCARD, AIRTAXI, AIRTOUR, AIRTRANSPORT, COURSE;
+
+		@JsonValue
+		public String toString() {
+			return super.toString().toLowerCase();
+		}
 	}
 
 	/**
 	 * Order status
 	 */
 	public enum Status {
-		/**
-		 * Published TODO check if PUBLISHED needed
-		 */
-		PUBLISHED,
 
 		/**
 		 * Pending

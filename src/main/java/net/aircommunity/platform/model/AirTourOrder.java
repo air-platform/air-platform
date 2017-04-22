@@ -76,6 +76,11 @@ public class AirTourOrder extends CharterableOrder {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.AIRTOUR;
+	}
+
+	@Override
 	public Product getProduct() {
 		return airTour;
 	}

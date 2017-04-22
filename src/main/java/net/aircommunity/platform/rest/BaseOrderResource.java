@@ -56,7 +56,7 @@ public abstract class BaseOrderResource<T extends Order> {
 	 */
 	@POST
 	@Path("{orderId}/pay")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
 	public Response payOrder(@PathParam("orderId") String orderId) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.PAID);
 		return Response.noContent().build();

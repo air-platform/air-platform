@@ -78,6 +78,11 @@ public class CharterOrder extends Order {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.FLEET;
+	}
+
+	@Override
 	public Product getProduct() {
 		if (fleetCandidates == null || fleetCandidates.isEmpty()) {
 			return null;
@@ -88,11 +93,6 @@ public class CharterOrder extends Order {
 			return candidate.get().getFleet();
 		}
 		return null;
-	}
-
-	@Override
-	protected Class<?> getProductType() {
-		return Fleet.class;
 	}
 
 	@Override

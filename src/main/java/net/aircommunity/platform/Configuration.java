@@ -55,6 +55,9 @@ public class Configuration {
 	@Value("${air.order.email-notification}")
 	private boolean orderEmailNotificationEnabled;
 
+	@Value("${air.order.email-notification-subject}")
+	private String orderEmailNotificationSubject;
+
 	@Value("${air.mobile.verification}")
 	private boolean mobileVerificationEnabled;
 
@@ -149,6 +152,10 @@ public class Configuration {
 
 	public boolean isOrderEmailNotificationEnabled() {
 		return orderEmailNotificationEnabled;
+	}
+
+	public String getOrderEmailNotificationSubject() {
+		return orderEmailNotificationSubject;
 	}
 
 	public boolean isMobileVerificationEnabled() {

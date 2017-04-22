@@ -59,6 +59,11 @@ public class FerryFlightOrder extends CharterableOrder {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.FERRYFLIGHT;
+	}
+
+	@Override
 	public Product getProduct() {
 		return ferryFlight;
 	}
