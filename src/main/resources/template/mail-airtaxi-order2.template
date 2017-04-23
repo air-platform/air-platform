@@ -1,5 +1,4 @@
- {% extends "template/mail-base-order.template" %} 
- {% block orderDetails %}
+ {% extends "template/mail-base-order.template" %} {% block orderDetails %}
 <tr>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
@@ -7,8 +6,8 @@
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{{airTaxi.departure}} &#8640 {{airTaxi.arrival}} &nbsp; {{date | datetimeformat('%Y-%m-%d') }} &nbsp; {{timeSlot}} 出发
-	</td>
+		{{airTaxi.departure}} &#8640 {{airTaxi.arrival}} &nbsp; {{date |
+		datetimeformat('%Y-%m-%d') }} &nbsp; {{timeSlot}} 出发</td>
 </tr>
 <tr>
 	<td align="left"
@@ -17,9 +16,8 @@
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{% for passenger in passengers %} 
-		姓名: {{passenger.name}} &nbsp; 身份证: {{passenger.identity}} <br> 
-		{% endfor %}
+		{% for passenger in passengers %} 姓名: {{passenger.name}} &nbsp; 身份证:
+		{{passenger.identity}} <br> {% endfor %}
 	</td>
 </tr>
 <tr>

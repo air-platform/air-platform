@@ -1,7 +1,6 @@
 package net.aircommunity.platform.model;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -14,8 +13,6 @@ import javax.xml.bind.annotation.XmlElement;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import io.micro.common.DateFormats;
-
 /**
  * Persistable support for entities.
  * 
@@ -25,8 +22,6 @@ import io.micro.common.DateFormats;
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class Persistable implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	protected static final SimpleDateFormat SAFE_FORMATTER = DateFormats.simple("yyyy-MM-dd");
 
 	// timestamp based UUID
 	@XmlElement

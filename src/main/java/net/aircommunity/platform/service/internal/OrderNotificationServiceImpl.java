@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -22,10 +21,15 @@ import com.google.common.eventbus.Subscribe;
 import io.micro.common.Strings;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.Constants;
-import net.aircommunity.platform.common.OrderNoGenerator;
+import net.aircommunity.platform.model.AirTaxiOrder;
+import net.aircommunity.platform.model.AirTourOrder;
+import net.aircommunity.platform.model.AirTransportOrder;
 import net.aircommunity.platform.model.CharterOrder;
 import net.aircommunity.platform.model.Contact;
+import net.aircommunity.platform.model.Enrollment;
+import net.aircommunity.platform.model.FerryFlightOrder;
 import net.aircommunity.platform.model.FleetCandidate;
+import net.aircommunity.platform.model.JetCardOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.User;
@@ -96,11 +100,6 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 							.flatMap(fleet -> fleet.getClientManagerContacts().stream()).collect(Collectors.toSet());
 				}
 				else {
-					for (FleetCandidate c : candidates) {
-						System.out.println(c.getFleet());
-						System.out.println(c.getFleet().getClientManagers());
-						System.out.println(c.getFleet().getClientManagerContacts());
-					}
 					contacts = candidates.stream()
 							.flatMap(candidate -> candidate.getFleet().getClientManagerContacts().stream())
 							.collect(Collectors.toSet());
@@ -130,6 +129,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 			return;
 		}
 
+		// TODO make constants
 		for (Contact clientManager : clientManagers) {
 			Map<String, Object> context = Maps.newHashMap();
 			User customer = order.getOwner();
@@ -157,21 +157,49 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 				break;
 
 			case FERRYFLIGHT:
+				FerryFlightOrder ferryFlightOrder = FerryFlightOrder.class.cast(order);
+				context.put("contact", ferryFlightOrder.getContact());
+				context.put("ferryFlight", ferryFlightOrder.getFerryFlight());
+				context.put("passengers", ferryFlightOrder.getPassengers());
 				break;
 
 			case JETCARD:
+				JetCardOrder jetCardOrder = JetCardOrder.class.cast(order);
+				context.put("jetCard", jetCardOrder.getJetCard());
+				context.put("contact", jetCardOrder.getContact());
 				break;
 
 			case AIRTAXI:
+				AirTaxiOrder airTaxiOrder = AirTaxiOrder.class.cast(order);
+				context.put("airTaxi", airTaxiOrder.getAirTaxi());
+				context.put("passengers", airTaxiOrder.getPassengers());
+				context.put("aircraftType", airTaxiOrder.getAircraftItem().getAircraft().getName()); // XXX
+				context.put("date", airTaxiOrder.getDate());
+				context.put("timeSlot", airTaxiOrder.getTimeSlot());
 				break;
 
 			case AIRTOUR:
+				AirTourOrder airTourOrder = AirTourOrder.class.cast(order);
+				context.put("airTour", airTourOrder.getAirTour());
+				context.put("passengers", airTourOrder.getPassengers());
+				context.put("aircraftType", airTourOrder.getAircraftItem().getAircraft().getName());
+				context.put("date", airTourOrder.getDate());
+				context.put("timeSlot", airTourOrder.getTimeSlot());
 				break;
 
 			case AIRTRANSPORT:
+				AirTransportOrder airTransportOrder = AirTransportOrder.class.cast(order);
+				context.put("airTransport", airTransportOrder.getAirTransport());
+				context.put("passengerNum", airTransportOrder.getPassengerNum());
+				context.put("passengers", airTransportOrder.getPassengers());
+				context.put("aircraftType", airTransportOrder.getAircraftItem().getAircraft().getName());
+				context.put("date", airTransportOrder.getDate());
+				context.put("timeSlot", airTransportOrder.getTimeSlot());
 				break;
 
 			case COURSE:
+				Enrollment enrollment = Enrollment.class.cast(order);
+				context.put("enrollment", enrollment);
 				break;
 
 			default:
@@ -179,20 +207,11 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 			//
 			String mailBody = templateService.renderFile(String.format(Constants.TEMPLATE_MAIL_ORDER_NOTIFICATION,
 					order.getType().name().toLowerCase(Locale.ENGLISH)), context);
-			mailService.sendMail(clientManager.getEmail(), configuration.getOrderEmailNotificationSubject(), mailBody);
+			if (Strings.isNotBlank(clientManager.getEmail())) {
+				mailService.sendMail(clientManager.getEmail(), configuration.getOrderEmailNotificationSubject(),
+						mailBody);
+				LOG.debug("Sent order notification {} to clientManager {}", order, clientManager);
+			}
 		}
 	}
-
-	public static void main(String[] args) {
-		// bindings.put(EMAIL_BINDING_USERNAME, account.getNickName());
-		// bindings.put(EMAIL_BINDING_COMPANY, configuration.getCompany());
-		// bindings.put(EMAIL_BINDING_WEBSITE, configuration.getWebsite());
-		// bindings.put(EMAIL_BINDING_VERIFICATIONLINK, verificationLink);
-		// 170421NNL6P2QG4400
-		// 1704216HXO4QM7XMO0
-		System.out.println(new OrderNoGenerator(1, 1).next());
-		String s = "user1  : ,e@a.com,   user2:a@b.com";
-		System.out.println(Splitter.on(",").trimResults().omitEmptyStrings().withKeyValueSeparator(":").split(s));
-	}
-
 }

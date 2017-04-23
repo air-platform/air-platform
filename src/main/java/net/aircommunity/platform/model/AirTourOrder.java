@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "air_platfrom_airtour_order")
-public class AirTourOrder extends CharterableOrder {
+public class AirTourOrder extends AircraftAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	// departure date, e.g. 2017-5-1

@@ -51,6 +51,7 @@ public class DatabaseTokenConfigStorage implements AccessTokenConfigStorage {
 			String body = objectMapper.writeValueAsString(config);
 			settings.setName(keyId);
 			settings.setValue(body);
+			settings.setCategory(Settings.CATEGORY_SYSTEM);
 			settingsRepository.save(settings);
 		}
 		catch (Exception e) {

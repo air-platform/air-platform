@@ -1,0 +1,50 @@
+ {% extends "template/mail-base-order.template" %} 
+ {% block orderDetails %}
+<tr>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		<b>课程:</b>
+	</td>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		{{enrollment.course.name}}&nbsp;&nbsp; 时间: (
+		{{enrollment.course.startDate | datetimeformat('%Y-%m-%d') }} -
+		{{enrollment.course.endDate | datetimeformat('%Y-%m-%d') }} )</td>
+</tr>
+<tr>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		<b>机型选择:</b>
+	</td>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		{{enrollment.airType}}</td>
+</tr>
+<tr>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		<b>飞行执照:</b>
+	</td>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		{{enrollment.license}}</td>
+</tr>
+<tr>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		<b>培训地点:</b>
+	</td>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		{{enrollment.location}}</td>
+</tr>
+<tr>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		<b>联系方式:</b>
+	</td>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		姓名: {{enrollment.person}} &nbsp; 身份证: {{enrollment.identity}}</td>
+</tr>
+{% endblock %}

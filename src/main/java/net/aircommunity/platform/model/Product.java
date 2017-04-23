@@ -22,6 +22,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.google.common.base.Splitter;
 
 import io.micro.annotation.constraint.NotEmpty;
+import net.aircommunity.platform.Constants;
+import net.aircommunity.platform.model.constraint.ContactList;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
@@ -34,8 +36,6 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Product extends Persistable {
 	private static final long serialVersionUID = 1L;
-	private static final String CLIENT_MANAGER_INFO_SEPARATOR = ":";
-	private static final String CLIENT_MANAGER_SEPARATOR = ",";
 
 	// product name
 	@NotEmpty
@@ -56,13 +56,10 @@ public abstract class Product extends Persistable {
 
 	// client managers for this product
 	// MUST IN FORMAT OF: person1:email1, person2:email2, ..., personN:emailN
+	@ContactList
 	@Lob
 	@Column(name = "client_managers")
 	protected String clientManagers;
-
-	// NOTED: hold the info for local usage
-	// @XmlTransient
-	// private transient Set<Contact> clientManagerContacts = new HashSet<>();
 
 	// product description
 	@Lob
@@ -116,19 +113,14 @@ public abstract class Product extends Persistable {
 	}
 
 	public void setClientManagers(String clientManagers) {
-		if (clientManagers != null) {
-			// XXX NOTE: will throw IllegalArgumentException when splitting if the format is not valid
-			Splitter.on(CLIENT_MANAGER_SEPARATOR).trimResults().omitEmptyStrings()
-					.withKeyValueSeparator(CLIENT_MANAGER_INFO_SEPARATOR).split(clientManagers);
-		}
 		this.clientManagers = clientManagers;
 	}
 
 	public Set<Contact> getClientManagerContacts() {
 		Set<Contact> clientManagerContacts = new HashSet<>();
 		// XXX NOTE: will throw IllegalArgumentException when splitting if the format is not valid
-		Map<String, String> contacts = Splitter.on(CLIENT_MANAGER_SEPARATOR).trimResults().omitEmptyStrings()
-				.withKeyValueSeparator(CLIENT_MANAGER_INFO_SEPARATOR).split(clientManagers);
+		Map<String, String> contacts = Splitter.on(Constants.CONTACT_SEPARATOR).trimResults().omitEmptyStrings()
+				.withKeyValueSeparator(Constants.CONTACT_INFO_SEPARATOR).split(clientManagers);
 		contacts.forEach((person, email) -> {
 			Contact contact = new Contact();
 			contact.setEmail(email.trim());

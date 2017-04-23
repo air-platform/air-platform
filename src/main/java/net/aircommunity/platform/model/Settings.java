@@ -2,6 +2,7 @@ package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,14 +14,20 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_settings")
+@Table(name = "air_platfrom_settings", indexes = { @Index(name = "idx_category", columnList = "category") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Settings extends Persistable {
 	private static final long serialVersionUID = 1L;
 
+	public static final String CATEGORY_SYSTEM = "system";
+
 	// configuration name
 	@Column(name = "name", nullable = false, unique = true)
 	private String name;
+
+	// configuration category
+	@Column(name = "category", nullable = false)
+	private String category;
 
 	// configuration body
 	@Lob
@@ -35,6 +42,14 @@ public class Settings extends Persistable {
 		this.name = name;
 	}
 
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
 	public String getValue() {
 		return value;
 	}
@@ -46,7 +61,8 @@ public class Settings extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Settings [name=").append(name).append(", value=").append(value).append("]");
+		builder.append("Settings [name=").append(name).append(", category=").append(category).append(", value=")
+				.append(value).append("]");
 		return builder.toString();
 	}
 }

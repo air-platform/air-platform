@@ -3,25 +3,11 @@
 <tr>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		<b>航程:</b>
+		<b>卡产品:</b>
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{% for flightLeg in flightLegs %} 
-		航段{{loop.index}}: &nbsp;
-		{{flightLeg.departure}} &#8640 {{flightLeg.arrival}} &nbsp;
-		{{flightLeg.passengers}}人 &nbsp; {{flightLeg.date | datetimeformat('%Y-%m-%d') }} 出发 <br> 
-		{% endfor %}
-	</td>
-</tr>
-<tr>
-	<td align="left"
-		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		<b>机型选择:</b>
-	</td>
-	<td align="left"
-		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{{aircraftType}}</td>
+		{{jetCard.name}}</td>
 </tr>
 <tr>
 	<td align="left"

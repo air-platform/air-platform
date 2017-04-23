@@ -14,19 +14,23 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
  * Created by guankai on 15/04/2017.
  */
 @Entity
 @Table(name = "air_platfrom_airtaxi_order")
-public class AirTaxiOrder extends CharterableOrder {
+public class AirTaxiOrder extends AircraftAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	// departure date, e.g. 2017-5-1
 	@NotNull
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "date", nullable = false)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date date;
 
 	// e.g. 8:00-9:00

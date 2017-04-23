@@ -3,11 +3,11 @@
 <tr>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		<b>航程:</b>
+		<b>观光:</b>
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{{airTaxi.departure}} &#8640 {{airTaxi.arrival}} &nbsp; {{date | datetimeformat('%Y-%m-%d') }} &nbsp; {{timeSlot}} 出发
+		{{airTour.city}} {{airTour.name}}&nbsp; {{date | datetimeformat('%Y-%m-%d') }} &nbsp; {{timeSlot}} 出发
 	</td>
 </tr>
 <tr>

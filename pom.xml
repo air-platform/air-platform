@@ -300,6 +300,7 @@
 						<includes>
 							<include>config/**</include>
 							<include>banner.txt</include>
+							<include>ValidationMessages*.properties</include>
 						</includes>
 					</resource>
 				</resources>

@@ -11,8 +11,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.micro.annotation.constraint.NotEmpty;
+import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
  * Empty Legs, preferential charter.
@@ -63,6 +65,7 @@ public class FerryFlight extends PricedProduct {
 	@NotNull
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "date", nullable = false)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date date;
 
 	// departure timeSlot, e.g. 8:00-9:00

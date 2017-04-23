@@ -25,7 +25,7 @@ import io.micro.annotation.constraint.NotEmpty;
  */
 @Entity
 @Table(name = "air_platfrom_airtransport_order")
-public class AirTransportOrder extends CharterableOrder {
+public class AirTransportOrder extends AircraftAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	// the number of passengers if NOT chartered
