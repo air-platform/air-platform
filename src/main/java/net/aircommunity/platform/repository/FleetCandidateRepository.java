@@ -17,8 +17,12 @@ import net.aircommunity.platform.model.Order;
  */
 public interface FleetCandidateRepository extends JpaRepository<FleetCandidate, String> {
 
-	// Page<FleetCandidate> findByFleetVendorId(String tenantId, Pageable pageable);
+	Page<FleetCandidate> findDistinctOrderByVendorId(String tenantId, Pageable pageable);
 
+	Page<FleetCandidate> findDistinctOrderByVendorIdAndOrderStatus(String tenantId, Order.Status status,
+			Pageable pageable);
+
+	//
 	Page<FleetCandidate> findByVendorId(String tenantId, Pageable pageable);
 
 	Page<FleetCandidate> findByVendorIdAndOrderStatus(String tenantId, Order.Status status, Pageable pageable);

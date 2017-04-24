@@ -130,15 +130,19 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 	public Page<CharterOrder> listTenantCharterOrders(String tenantId, Status status, int page, int pageSize) {
 		Page<FleetCandidate> data = null;
 		if (status == null) {
-			data = Pages
-					.adapt(fleetCandidateRepository.findByVendorId(tenantId, Pages.createPageRequest(page, pageSize)));
+			data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorId(tenantId,
+					Pages.createPageRequest(page, pageSize)));
+			// data = Pages
+			// .adapt(fleetCandidateRepository.findByVendorId(tenantId, Pages.createPageRequest(page, pageSize)));
 		}
 		else {
-			data = Pages.adapt(fleetCandidateRepository.findByVendorIdAndOrderStatus(tenantId, status,
+			data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorIdAndOrderStatus(tenantId, status,
 					Pages.createPageRequest(page, pageSize)));
+			// data = Pages.adapt(fleetCandidateRepository.findByVendorIdAndOrderStatus(tenantId, status,
+			// Pages.createPageRequest(page, pageSize)));
 		}
 		List<CharterOrder> content = data.getContent().stream().map(fleetCandidate -> fleetCandidate.getOrder())
-				.collect(ImmutableCollectors.toList());
+				.distinct().collect(ImmutableCollectors.toList());
 		return Pages.createPage(page, pageSize, data.getTotalRecords(), content);
 	}
 

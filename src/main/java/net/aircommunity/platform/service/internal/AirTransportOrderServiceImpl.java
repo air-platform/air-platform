@@ -19,7 +19,6 @@ import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PassengerItem;
 import net.aircommunity.platform.repository.AirTransportOrderRepository;
-import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.AirTransportOrderService;
 import net.aircommunity.platform.service.AirTransportService;
@@ -45,9 +44,6 @@ public class AirTransportOrderServiceImpl extends AbstractVendorAwareOrderServic
 	@Resource
 	private FerryFlightService ferryFlightService;
 
-	@Resource
-	private PassengerRepository passengerRepository;
-
 	@Override
 	public AirTransportOrder createAirTransportOrder(String userId, AirTransportOrder order) {
 		return doCreateOrder(userId, order);
@@ -57,6 +53,11 @@ public class AirTransportOrderServiceImpl extends AbstractVendorAwareOrderServic
 	@Override
 	public AirTransportOrder findAirTransportOrder(String orderId) {
 		return doFindOrder(orderId);
+	}
+
+	@Override
+	protected AirTransportOrder doFindOrder0(String orderId) {
+		return airTransportOrderRepository.findOne(orderId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")

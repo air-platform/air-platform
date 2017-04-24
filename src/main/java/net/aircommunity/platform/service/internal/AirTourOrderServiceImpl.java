@@ -18,7 +18,6 @@ import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PassengerItem;
 import net.aircommunity.platform.repository.AirTourOrderRepository;
-import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.AirTourOrderService;
 import net.aircommunity.platform.service.AirTourService;
@@ -38,9 +37,6 @@ public class AirTourOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 	private AirTourOrderRepository airTourOrderRepository;
 
 	@Resource
-	private PassengerRepository passengerRepository;
-
-	@Resource
 	private AirTourService airTourService;
 
 	@Override
@@ -52,6 +48,11 @@ public class AirTourOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 	@Override
 	public AirTourOrder findAirTourOrder(String orderId) {
 		return doFindOrder(orderId);
+	}
+
+	@Override
+	protected AirTourOrder doFindOrder0(String orderId) {
+		return airTourOrderRepository.findOne(orderId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")

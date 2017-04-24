@@ -18,7 +18,6 @@ import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PassengerItem;
 import net.aircommunity.platform.repository.AirTaxiOrderRepository;
-import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.AirTaxiOrderService;
 import net.aircommunity.platform.service.AirTaxiService;
@@ -38,9 +37,6 @@ public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 	private AirTaxiOrderRepository airTaxiOrderRepository;
 
 	@Resource
-	private PassengerRepository passengerRepository;
-
-	@Resource
 	private AirTaxiService airTaxiService;
 
 	@Override
@@ -52,7 +48,11 @@ public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 	@Override
 	public AirTaxiOrder findAirTaxiOrder(String orderId) {
 		return doFindOrder(orderId);
+	}
 
+	@Override
+	protected AirTaxiOrder doFindOrder0(String orderId) {
+		return airTaxiOrderRepository.findOne(orderId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")

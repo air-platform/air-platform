@@ -117,19 +117,29 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		if (passengers == null || passengers.isEmpty()) {
 			return Collections.emptySet();
 		}
-		for (PassengerItem passenger : passengers) {
-			Passenger found = passengerRepository.findOne(passenger.getPassenger().getId());
+		for (PassengerItem item : passengers) {
+			Passenger passenger = item.getPassenger();
+			if (passenger == null) {
+				throw new AirException(Codes.PASSENGER_REQUIRED, "Passenger info required");
+			}
+			Passenger found = passengerRepository.findOne(passenger.getId());
 			if (found == null) {
 				throw new AirException(Codes.PASSENGER_NOT_FOUND,
-						String.format("Passenger %s is not found", passenger.getPassenger().getId()));
+						String.format("Passenger %s is not found", passenger.getId()));
 			}
-			passenger.setPassenger(found);
+			item.setPassenger(found);
 		}
 		return passengers;
 	}
 
+	protected T doFindOrder0(String orderId) {
+		return getOrderRepository().findOne(orderId);
+	}
+
 	protected T doFindOrder(String orderId) {
-		T order = getOrderRepository().findOne(orderId);
+		T order = doFindOrder0(orderId);
+		// XXX CANNOT load all passengers for tour, taxi , trans
+		// T order = getOrderRepository().findOne(orderId);
 		if (order == null || order.getStatus() == Order.Status.DELETED) {
 			throw new AirException(orderNotFoundCode(),
 					String.format("%s: %s is not found", type.getSimpleName(), orderId));
@@ -146,6 +156,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return order;
 	}
 
+	// XXX
 	protected T doUpdateOrder(String orderId, T newOrder) {
 		T order = doFindOrder(orderId); // FIXME findOrder is NOT cached?
 		copyProperties(newOrder, order);
