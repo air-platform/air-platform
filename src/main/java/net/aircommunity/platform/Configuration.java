@@ -35,10 +35,6 @@ public class Configuration {
 	@Value("${air.account.default-avatar}")
 	private String defaultAvatar;
 
-	// for local file upload
-	@Value("${air.fileupload.dir}")
-	private String fileUploadDir;
-
 	// for cloud file upload
 	@Value("${air.fileload.host}")
 	private String fileUploadHost;
@@ -95,11 +91,10 @@ public class Configuration {
 	private String smsTmplCode;
 
 	// NodeBB
-
-	@Value("${air.nodebb.url}")
+	@Value("${air.airbb.url}")
 	private String nodebbUrl;
 
-	@Value("${air.nodebb.token}")
+	@Value("${air.airbb.token}")
 	private String nodebbToken;
 
 	public String getCompany() {
@@ -128,10 +123,6 @@ public class Configuration {
 
 	public String getDefaultAvatar() {
 		return defaultAvatar;
-	}
-
-	public String getFileUploadDir() {
-		return fileUploadDir;
 	}
 
 	public String getFileUploadHost() {

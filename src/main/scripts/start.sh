@@ -37,17 +37,17 @@ echo "------------------------------------------------------"
 
 # mode: fg - foreground, otherwise in background
 mode=$1
-JAVA_OPTIONS="-Dloader.path=lib/"
+JAVA_OPTIONS="-Dloader.path=lib/,config/ -Dspring.profiles.active=@activeProfile@"
 JAVA_OPTIONS="$JAVA_OPTIONS -Dfile.encoding=UTF8"
 JAVA_OPTIONS="$JAVA_OPTIONS -Xms4G -Xmx4G -XX:+UseG1GC"
 JAVA_OPTIONS="$JAVA_OPTIONS -XX:+UseCompressedOops -XX:+OptimizeStringConcat"
 
 if [[ "${mode}" = "fg" ]]
 then
-   echo  "Starting AIR Platform in foreground..."
+   echo  "Starting AIR Platform in foreground in [@activeProfile@] mode..."
    java ${JAVA_OPTIONS} -jar ${AIR_PLATFORM_JAR}
 else
    nohup java ${JAVA_OPTIONS}  -jar ${AIR_PLATFORM_JAR} > /dev/null 2>&1 &
-   echo  "AIR Platform will be started in background."
+   echo  "AIR Platform will be started in background in [@activeProfile@] mode."
 fi
 echo ""

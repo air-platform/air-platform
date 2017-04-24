@@ -24,11 +24,17 @@
 			<includes>
 				<include>CHANGELOG*</include>
 				<include>apidoc*</include>
-				<include>logback.xml</include>
 				<include>config/**</include>
 				<include>template/**</include>
 				<include>data/**</include>
 				<include>images/**</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/src/main/resources</directory>
+			<outputDirectory>config</outputDirectory>
+			<includes>
+				<include>logback.xml</include>
 			</includes>
 		</fileSet>
 		<fileSet>

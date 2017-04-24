@@ -214,6 +214,10 @@
 							<token>@gitBuildTime@</token>
 							<value>${git.build.time}</value>
 						</replacement>
+						<replacement>
+							<token>@activeProfile@</token>
+							<value>${active.profile}</value>
+						</replacement>
 					</replacements>
 				</configuration>
 			</plugin>
@@ -298,7 +302,7 @@
 						<directory>src/main/resources</directory>
 						<filtering>true</filtering>
 						<includes>
-							<include>config/**</include>
+							<include>config/application-${build.profile.id}.properties</include>
 							<include>banner.txt</include>
 							<include>ValidationMessages*.properties</include>
 						</includes>
