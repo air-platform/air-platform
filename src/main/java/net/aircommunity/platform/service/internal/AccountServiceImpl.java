@@ -110,7 +110,7 @@ public class AccountServiceImpl implements AccountService {
 		if (auth == null) {
 			createAdminAccount(Constants.DEFAULT_ADMIN_USERNAME, Constants.DEFAULT_ADMIN_PASSWORD);
 			// for testing XXX
-			createAccount("user1", "p0o9i8u7", Role.USER);
+			// createAccount("user1", "p0o9i8u7", Role.USER);
 			LOG.debug("Created default admin account");
 		}
 		emailConfirmationLink = String.format(EMAIL_CONFIRMATION_LINK_BASE_FORMAT, configuration.getPublicHost(),

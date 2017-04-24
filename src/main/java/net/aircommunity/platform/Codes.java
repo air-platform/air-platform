@@ -20,6 +20,7 @@ public final class Codes {
 
 	// file upload
 	public static final Code UNSUPPORTED_FILE_TYPE = Code.invalidArgument(11_000_0007);
+	public static final Code TOO_MANY_VERIFICATION_REQUEST = Code.rateLimiting(11_000_0008);
 
 	// account
 	public static final Code ACCOUNT_UNAUTHORIZED_PERMISSION = Code.notAuthorized(11_001_0001);

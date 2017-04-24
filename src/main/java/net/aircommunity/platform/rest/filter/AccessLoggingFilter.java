@@ -2,7 +2,6 @@ package net.aircommunity.platform.rest.filter;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Set;
 
 import javax.annotation.Priority;
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
 
+import io.micro.common.Strings;
 import io.micro.core.security.SimplePrincipal;
+import net.aircommunity.platform.Constants;
 
 /**
  * Log all REST API request.
@@ -31,9 +31,7 @@ import io.micro.core.security.SimplePrincipal;
 public class AccessLoggingFilter implements ContainerRequestFilter {
 	private static final Logger LOG = LoggerFactory.getLogger(AccessLoggingFilter.class);
 
-	private static final Set<String> LOOPBACK_ADDRESSES = ImmutableSet.of("127.0.0.1", "0:0:0:0:0:0:0:1");
 	private static final String ANONYMOUS = "ANONYMOUS";
-	private static final String HEADER_X_FORWARDED_FOR = "X-Forwarded-For";
 
 	@Context
 	private HttpServletRequest request;
@@ -45,7 +43,7 @@ public class AccessLoggingFilter implements ContainerRequestFilter {
 		String forwardIp = "";
 		try {
 			// when using Heroku, the remote host is the AWS application tier, therefore the EC2 ip address.
-			forwardIp = request.getHeader(HEADER_X_FORWARDED_FOR).split(",")[0];
+			forwardIp = request.getHeader(Constants.HEADER_X_FORWARDED_FOR).split(",")[0];
 		}
 		catch (Exception ignored) {
 		}
@@ -60,8 +58,11 @@ public class AccessLoggingFilter implements ContainerRequestFilter {
 		// And just use forwardIp for client IP in this case
 		// e.g. 192.168.100.195 106.37.175.130
 		String ip = request.getRemoteAddr();
-		if (LOOPBACK_ADDRESSES.contains(ip)) {
+		if (Constants.LOOPBACK_ADDRESSES.contains(ip)) {
 			ip = forwardIp;
+		}
+		if (Strings.isBlank(ip)) {
+			ip = Constants.LOOPBACK_LOCALHOST;
 		}
 		LOG.info("[{}] [{}] [{}] {} {}", ip, username, role, requestContext.getMethod(),
 				requestContext.getUriInfo().getRequestUri().getPath());

@@ -12,6 +12,7 @@ import javax.annotation.security.PermitAll;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonWriter;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -41,6 +42,7 @@ import com.google.common.collect.ImmutableSet;
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.micro.annotation.TokenSecured;
+import io.micro.common.Strings;
 import io.micro.core.security.AccessTokenService;
 import io.micro.core.security.Claims;
 import io.micro.core.security.SimplePrincipal;
@@ -48,6 +50,7 @@ import io.swagger.annotations.Api;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
+import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.AccessToken;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountAuth;
@@ -167,9 +170,25 @@ public class AccountResource {
 	@Path("verification")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public Response requestVerification(@NotNull @QueryParam("mobile") String mobile) {
+	public Response requestVerification(@NotNull @QueryParam("mobile") String mobile,
+			@Context HttpServletRequest request) {
+		String forwardIp = "";
+		try {
+			// when using Heroku, the remote host is the AWS application tier, therefore the EC2 ip address.
+			forwardIp = request.getHeader(Constants.HEADER_X_FORWARDED_FOR).split(",")[0];
+		}
+		catch (Exception ignored) {
+		}
+		String ip = request.getRemoteAddr();
+		if (Constants.LOOPBACK_ADDRESSES.contains(ip)) {
+			ip = forwardIp;
+		}
+		if (Strings.isBlank(ip)) {
+			ip = Constants.LOOPBACK_LOCALHOST;
+		}
+		LOG.info("Request verification from IP: {}", ip);
 		if (configuration.isMobileVerificationEnabled()) {
-			String code = verificationService.generateCode(mobile);
+			String code = verificationService.generateCode(mobile, ip);
 			smsService.sendSms(mobile, code);
 		}
 		return Response.noContent().build();
