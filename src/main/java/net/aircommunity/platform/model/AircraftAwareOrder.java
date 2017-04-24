@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -26,12 +27,24 @@ public abstract class AircraftAwareOrder extends CharterableOrder {
 	@JoinColumn(name = "aircraftitem_id", nullable = false)
 	protected AircraftItem aircraftItem;
 
+	// customer contact information for this order
+	@Embedded
+	protected Contact contact;
+
 	public AircraftItem getAircraftItem() {
 		return aircraftItem;
 	}
 
 	public void setAircraftItem(AircraftItem aircraftItem) {
 		this.aircraftItem = aircraftItem;
+	}
+
+	public Contact getContact() {
+		return contact;
+	}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
 	}
 
 }

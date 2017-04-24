@@ -26,7 +26,7 @@ public class FerryFlightOrder extends CharterableOrder {
 
 	// customer contact information for this order
 	@Embedded
-	protected Contact contact;
+	private Contact contact;
 
 	@NotNull
 	@ManyToOne

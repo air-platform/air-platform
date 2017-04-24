@@ -1,7 +1,6 @@
 package net.aircommunity.platform.service.internal;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -71,17 +70,16 @@ public class AirTransportOrderServiceImpl extends AbstractVendorAwareOrderServic
 		tgt.setDate(src.getDate());
 		tgt.setNote(src.getNote());
 		tgt.setPassengerNum(src.getPassengerNum());
+		tgt.setContact(src.getContact());
 		tgt.setTimeSlot(src.getTimeSlot());
 		//
 		AirTransport airTransport = airTransportService.findAirTransport(src.getAirTransport().getId());
 		tgt.setAirTransport(airTransport);
 		Set<Passenger> passengers = src.getPassengers();
 		if (passengers != null) {
-			// TODO better use service and throw NOT FOUND
-			passengers = passengers.stream().map(passenger -> passengerRepository.findOne(passenger.getId()))
-					.collect(Collectors.toSet());
-			tgt.setPassengers(passengers);
+			tgt.setPassengers(applyPassengers(passengers));
 		}
+		copyPropertiesAircraftAware(src, tgt);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")

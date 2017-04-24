@@ -186,7 +186,7 @@ public class AccountResource {
 		if (Strings.isBlank(ip)) {
 			ip = Constants.LOOPBACK_LOCALHOST;
 		}
-		LOG.info("Request verification from IP: {}", ip);
+		LOG.debug("Request verification from IP: {}", ip);
 		if (configuration.isMobileVerificationEnabled()) {
 			String code = verificationService.generateCode(mobile, ip);
 			smsService.sendSms(mobile, code);

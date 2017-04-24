@@ -112,7 +112,8 @@ public class AirTransportOrder extends AircraftAwareOrder {
 				.append(", passengers=").append(passengers).append(", orderNo=").append(orderNo).append(", status=")
 				.append(status).append(", commented=").append(commented).append(", creationDate=").append(creationDate)
 				.append(", paymentDate=").append(paymentDate).append(", finishedDate=").append(finishedDate)
-				.append(", note=").append(note).append(", id=").append(id).append("]");
+				.append(", aircraftItem=").append(aircraftItem).append(", contact=").append(contact).append(", note=")
+				.append(note).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

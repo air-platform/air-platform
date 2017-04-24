@@ -1,7 +1,10 @@
 package net.aircommunity.platform.service.internal;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -15,10 +18,15 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderNoGenerator;
+import net.aircommunity.platform.model.AircraftAwareOrder;
+import net.aircommunity.platform.model.AircraftItem;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.User;
+import net.aircommunity.platform.repository.AircraftItemRepository;
 import net.aircommunity.platform.repository.BaseOrderRepository;
+import net.aircommunity.platform.repository.PassengerRepository;
 
 /**
  * Abstract Order service support.
@@ -35,6 +43,12 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	@Resource
 	private OrderNoGenerator orderNoGenerator;
+
+	@Resource
+	private AircraftItemRepository aircraftItemRepository;
+
+	@Resource
+	private PassengerRepository passengerRepository;
 
 	@PostConstruct
 	@SuppressWarnings("unchecked")
@@ -83,6 +97,36 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			throw new AirException(Codes.INTERNAL_ERROR,
 					String.format("Create %s: %s failed", type.getSimpleName(), order));
 		}
+	}
+
+	protected void copyPropertiesAircraftAware(AircraftAwareOrder src, AircraftAwareOrder tgt) {
+		AircraftItem aircraftItem = src.getAircraftItem();
+		AircraftItem found = aircraftItemRepository.findOne(aircraftItem.getId());
+		if (found == null) {
+			throw new AirException(Codes.AIRCRAFT_ITEM_NOT_FOUND,
+					String.format("Aircraftitem %s is not found", aircraftItem.getId()));
+		}
+		tgt.setAircraftItem(found);
+	}
+
+	/**
+	 * @param passengers the input passengers
+	 * @return update passenger entities
+	 */
+	protected Set<Passenger> applyPassengers(Set<Passenger> passengers) {
+		if (passengers == null) {
+			return Collections.emptySet();
+		}
+		Set<Passenger> appliedPassengers = new HashSet<>(passengers.size());
+		for (Passenger passenger : passengers) {
+			Passenger found = passengerRepository.findOne(passenger.getId());
+			if (found == null) {
+				throw new AirException(Codes.PASSENGER_NOT_FOUND,
+						String.format("Passenger %s is not found", passenger.getId()));
+			}
+			appliedPassengers.add(found);
+		}
+		return appliedPassengers;
 	}
 
 	protected T doFindOrder(String orderId) {

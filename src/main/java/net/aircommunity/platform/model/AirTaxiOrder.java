@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -16,6 +17,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
@@ -43,7 +45,8 @@ public class AirTaxiOrder extends AircraftAwareOrder {
 	private AirTaxi airTaxi;
 
 	// passengers
-	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+	@NotEmpty
+	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<Passenger> passengers = new HashSet<>();
 
 	public Date getDate() {
@@ -97,7 +100,8 @@ public class AirTaxiOrder extends AircraftAwareOrder {
 				.append(passengers).append(", orderNo=").append(orderNo).append(", status=").append(status)
 				.append(", commented=").append(commented).append(", creationDate=").append(creationDate)
 				.append(", paymentDate=").append(paymentDate).append(", finishedDate=").append(finishedDate)
-				.append(", note=").append(note).append(", id=").append(id).append("]");
+				.append(", aircraftItem=").append(aircraftItem).append(", contact=").append(contact).append(", note=")
+				.append(note).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

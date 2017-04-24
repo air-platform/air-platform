@@ -2,11 +2,9 @@ package net.aircommunity.platform.service.internal;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import io.micro.common.Randoms;
@@ -28,28 +26,25 @@ public class VerificationServiceImpl implements VerificationService {
 	private static final String IP_KEY_FORMAT = "account:ip:%s";
 
 	@Resource
-	private RedisTemplate<String, String> redisTemplate;
+	private RedisTemplate<String, String> counterTemplate;
 
-	@PostConstruct
-	private void init() {
-		redisTemplate.setKeySerializer(new StringRedisSerializer());
-		redisTemplate.setValueSerializer(new StringRedisSerializer());
-	}
+	@Resource
+	private RedisTemplate<String, String> redisTemplate;
 
 	@Override
 	public String generateCode(String key, String ip, long expires) {
 		// per IP address 120 seconds
-		String ipRequested = redisTemplate.opsForValue().get(String.format(IP_KEY_FORMAT, ip));
+		String ipRequested = counterTemplate.opsForValue().get(String.format(IP_KEY_FORMAT, ip));
 		if (ipRequested != null) {
 			int requests = Integer.valueOf(ipRequested);
 			if (requests <= 0) {
 				throw new AirException(Codes.TOO_MANY_VERIFICATION_REQUEST, "Too many request");
 			}
 			// dec by 1 (AKA. incr -1)
-			redisTemplate.opsForValue().increment(String.format(IP_KEY_FORMAT, ip), -1l);
+			counterTemplate.opsForValue().increment(String.format(IP_KEY_FORMAT, ip), -1l);
 		}
 		else {
-			redisTemplate.opsForValue().set(String.format(IP_KEY_FORMAT, ip), REQUEST_PER_IP + "", expires,
+			counterTemplate.opsForValue().set(String.format(IP_KEY_FORMAT, ip), REQUEST_PER_IP + "", expires,
 					TimeUnit.SECONDS);
 		}
 		String code = findCode(key);

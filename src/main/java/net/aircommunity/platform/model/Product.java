@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,6 +23,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.google.common.base.Splitter;
 
 import io.micro.annotation.constraint.NotEmpty;
+import io.micro.common.Strings;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.constraint.ContactList;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
@@ -117,6 +119,9 @@ public abstract class Product extends Persistable {
 	}
 
 	public Set<Contact> getClientManagerContacts() {
+		if (Strings.isBlank(clientManagers)) {
+			return Collections.emptySet();
+		}
 		Set<Contact> clientManagerContacts = new HashSet<>();
 		// XXX NOTE: will throw IllegalArgumentException when splitting if the format is not valid
 		Map<String, String> contacts = Splitter.on(Constants.CONTACT_SEPARATOR).trimResults().omitEmptyStrings()

@@ -112,7 +112,7 @@ public class Passenger extends Persistable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Passenger [name=").append(name).append(", mobile=").append(mobile).append(", identity=")
-				.append(identity).append(", owner=").append(owner).append(", id=").append(id).append("]");
+				.append(identity).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }
