@@ -83,13 +83,22 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 		tgt.setFlightLegs(src.getFlightLegs());
 		Set<FleetCandidate> fleetCandidates = src.getFleetCandidates();
 		if (fleetCandidates != null) {
-			fleetCandidates.stream().forEach(fleetCandidate -> {
-				Fleet fleet = fleetCandidate.getFleet();
-				if (fleet != null) {
-					fleet = fleetService.findFleet(fleet.getId());
-					fleetCandidate.setFleet(fleet);
-				}
-			});
+			if (fleetCandidates.size() == 1) {
+				// make default as selected if single
+				FleetCandidate singleCandidate = fleetCandidates.iterator().next();
+				Fleet singleFleet = fleetService.findFleet(singleCandidate.getFleet().getId());
+				singleCandidate.setStatus(FleetCandidate.Status.SELECTED);
+				singleCandidate.setFleet(singleFleet);
+			}
+			else {
+				fleetCandidates.stream().forEach(fleetCandidate -> {
+					Fleet fleet = fleetCandidate.getFleet();
+					if (fleet != null) {
+						fleet = fleetService.findFleet(fleet.getId());
+						fleetCandidate.setFleet(fleet);
+					}
+				});
+			}
 			tgt.setFleetCandidates(fleetCandidates);
 		}
 	}
