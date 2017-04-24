@@ -21,7 +21,7 @@ public class ContactListValidator implements ConstraintValidator<ContactList, Ch
 	@Override
 	public boolean isValid(CharSequence value, ConstraintValidatorContext context) {
 		// allow null or empty
-		if (Strings.isBlank(value + "")) {
+		if (value == null || Strings.isBlank(value.toString())) {
 			return true;
 		}
 		// XXX NOTE: will throw IllegalArgumentException when splitting if the format is not valid
