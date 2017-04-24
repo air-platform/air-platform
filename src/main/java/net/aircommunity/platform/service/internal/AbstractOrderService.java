@@ -3,7 +3,6 @@ package net.aircommunity.platform.service.internal;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +22,7 @@ import net.aircommunity.platform.model.AircraftItem;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
+import net.aircommunity.platform.model.PassengerItem;
 import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.repository.AircraftItemRepository;
 import net.aircommunity.platform.repository.BaseOrderRepository;
@@ -113,20 +113,19 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * @param passengers the input passengers
 	 * @return update passenger entities
 	 */
-	protected Set<Passenger> applyPassengers(Set<Passenger> passengers) {
-		if (passengers == null) {
+	protected Set<PassengerItem> applyPassengers(Set<PassengerItem> passengers) {
+		if (passengers == null || passengers.isEmpty()) {
 			return Collections.emptySet();
 		}
-		Set<Passenger> appliedPassengers = new HashSet<>(passengers.size());
-		for (Passenger passenger : passengers) {
-			Passenger found = passengerRepository.findOne(passenger.getId());
+		for (PassengerItem passenger : passengers) {
+			Passenger found = passengerRepository.findOne(passenger.getPassenger().getId());
 			if (found == null) {
 				throw new AirException(Codes.PASSENGER_NOT_FOUND,
-						String.format("Passenger %s is not found", passenger.getId()));
+						String.format("Passenger %s is not found", passenger.getPassenger().getId()));
 			}
-			appliedPassengers.add(found);
+			passenger.setPassenger(found);
 		}
-		return appliedPassengers;
+		return passengers;
 	}
 
 	protected T doFindOrder(String orderId) {

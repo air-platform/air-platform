@@ -16,7 +16,7 @@ import net.aircommunity.platform.model.AirTour;
 import net.aircommunity.platform.model.AirTourOrder;
 import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Passenger;
+import net.aircommunity.platform.model.PassengerItem;
 import net.aircommunity.platform.repository.AirTourOrderRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
@@ -69,7 +69,7 @@ public class AirTourOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 		//
 		AirTour airTour = airTourService.findAirTour(src.getAirTour().getId());
 		tgt.setAirTour(airTour);
-		Set<Passenger> passengers = src.getPassengers();
+		Set<PassengerItem> passengers = src.getPassengers();
 		if (passengers != null) {
 			tgt.setPassengers(applyPassengers(passengers));
 		}

@@ -8,6 +8,7 @@ import javax.validation.ConstraintValidatorContext;
 import com.google.common.base.Splitter;
 
 import io.micro.annotation.constraint.Validations;
+import io.micro.common.Strings;
 import net.aircommunity.platform.Constants;
 
 /**
@@ -19,6 +20,10 @@ public class ContactListValidator implements ConstraintValidator<ContactList, Ch
 
 	@Override
 	public boolean isValid(CharSequence value, ConstraintValidatorContext context) {
+		// allow null or empty
+		if (Strings.isBlank(value + "")) {
+			return true;
+		}
 		// XXX NOTE: will throw IllegalArgumentException when splitting if the format is not valid
 		try {
 			// <person, email>

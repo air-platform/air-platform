@@ -16,7 +16,7 @@ import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.AirTaxiOrder;
 import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Passenger;
+import net.aircommunity.platform.model.PassengerItem;
 import net.aircommunity.platform.repository.AirTaxiOrderRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
@@ -70,7 +70,7 @@ public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 		//
 		AirTaxi airTaxi = airTaxiService.findAirTaxi(src.getAirTaxi().getId());
 		tgt.setAirTaxi(airTaxi);
-		Set<Passenger> passengers = src.getPassengers();
+		Set<PassengerItem> passengers = src.getPassengers();
 		if (passengers != null) {
 			tgt.setPassengers(applyPassengers(passengers));
 		}

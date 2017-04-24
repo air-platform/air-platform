@@ -46,8 +46,8 @@ public class AirTaxiOrder extends AircraftAwareOrder {
 
 	// passengers
 	@NotEmpty
-	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private Set<Passenger> passengers = new HashSet<>();
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private Set<PassengerItem> passengers = new HashSet<>();
 
 	public Date getDate() {
 		return date;
@@ -65,12 +65,16 @@ public class AirTaxiOrder extends AircraftAwareOrder {
 		this.timeSlot = timeSlot;
 	}
 
-	public Set<Passenger> getPassengers() {
+	public Set<PassengerItem> getPassengers() {
 		return passengers;
 	}
 
-	public void setPassengers(Set<Passenger> passengers) {
-		this.passengers = passengers;
+	public void setPassengers(Set<PassengerItem> passengers) {
+		if (passengers != null) {
+			passengers.stream().forEach(item -> item.setOrder(this));
+			this.passengers.clear();
+			this.passengers.addAll(passengers);
+		}
 	}
 
 	public AirTaxi getAirTaxi() {

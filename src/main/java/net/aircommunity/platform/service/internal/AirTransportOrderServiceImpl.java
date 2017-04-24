@@ -17,7 +17,7 @@ import net.aircommunity.platform.model.AirTransportOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Passenger;
+import net.aircommunity.platform.model.PassengerItem;
 import net.aircommunity.platform.repository.AirTransportOrderRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
@@ -75,7 +75,7 @@ public class AirTransportOrderServiceImpl extends AbstractVendorAwareOrderServic
 		//
 		AirTransport airTransport = airTransportService.findAirTransport(src.getAirTransport().getId());
 		tgt.setAirTransport(airTransport);
-		Set<Passenger> passengers = src.getPassengers();
+		Set<PassengerItem> passengers = src.getPassengers();
 		if (passengers != null) {
 			tgt.setPassengers(applyPassengers(passengers));
 		}
