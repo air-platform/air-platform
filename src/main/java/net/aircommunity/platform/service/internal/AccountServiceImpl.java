@@ -1,6 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,6 +70,9 @@ public class AccountServiceImpl implements AccountService {
 	private static final String EMAIL_BINDING_WEBSITE = "website";
 	private static final String EMAIL_BINDING_VERIFICATIONLINK = "verificationLink";
 	private static final String EMAIL_BINDING_RNDPASSWORD = "rndPassword";
+	private static final String VERIFICATION_CODE_SEPARATOR = ":";
+	private static final String VERIFICATION_CODE_FORMAT = "%s" + VERIFICATION_CODE_SEPARATOR + "%s"; // code:timestamp
+
 	// private static final String EMAIL_BINDING_RESETPASSWORDLINK = "resetPasswordLink";
 	private static final int PASSWORD_LENGTH = 20;
 
@@ -109,8 +111,6 @@ public class AccountServiceImpl implements AccountService {
 				Constants.DEFAULT_ADMIN_USERNAME);
 		if (auth == null) {
 			createAdminAccount(Constants.DEFAULT_ADMIN_USERNAME, Constants.DEFAULT_ADMIN_PASSWORD);
-			// for testing XXX
-			// createAccount("user1", "p0o9i8u7", Role.USER);
 			LOG.debug("Created default admin account");
 		}
 		emailConfirmationLink = String.format(EMAIL_CONFIRMATION_LINK_BASE_FORMAT, configuration.getPublicHost(),
@@ -505,7 +505,7 @@ public class AccountServiceImpl implements AccountService {
 			auth.setLastAccessedDate(auth.getCreationDate());
 		}
 		auth.setPrincipal(email);
-		auth.setCredential(verificationCode);
+		auth.setCredential(String.format(VERIFICATION_CODE_FORMAT, verificationCode, System.currentTimeMillis()));
 		accountAuthRepository.save(auth);
 		Account account = findAccount(accountId);
 		sendConfirmationEmail(email, verificationCode, account, AccountAuth.EXPIRES_IN_ONE_DAY);
@@ -536,11 +536,35 @@ public class AccountServiceImpl implements AccountService {
 		if (auth == null) {
 			throw new AirException(Codes.ACCOUNT_NOT_FOUND, String.format("Account %s is not found", accountId));
 		}
-		Instant expiryDate = auth.getCreationDate().toInstant().plusSeconds(auth.getExpires());
-		boolean exipired = expiryDate.isAfter(Instant.now());
-		if (!auth.getCredential().equals(verificationCode) || exipired) {
+		if (auth.isVerified()) {
+			LOG.warn("Account {} {} is already verified", auth.getPrincipal(), auth.getType());
+			return;
+		}
+		String credential = auth.getCredential();
+		if (Strings.isBlank(credential) || Strings.isBlank(verificationCode)) {
 			throw new AirException(Codes.ACCOUNT_INVALID_VERIFICATION_CODE,
 					String.format("Invalid verification code: %s", verificationCode));
+		}
+		LOG.debug("Auth expires: {}", auth.getExpires());
+		String[] parts = credential.split(VERIFICATION_CODE_SEPARATOR);
+		String code = parts[0];
+		long codeTimestamp = 0;
+		try {
+			// test to backward compatible
+			if (parts.length >= 2) {
+				codeTimestamp = Long.valueOf(parts[1]);
+			}
+		}
+		catch (Exception e) {
+			LOG.warn("Failed to get timestamp: " + e.getMessage(), e);
+		}
+		long expiry = auth.getExpires() * 1000 + codeTimestamp;
+		long now = System.currentTimeMillis();
+		boolean exipired = expiry < now;
+		LOG.debug("Auth code: {}, expiry: {}, exipired: {}", code, expiry, exipired);
+		if (!verificationCode.equals(code) || exipired) {
+			throw new AirException(Codes.ACCOUNT_INVALID_VERIFICATION_CODE,
+					String.format("Invalid verification code: %s or expired", verificationCode));
 		}
 		auth.setVerified(true);
 		auth.setCredential(null);
