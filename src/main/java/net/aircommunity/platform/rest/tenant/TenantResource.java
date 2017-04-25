@@ -129,14 +129,6 @@ public class TenantResource {
 		return tenantCourseResource;
 	}
 
-	@Resource
-	private TenantEnrollmentResource tenantEnrollmentResource;
-
-	@Path("enrollments")
-	public TenantEnrollmentResource enrollments() {
-		return tenantEnrollmentResource;
-	}
-
 	// ***********************
 	// comments
 	// ***********************
@@ -221,6 +213,18 @@ public class TenantResource {
 	@Path("airtour/orders")
 	public TenantAirTourOrderResource airtoursOrders() {
 		return tenantAirTourOrderResource;
+	}
+
+	// ***********************
+	// Course (enrollments)
+	// ***********************
+
+	@Resource
+	private TenantEnrollmentResource tenantEnrollmentResource;
+
+	@Path("course/enrollments")
+	public TenantEnrollmentResource enrollments() {
+		return tenantEnrollmentResource;
 	}
 
 }
