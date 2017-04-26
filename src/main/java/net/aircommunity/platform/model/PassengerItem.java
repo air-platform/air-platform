@@ -6,9 +6,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -50,7 +52,9 @@ public class PassengerItem extends Persistable {
 	// @ManyToOne
 	// @JoinColumn(name = "passenger_id")
 	@NotNull
-	private transient Passenger passenger;
+	@XmlElement
+	@Transient
+	private Passenger passenger;
 
 	public PassengerItem() {
 	}

@@ -38,7 +38,7 @@ public abstract class AircraftAwareProduct extends Product {
 
 	// in presalesDays before
 	@Column(name = "presales_days")
-	protected int presalesDays;
+	protected int presalesDays = 0;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	protected Set<AircraftItem> aircraftItems = new HashSet<>();
