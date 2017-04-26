@@ -8,20 +8,20 @@ import java.io.Serializable;
 public class SmsMessage implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String msgtype;
+	private String code;
 
-	public String getMsgtype() {
-		return msgtype;
+	public String getCode() {
+		return code;
 	}
 
-	public void setMsgtype(String msgtype) {
-		this.msgtype = msgtype;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SmsMessage [msgtype=").append(msgtype).append("]");
+		builder.append("SmsMessage [code=").append(code).append("]");
 		return builder.toString();
 	}
 }
