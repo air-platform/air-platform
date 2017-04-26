@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class Topic implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	private String category;
 	private String title;
 	private String url;
 
@@ -27,10 +28,14 @@ public class Topic implements Serializable {
 		return url;
 	}
 
+	public void setCategory(String category) { this.category = category; }
+
+	public String getCategory() { return category; }
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Topic [title=").append(title).append(", url=").append(url).append("]");
+		builder.append("Topic [category=").append(category).append(", title=").append(title).append(", url=").append(url).append("]");
 		return builder.toString();
 	}
 }

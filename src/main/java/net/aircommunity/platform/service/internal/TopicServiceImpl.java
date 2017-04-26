@@ -50,10 +50,13 @@ public class TopicServiceImpl implements TopicService {
 			JsonArray topicsArray = jsonObj.getJsonArray("topics");
 			for (int i = 0; i < topicsArray.size(); i++) {
 				JsonObject t = topicsArray.getJsonObject(i);
+
+				String category = t.getJsonObject("category").getString("name");
 				String title = t.getString("title");
 				int tid = t.getInt("tid");
 				String urlTopic = configuration.getNodebbUrl() + "/topic/" + tid;
 				Topic topic = new Topic();
+				topic.setCategory(category);
 				topic.setTitle(title);
 				topic.setUrl(urlTopic);
 				topics.add(topic);
