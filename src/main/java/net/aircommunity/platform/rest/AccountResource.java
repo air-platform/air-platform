@@ -403,11 +403,12 @@ public class AccountResource {
 	 */
 	@GET
 	@Path("email/confirm")
+	@Produces(MediaType.TEXT_HTML)
 	@TokenSecured
 	public Response confirmEmail(@QueryParam("code") String verificationCode, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.confirmEmail(accountId, verificationCode);
-		return Response.noContent().build();
+		return Response.ok("邮件验证成功").build(); // TODO use template to generate a html
 	}
 
 	/**

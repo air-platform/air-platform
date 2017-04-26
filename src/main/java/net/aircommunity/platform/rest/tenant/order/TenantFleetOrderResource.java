@@ -44,8 +44,14 @@ public class TenantFleetOrderResource extends BaseOrderResource<CharterOrder> {
 	public Response list(@PathParam("tenantId") String tenantId, @QueryParam("status") String status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all orders with  status: {} for tenant: {} ", status, tenantId);
-		Page<CharterOrder> result = charterOrderService.listTenantCharterOrders(tenantId, Order.Status.of(status), page,
-				pageSize);
+		Order.Status orderStatus = Order.Status.of(status);
+		Page<CharterOrder> result = Page.emptyPage(page, pageSize);
+		if (orderStatus == Order.Status.PUBLISHED) {
+			result = charterOrderService.listCharterOrders(orderStatus, page, pageSize);
+		}
+		else {
+			result = charterOrderService.listTenantCharterOrders(tenantId, orderStatus, page, pageSize);
+		}
 		return buildPageResponse(result);
 	}
 

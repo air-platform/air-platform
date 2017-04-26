@@ -47,6 +47,10 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 
 	@Override
 	public CharterOrder createCharterOrder(String userId, CharterOrder order) {
+		Set<FleetCandidate> candidates = order.getFleetCandidates();
+		if (candidates == null || candidates.isEmpty()) {
+			return doCreateOrder(userId, order, Order.Status.PUBLISHED);
+		}
 		return doCreateOrder(userId, order);
 	}
 

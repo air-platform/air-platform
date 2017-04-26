@@ -197,6 +197,11 @@ public abstract class Order extends Persistable {
 	public enum Status {
 
 		/**
+		 * Published
+		 */
+		PUBLISHED,
+
+		/**
 		 * Pending
 		 */
 		PENDING,

@@ -69,6 +69,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	// *********************
 
 	protected T doCreateOrder(String userId, T order) {
+		return doCreateOrder(userId, order, Order.Status.PENDING);
+	}
+
+	protected T doCreateOrder(String userId, T order, Order.Status status) {
 		User owner = findAccount(userId, User.class);
 		T newOrder = null;
 		try {
@@ -80,7 +84,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
 		}
 		newOrder.setCreationDate(new Date());
-		newOrder.setStatus(Order.Status.PENDING);
+		newOrder.setStatus(status);
 		newOrder.setCommented(false);
 		newOrder.setOrderNo(orderNoGenerator.next());
 		copyProperties(order, newOrder);
@@ -175,6 +179,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	protected T doUpdateOrderStatus(String orderId, Order.Status status) {
 		T order = doFindOrder(orderId);
 		switch (status) {
+		case PUBLISHED:
+			throwInvalidOrderStatus(orderId, status);
+
 		case PENDING:
 			throwInvalidOrderStatus(orderId, status);
 
