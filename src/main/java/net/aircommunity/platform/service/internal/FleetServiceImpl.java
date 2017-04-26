@@ -36,7 +36,7 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 		// TODO shared
 		Fleet existing = fleetRepository.findByFlightNo(fleet.getFlightNo());
 		if (existing != null) {
-			throw new AirException(Codes.FLEET_ALREADY_EXISTS, M.bind(M.FLEET_ALREADY_EXISTS, fleet.getFlightNo()));
+			throw new AirException(Codes.FLEET_ALREADY_EXISTS, M.msg(M.FLEET_ALREADY_EXISTS, fleet.getFlightNo()));
 		}
 		return createProduct(tenantId, fleet);
 	}
@@ -51,7 +51,7 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 	public Fleet findFleetByFlightNo(String flightNo) {
 		Fleet fleet = fleetRepository.findByFlightNo(flightNo);
 		if (fleet == null) {
-			throw new AirException(productNotFoundCode(), M.bind(M.FLEET_NOT_FOUND, flightNo));
+			throw new AirException(productNotFoundCode(), M.msg(M.FLEET_NOT_FOUND, flightNo));
 		}
 		return fleet;
 	}

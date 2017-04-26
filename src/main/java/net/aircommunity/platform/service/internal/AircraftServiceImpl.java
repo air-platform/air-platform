@@ -37,7 +37,7 @@ public class AircraftServiceImpl extends AbstractProductService<Aircraft> implem
 		Aircraft aircraftExisting = aircraftRepository.findByFlightNo(aircraft.getFlightNo());
 		if (aircraftExisting != null) {
 			throw new AirException(Codes.AIRCRAFT_ALREADY_EXISTS,
-					M.bind(M.AIRCRAFT_ALREADY_EXISTS, aircraft.getFlightNo()));
+					M.msg(M.AIRCRAFT_ALREADY_EXISTS, aircraft.getFlightNo()));
 		}
 		return createProduct(tenantId, aircraft);
 	}

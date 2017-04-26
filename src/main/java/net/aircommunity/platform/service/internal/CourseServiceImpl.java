@@ -70,7 +70,7 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
 	public Course findCourse(String courseId) {
 		Course course = courseRepository.findOne(courseId);
 		if (course == null) {
-			throw new AirException(Codes.COURSE_NOT_FOUND, M.bind(M.COURSE_NOT_FOUND));
+			throw new AirException(Codes.COURSE_NOT_FOUND, M.msg(M.COURSE_NOT_FOUND));
 		}
 		return course;
 	}

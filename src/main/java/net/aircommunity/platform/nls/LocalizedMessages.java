@@ -77,7 +77,7 @@ public class LocalizedMessages extends NLSResource {
 	 * @param bindings the bindings
 	 * @return localized message
 	 */
-	public static String bind(String messageId, Object... bindings) {
+	public static String msg(String messageId, Object... bindings) {
 		return bind(RESOURCE_BUNDLE_BASENAME, Locale.CHINESE, messageId, bindings);
 	}
 
@@ -89,7 +89,7 @@ public class LocalizedMessages extends NLSResource {
 	 * @param bindings the bindings
 	 * @return localized message
 	 */
-	public static String bind(Locale locale, String messageId, Object... bindings) {
+	public static String msg(Locale locale, String messageId, Object... bindings) {
 		return bind(RESOURCE_BUNDLE_BASENAME, locale, messageId, bindings);
 	}
 

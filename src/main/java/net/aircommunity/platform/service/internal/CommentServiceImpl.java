@@ -63,17 +63,17 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		if (order.getCommented() || !isOrderOwner) {
 			LOG.error("Account {} comment on order {} is not allowed, already commented or your are not order owner",
 					accountId, orderId);
-			throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.bind(M.COMMENT_NOT_ALLOWED));
+			throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.msg(M.COMMENT_NOT_ALLOWED));
 		}
 		if (order.getStatus() != Order.Status.FINISHED) {
 			LOG.error("Account {} comment on order {} is not allowed, order is not FINISHED", accountId, orderId);
-			throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.bind(M.COMMENT_NOT_ALLOWED_ORDER_NOT_FINISHED));
+			throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.msg(M.COMMENT_NOT_ALLOWED_ORDER_NOT_FINISHED));
 		}
 		// only can be null if CharterOrder
 		Product product = order.getProduct();
 		if (product == null) {
 			LOG.error("Comment failed, product of order {}not found", orderId);
-			throw new AirException(Codes.PRODUCT_NOT_FOUND, M.bind(M.PRODUCT_NOT_FOUND));
+			throw new AirException(Codes.PRODUCT_NOT_FOUND, M.msg(M.PRODUCT_NOT_FOUND));
 		}
 		// create new
 		Comment newComment = new Comment();
@@ -106,7 +106,7 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		Comment comment = commentRepository.findOne(commentId);
 		if (comment == null) {
 			LOG.warn("Comment {} not found", commentId);
-			throw new AirException(Codes.COMMENT_NOT_FOUND, M.bind(M.COMMENT_NOT_FOUND));
+			throw new AirException(Codes.COMMENT_NOT_FOUND, M.msg(M.COMMENT_NOT_FOUND));
 		}
 		return comment;
 	}
@@ -115,7 +115,7 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		Order order = orderRepository.findOne(orderId);
 		if (order == null) {
 			LOG.warn("Order {} not found", orderId);
-			throw new AirException(Codes.ORDER_NOT_FOUND, M.bind(M.ORDER_NOT_FOUND));
+			throw new AirException(Codes.ORDER_NOT_FOUND, M.msg(M.ORDER_NOT_FOUND));
 		}
 		return order;
 	}

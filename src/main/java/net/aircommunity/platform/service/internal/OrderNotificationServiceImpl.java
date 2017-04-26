@@ -72,8 +72,8 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 
 	@PostConstruct
 	private void init() {
-		orderOperationsMapping.put(Order.Status.CANCELLED, M.bind(M.ORDER_OPERATION_CANCEL));
-		orderOperationsMapping.put(Order.Status.PENDING, M.bind(M.ORDER_OPERATION_SUBMIT));
+		orderOperationsMapping.put(Order.Status.CANCELLED, M.msg(M.ORDER_OPERATION_CANCEL));
+		orderOperationsMapping.put(Order.Status.PENDING, M.msg(M.ORDER_OPERATION_SUBMIT));
 		//
 		orderTypeMapping.put(Order.Type.FLEET, ORDER_TYPE_AIRJET);
 		orderTypeMapping.put(Order.Type.FERRYFLIGHT, ORDER_TYPE_AIRJET);

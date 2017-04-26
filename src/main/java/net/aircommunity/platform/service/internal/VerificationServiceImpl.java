@@ -40,7 +40,7 @@ public class VerificationServiceImpl implements VerificationService {
 			int requests = Integer.valueOf(ipRequested);
 			if (requests <= 0) {
 				throw new AirException(Codes.TOO_MANY_VERIFICATION_REQUEST,
-						M.bind(M.SMS_TOO_MANY_VERIFICATION_REQUEST));
+						M.msg(M.SMS_TOO_MANY_VERIFICATION_REQUEST));
 			}
 			// dec by 1 (AKA. incr -1)
 			counterTemplate.opsForValue().increment(String.format(IP_KEY_FORMAT, ip), -1l);

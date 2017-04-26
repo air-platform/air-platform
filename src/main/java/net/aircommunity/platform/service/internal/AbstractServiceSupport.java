@@ -37,7 +37,7 @@ abstract class AbstractServiceSupport {
 		}
 		catch (Exception e) {
 			LOG.error("Internal error:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 

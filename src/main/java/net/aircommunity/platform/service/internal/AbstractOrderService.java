@@ -77,7 +77,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		catch (Exception unexpected) {
 			LOG.error(String.format("Failed to create instance %s for user %s, cause: %s", type, userId,
 					unexpected.getMessage()), unexpected);
-			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
 		}
 		newOrder.setCreationDate(new Date());
 		newOrder.setStatus(Order.Status.PENDING);
@@ -94,7 +94,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		catch (Exception e) {
 			LOG.error(String.format("Create %s: %s for user %s failed, cause: %s", type.getSimpleName(), order, userId,
 					e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 
@@ -103,7 +103,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		AircraftItem found = aircraftItemRepository.findOne(aircraftItem.getId());
 		if (found == null) {
 			LOG.error("Aircraftitem {} is not found", aircraftItem);
-			throw new AirException(Codes.AIRCRAFT_ITEM_NOT_FOUND, M.bind(M.AIRCRAFT_ITEM_NOT_FOUND));
+			throw new AirException(Codes.AIRCRAFT_ITEM_NOT_FOUND, M.msg(M.AIRCRAFT_ITEM_NOT_FOUND));
 		}
 		tgt.setAircraftItem(found);
 	}
@@ -119,12 +119,12 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		for (PassengerItem item : passengers) {
 			Passenger passenger = item.getPassenger();
 			if (passenger == null) {
-				throw new AirException(Codes.PASSENGER_REQUIRED, M.bind(M.PASSENGER_INFO_REQUIRED));
+				throw new AirException(Codes.PASSENGER_REQUIRED, M.msg(M.PASSENGER_INFO_REQUIRED));
 			}
 			Passenger found = passengerRepository.findOne(passenger.getId());
 			if (found == null) {
 				LOG.error("Passenger {} is not found", passenger);
-				throw new AirException(Codes.PASSENGER_NOT_FOUND, M.bind(M.PASSENGER_NOT_FOUND));
+				throw new AirException(Codes.PASSENGER_NOT_FOUND, M.msg(M.PASSENGER_NOT_FOUND));
 			}
 			item.setPassenger(found);
 		}
@@ -141,7 +141,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		// T order = getOrderRepository().findOne(orderId);
 		if (order == null || order.getStatus() == Order.Status.DELETED) {
 			LOG.error("{}: {} is not found", type.getSimpleName(), orderId);
-			throw new AirException(orderNotFoundCode(), M.bind(M.ORDER_NOT_FOUND, orderId));
+			throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderId));
 		}
 		return order;
 	}
@@ -150,7 +150,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		T order = getOrderRepository().findByOrderNo(orderNo);
 		if (order == null || order.getStatus() == Order.Status.DELETED) {
 			LOG.error("{}: NO. {} is not found", type.getSimpleName(), orderNo);
-			throw new AirException(orderNotFoundCode(), M.bind(M.ORDER_NOT_FOUND, orderNo));
+			throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderNo));
 		}
 		return order;
 	}
@@ -165,7 +165,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		catch (Exception e) {
 			LOG.error(String.format("Update %s: %s with %s failed, cause: %s", type.getSimpleName(), orderId, newOrder,
 					e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 
@@ -219,7 +219,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	private void throwInvalidOrderStatus(String orderId, Order.Status status) {
 		LOG.error("{} ({}) order cannot be update to status {}", type.getSimpleName(), orderId, status);
-		throw new AirException(Codes.ORDER_ILLEGAL_STATUS, M.bind(M.ORDER_ILLEGAL_STATUS));
+		throw new AirException(Codes.ORDER_ILLEGAL_STATUS, M.msg(M.ORDER_ILLEGAL_STATUS));
 		// throw new AirException(Codes.ORDER_ILLEGAL_STATUS,
 		// String.format("%s (%s) order cannot be update to status %s", type.getSimpleName(), orderId, status));
 	}

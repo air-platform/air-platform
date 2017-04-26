@@ -50,7 +50,7 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 	public School findSchool(String schoolId) {
 		School school = schoolRepository.findOne(schoolId);
 		if (school == null) {
-			throw new AirException(Codes.SCHOOL_NOT_FOUND, M.bind(M.SCHOOL_NOT_FOUND));
+			throw new AirException(Codes.SCHOOL_NOT_FOUND, M.msg(M.SCHOOL_NOT_FOUND));
 		}
 		return school;
 	}

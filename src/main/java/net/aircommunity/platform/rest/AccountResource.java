@@ -282,7 +282,7 @@ public class AccountResource {
 		}
 		catch (Exception e) {
 			LOG.error(String.format("Failed to get account: %s, cause: %s", accountId, e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 
@@ -323,7 +323,7 @@ public class AccountResource {
 		}
 		catch (Exception e) {
 			LOG.error(String.format("Failed to update account: %, cause: %s", json, e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 

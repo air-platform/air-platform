@@ -52,14 +52,14 @@ public class AirportServiceImpl implements AirportService {
 		if (airportExisting != null) {
 			LOG.error("airport ICAO4 exist:{}", airport);
 			throw new AirException(Codes.AIRPORT_ALREADY_EXISTS,
-					M.bind(M.AIRPORT_ICAO_ALREADY_EXISTS, airport.getIcao4()));
+					M.msg(M.AIRPORT_ICAO_ALREADY_EXISTS, airport.getIcao4()));
 		}
 		if (Strings.isNotBlank(airport.getIata3())) {
 			airportExisting = airportRepository.findByIata3IgnoreCase(airport.getIata3());
 			if (airportExisting != null) {
 				LOG.error("airport IATA3 exist:{}", airport);
 				throw new AirException(Codes.AIRPORT_ALREADY_EXISTS,
-						M.bind(M.AIRPORT_IATA_ALREADY_EXISTS, airport.getIata3()));
+						M.msg(M.AIRPORT_IATA_ALREADY_EXISTS, airport.getIata3()));
 			}
 		}
 	}
@@ -69,7 +69,7 @@ public class AirportServiceImpl implements AirportService {
 	public Airport findAirport(String airportId) {
 		Airport airport = airportRepository.findOne(airportId);
 		if (airport == null) {
-			throw new AirException(Codes.AIRPORT_NOT_FOUND, M.bind(M.AIRPORT_NOT_FOUND, airportId));
+			throw new AirException(Codes.AIRPORT_NOT_FOUND, M.msg(M.AIRPORT_NOT_FOUND, airportId));
 		}
 		return airport;
 	}
@@ -82,7 +82,7 @@ public class AirportServiceImpl implements AirportService {
 		if (code.length() == 4) {
 			return findAirportByIcao4(code);
 		}
-		throw new AirException(Codes.AIRPORT_INVALID_CODE, M.bind(M.AIRPORT_INVALID_CODE, code));
+		throw new AirException(Codes.AIRPORT_INVALID_CODE, M.msg(M.AIRPORT_INVALID_CODE, code));
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME_IATA3)
@@ -90,7 +90,7 @@ public class AirportServiceImpl implements AirportService {
 	public Airport findAirportByIata3(String iata3) {
 		Airport airport = airportRepository.findByIata3IgnoreCase(iata3);
 		if (airport == null) {
-			throw new AirException(Codes.AIRPORT_NOT_FOUND, M.bind(M.AIRPORT_NOT_FOUND, iata3));
+			throw new AirException(Codes.AIRPORT_NOT_FOUND, M.msg(M.AIRPORT_NOT_FOUND, iata3));
 		}
 		return airport;
 	}
@@ -100,7 +100,7 @@ public class AirportServiceImpl implements AirportService {
 	public Airport findAirportByIcao4(String icao4) {
 		Airport airport = airportRepository.findByIcao4IgnoreCase(icao4);
 		if (airport == null) {
-			throw new AirException(Codes.AIRPORT_NOT_FOUND, M.bind(M.AIRPORT_NOT_FOUND, icao4));
+			throw new AirException(Codes.AIRPORT_NOT_FOUND, M.msg(M.AIRPORT_NOT_FOUND, icao4));
 		}
 		return airport;
 	}
@@ -113,13 +113,13 @@ public class AirportServiceImpl implements AirportService {
 		Airport airportExisting = airportRepository.findByIcao4IgnoreCase(newAirport.getIcao4());
 		if (airportExisting != null && !airportExisting.getId().equals(airportId)) {
 			throw new AirException(Codes.AIRPORT_ALREADY_EXISTS,
-					M.bind(M.AIRPORT_ICAO_ALREADY_EXISTS, newAirport.getIcao4()));
+					M.msg(M.AIRPORT_ICAO_ALREADY_EXISTS, newAirport.getIcao4()));
 		}
 		if (Strings.isNotBlank(newAirport.getIata3())) {
 			airportExisting = airportRepository.findByIata3IgnoreCase(newAirport.getIata3());
 			if (airportExisting != null && !airportExisting.getId().equals(airportId)) {
 				throw new AirException(Codes.AIRPORT_ALREADY_EXISTS,
-						M.bind(M.AIRPORT_IATA_ALREADY_EXISTS, newAirport.getIata3()));
+						M.msg(M.AIRPORT_IATA_ALREADY_EXISTS, newAirport.getIata3()));
 			}
 		}
 		Airport airport = findAirport(airportId);

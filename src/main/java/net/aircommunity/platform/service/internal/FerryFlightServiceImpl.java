@@ -39,7 +39,7 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 		FerryFlight existing = ferryFlightRepository.findByFlightNo(ferryFlight.getFlightNo());
 		if (existing != null) {
 			throw new AirException(Codes.FERRYFLIGHT_ALREADY_EXISTS,
-					M.bind(M.FERRYFLIGHT_ALREADY_EXISTS, ferryFlight.getFlightNo()));
+					M.msg(M.FERRYFLIGHT_ALREADY_EXISTS, ferryFlight.getFlightNo()));
 		}
 		return createProduct(tenantId, ferryFlight);
 	}

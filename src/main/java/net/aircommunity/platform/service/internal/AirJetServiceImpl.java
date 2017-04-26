@@ -82,7 +82,7 @@ public class AirJetServiceImpl implements AirJetService {
 	public AirJet createAirJet(AirJet airJet) {
 		AirJet airJetExisting = airjetRepository.findByTypeIgnoreCase(airJet.getType());
 		if (airJetExisting != null) {
-			throw new AirException(Codes.AIRJET_ALREADY_EXISTS, M.bind(M.AIRJET_ALREADY_EXISTS, airJet.getType()));
+			throw new AirException(Codes.AIRJET_ALREADY_EXISTS, M.msg(M.AIRJET_ALREADY_EXISTS, airJet.getType()));
 		}
 		AirJet newAirJet = new AirJet();
 		copyProperties(airJet, newAirJet);
@@ -104,7 +104,7 @@ public class AirJetServiceImpl implements AirJetService {
 	public AirJet findAirJet(String airJetId) {
 		AirJet airJet = airjetRepository.findOne(airJetId);
 		if (airJet == null) {
-			throw new AirException(Codes.AIRJET_NOT_FOUND, M.bind(M.AIRJET_NOT_FOUND, airJetId));
+			throw new AirException(Codes.AIRJET_NOT_FOUND, M.msg(M.AIRJET_NOT_FOUND, airJetId));
 		}
 		return airJet;
 	}
@@ -113,7 +113,7 @@ public class AirJetServiceImpl implements AirJetService {
 	public AirJet findAirJetByType(String type) {
 		AirJet airJet = airjetRepository.findByTypeIgnoreCase(type);
 		if (airJet == null) {
-			throw new AirException(Codes.AIRJET_NOT_FOUND, M.bind(M.AIRJET_TYPE_NOT_FOUND, type));
+			throw new AirException(Codes.AIRJET_NOT_FOUND, M.msg(M.AIRJET_TYPE_NOT_FOUND, type));
 		}
 		return airJet;
 	}
@@ -124,7 +124,7 @@ public class AirJetServiceImpl implements AirJetService {
 		AirJet airJet = findAirJet(airJetId);
 		AirJet airJetExisting = airjetRepository.findByTypeIgnoreCase(newAirJet.getType());
 		if (airJetExisting != null && !airJetExisting.getId().equals(airJetId)) {
-			throw new AirException(Codes.AIRJET_ALREADY_EXISTS, M.bind(M.AIRJET_ALREADY_EXISTS, airJet.getType()));
+			throw new AirException(Codes.AIRJET_ALREADY_EXISTS, M.msg(M.AIRJET_ALREADY_EXISTS, airJet.getType()));
 		}
 		copyProperties(newAirJet, airJet);
 		return airjetRepository.save(airJet);

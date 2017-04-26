@@ -78,7 +78,7 @@ public class AirBBAccountService {
 		}
 		catch (Exception e) {
 			LOG.error("Failed to create AirQ user:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.AIRQ_ERROR));
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.AIRQ_ERROR));
 		}
 	}
 
@@ -107,7 +107,7 @@ public class AirBBAccountService {
 		}
 		catch (Exception e) {
 			LOG.error("Failed to update AirQ user password:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.AIRQ_ERROR));
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.AIRQ_ERROR));
 		}
 	}
 
@@ -136,7 +136,7 @@ public class AirBBAccountService {
 		}
 		catch (Exception e) {
 			LOG.error("Failed to update AirQ user email:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.AIRQ_ERROR));
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.AIRQ_ERROR));
 		}
 	}
 
@@ -164,7 +164,7 @@ public class AirBBAccountService {
 		}
 		catch (Exception e) {
 			LOG.error("Failed to delete AirQ user:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.AIRQ_ERROR));
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.AIRQ_ERROR));
 		}
 	}
 
@@ -194,7 +194,7 @@ public class AirBBAccountService {
 		}
 		catch (Exception e) {
 			LOG.error("Failed to get AirQ user ID:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.AIRQ_ERROR));
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.AIRQ_ERROR));
 		}
 		return userID;
 	}
