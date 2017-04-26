@@ -51,7 +51,7 @@ public class SmsServiceImpl implements SmsService {
 		req.setRecNum(mobile);
 
 		SmsMessage smsMsg = new SmsMessage();
-		smsMsg.setMsgtype(message);
+		smsMsg.setCode(message);
 
 		try {
 			String body = objectMapper.writeValueAsString(smsMsg);
