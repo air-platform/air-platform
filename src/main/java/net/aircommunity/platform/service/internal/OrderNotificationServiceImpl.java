@@ -48,10 +48,14 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 	private static final Logger LOG = LoggerFactory.getLogger(OrderNotificationServiceImpl.class);
 
 	private static final Map<Order.Type, String> orderTypeMapping = new HashMap<>();
+	private static final Map<Order.Status, String> orderOperationsMapping = new HashMap<>();
 	private static final String ORDER_TYPE_AIRJET = "Air Jet";
 	private static final String ORDER_TYPE_AIRTAXI = "Air Taxi";
 	private static final String ORDER_TYPE_AIRTRANSPORTION = "Air Transportion";
 	private static final String ORDER_TYPE_AIRTRAINING = "Air Training";
+	// i18n TODO
+	private static final String ORDER_OPERATION_SUBMIT = "提交";
+	private static final String ORDER_OPERATION_CANCEL = "取消";
 
 	@Resource
 	private Configuration configuration;
@@ -70,6 +74,9 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 
 	@PostConstruct
 	private void init() {
+		orderOperationsMapping.put(Order.Status.CANCELLED, ORDER_OPERATION_CANCEL);
+		orderOperationsMapping.put(Order.Status.PENDING, ORDER_OPERATION_SUBMIT);
+		//
 		orderTypeMapping.put(Order.Type.FLEET, ORDER_TYPE_AIRJET);
 		orderTypeMapping.put(Order.Type.FERRYFLIGHT, ORDER_TYPE_AIRJET);
 		orderTypeMapping.put(Order.Type.JETCARD, ORDER_TYPE_AIRJET);
@@ -89,6 +96,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 		}
 		switch (event.getType()) {
 		case CREATION:
+		case CANCELLATION:
 			Order order = event.getOrder();
 			Product product = order.getProduct();
 			Set<Contact> contacts = Collections.emptySet();
@@ -138,6 +146,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 					Strings.isNotBlank(customer.getRealName()) ? customer.getRealName() : customer.getNickName());
 			context.put("clientManager", clientManager.getPerson());
 			context.put("orderNo", order.getOrderNo());
+			context.put("orderOperation", orderOperationsMapping.get(order.getStatus()));
 			context.put("orderType", orderTypeMapping.get(order.getType()));
 			context.put("creationDate", order.getCreationDate());
 			context.put("note", order.getNote());
@@ -176,6 +185,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 				context.put("aircraftType", airTaxiOrder.getAircraftItem().getAircraft().getName()); // XXX
 				context.put("date", airTaxiOrder.getDate());
 				context.put("timeSlot", airTaxiOrder.getTimeSlot());
+				context.put("contact", airTaxiOrder.getContact());
 				break;
 
 			case AIRTOUR:
@@ -185,21 +195,25 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 				context.put("aircraftType", airTourOrder.getAircraftItem().getAircraft().getName());
 				context.put("date", airTourOrder.getDate());
 				context.put("timeSlot", airTourOrder.getTimeSlot());
+				context.put("contact", airTourOrder.getContact());
 				break;
 
 			case AIRTRANSPORT:
 				AirTransportOrder airTransportOrder = AirTransportOrder.class.cast(order);
 				context.put("airTransport", airTransportOrder.getAirTransport());
-				context.put("passengerNum", airTransportOrder.getPassengerNum());
+				context.put("passengerNum", airTransportOrder.getPassengerNum() == 0
+						? airTransportOrder.getPassengers().size() : airTransportOrder.getPassengerNum());
 				context.put("passengers", airTransportOrder.getPassengers());
 				context.put("aircraftType", airTransportOrder.getAircraftItem().getAircraft().getName());
 				context.put("date", airTransportOrder.getDate());
 				context.put("timeSlot", airTransportOrder.getTimeSlot());
+				context.put("contact", airTransportOrder.getContact());
 				break;
 
 			case COURSE:
 				Enrollment enrollment = Enrollment.class.cast(order);
 				context.put("enrollment", enrollment);
+				context.put("contact", enrollment.getContact());
 				break;
 
 			default:

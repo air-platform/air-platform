@@ -46,11 +46,10 @@ public class EnrollmentServiceImpl extends AbstractVendorAwareOrderService<Enrol
 	@Override
 	protected void copyProperties(Enrollment src, Enrollment tgt) {
 		tgt.setAirType(src.getAirType());
-		tgt.setIdentity(src.getIdentity());
+		tgt.setContact(src.getContact());
 		tgt.setLicense(src.getLicense());
 		tgt.setLocation(src.getLocation());
 		tgt.setNote(src.getNote());
-		tgt.setPerson(src.getPerson());
 		//
 		Course course = courseService.findCourse(src.getCourse().getId());
 		tgt.setCourse(course);

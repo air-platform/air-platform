@@ -44,6 +44,7 @@ import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.repository.AccountAuthRepository;
 import net.aircommunity.platform.repository.AccountRepository;
+import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.MailService;
 import net.aircommunity.platform.service.TemplateService;
@@ -81,6 +82,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Resource
 	private AccountRepository accountRepository;
+
+	@Resource
+	private PassengerRepository passengerRepository;
 
 	@Resource
 	private AccountAuthRepository accountAuthRepository;
@@ -427,9 +431,10 @@ public class AccountServiceImpl implements AccountService {
 		return passengers.stream().collect(Collectors.toList());
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	// TODO REMOVE
+	// @CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
 	@Override
-	public Account addUserPassenger(String accountId, Passenger passenger) {
+	public Passenger addUserPassenger(String accountId, Passenger passenger) {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.USER) {
 			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
@@ -437,12 +442,20 @@ public class AccountServiceImpl implements AccountService {
 		}
 		User user = User.class.cast(account);
 		user.addPassenger(passenger);
-		return accountRepository.save(user);
+		User userSaved = accountRepository.save(user);
+		Optional<Passenger> passengerAdded = userSaved.getPassengers().stream()
+				.filter(p -> p.getIdentity().equals(passenger.getIdentity())).findFirst();
+		if (!passengerAdded.isPresent()) {
+			throw new AirException(Codes.ACCOUNT_ADD_PASSENGER_FAILURE,
+					String.format("Add passenger failure: %s", passenger.getIdentity()));
+		}
+		return passengerAdded.get();
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	// TODO REMOVE
+	// @CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
 	@Override
-	public Account removeUserPassenger(String accountId, String passengerId) {
+	public void removeUserPassenger(String accountId, String passengerId) {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.USER) {
 			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
@@ -450,7 +463,8 @@ public class AccountServiceImpl implements AccountService {
 		}
 		User user = User.class.cast(account);
 		user.removePassengerById(passengerId);
-		return accountRepository.save(user);
+		passengerRepository.delete(passengerId);
+		accountRepository.save(user);
 	}
 
 	@Override

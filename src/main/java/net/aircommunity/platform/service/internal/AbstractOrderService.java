@@ -211,7 +211,12 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		default:// noop
 		}
 		order.setStatus(status);
-		return getOrderRepository().save(order);
+		T orderUpdated = getOrderRepository().save(order);
+		if (orderUpdated.getStatus() == Order.Status.CANCELLED) {
+			eventBus.post(new OrderEvent(OrderEvent.EventType.CANCELLATION, orderUpdated));
+			LOG.info("Notify client managers on order cancellation: {}", orderUpdated);
+		}
+		return orderUpdated;
 	}
 
 	private void throwInvalidOrderStatus(String orderId, Order.Status status) {

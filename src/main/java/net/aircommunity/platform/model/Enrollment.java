@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -34,14 +35,18 @@ public class Enrollment extends VendorAwareOrder {
 	@Column(name = "location", nullable = false)
 	private String location;
 
-	// person name
-	@NotEmpty
-	@Column(name = "person", nullable = false)
-	private String person;
+	// customer contact information for this order
+	@Embedded
+	private Contact contact;
 
-	@NotEmpty
-	@Column(name = "identity")
-	private String identity;
+	// person name
+	// @NotEmpty
+	// @Column(name = "person", nullable = false)
+	// private String person;
+	//
+	// @NotEmpty
+	// @Column(name = "identity")
+	// private String identity;
 
 	@NotNull
 	@ManyToOne
@@ -79,20 +84,12 @@ public class Enrollment extends VendorAwareOrder {
 		this.location = location;
 	}
 
-	public String getPerson() {
-		return person;
+	public Contact getContact() {
+		return contact;
 	}
 
-	public void setPerson(String person) {
-		this.person = person;
-	}
-
-	public String getIdentity() {
-		return identity;
-	}
-
-	public void setIdentity(String identity) {
-		this.identity = identity;
+	public void setContact(Contact contact) {
+		this.contact = contact;
 	}
 
 	public Course getCourse() {
@@ -118,11 +115,10 @@ public class Enrollment extends VendorAwareOrder {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Enrollment [airType=").append(airType).append(", license=").append(license)
-				.append(", location=").append(location).append(", person=").append(person).append(", identity=")
-				.append(identity).append(", orderNo=").append(orderNo).append(", status=").append(status)
-				.append(", creationDate=").append(creationDate).append(", paymentDate=").append(paymentDate)
-				.append(", finishedDate=").append(finishedDate).append(", note=").append(note).append(", id=")
-				.append(id).append("]");
+				.append(", location=").append(location).append(", contact=").append(contact).append(", orderNo=")
+				.append(orderNo).append(", status=").append(status).append(", creationDate=").append(creationDate)
+				.append(", paymentDate=").append(paymentDate).append(", finishedDate=").append(finishedDate)
+				.append(", note=").append(note).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

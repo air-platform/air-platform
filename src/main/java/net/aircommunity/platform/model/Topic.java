@@ -28,14 +28,19 @@ public class Topic implements Serializable {
 		return url;
 	}
 
-	public void setCategory(String category) { this.category = category; }
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
-	public String getCategory() { return category; }
+	public String getCategory() {
+		return category;
+	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Topic [category=").append(category).append(", title=").append(title).append(", url=").append(url).append("]");
+		builder.append("Topic [category=").append(category).append(", title=").append(title).append(", url=")
+				.append(url).append("]");
 		return builder.toString();
 	}
 }

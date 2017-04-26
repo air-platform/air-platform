@@ -186,16 +186,19 @@ public class User extends Account {
 		}
 	}
 
-	public void removePassengerById(String passengerId) {
+	public Passenger removePassengerById(String passengerId) {
 		if (passengerId != null) {
 			Iterator<Passenger> iter = passengers.iterator();
 			while (iter.hasNext()) {
 				Passenger passenger = iter.next();
 				if (passenger.getId().equals(passengerId)) {
+					passenger.setOwner(null);
 					iter.remove();
+					return passenger;
 				}
 			}
 		}
+		return null;
 	}
 
 	@Override

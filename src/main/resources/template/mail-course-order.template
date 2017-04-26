@@ -45,6 +45,7 @@
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		姓名: {{enrollment.person}} &nbsp; 身份证: {{enrollment.identity}}</td>
+		{{contact.person}} &nbsp; {{contact.mobile}} &nbsp; {{contact.email}}
+	</td>
 </tr>
 {% endblock %}

@@ -110,8 +110,8 @@ public class UserResource {
 	@Authenticated
 	public Response addPassenger(@NotNull @Valid Passenger passenger, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		accountService.addUserPassenger(accountId, passenger);
-		return Response.noContent().build();
+		Passenger passengerAdded = accountService.addUserPassenger(accountId, passenger);
+		return Response.ok(passengerAdded).build();
 	}
 
 	/**

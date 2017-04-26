@@ -61,6 +61,7 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
 		tgt.setTotalNum(src.getTotalNum());
 		tgt.setPrice(src.getPrice());
 		tgt.setCurrencyUnit(src.getCurrencyUnit() == null ? CurrencyUnit.RMB : src.getCurrencyUnit());
+		tgt.setClientManagers(src.getClientManagers());
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)

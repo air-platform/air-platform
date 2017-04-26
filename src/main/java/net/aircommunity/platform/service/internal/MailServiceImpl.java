@@ -74,6 +74,13 @@ public class MailServiceImpl implements MailService {
 		}
 		catch (Exception e) {
 			LOG.error(String.format("Failed to send email to: %s,  cause: %s", item.mailTo, e.getMessage()), e);
+			try {
+				LOG.debug("Mail {} re-queued, will be retry later", item);
+				mailItems.put(item);
+			}
+			catch (InterruptedException ignore) {
+				Thread.currentThread().interrupt();
+			}
 		}
 	}
 

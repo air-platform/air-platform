@@ -39,7 +39,7 @@ public class OrderEvent implements Serializable {
 	// }
 
 	public enum EventType {
-		CREATION, UPDATE, DELETION;
+		CREATION, UPDATE, CANCELLATION, DELETION;
 	}
 
 	@Override

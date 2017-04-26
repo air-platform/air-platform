@@ -169,10 +169,9 @@ public interface AccountService {
 	List<Passenger> listUserPassengers(@Nonnull String accountId);
 
 	@Nonnull
-	Account addUserPassenger(@Nonnull String accountId, @Nonnull Passenger passenger);
+	Passenger addUserPassenger(@Nonnull String accountId, @Nonnull Passenger passenger);
 
-	@Nonnull
-	Account removeUserPassenger(@Nonnull String accountId, @Nonnull String passengerId);
+	void removeUserPassenger(@Nonnull String accountId, @Nonnull String passengerId);
 
 	/**
 	 * List All Accounts by pagination

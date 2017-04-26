@@ -36,6 +36,7 @@ public class AirBBAccountService {
 
 	private static final String APPLICATION_JSON = "application/json";
 	private static final String USER_API_URL_FORMAT = "%s/api/v1/users";
+	private static final String USER_API_USERS_URL_FORMAT = "%s/api/users?_uid=1";
 
 	private String userApiUrl;
 	private String userApiUrlBase;
@@ -83,6 +84,7 @@ public class AirBBAccountService {
 	public void updateAccountPassword(String username, String newPassword) {
 		try {
 			String userID = getUsername(username);
+			LOG.debug("Got userId:{}", userID);
 			URL url = new URL(userApiUrlBase + userID + "/password");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
@@ -111,6 +113,7 @@ public class AirBBAccountService {
 	public void updateAccountProfile(String username, String email) {
 		try {
 			String userID = getUsername(username);
+			LOG.debug("Got userId:{}", userID);
 			URL url = new URL(userApiUrlBase + userID);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
@@ -139,6 +142,7 @@ public class AirBBAccountService {
 	public void deleteAccount(String username) {
 		try {
 			String userID = getUsername(username);
+			LOG.debug("Got userId:{}", userID);
 			URL url = new URL(userApiUrlBase + userID);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
@@ -166,10 +170,14 @@ public class AirBBAccountService {
 	public String getUsername(String username) {
 		String userID = null;
 		try {
-			Request request = new Request.Builder().url(userApiUrl).headers(buildHeaders()).get().build();
+			String url = String.format(USER_API_USERS_URL_FORMAT, configuration.getNodebbUrl());
+			LOG.debug("Get username url: {}", url);
+			Request request = new Request.Builder().url(url).headers(buildHeaders()).get().build();
 			Response response = httpClient.newCall(request).execute();
+			String body = response.body().string();
+			LOG.debug("Get username response: {}", body);
 			if (response.isSuccessful()) {
-				try (JsonReader jsonReader = Json.createReader(new StringReader(response.body().string()))) {
+				try (JsonReader jsonReader = Json.createReader(new StringReader(body))) {
 					JsonObject jsonObj = jsonReader.readObject();
 					JsonArray userArray = jsonObj.getJsonArray("users");
 					for (int i = 0; i < userArray.size(); i++) {

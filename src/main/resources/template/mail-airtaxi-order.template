@@ -7,7 +7,7 @@
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{{airTaxi.departure}} &#8640 {{airTaxi.arrival}} &nbsp; {{date | datetimeformat('%Y-%m-%d') }} &nbsp; {{timeSlot}} 出发
+		{{airTaxi.departure}} &#8640 {{airTaxi.arrival}} &nbsp; {{date | datetimeformat('%Y-%m-%d') }}
 	</td>
 </tr>
 <tr>
@@ -18,7 +18,8 @@
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
 		{% for item in passengers %} 
-		姓名: {{item.passenger.name}} &nbsp; 身份证: {{item.passenger.identity}} <br> 
+		姓名: {{item.passenger.name}} &nbsp; 身份证: {{item.passenger.identity}} &nbsp; 手机: {{item.passenger.mobile}}
+		 <br> 
 		{% endfor %}
 	</td>
 </tr>
@@ -30,5 +31,15 @@
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
 		{{aircraftType}}</td>
+</tr>
+<tr>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		<b>联系方式:</b>
+	</td>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+	    手机: {{contact.mobile}}
+	</td>
 </tr>
 {% endblock %}

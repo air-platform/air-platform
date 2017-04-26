@@ -13,6 +13,8 @@ public class LocalizedMessages extends NLSResource {
 	// NLS resource bundle
 	private static final String RESOURCE_BUNDLE_BASENAME = LocalizedMessages.class.getPackage().getName() + ".message";
 
+	public static String SERVICE_UNAVAILABLE;
+	
 	// internal server error
 	public static String INTERNAL_SERVER_ERROR;
 
