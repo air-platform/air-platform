@@ -1,23 +1,17 @@
 package net.aircommunity.platform.model;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
@@ -45,9 +39,9 @@ public class AirTaxiOrder extends AircraftAwareOrder {
 	private AirTaxi airTaxi;
 
 	// passengers
-	@NotEmpty
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private Set<PassengerItem> passengers = new HashSet<>();
+	// @NotEmpty
+	// @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	// private Set<PassengerItem> passengers = new HashSet<>();
 
 	public Date getDate() {
 		return date;
@@ -63,18 +57,6 @@ public class AirTaxiOrder extends AircraftAwareOrder {
 
 	public void setTimeSlot(String timeSlot) {
 		this.timeSlot = timeSlot;
-	}
-
-	public Set<PassengerItem> getPassengers() {
-		return passengers;
-	}
-
-	public void setPassengers(Set<PassengerItem> passengers) {
-		if (passengers != null) {
-			passengers.stream().forEach(item -> item.setOrder(this));
-			this.passengers.clear();
-			this.passengers.addAll(passengers);
-		}
 	}
 
 	public AirTaxi getAirTaxi() {

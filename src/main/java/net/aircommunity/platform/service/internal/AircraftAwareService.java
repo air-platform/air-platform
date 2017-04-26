@@ -35,6 +35,8 @@ abstract class AircraftAwareService<T extends AircraftAwareProduct> extends Abst
 	@Override
 	protected final void copyProperties(T src, T tgt) {
 		tgt.setAircraftItems(applyAircraftItems(src.getAircraftItems()));
+		tgt.setAvailableDate(src.getAvailableDate());
+		tgt.setPresalesDays(src.getPresalesDays());
 		doCopyProperties(src, tgt);
 	}
 

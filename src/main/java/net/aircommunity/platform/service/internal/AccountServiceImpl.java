@@ -65,7 +65,8 @@ public class AccountServiceImpl implements AccountService {
 	// private static final String CACHE_NAME_APIKEY = "cache.account_apikey";
 
 	// FORMAT: http://host:port/context/api-version/account/email/confirm?token=xxx&code=xxx
-	private static final String EMAIL_CONFIRMATION_LINK_BASE_FORMAT = "http://%s:%d%s/%s/account/email/confirm?%s";
+	private static final String EMAIL_CONFIRMATION_LINK_WITH_PORT_BASE_FORMAT = "http%s://%s:%d%s/%s/account/email/confirm?%s";
+	private static final String EMAIL_CONFIRMATION_LINK_BASE_FORMAT = "http%s://%s%s/%s/account/email/confirm?%s";
 	private static final String EMAIL_CONFIRMATION_LINK_PARAMS = "token=%s&code=%s";
 	private static final String EMAIL_BINDING_USERNAME = "username";
 	private static final String EMAIL_BINDING_COMPANY = "company";
@@ -123,9 +124,18 @@ public class AccountServiceImpl implements AccountService {
 				LOG.warn(e.getMessage(), e);
 			}
 		}
-		emailConfirmationLink = String.format(EMAIL_CONFIRMATION_LINK_BASE_FORMAT, configuration.getPublicHost(),
-				configuration.getPublicPort(), configuration.getContextPath(), configuration.getApiVersion(),
-				EMAIL_CONFIRMATION_LINK_PARAMS);
+
+		boolean tls = configuration.getPublicPort() == 443;
+		if (configuration.getPublicPort() == 80 || tls) {
+			emailConfirmationLink = String.format(EMAIL_CONFIRMATION_LINK_BASE_FORMAT, tls ? "s" : "",
+					configuration.getPublicHost(), configuration.getContextPath(), configuration.getApiVersion(),
+					EMAIL_CONFIRMATION_LINK_PARAMS);
+		}
+		else {
+			emailConfirmationLink = String.format(EMAIL_CONFIRMATION_LINK_WITH_PORT_BASE_FORMAT, "",
+					configuration.getPublicHost(), configuration.getPublicPort(), configuration.getContextPath(),
+					configuration.getApiVersion(), EMAIL_CONFIRMATION_LINK_PARAMS);
+		}
 	}
 
 	@Override
