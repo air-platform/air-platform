@@ -36,7 +36,8 @@ public final class Codes {
 	public static final Code ACCOUNT_EMAIL_ALREADY_EXISTS = Code.alreadyExists(11_001_0011);
 	public static final Code ACCOUNT_EMAIL_NOT_BIND = Code.notAuthorized(11_001_0012);
 	public static final Code ACCOUNT_ADDRESS_NOT_ALLOWED = Code.illegalAccess(11_001_0013);
-	public static final Code ACCOUNT_ADD_PASSENGER_FAILURE = Code.invalidArgument(11_001_0014);
+	public static final Code ACCOUNT_PASSENGER_NOT_ALLOWED = Code.illegalAccess(11_001_0014);
+	public static final Code ACCOUNT_ADD_PASSENGER_FAILURE = Code.invalidArgument(11_001_0015);
 
 	// apikey
 	public static final Code APIKEY_NOT_FOUND = Code.notFound(11_002_0001);
@@ -63,8 +64,8 @@ public final class Codes {
 	public static final Code CHARTERORDER_NOT_FOUND = Code.notFound(11_004_0003);
 
 	// ferry flight
-	public static final Code FERRYFLIGHTI_NOT_FOUND = Code.notFound(11_005_0001);
-	public static final Code FERRYFLIGHTI_ALREADY_EXISTS = Code.alreadyExists(11_005_0002);
+	public static final Code FERRYFLIGHT_NOT_FOUND = Code.notFound(11_005_0001);
+	public static final Code FERRYFLIGHT_ALREADY_EXISTS = Code.alreadyExists(11_005_0002);
 	public static final Code FERRYFLIGHT_ORDER_NOT_FOUND = Code.notFound(11_005_0003);
 
 	// jet card

@@ -15,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.Topic;
 import net.aircommunity.platform.service.TopicService;
@@ -66,7 +64,6 @@ public class TopicServiceImpl implements TopicService {
 		}
 		catch (Exception e) {
 			LOG.error("Got error when List recent AIR BB topics:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to list recent topics", e);
 		}
 		return topics;
 	}

@@ -13,6 +13,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.FleetRepository;
 import net.aircommunity.platform.service.FleetService;
@@ -35,8 +36,7 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 		// TODO shared
 		Fleet existing = fleetRepository.findByFlightNo(fleet.getFlightNo());
 		if (existing != null) {
-			throw new AirException(Codes.FLEET_ALREADY_EXISTS,
-					String.format("Flight NO: %s already exists", fleet.getFlightNo()));
+			throw new AirException(Codes.FLEET_ALREADY_EXISTS, M.bind(M.FLEET_ALREADY_EXISTS, fleet.getFlightNo()));
 		}
 		return createProduct(tenantId, fleet);
 	}
@@ -51,8 +51,7 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 	public Fleet findFleetByFlightNo(String flightNo) {
 		Fleet fleet = fleetRepository.findByFlightNo(flightNo);
 		if (fleet == null) {
-			throw new AirException(productNotFoundCode(),
-					String.format("%s NO.: %s is not found", type.getSimpleName(), flightNo));
+			throw new AirException(productNotFoundCode(), M.bind(M.FLEET_NOT_FOUND, flightNo));
 		}
 		return fleet;
 	}

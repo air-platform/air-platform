@@ -15,6 +15,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.FerryFlightRepository;
 import net.aircommunity.platform.service.FerryFlightService;
@@ -37,8 +38,8 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 		// TODO shared
 		FerryFlight existing = ferryFlightRepository.findByFlightNo(ferryFlight.getFlightNo());
 		if (existing != null) {
-			throw new AirException(Codes.FERRYFLIGHTI_ALREADY_EXISTS,
-					String.format("FerryFlight Flight NO: %s is already exists", ferryFlight.getFlightNo()));
+			throw new AirException(Codes.FERRYFLIGHT_ALREADY_EXISTS,
+					M.bind(M.FERRYFLIGHT_ALREADY_EXISTS, ferryFlight.getFlightNo()));
 		}
 		return createProduct(tenantId, ferryFlight);
 	}
@@ -115,7 +116,7 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 
 	@Override
 	protected Code productNotFoundCode() {
-		return Codes.FERRYFLIGHTI_NOT_FOUND;
+		return Codes.FERRYFLIGHT_NOT_FOUND;
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public final class Constants {
 	public static final String CLAIM_API_KEY = "claim.apikey";
 	public static final String DEFAULT_ADMIN_USERNAME = "admin";
 	public static final String DEFAULT_ADMIN_PASSWORD = "p0o9i8u7";
-	public static final String DEFAULT_ADMIN_EMAIL = "admin@aircommunity.net";
+	public static final String DEFAULT_ADMIN_EMAIL = "ac_eb@hnair.com";
 	public static final String DEFAULT_PASSWORD = "Air@pwd123";
 
 	// any constants put here

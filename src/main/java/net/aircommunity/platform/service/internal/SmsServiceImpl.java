@@ -17,6 +17,7 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.SmsMessage;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.SmsService;
 
 /**
@@ -60,7 +61,8 @@ public class SmsServiceImpl implements SmsService {
 			LOG.debug("Get sms resp:{}.", rsp.getBody());
 		}
 		catch (Exception e) {
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to send SMS:" + e.getMessage(), e);
+			LOG.error("Failed to send SMS:" + e.getMessage(), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.SMS_SEND_FAILURE));
 		}
 	}
 

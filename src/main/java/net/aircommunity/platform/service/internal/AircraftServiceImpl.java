@@ -13,6 +13,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Aircraft;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AircraftRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.service.AircraftService;
@@ -36,7 +37,7 @@ public class AircraftServiceImpl extends AbstractProductService<Aircraft> implem
 		Aircraft aircraftExisting = aircraftRepository.findByFlightNo(aircraft.getFlightNo());
 		if (aircraftExisting != null) {
 			throw new AirException(Codes.AIRCRAFT_ALREADY_EXISTS,
-					String.format("Aircraft Flight NO: %s already exist", aircraft.getFlightNo()));
+					M.bind(M.AIRCRAFT_ALREADY_EXISTS, aircraft.getFlightNo()));
 		}
 		return createProduct(tenantId, aircraft);
 	}

@@ -14,6 +14,7 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.Tenant;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
 
 /**
@@ -48,10 +49,9 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			newProduct = type.newInstance();
 		}
 		catch (Exception unexpected) {
-			LOG.error(String.format("Failed to create instance %s for user %s, cause: ", type, tenantId,
+			LOG.error(String.format("Failed to create instance %s for user %s, cause: %s", type, tenantId,
 					unexpected.getMessage()), unexpected);
-			throw new AirException(Codes.INTERNAL_ERROR,
-					String.format("Failed to create instance %s", type.getSimpleName()));
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
 		}
 		newProduct.setName(product.getName());
 		newProduct.setImage(product.getImage());
@@ -65,18 +65,17 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			return getProductRepository().save(newProduct);
 		}
 		catch (Exception e) {
-			LOG.error(String.format("Create %s: %s for user %s failed, cause: ", type.getSimpleName(), tenantId,
-					e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR,
-					String.format("Create %s: %s failed", type.getSimpleName(), product));
+			LOG.error(String.format("Create %s: %s for user %s failed, cause: %s", type.getSimpleName(), product,
+					tenantId, e.getMessage()), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 
 	protected T findProduct(String productId) {
 		T product = getProductRepository().findOne(productId);
 		if (product == null) {
-			throw new AirException(productNotFoundCode(),
-					String.format("%s: %s is not found", type.getSimpleName(), productId));
+			LOG.error("{}: {} is not found", type.getSimpleName(), productId);
+			throw new AirException(productNotFoundCode(), M.bind(M.PRODUCT_NOT_FOUND));
 		}
 		return product;
 	}
@@ -92,10 +91,9 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			return getProductRepository().save(product);
 		}
 		catch (Exception e) {
-			LOG.error(String.format("Update %s: %s with %s failed, cause: ", type.getSimpleName(), productId,
+			LOG.error(String.format("Update %s: %s with %s failed, cause: %s", type.getSimpleName(), productId,
 					newProduct, e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR,
-					String.format("Update %s: %s failed", type.getSimpleName(), productId));
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 

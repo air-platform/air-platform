@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import net.aircommunity.platform.model.Comment;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.CommentRepository;
 import net.aircommunity.platform.repository.OrderRepository;
 import net.aircommunity.platform.repository.ProductRepository;
@@ -31,6 +34,8 @@ import net.aircommunity.platform.service.CommentService;
 @Service
 @Transactional
 public class CommentServiceImpl extends AbstractServiceSupport implements CommentService {
+	private static final Logger LOG = LoggerFactory.getLogger(CommentServiceImpl.class);
+
 	private static final String CACHE_NAME = "cache.comment";
 
 	@Resource
@@ -56,18 +61,19 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		Order order = findOrder(orderId);
 		boolean isOrderOwner = accountId.equals(order.getOwner().getId());
 		if (order.getCommented() || !isOrderOwner) {
-			throw new AirException(Codes.COMMENT_NOT_ALLOWED, String.format(
-					"Comment on order %s is not allowed, already commented or your are not order owner", orderId));
+			LOG.error("Account {} comment on order {} is not allowed, already commented or your are not order owner",
+					accountId, orderId);
+			throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.bind(M.COMMENT_NOT_ALLOWED));
 		}
 		if (order.getStatus() != Order.Status.FINISHED) {
-			throw new AirException(Codes.COMMENT_NOT_ALLOWED,
-					String.format("Comment on order %s is not allowed, order is not FINISHED", orderId));
+			LOG.error("Account {} comment on order {} is not allowed, order is not FINISHED", accountId, orderId);
+			throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.bind(M.COMMENT_NOT_ALLOWED_ORDER_NOT_FINISHED));
 		}
 		// only can be null if CharterOrder
 		Product product = order.getProduct();
 		if (product == null) {
-			throw new AirException(Codes.PRODUCT_NOT_FOUND,
-					String.format("Comment failed, product of order %s not found", orderId));
+			LOG.error("Comment failed, product of order {}not found", orderId);
+			throw new AirException(Codes.PRODUCT_NOT_FOUND, M.bind(M.PRODUCT_NOT_FOUND));
 		}
 		// create new
 		Comment newComment = new Comment();
@@ -99,7 +105,8 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	public Comment findComment(String commentId) {
 		Comment comment = commentRepository.findOne(commentId);
 		if (comment == null) {
-			throw new AirException(Codes.COMMENT_NOT_FOUND, String.format("Comment %s is not found", commentId));
+			LOG.warn("Comment {} not found", commentId);
+			throw new AirException(Codes.COMMENT_NOT_FOUND, M.bind(M.COMMENT_NOT_FOUND));
 		}
 		return comment;
 	}
@@ -107,18 +114,11 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	private Order findOrder(String orderId) {
 		Order order = orderRepository.findOne(orderId);
 		if (order == null) {
-			throw new AirException(Codes.ORDER_NOT_FOUND, String.format("Order %s is not found", orderId));
+			LOG.warn("Order {} not found", orderId);
+			throw new AirException(Codes.ORDER_NOT_FOUND, M.bind(M.ORDER_NOT_FOUND));
 		}
 		return order;
 	}
-
-	// private Product findProduct(String productId) {
-	// Product product = productRepository.findOne(productId);
-	// if (product == null) {
-	// throw new AirException(Codes.PRODUCT_NOT_FOUND, String.format("Product %s is not found", productId));
-	// }
-	// return product;
-	// }
 
 	@Override
 	public Page<Comment> listComments(String productId, int page, int pageSize) {

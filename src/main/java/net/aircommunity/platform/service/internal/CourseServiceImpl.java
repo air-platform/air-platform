@@ -17,6 +17,7 @@ import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.School;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.CourseRepository;
 import net.aircommunity.platform.service.CourseService;
 import net.aircommunity.platform.service.SchoolService;
@@ -69,7 +70,7 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
 	public Course findCourse(String courseId) {
 		Course course = courseRepository.findOne(courseId);
 		if (course == null) {
-			throw new AirException(Codes.COURSE_NOT_FOUND, String.format("course %s not found", courseId));
+			throw new AirException(Codes.COURSE_NOT_FOUND, M.bind(M.COURSE_NOT_FOUND));
 		}
 		return course;
 	}

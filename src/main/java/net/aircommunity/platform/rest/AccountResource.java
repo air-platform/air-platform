@@ -63,6 +63,7 @@ import net.aircommunity.platform.model.PasswordResetRequest;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.UserAccountRequest;
 import net.aircommunity.platform.model.UsernameRequest;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.SmsService;
 import net.aircommunity.platform.service.VerificationService;
@@ -280,8 +281,8 @@ public class AccountResource {
 			return Response.ok(data).build();
 		}
 		catch (Exception e) {
-			throw new AirException(Codes.INTERNAL_ERROR,
-					String.format("Failed to get account: %s, cause: %s", accountId, e.getMessage()), e);
+			LOG.error(String.format("Failed to get account: %s, cause: %s", accountId, e.getMessage()), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 
@@ -321,8 +322,8 @@ public class AccountResource {
 			return Response.ok(accountUpdated).build();
 		}
 		catch (Exception e) {
-			throw new AirException(Codes.INTERNAL_ERROR,
-					String.format("Failed to update account: %, cause: %s", json, e.getMessage()), e);
+			LOG.error(String.format("Failed to update account: %, cause: %s", json, e.getMessage()), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 

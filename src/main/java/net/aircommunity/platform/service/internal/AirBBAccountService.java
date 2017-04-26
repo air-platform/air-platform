@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
+import net.aircommunity.platform.nls.M;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -71,13 +72,13 @@ public class AirBBAccountService {
 			os.flush();
 			int respCode = conn.getResponseCode();
 			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("Creating NodeBB user Failed : HTTP error code : " + respCode);
+				LOG.debug("Creating AirQ user Failed : HTTP error code : " + respCode);
 			}
 			conn.disconnect();
 		}
 		catch (Exception e) {
-			LOG.error("Failed to create NodeBB user:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to create NodeBB user:" + e.getMessage(), e);
+			LOG.error("Failed to create AirQ user:" + e.getMessage(), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.AIRQ_ERROR));
 		}
 	}
 
@@ -100,13 +101,13 @@ public class AirBBAccountService {
 
 			int respCode = conn.getResponseCode();
 			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("update NodeBB user password Failed : HTTP error code : " + respCode);
+				LOG.debug("update AirQ user password Failed : HTTP error code : " + respCode);
 			}
 			conn.disconnect();
 		}
 		catch (Exception e) {
-			LOG.error("Failed to update NodeBB user password:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to update NodeBB user password:" + e.getMessage(), e);
+			LOG.error("Failed to update AirQ user password:" + e.getMessage(), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.AIRQ_ERROR));
 		}
 	}
 
@@ -128,14 +129,14 @@ public class AirBBAccountService {
 
 			int respCode = conn.getResponseCode();
 			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("update NodeBB user profile Failed : HTTP error code : " + respCode);
+				LOG.debug("update AirQ user profile Failed : HTTP error code : " + respCode);
 			}
 
 			conn.disconnect();
 		}
 		catch (Exception e) {
-			LOG.error("Failed to update NodeBB user email:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to update NodeBB user email:" + e.getMessage(), e);
+			LOG.error("Failed to update AirQ user email:" + e.getMessage(), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.AIRQ_ERROR));
 		}
 	}
 
@@ -157,13 +158,13 @@ public class AirBBAccountService {
 
 			int respCode = conn.getResponseCode();
 			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("Deleting NodeBB user Failed : HTTP error code : " + respCode);
+				LOG.debug("Deleting AirQ user Failed : HTTP error code : " + respCode);
 			}
 			conn.disconnect();
 		}
 		catch (Exception e) {
-			LOG.error("Failed to delete NodeBB user:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to delete NodeBB user:" + e.getMessage(), e);
+			LOG.error("Failed to delete AirQ user:" + e.getMessage(), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.AIRQ_ERROR));
 		}
 	}
 
@@ -192,8 +193,8 @@ public class AirBBAccountService {
 			}
 		}
 		catch (Exception e) {
-			LOG.error("Failed to get NodeBB user ID:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, "Failed to get NodeBB user ID:" + e.getMessage(), e);
+			LOG.error("Failed to get AirQ user ID:" + e.getMessage(), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.AIRQ_ERROR));
 		}
 		return userID;
 	}

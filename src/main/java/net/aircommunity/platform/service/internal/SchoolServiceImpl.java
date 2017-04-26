@@ -13,6 +13,7 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.School;
 import net.aircommunity.platform.model.Tenant;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.SchoolRepository;
 import net.aircommunity.platform.repository.TenantRepository;
 import net.aircommunity.platform.service.AccountService;
@@ -49,7 +50,7 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 	public School findSchool(String schoolId) {
 		School school = schoolRepository.findOne(schoolId);
 		if (school == null) {
-			throw new AirException(Codes.SCHOOL_NOT_FOUND, String.format("school %s not found", schoolId));
+			throw new AirException(Codes.SCHOOL_NOT_FOUND, M.bind(M.SCHOOL_NOT_FOUND));
 		}
 		return school;
 	}

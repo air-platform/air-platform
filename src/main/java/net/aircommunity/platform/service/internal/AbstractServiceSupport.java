@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,6 +13,7 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.AccountService;
 
 /**
@@ -19,6 +22,7 @@ import net.aircommunity.platform.service.AccountService;
  * @author Bin.Zhang
  */
 abstract class AbstractServiceSupport {
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractServiceSupport.class);
 
 	@Resource
 	protected AccountService accountService;
@@ -32,7 +36,8 @@ abstract class AbstractServiceSupport {
 			return type.cast(account);
 		}
 		catch (Exception e) {
-			throw new AirException(Codes.INTERNAL_ERROR, "Internal error:" + e.getMessage(), e);
+			LOG.error("Internal error:" + e.getMessage(), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 

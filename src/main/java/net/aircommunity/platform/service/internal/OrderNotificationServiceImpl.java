@@ -33,6 +33,7 @@ import net.aircommunity.platform.model.JetCardOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.User;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.FleetService;
 import net.aircommunity.platform.service.MailService;
 import net.aircommunity.platform.service.OrderNotificationService;
@@ -53,9 +54,6 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 	private static final String ORDER_TYPE_AIRTAXI = "Air Taxi";
 	private static final String ORDER_TYPE_AIRTRANSPORTION = "Air Transportion";
 	private static final String ORDER_TYPE_AIRTRAINING = "Air Training";
-	// i18n TODO
-	private static final String ORDER_OPERATION_SUBMIT = "提交";
-	private static final String ORDER_OPERATION_CANCEL = "取消";
 
 	@Resource
 	private Configuration configuration;
@@ -74,8 +72,8 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 
 	@PostConstruct
 	private void init() {
-		orderOperationsMapping.put(Order.Status.CANCELLED, ORDER_OPERATION_CANCEL);
-		orderOperationsMapping.put(Order.Status.PENDING, ORDER_OPERATION_SUBMIT);
+		orderOperationsMapping.put(Order.Status.CANCELLED, M.bind(M.ORDER_OPERATION_CANCEL));
+		orderOperationsMapping.put(Order.Status.PENDING, M.bind(M.ORDER_OPERATION_SUBMIT));
 		//
 		orderTypeMapping.put(Order.Type.FLEET, ORDER_TYPE_AIRJET);
 		orderTypeMapping.put(Order.Type.FERRYFLIGHT, ORDER_TYPE_AIRJET);

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import io.micro.common.Randoms;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.VerificationService;
 
 /**
@@ -38,7 +39,8 @@ public class VerificationServiceImpl implements VerificationService {
 		if (ipRequested != null) {
 			int requests = Integer.valueOf(ipRequested);
 			if (requests <= 0) {
-				throw new AirException(Codes.TOO_MANY_VERIFICATION_REQUEST, "Too many request");
+				throw new AirException(Codes.TOO_MANY_VERIFICATION_REQUEST,
+						M.bind(M.SMS_TOO_MANY_VERIFICATION_REQUEST));
 			}
 			// dec by 1 (AKA. incr -1)
 			counterTemplate.opsForValue().increment(String.format(IP_KEY_FORMAT, ip), -1l);

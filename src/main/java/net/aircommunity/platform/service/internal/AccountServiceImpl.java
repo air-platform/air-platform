@@ -42,6 +42,7 @@ import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.model.User;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AccountAuthRepository;
 import net.aircommunity.platform.repository.AccountRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
@@ -114,8 +115,13 @@ public class AccountServiceImpl implements AccountService {
 		AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(AuthType.USERNAME,
 				Constants.DEFAULT_ADMIN_USERNAME);
 		if (auth == null) {
-			createAdminAccount(Constants.DEFAULT_ADMIN_USERNAME, Constants.DEFAULT_ADMIN_PASSWORD);
-			LOG.debug("Created default admin account");
+			try {
+				createAdminAccount(Constants.DEFAULT_ADMIN_USERNAME, Constants.DEFAULT_ADMIN_PASSWORD);
+				LOG.debug("Created default admin account");
+			}
+			catch (Exception e) {
+				LOG.warn(e.getMessage(), e);
+			}
 		}
 		emailConfirmationLink = String.format(EMAIL_CONFIRMATION_LINK_BASE_FORMAT, configuration.getPublicHost(),
 				configuration.getPublicPort(), configuration.getContextPath(), configuration.getApiVersion(),
@@ -132,7 +138,7 @@ public class AccountServiceImpl implements AccountService {
 			}
 		}
 		if (auth == null) {
-			throw new AirException(Codes.ACCOUNT_NOT_FOUND, String.format("Account %s is not found", principal));
+			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.bind(M.ACCOUNT_NOT_FOUND, principal));
 		}
 		Account account = auth.getAccount();
 		if (account.getStatus() != Status.ENABLED) {
@@ -197,10 +203,10 @@ public class AccountServiceImpl implements AccountService {
 		// user will only provide mobile to register an account
 		if (type == AuthType.MOBILE && Strings.isBlank(verificationCode)) {
 			throw new AirException(Codes.ACCOUNT_INVALID_VERIFICATION_CODE,
-					String.format("Invalid verification code: %s", verificationCode));
+					M.bind(M.ACCOUNT_INVALID_VERIFICATION_CODE, verificationCode));
 		}
 		if (role == Role.ADMIN) {
-			throw new AirException(Codes.ACCOUNT_CREATION_FAILURE, "Cannot create an admin account");
+			throw new AirException(Codes.ACCOUNT_CREATION_FAILURE, M.bind(M.ACCOUNT_CREATION_ADMIN_NOT_ALLOWED));
 		}
 		return doCreateAccount(type, principal, credential, verificationCode, expires, role);
 	}
@@ -209,8 +215,8 @@ public class AccountServiceImpl implements AccountService {
 			long expires, Role role) {
 		AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(type, principal);
 		if (auth != null) {
-			throw new AirException(Codes.ACCOUNT_ALREADY_EXISTS,
-					String.format("Account with %s: %s is already exists", type, principal));
+			LOG.error("Account with {}: {} is already exists", type, principal);
+			throw new AirException(Codes.ACCOUNT_ALREADY_EXISTS, M.bind(M.ACCOUNT_ALREADY_EXISTS, principal));
 		}
 		// create a new account
 		Account newAccount = null;
@@ -267,9 +273,10 @@ public class AccountServiceImpl implements AccountService {
 			if (configuration.isMobileVerificationEnabled()) {
 				verified = verificationService.verifyCode(principal, verificationCode);
 				if (!verified) {
+					LOG.error("Failed to create account with {}: {}, invalid verification code: {}", type, principal,
+							verificationCode);
 					throw new AirException(Codes.ACCOUNT_CREATION_FAILURE,
-							String.format("Failed to create account with %s: %s, invalid verification code: %s", type,
-									principal, verificationCode));
+							M.bind(M.ACCOUNT_CREATION_INVALID_VERIFICATION_CODE, verificationCode));
 				}
 			}
 			newAccount.setPassword(passwordEncoder.encode(credential));
@@ -286,8 +293,8 @@ public class AccountServiceImpl implements AccountService {
 			break;
 
 		default:
-			throw new AirException(Codes.ACCOUNT_CREATION_FAILURE, String
-					.format("Failed to create account with %s: %s, unsupported auth type: %s", type, principal, type));
+			LOG.error("Failed to create account with {}: {}, unsupported auth type: {}", type, principal, type);
+			throw new AirException(Codes.ACCOUNT_CREATION_FAILURE, M.bind(M.ACCOUNT_CREATION_FAILURE));
 		}
 
 		Account accountCreated = accountRepository.save(newAccount);
@@ -357,7 +364,7 @@ public class AccountServiceImpl implements AccountService {
 	public Account updateAccountStatus(String accountId, Status newStatus) {
 		Account account = findAccount(accountId);
 		if (account.getRole() == Role.ADMIN) {
-			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED_PERMISSION, "Cannot update admin account status");
+			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED_PERMISSION, M.bind(M.ACCOUNT_UNAUTHORIZED_PERMISSION));
 		}
 		account.setStatus(newStatus);
 		return accountRepository.save(account);
@@ -375,7 +382,7 @@ public class AccountServiceImpl implements AccountService {
 	public Account findAccount(String accountId) {
 		Account account = accountRepository.findOne(accountId);
 		if (account == null) {
-			throw new AirException(Codes.ACCOUNT_NOT_FOUND, String.format("Account %s is not found", accountId));
+			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.bind(M.ACCOUNT_NOT_FOUND, accountId));
 		}
 		return account;
 	}
@@ -401,7 +408,7 @@ public class AccountServiceImpl implements AccountService {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.USER) {
 			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
-					String.format("Address is not allowed for account %s", account.getNickName()));
+					M.bind(M.ACCOUNT_ADDRESS_NOT_ALLOWED, account.getNickName()));
 		}
 		User user = User.class.cast(account);
 		user.addAddress(address);
@@ -414,7 +421,7 @@ public class AccountServiceImpl implements AccountService {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.USER) {
 			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
-					String.format("Address is not allowed for account %s", account.getNickName()));
+					M.bind(M.ACCOUNT_ADDRESS_NOT_ALLOWED, account.getNickName()));
 		}
 		User user = User.class.cast(account);
 		user.removeAddressById(addressId);
@@ -437,8 +444,8 @@ public class AccountServiceImpl implements AccountService {
 	public Passenger addUserPassenger(String accountId, Passenger passenger) {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.USER) {
-			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
-					String.format("Passenger is not allowed for account %s", account.getNickName()));
+			throw new AirException(Codes.ACCOUNT_PASSENGER_NOT_ALLOWED,
+					M.bind(M.ACCOUNT_PASSENGER_NOT_ALLOWED, account.getNickName()));
 		}
 		User user = User.class.cast(account);
 		user.addPassenger(passenger);
@@ -447,7 +454,7 @@ public class AccountServiceImpl implements AccountService {
 				.filter(p -> p.getIdentity().equals(passenger.getIdentity())).findFirst();
 		if (!passengerAdded.isPresent()) {
 			throw new AirException(Codes.ACCOUNT_ADD_PASSENGER_FAILURE,
-					String.format("Add passenger failure: %s", passenger.getIdentity()));
+					M.bind(M.ACCOUNT_ADD_PASSENGER_FAILURE, passenger.getIdentity()));
 		}
 		return passengerAdded.get();
 	}
@@ -458,8 +465,8 @@ public class AccountServiceImpl implements AccountService {
 	public void removeUserPassenger(String accountId, String passengerId) {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.USER) {
-			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
-					String.format("Passenger is not allowed for account %s", account.getNickName()));
+			throw new AirException(Codes.ACCOUNT_PASSENGER_NOT_ALLOWED,
+					M.bind(M.ACCOUNT_PASSENGER_NOT_ALLOWED, account.getNickName()));
 		}
 		User user = User.class.cast(account);
 		user.removePassengerById(passengerId);
@@ -488,7 +495,7 @@ public class AccountServiceImpl implements AccountService {
 		// username not equals with others's email
 		if (existingAuth != null && !existingAuth.getAccount().getId().equals(accountId)) {
 			throw new AirException(Codes.ACCOUNT_USERNAME_ALREADY_EXISTS,
-					String.format("Username %s already exists", username));
+					M.bind(M.ACCOUNT_USERNAME_ALREADY_EXISTS, username));
 		}
 		if (existingAuth.getPrincipal().equals(username)) {
 			return;
@@ -503,7 +510,7 @@ public class AccountServiceImpl implements AccountService {
 		AccountAuth existingAuth = accountAuthRepository.findByTypeAndPrincipal(AuthType.EMAIL, email);
 		// email not equals with others's email
 		if (existingAuth != null && !existingAuth.getAccount().getId().equals(accountId)) {
-			throw new AirException(Codes.ACCOUNT_EMAIL_ALREADY_EXISTS, String.format("Email %s already exists", email));
+			throw new AirException(Codes.ACCOUNT_EMAIL_ALREADY_EXISTS, M.bind(M.ACCOUNT_EMAIL_ALREADY_EXISTS, email));
 		}
 		// send email to verify
 		String verificationCode = UUIDs.shortRandom();
@@ -548,7 +555,7 @@ public class AccountServiceImpl implements AccountService {
 	public void confirmEmail(String accountId, String verificationCode) {
 		AccountAuth auth = accountAuthRepository.findByAccountIdAndType(accountId, AuthType.EMAIL);
 		if (auth == null) {
-			throw new AirException(Codes.ACCOUNT_NOT_FOUND, String.format("Account %s is not found", accountId));
+			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.bind(M.ACCOUNT_NOT_FOUND, accountId));
 		}
 		if (auth.isVerified()) {
 			LOG.warn("Account {} {} is already verified", auth.getPrincipal(), auth.getType());
@@ -557,7 +564,7 @@ public class AccountServiceImpl implements AccountService {
 		String credential = auth.getCredential();
 		if (Strings.isBlank(credential) || Strings.isBlank(verificationCode)) {
 			throw new AirException(Codes.ACCOUNT_INVALID_VERIFICATION_CODE,
-					String.format("Invalid verification code: %s", verificationCode));
+					M.bind(M.ACCOUNT_INVALID_VERIFICATION_CODE, verificationCode));
 		}
 		LOG.debug("Auth expires: {}", auth.getExpires());
 		String[] parts = credential.split(VERIFICATION_CODE_SEPARATOR);
@@ -578,7 +585,7 @@ public class AccountServiceImpl implements AccountService {
 		LOG.debug("Auth code: {}, expiry: {}, exipired: {}", code, expiry, exipired);
 		if (!verificationCode.equals(code) || exipired) {
 			throw new AirException(Codes.ACCOUNT_INVALID_VERIFICATION_CODE,
-					String.format("Invalid verification code: %s or expired", verificationCode));
+					M.bind(M.ACCOUNT_INVALID_VERIFICATION_CODE, verificationCode));
 		}
 		auth.setVerified(true);
 		auth.setCredential(null);
@@ -591,7 +598,7 @@ public class AccountServiceImpl implements AccountService {
 		Account account = findAccount(accountId);
 		boolean matches = passwordEncoder.matches(oldPassword, account.getPassword());
 		if (!matches) {
-			throw new AirException(Codes.ACCOUNT_PASSWORD_MISMATCH, "Password is mismatch");
+			throw new AirException(Codes.ACCOUNT_PASSWORD_MISMATCH, M.bind(M.ACCOUNT_PASSWORD_MISMATCH));
 		}
 		account.setPassword(passwordEncoder.encode(newPassword));
 
@@ -612,7 +619,7 @@ public class AccountServiceImpl implements AccountService {
 	public Account resetPasswordViaMobile(String mobile, String newPassword) {
 		AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(AuthType.MOBILE, mobile);
 		if (auth == null) {
-			throw new AirException(Codes.ACCOUNT_MOBILE_NOT_FOUND, String.format("Mobile %s not found", mobile));
+			throw new AirException(Codes.ACCOUNT_MOBILE_NOT_FOUND, M.bind(M.ACCOUNT_MOBILE_NOT_FOUND, mobile));
 		}
 		Account account = auth.getAccount();
 		account.setPassword(passwordEncoder.encode(newPassword));
@@ -625,8 +632,7 @@ public class AccountServiceImpl implements AccountService {
 		Account account = findAccount(accountId);
 		AccountAuth auth = accountAuthRepository.findByAccountIdAndType(accountId, AuthType.EMAIL);
 		if (auth == null) {
-			throw new AirException(Codes.ACCOUNT_EMAIL_NOT_BIND,
-					"Email is not bound, cannot reset password via email.");
+			throw new AirException(Codes.ACCOUNT_EMAIL_NOT_BIND, M.bind(M.ACCOUNT_EMAIL_NOT_BIND));
 		}
 		String rndPassword = Randoms.randomAlphanumeric(PASSWORD_LENGTH);
 		account.setPassword(passwordEncoder.encode(rndPassword));

@@ -24,6 +24,7 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.PassengerItem;
 import net.aircommunity.platform.model.User;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AircraftItemRepository;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
@@ -74,10 +75,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			newOrder = type.newInstance();
 		}
 		catch (Exception unexpected) {
-			LOG.error(String.format("Failed to create instance %s for user %s, cause: ", type, userId,
+			LOG.error(String.format("Failed to create instance %s for user %s, cause: %s", type, userId,
 					unexpected.getMessage()), unexpected);
-			throw new AirException(Codes.INTERNAL_ERROR,
-					String.format("Failed to create instance %s", type.getSimpleName()));
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
 		}
 		newOrder.setCreationDate(new Date());
 		newOrder.setStatus(Order.Status.PENDING);
@@ -92,10 +92,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			return orderSaved;
 		}
 		catch (Exception e) {
-			LOG.error(String.format("Create %s: %s for user %s failed, cause: ", type.getSimpleName(), userId,
+			LOG.error(String.format("Create %s: %s for user %s failed, cause: %s", type.getSimpleName(), order, userId,
 					e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR,
-					String.format("Create %s: %s failed", type.getSimpleName(), order));
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 
@@ -103,8 +102,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		AircraftItem aircraftItem = src.getAircraftItem();
 		AircraftItem found = aircraftItemRepository.findOne(aircraftItem.getId());
 		if (found == null) {
-			throw new AirException(Codes.AIRCRAFT_ITEM_NOT_FOUND,
-					String.format("Aircraftitem %s is not found", aircraftItem.getId()));
+			LOG.error("Aircraftitem {} is not found", aircraftItem);
+			throw new AirException(Codes.AIRCRAFT_ITEM_NOT_FOUND, M.bind(M.AIRCRAFT_ITEM_NOT_FOUND));
 		}
 		tgt.setAircraftItem(found);
 	}
@@ -120,12 +119,12 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		for (PassengerItem item : passengers) {
 			Passenger passenger = item.getPassenger();
 			if (passenger == null) {
-				throw new AirException(Codes.PASSENGER_REQUIRED, "Passenger info required");
+				throw new AirException(Codes.PASSENGER_REQUIRED, M.bind(M.PASSENGER_INFO_REQUIRED));
 			}
 			Passenger found = passengerRepository.findOne(passenger.getId());
 			if (found == null) {
-				throw new AirException(Codes.PASSENGER_NOT_FOUND,
-						String.format("Passenger %s is not found", passenger.getId()));
+				LOG.error("Passenger {} is not found", passenger);
+				throw new AirException(Codes.PASSENGER_NOT_FOUND, M.bind(M.PASSENGER_NOT_FOUND));
 			}
 			item.setPassenger(found);
 		}
@@ -141,8 +140,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		// XXX CANNOT load all passengers for tour, taxi , trans
 		// T order = getOrderRepository().findOne(orderId);
 		if (order == null || order.getStatus() == Order.Status.DELETED) {
-			throw new AirException(orderNotFoundCode(),
-					String.format("%s: %s is not found", type.getSimpleName(), orderId));
+			LOG.error("{}: {} is not found", type.getSimpleName(), orderId);
+			throw new AirException(orderNotFoundCode(), M.bind(M.ORDER_NOT_FOUND, orderId));
 		}
 		return order;
 	}
@@ -150,8 +149,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	protected T doFindOrderByOrderNo(String orderNo) {
 		T order = getOrderRepository().findByOrderNo(orderNo);
 		if (order == null || order.getStatus() == Order.Status.DELETED) {
-			throw new AirException(orderNotFoundCode(),
-					String.format("%s: NO.: %s is not found", type.getSimpleName(), orderNo));
+			LOG.error("{}: NO. {} is not found", type.getSimpleName(), orderNo);
+			throw new AirException(orderNotFoundCode(), M.bind(M.ORDER_NOT_FOUND, orderNo));
 		}
 		return order;
 	}
@@ -164,10 +163,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			return getOrderRepository().save(order);
 		}
 		catch (Exception e) {
-			LOG.error(String.format("Update %s: %s with %s failed, cause: ", type.getSimpleName(), orderId, newOrder,
+			LOG.error(String.format("Update %s: %s with %s failed, cause: %s", type.getSimpleName(), orderId, newOrder,
 					e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR,
-					String.format("Update %s: %s failed", type.getSimpleName(), orderId));
+			throw new AirException(Codes.INTERNAL_ERROR, M.bind(M.INTERNAL_SERVER_ERROR));
 		}
 	}
 
@@ -220,8 +218,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	private void throwInvalidOrderStatus(String orderId, Order.Status status) {
-		throw new AirException(Codes.ORDER_ILLEGAL_STATUS,
-				String.format("%s (%s) order cannot be update to status %s", type.getSimpleName(), orderId, status));
+		LOG.error("{} ({}) order cannot be update to status {}", type.getSimpleName(), orderId, status);
+		throw new AirException(Codes.ORDER_ILLEGAL_STATUS, M.bind(M.ORDER_ILLEGAL_STATUS));
+		// throw new AirException(Codes.ORDER_ILLEGAL_STATUS,
+		// String.format("%s (%s) order cannot be update to status %s", type.getSimpleName(), orderId, status));
 	}
 
 	/**
