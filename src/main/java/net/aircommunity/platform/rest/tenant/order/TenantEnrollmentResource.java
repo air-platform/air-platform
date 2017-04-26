@@ -52,7 +52,7 @@ public class TenantEnrollmentResource extends BaseOrderResource<Enrollment> {
 					page, pageSize);
 		}
 		else {
-			enrollmentService.listEnrollmentsForTenant(tenantId, Order.Status.of(status), page, pageSize);
+			result = enrollmentService.listEnrollmentsForTenant(tenantId, Order.Status.of(status), page, pageSize);
 		}
 		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
 	}
