@@ -62,7 +62,7 @@ public class SmsServiceImpl implements SmsService {
 		}
 		catch (Exception e) {
 			LOG.error("Failed to send SMS:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.SMS_SEND_FAILURE));
+			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SMS_SEND_FAILURE));
 		}
 	}
 

@@ -32,6 +32,12 @@ public class Configuration {
 	@Value("${air.public-port}")
 	private int publicPort;
 
+	@Value("${air.security.access-token-expiration-time}")
+	private long tokenExpirationTimeSeconds = 60 * 60 * 24 * 7; // 7 Days
+
+	@Value("${air.security.access-token-refresh-time}")
+	private long tokenRefreshTimeSeconds = 60 * 60 * 24 * 7; // 7 Days
+
 	@Value("${air.account.default-avatar}")
 	private String defaultAvatar;
 
@@ -103,6 +109,14 @@ public class Configuration {
 
 	public String getWebsite() {
 		return website;
+	}
+
+	public long getTokenExpirationTimeSeconds() {
+		return tokenExpirationTimeSeconds;
+	}
+
+	public long getTokenRefreshTimeSeconds() {
+		return tokenRefreshTimeSeconds;
 	}
 
 	public String getPublicHost() {

@@ -351,10 +351,11 @@ public class AccountResource {
 		if (!configuration.isMobileVerificationEnabled()) {
 			LOG.warn(
 					"Mobiel verification is not enabled, cannot reset password via mobile, please use email to reset.");
-			return Response.status(Status.UNAUTHORIZED).build();
+			return Response.status(Status.SERVICE_UNAVAILABLE).build();
 		}
 		if (!verificationService.verifyCode(request.getMobile(), request.getVerificationCode())) {
-			return Response.status(Response.Status.UNAUTHORIZED).build();
+			throw new AirException(Codes.ACCOUNT_INVALID_VERIFICATION_CODE,
+					M.msg(M.ACCOUNT_CREATION_INVALID_VERIFICATION_CODE, request.getVerificationCode()));
 		}
 		accountService.resetPasswordViaMobile(request.getMobile(), request.getNewPassword());
 		return Response.noContent().build();
