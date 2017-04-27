@@ -403,6 +403,16 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
+	public AccountAuth findAccountMobile(String accountId) {
+		return accountAuthRepository.findByAccountIdAndType(accountId, AuthType.MOBILE);
+	}
+
+	@Override
+	public AccountAuth findAccountUsername(String accountId) {
+		return accountAuthRepository.findByAccountIdAndType(accountId, AuthType.USERNAME);
+	}
+
+	@Override
 	public List<Address> listUserAddresses(String accountId) {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.USER) {

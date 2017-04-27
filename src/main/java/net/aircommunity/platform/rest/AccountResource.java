@@ -26,6 +26,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
@@ -97,6 +98,74 @@ public class AccountResource {
 	@Resource
 	private Configuration configuration;
 
+	@GET
+	@Path("/login")
+	@PermitAll
+	@Produces(MediaType.TEXT_HTML)
+	public Response login(@Context SecurityContext context) {
+		SimplePrincipal principal = (SimplePrincipal) context.getUserPrincipal();
+		LOG.debug("principal: {}", principal);
+		String accountId = null;
+		if (principal == null) {
+			return Response.ok("access-denied").build();
+		}
+		else {
+			accountId = principal.getName();
+		}
+		Account account = accountService.findAccount(accountId);
+		LOG.debug("account: {}", account);
+		String username = getUsername(account);
+		LOG.debug("username: {}", username);
+		String token = accessTokenService.generateToken(account.getId(),
+				ImmutableMap.of(Claims.CLAIM_ROLES, ImmutableSet.of(account.getRole().name()), Claims.CLAIM_EXPIRY,
+						configuration.getTokenExpirationTimeSeconds(), Constants.CLAIM_USERNAME, username));
+		String domain = configuration.getPublicHost();
+
+		LOG.debug("domain: {}", domain);
+		domain = "aircommunity.net";
+		int maxAge = (int) configuration.getTokenExpirationTimeSeconds();
+		NewCookie cookie = new NewCookie("token", token, "/"/* path */, domain, NewCookie.DEFAULT_VERSION,
+				null/* comment */, maxAge, null/* expiry */, false/* secure */, true/* httpOnly */);
+		return Response.ok("ok").cookie(cookie).build();
+	}
+
+	@GET
+	@Path("/airq")
+	@PermitAll
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response airq(@Context SecurityContext context) {
+		SimplePrincipal principal = (SimplePrincipal) context.getUserPrincipal();
+		LOG.debug("principal: {}", principal);
+		String accountId = null;
+		if (principal == null) {
+			return Response.noContent().build();
+		}
+		else {
+			accountId = principal.getName();
+		}
+		Account account = accountService.findAccount(accountId);
+		LOG.debug("account: {}", account);
+		String username = getUsername(account);
+		String token = accessTokenService.generateToken(username,
+				ImmutableMap.of(Claims.CLAIM_ROLES, ImmutableSet.of(account.getRole().name()), Claims.CLAIM_EXPIRY,
+						configuration.getTokenExpirationTimeSeconds(), Constants.CLAIM_USERNAME, username));
+		return Response.ok(new AccessToken(token)).build();
+	}
+
+	private String getUsername(Account account) {
+		AccountAuth accountAuthUsername = accountService.findAccountUsername(account.getId());
+		if (accountAuthUsername != null) {
+			return accountAuthUsername.getPrincipal();
+		}
+		AccountAuth accountAuthMobile = accountService.findAccountMobile(account.getId());
+		String nickName = account.getNickName();
+		if (Strings.isBlank(nickName)) {
+			nickName = accountAuthMobile != null ? accountAuthMobile.getPrincipal()
+					: Constants.CLAIM_USERNAME_ANONYMOUS;
+		}
+		return nickName;
+	}
+
 	/**
 	 * Create user (registration)
 	 */
@@ -153,8 +222,9 @@ public class AccountResource {
 		}
 		try {
 			// Issue a token for this account
-			String token = accessTokenService.generateToken(account.getId(),
-					ImmutableMap.of(Claims.CLAIM_ROLES, ImmutableSet.of(account.getRole().name())));
+			String username = getUsername(account);
+			String token = accessTokenService.generateToken(account.getId(), ImmutableMap.of(Claims.CLAIM_ROLES,
+					ImmutableSet.of(account.getRole().name()), Constants.CLAIM_USERNAME, username));
 			// Return the token on the response
 			return Response.ok(new AccessToken(token)).build();
 		}

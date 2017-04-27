@@ -142,6 +142,10 @@ public interface AccountService {
 	@Nonnull
 	List<AccountAuth> findAccountAuths(String accountId);
 
+	AccountAuth findAccountMobile(@Nonnull String accountId);
+
+	AccountAuth findAccountUsername(@Nonnull String accountId);
+
 	/**
 	 * List all Addresses of an user.
 	 * 
