@@ -24,7 +24,7 @@ public final class Codes {
 
 	// account
 	public static final Code ACCOUNT_UNAUTHORIZED_PERMISSION = Code.notAuthorized(11_001_0001);
-	public static final Code ACCOUNT_CREATION_FAILURE = Code.notAuthorized(11_001_0002);
+	public static final Code ACCOUNT_CREATION_FAILURE = Code.invalidArgument(11_001_0002);
 	public static final Code ACCOUNT_INVALID_VERIFICATION_CODE = Code.invalidArgument(11_001_0003);
 	public static final Code ACCOUNT_INVALID_USERNAME = Code.invalidArgument(11_001_0004);
 	public static final Code ACCOUNT_PASSWORD_MISMATCH = Code.invalidArgument(11_001_0005);
@@ -34,7 +34,7 @@ public final class Codes {
 	public static final Code ACCOUNT_MOBILE_ALREADY_EXISTS = Code.alreadyExists(11_001_0009);
 	public static final Code ACCOUNT_MOBILE_NOT_FOUND = Code.notFound(11_001_0010);
 	public static final Code ACCOUNT_EMAIL_ALREADY_EXISTS = Code.alreadyExists(11_001_0011);
-	public static final Code ACCOUNT_EMAIL_NOT_BIND = Code.notAuthorized(11_001_0012);
+	public static final Code ACCOUNT_EMAIL_NOT_BIND = Code.illegalAccess(11_001_0012);
 	public static final Code ACCOUNT_ADDRESS_NOT_ALLOWED = Code.illegalAccess(11_001_0013);
 	public static final Code ACCOUNT_PASSENGER_NOT_ALLOWED = Code.illegalAccess(11_001_0014);
 	public static final Code ACCOUNT_ADD_PASSENGER_FAILURE = Code.invalidArgument(11_001_0015);
