@@ -68,11 +68,6 @@ public class AccountServiceImpl implements AccountService {
 	private static final String EMAIL_CONFIRMATION_LINK_WITH_PORT_BASE_FORMAT = "http%s://%s:%d%s/%s/account/email/confirm?%s";
 	private static final String EMAIL_CONFIRMATION_LINK_BASE_FORMAT = "http%s://%s%s/%s/account/email/confirm?%s";
 	private static final String EMAIL_CONFIRMATION_LINK_PARAMS = "token=%s&code=%s";
-	private static final String EMAIL_BINDING_USERNAME = "username";
-	private static final String EMAIL_BINDING_COMPANY = "company";
-	private static final String EMAIL_BINDING_WEBSITE = "website";
-	private static final String EMAIL_BINDING_VERIFICATIONLINK = "verificationLink";
-	private static final String EMAIL_BINDING_RNDPASSWORD = "rndPassword";
 	private static final String VERIFICATION_CODE_SEPARATOR = ":";
 	private static final String VERIFICATION_CODE_FORMAT = "%s" + VERIFICATION_CODE_SEPARATOR + "%s"; // code:timestamp
 
@@ -148,7 +143,8 @@ public class AccountServiceImpl implements AccountService {
 			}
 		}
 		if (auth == null) {
-			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.msg(M.ACCOUNT_NOT_FOUND, principal));
+			LOG.error("Failed to authenticate, account {} is not found", principal);
+			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.msg(M.ACCOUNT_NOT_FOUND));
 		}
 		Account account = auth.getAccount();
 		if (account.getStatus() != Status.ENABLED) {
@@ -392,7 +388,8 @@ public class AccountServiceImpl implements AccountService {
 	public Account findAccount(String accountId) {
 		Account account = accountRepository.findOne(accountId);
 		if (account == null) {
-			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.msg(M.ACCOUNT_NOT_FOUND, accountId));
+			LOG.error("Failed to find account, account {} is not found", accountId);
+			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.msg(M.ACCOUNT_NOT_FOUND));
 		}
 		return account;
 	}
@@ -410,6 +407,11 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public AccountAuth findAccountUsername(String accountId) {
 		return accountAuthRepository.findByAccountIdAndType(accountId, AuthType.USERNAME);
+	}
+
+	@Override
+	public AccountAuth findAccountEmail(String accountId) {
+		return accountAuthRepository.findByAccountIdAndType(accountId, AuthType.EMAIL);
 	}
 
 	@Override
@@ -563,10 +565,10 @@ public class AccountServiceImpl implements AccountService {
 				ImmutableSet.of(account.getRole().name()), Claims.CLAIM_EXPIRY, expires));
 		String verificationLink = String.format(emailConfirmationLink, token, verificationCode);
 		Map<String, Object> bindings = new HashMap<>(4);
-		bindings.put(EMAIL_BINDING_USERNAME, account.getNickName());
-		bindings.put(EMAIL_BINDING_COMPANY, configuration.getCompany());
-		bindings.put(EMAIL_BINDING_WEBSITE, configuration.getWebsite());
-		bindings.put(EMAIL_BINDING_VERIFICATIONLINK, verificationLink);
+		bindings.put(Constants.TEMPLATE_BINDING_USERNAME, account.getNickName());
+		bindings.put(Constants.TEMPLATE_BINDING_COMPANY, configuration.getCompany());
+		bindings.put(Constants.TEMPLATE_BINDING_WEBSITE, configuration.getWebsite());
+		bindings.put(Constants.TEMPLATE_BINDING_VERIFICATIONLINK, verificationLink);
 		String mailVerificationBody = templateService.renderFile(Constants.TEMPLATE_MAIL_VERIFICATION, bindings);
 		mailService.sendMail(email, configuration.getMailVerificationSubject(), mailVerificationBody);
 	}
@@ -575,11 +577,12 @@ public class AccountServiceImpl implements AccountService {
 	public void confirmEmail(String accountId, String verificationCode) {
 		AccountAuth auth = accountAuthRepository.findByAccountIdAndType(accountId, AuthType.EMAIL);
 		if (auth == null) {
-			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.msg(M.ACCOUNT_NOT_FOUND, accountId));
+			LOG.warn("Failed to confirm email, account {} is not found", accountId);
+			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.msg(M.ACCOUNT_NOT_FOUND));
 		}
 		if (auth.isVerified()) {
-			LOG.warn("Account {} {} is already verified", auth.getPrincipal(), auth.getType());
-			return;
+			throw new AirException(Codes.ACCOUNT_EMAIL_ALREADY_VERIFIED,
+					M.msg(M.ACCOUNT_EMAIL_ALREADY_VERIFIED, auth.getPrincipal()));
 		}
 		String credential = auth.getCredential();
 		if (Strings.isBlank(credential) || Strings.isBlank(verificationCode)) {
@@ -658,10 +661,10 @@ public class AccountServiceImpl implements AccountService {
 		account.setPassword(passwordEncoder.encode(rndPassword));
 		Account accountUpdated = accountRepository.save(account);
 		Map<String, Object> bindings = new HashMap<>(4);
-		bindings.put(EMAIL_BINDING_USERNAME, account.getNickName());
-		bindings.put(EMAIL_BINDING_COMPANY, configuration.getCompany());
-		bindings.put(EMAIL_BINDING_WEBSITE, configuration.getWebsite());
-		bindings.put(EMAIL_BINDING_RNDPASSWORD, rndPassword);
+		bindings.put(Constants.TEMPLATE_BINDING_USERNAME, account.getNickName());
+		bindings.put(Constants.TEMPLATE_BINDING_COMPANY, configuration.getCompany());
+		bindings.put(Constants.TEMPLATE_BINDING_WEBSITE, configuration.getWebsite());
+		bindings.put(Constants.TEMPLATE_BINDING_RNDPASSWORD, rndPassword);
 		// bindings.put(EMAIL_BINDING_RESETPASSWORDLINK, "#TODO"); // XXX NOT USED FOR NOW
 		String mailBody = templateService.renderFile(Constants.TEMPLATE_MAIL_RESET_PASSOWRD, bindings);
 		mailService.sendMail(auth.getPrincipal(), configuration.getMailResetPasswordSubject(), mailBody);

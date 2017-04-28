@@ -57,6 +57,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String ACCOUNT_ALREADY_EXISTS;
 	public static String ACCOUNT_NOT_FOUND;
 	public static String ACCOUNT_INVALID_VERIFICATION_CODE;
+	public static String ACCOUNT_EMAIL_ALREADY_VERIFIED;
 	public static String PASSENGER_NOT_FOUND;
 	public static String PASSENGER_INFO_REQUIRED;
 

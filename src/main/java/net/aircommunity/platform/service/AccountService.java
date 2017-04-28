@@ -146,6 +146,8 @@ public interface AccountService {
 
 	AccountAuth findAccountUsername(@Nonnull String accountId);
 
+	AccountAuth findAccountEmail(@Nonnull String accountId);
+
 	/**
 	 * List all Addresses of an user.
 	 * 

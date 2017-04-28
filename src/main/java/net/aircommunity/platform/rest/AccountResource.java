@@ -2,6 +2,7 @@ package net.aircommunity.platform.rest;
 
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -67,6 +68,7 @@ import net.aircommunity.platform.model.UsernameRequest;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.SmsService;
+import net.aircommunity.platform.service.TemplateService;
 import net.aircommunity.platform.service.VerificationService;
 
 /**
@@ -94,6 +96,9 @@ public class AccountResource {
 
 	@Resource
 	private SmsService smsService;
+
+	@Resource
+	private TemplateService templateService;
 
 	@Resource
 	private Configuration configuration;
@@ -478,8 +483,21 @@ public class AccountResource {
 	@TokenSecured
 	public Response confirmEmail(@QueryParam("code") String verificationCode, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		accountService.confirmEmail(accountId, verificationCode);
-		return Response.ok("邮件验证成功").build(); // TODO use template to generate a html
+		Map<String, Object> bindings = new HashMap<>(3);
+		bindings.put(Constants.TEMPLATE_BINDING_COMPANY, configuration.getCompany());
+		String result = "";
+		try {
+			accountService.confirmEmail(accountId, verificationCode);
+			AccountAuth auth = accountService.findAccountEmail(accountId);
+			bindings.put(Constants.TEMPLATE_BINDING_USERNAME, auth.getAccount().getNickName());
+			bindings.put(Constants.TEMPLATE_BINDING_EMAIL, auth.getPrincipal());
+			result = templateService.renderFile(Constants.TEMPLATE_MAIL_VERIFICATION_SUCCESS, bindings);
+		}
+		catch (AirException e) {
+			bindings.put(Constants.TEMPLATE_BINDING_FAILURE_CAUSE, e.getLocalizedMessage());
+			result = templateService.renderFile(Constants.TEMPLATE_MAIL_VERIFICATION_FAILURE, bindings);
+		}
+		return Response.ok(result).build();
 	}
 
 	/**

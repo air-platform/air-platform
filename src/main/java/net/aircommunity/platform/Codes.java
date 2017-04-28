@@ -35,9 +35,10 @@ public final class Codes {
 	public static final Code ACCOUNT_MOBILE_NOT_FOUND = Code.notFound(11_001_0010);
 	public static final Code ACCOUNT_EMAIL_ALREADY_EXISTS = Code.alreadyExists(11_001_0011);
 	public static final Code ACCOUNT_EMAIL_NOT_BIND = Code.illegalAccess(11_001_0012);
-	public static final Code ACCOUNT_ADDRESS_NOT_ALLOWED = Code.illegalAccess(11_001_0013);
-	public static final Code ACCOUNT_PASSENGER_NOT_ALLOWED = Code.illegalAccess(11_001_0014);
-	public static final Code ACCOUNT_ADD_PASSENGER_FAILURE = Code.invalidArgument(11_001_0015);
+	public static final Code ACCOUNT_EMAIL_ALREADY_VERIFIED = Code.illegalAccess(11_001_0013);
+	public static final Code ACCOUNT_ADDRESS_NOT_ALLOWED = Code.illegalAccess(11_001_0014);
+	public static final Code ACCOUNT_PASSENGER_NOT_ALLOWED = Code.illegalAccess(11_001_0015);
+	public static final Code ACCOUNT_ADD_PASSENGER_FAILURE = Code.invalidArgument(11_001_0016);
 
 	// apikey
 	public static final Code APIKEY_NOT_FOUND = Code.notFound(11_002_0001);

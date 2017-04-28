@@ -12,10 +12,24 @@ import com.google.common.collect.ImmutableSet;
 @SuppressWarnings("javadoc")
 public final class Constants {
 
+	// templates
+	// @formatter:off
 	private static final String TEMPLATE_DIR = "template";
 	public static final String TEMPLATE_MAIL_VERIFICATION = TEMPLATE_DIR + "/mail-verification.template";
+	public static final String TEMPLATE_MAIL_VERIFICATION_SUCCESS = TEMPLATE_DIR + "/mail-verification-success.template";
+	public static final String TEMPLATE_MAIL_VERIFICATION_FAILURE = TEMPLATE_DIR + "/mail-verification-failure.template";
 	public static final String TEMPLATE_MAIL_RESET_PASSOWRD = TEMPLATE_DIR + "/mail-reset-password.template";
 	public static final String TEMPLATE_MAIL_ORDER_NOTIFICATION = TEMPLATE_DIR + "/mail-%s-order.template";
+	// @formatter:on
+
+	// bindings
+	public static final String TEMPLATE_BINDING_USERNAME = "username";
+	public static final String TEMPLATE_BINDING_COMPANY = "company";
+	public static final String TEMPLATE_BINDING_WEBSITE = "website";
+	public static final String TEMPLATE_BINDING_EMAIL = "email";
+	public static final String TEMPLATE_BINDING_FAILURE_CAUSE = "cause";
+	public static final String TEMPLATE_BINDING_VERIFICATIONLINK = "verificationLink";
+	public static final String TEMPLATE_BINDING_RNDPASSWORD = "rndPassword";
 
 	// client managers of a product
 	// MUST IN FORMAT OF: person1:email1, person2:email2, ..., personN:emailN
