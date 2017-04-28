@@ -15,5 +15,3 @@ Air Community Platform.
 * **MUST** use standard `JavaDoc Tags` on all java source code.
 * **SHOULD** use `English` in JavaDoc, comments and any source code related resources **as possible**.
 * **SHOULD** follow [Java Coding Conventions](http://www.oracle.com/technetwork/java/codeconventions-150003.pdf) and [Java Style Guide](https://google.github.io/styleguide/javaguide.html) if you haven't to improve code quality.
-
-####
