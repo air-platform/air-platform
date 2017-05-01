@@ -20,7 +20,8 @@ Air Community Platform.
 
 #### Run in Eclipse
 
-Run `net.aircommunity.platform.Application` with VM Arguments: `-Dspring.profiles.active=dev`
+* Project Properties > Maven > Active Maven Profiles: dev
+* Run `net.aircommunity.platform.Application` with VM Arguments: `-Dspring.profiles.active=dev`
 
 
 
