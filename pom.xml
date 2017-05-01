@@ -47,7 +47,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.hubspot.jinjava</groupId>
 			<artifactId>jinjava</artifactId>
@@ -61,18 +60,18 @@
 
 		<!-- 3rd -->
 		<dependency>
-			<groupId>io.micro</groupId>
-			<artifactId>micro</artifactId>
-			<version>${micro.version}</version>
-			<scope>system</scope>
-			<systemPath>${lib-path}/io/micro/${micro.version}/micro-${micro.version}.jar</systemPath>
-		</dependency>
-		<dependency>
 			<groupId>com.alidayu</groupId>
 			<artifactId>alidayu</artifactId>
 			<version>${alidayu.version}</version>
 			<scope>system</scope>
 			<systemPath>${lib-path}/com/alidayu/${alidayu.version}/taobao-sdk-java-auto_1455552377940-20160607.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>io.micro</groupId>
+			<artifactId>micro</artifactId>
+			<version>${micro.version}</version>
+			<scope>system</scope>
+			<systemPath>${lib-path}/io/micro/${micro.version}/micro-${micro.version}.jar</systemPath>
 		</dependency>
 
 		<!-- BEGIN DEPENDENCY -->
@@ -164,6 +163,12 @@
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
+		</dependency>
+
+		<!-- required by conditional logging -->
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
 		</dependency>
 
 		<!-- testing -->
@@ -280,6 +285,9 @@
 					<resource>
 						<directory>src/main/resources</directory>
 						<filtering>true</filtering>
+						<excludes>
+							<exclude>config/application-prd.properties</exclude>
+						</excludes>
 					</resource>
 				</resources>
 			</build>
@@ -302,9 +310,9 @@
 						<directory>src/main/resources</directory>
 						<filtering>true</filtering>
 						<includes>
-							<include>config/application-${build.profile.id}.properties</include>
+							<include>config/application-prd.properties</include>
 							<include>banner.txt</include>
-							<include>ValidationMessages*.properties</include>
+							<include>messages*.properties</include>
 						</includes>
 					</resource>
 				</resources>

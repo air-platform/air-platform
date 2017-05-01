@@ -153,6 +153,7 @@ public class Application {
 			app.run(args);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			System.exit(1);
 		}
 	}

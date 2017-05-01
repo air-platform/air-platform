@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
-    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}polly.log}"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}air-platform.log}"/>
     <property name="FILE_LOG_PATTERN" value="[${PID:- }] [%d{ISO8601}] [%thread] [%-5level] [%logger{36}] - %msg%n"/>
     <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
@@ -13,16 +13,18 @@
     <property name="access_log_pattern" value="[${PID:-}] [%d{ISO8601}] [%-5level] [ACCESS] - %msg%n" />
     <property name="normal_log_pattern" value="[${PID:-}] [%d{ISO8601}] [%thread] [%-5level] [%15.15t][%-40.40logger{39}] - %msg%n" />
     <property name="err_log_pattern" value="[${PID:-}] [%d{ISO8601}] [%thread] [%-5level] [%15.15t][%-40.40logger{39}] - %msg%n" />
+    <property name="console_log_pattern" value="%clr([${PID:-}]){magenta} %clr([%d{ISO8601}]){faint} %clr([%-5level]) %clr([%15.15t]){faint} %clr([%-40.40logger{39}]){cyan} %clr(-){faint} %m%n" />
     
     <!-- appenders -->
     <appender name="ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logging.dir}/air-${logging.suffix}.access.log</file>
+        <file>${logging.dir}/air-${logging.suffix}-access.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logging.dir}/air-${logging.suffix}.access-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${logging.dir}/air-${logging.suffix}.access-log-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>${max_file_size}</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>${max_history}</maxHistory>
+             <!-- keep N days worth of history -->
+             <maxHistory>${max_history}</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>${access_log_pattern}</pattern>
@@ -32,7 +34,7 @@
     <appender name="NORMAL" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logging.dir}/air-${logging.suffix}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logging.dir}/air-${logging.suffix}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${logging.dir}/air-${logging.suffix}-log-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>${max_file_size}</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
@@ -40,13 +42,15 @@
         </rollingPolicy>
         <encoder>
             <pattern>${normal_log_pattern}</pattern>
+             <!-- this quadruples logging throughput -->
+            <immediateFlush>false</immediateFlush>
         </encoder>
     </appender>
     
     <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logging.dir}/air-${logging.suffix}.error.log</file>
+        <file>${logging.dir}/air-${logging.suffix}-error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logging.dir}/air-${logging.suffix}-%d{yyyy-MM-dd}.%i.error.log</fileNamePattern>
+            <fileNamePattern>${logging.dir}/air-${logging.suffix}-error-log-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>${max_file_size}</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
@@ -62,29 +66,48 @@
 		</filter>
     </appender>
     
-    <!-- Console -->
-	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%clr([${PID:-}]){magenta} %clr([%d{ISO8601}]){faint} %clr([%-5level]) %clr([%15.15t]){faint} %clr([%-40.40logger{39}]){cyan} %clr(-){faint} %m%n</pattern>
-		</encoder>
-	</appender>
-    
     <logger name="ch.qos.logback" level="OFF"/>
+    <logger name="org.hibernate" level="WARN"/>
     <logger name="com.fasterxml.jackson" level="WARN"/>
     <logger name="org.jboss.resteasy" level="WARN"/>
-    <logger name="org.hibernate" level="WARN"/>
     <logger name="org.springframework" level="WARN"/>
+    <logger name="org.xnio" level="WARN"/>
     <logger name="io.micro" level="INFO"/>
-
-    <logger name="net.aircommunity.platform" level="INFO" additivity="false">
-           <appender-ref ref="NORMAL" />
-           <appender-ref ref="ERROR" />
-    </logger>
-    <logger name="net.aircommunity.platform.rest.filter" level="INFO" additivity="false">
-         <appender-ref ref="ACCESS" />
-    </logger>
     
-    <root level="INFO">
-        <appender-ref ref="CONSOLE" />
-    </root>
+    <springProfile name="dev,staging">
+   		<!-- Console -->
+		<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+			<encoder>
+				<pattern>${console_log_pattern}</pattern>
+			</encoder>
+		</appender>
+		<logger name="net.aircommunity.platform" level="DEBUG"  additivity="true"/>
+	    <logger name="net.aircommunity.platform.rest.filter" level="DEBUG" additivity="false">
+	         <appender-ref ref="ACCESS" />
+	    </logger>
+	</springProfile>
+    
+    <springProfile name="prd">
+         <logger name="net.aircommunity.platform" level="INFO"  additivity="true"/>
+	     <!-- additivity=false ensures access log data only goes to the access log -->
+	    <logger name="net.aircommunity.platform.rest.filter" level="INFO" additivity="false">
+	         <appender-ref ref="ACCESS" />
+	    </logger>
+    </springProfile>
+    
+	<if condition='property("spring.profiles.active").contains("prd")'>
+		<then>
+			<root level="INFO">
+				<appender-ref ref="NORMAL" />
+				<appender-ref ref="ERROR" />
+			</root>
+		</then>
+		<else>
+			<root level="INFO">
+				<appender-ref ref="NORMAL" />
+				<appender-ref ref="ERROR" />
+				<appender-ref ref="CONSOLE" />
+			</root>
+		</else>
+	</if>
 </configuration>
