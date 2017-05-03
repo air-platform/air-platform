@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.Principal;
 
 import javax.annotation.Priority;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -13,6 +14,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.actuate.metrics.CounterService;
 
 import com.google.common.base.Joiner;
 
@@ -32,6 +34,9 @@ public class AccessLoggingFilter implements ContainerRequestFilter {
 	private static final Logger LOG = LoggerFactory.getLogger(AccessLoggingFilter.class);
 
 	private static final String ANONYMOUS = "ANONYMOUS";
+
+	@Resource
+	private CounterService counterService;
 
 	@Context
 	private HttpServletRequest request;
@@ -64,6 +69,7 @@ public class AccessLoggingFilter implements ContainerRequestFilter {
 		if (Strings.isBlank(ip)) {
 			ip = Constants.LOOPBACK_LOCALHOST;
 		}
+		counterService.increment(Constants.COUNTER_API_REQUESTS);
 		LOG.info("[{}] [{}] [{}] {} {}", ip, username, role, requestContext.getMethod(),
 				requestContext.getUriInfo().getRequestUri().getPath());
 	}

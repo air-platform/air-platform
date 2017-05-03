@@ -45,6 +45,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 		<dependency>
@@ -200,8 +204,13 @@
 					</execution>
 				</executions>
 				<configuration>
-					<file>${basedir}/src/main/scripts/start.sh</file>
-					<outputFile>${project.build.directory}/scripts/start.sh</outputFile>
+					<basedir>${basedir}/src/main/scripts</basedir>
+					<includes>
+						<include>*.sh</include>
+					</includes>
+					<outputBasedir>${project.build.directory}</outputBasedir>
+					<outputDir>scripts</outputDir>
+					<preserveDir>false</preserveDir>
 					<replacements>
 						<replacement>
 							<token>@projectVersion@</token>
@@ -223,6 +232,10 @@
 							<token>@activeProfile@</token>
 							<value>${active.profile}</value>
 						</replacement>
+						<replacement>
+							<token>@pidfile@</token>
+							<value>application.pid</value>
+						</replacement>
 					</replacements>
 				</configuration>
 			</plugin>
@@ -232,6 +245,7 @@
 				<executions>
 					<execution>
 						<goals>
+							<goal>build-info</goal>
 							<goal>repackage</goal>
 						</goals>
 						<configuration>

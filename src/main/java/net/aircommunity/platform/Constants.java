@@ -31,6 +31,9 @@ public final class Constants {
 	public static final String TEMPLATE_BINDING_VERIFICATIONLINK = "verificationLink";
 	public static final String TEMPLATE_BINDING_RNDPASSWORD = "rndPassword";
 
+	// metrics
+	public static final String COUNTER_API_REQUESTS = "api.requests";
+
 	// client managers of a product
 	// MUST IN FORMAT OF: person1:email1, person2:email2, ..., personN:emailN
 	public static final String CONTACT_INFO_SEPARATOR = ":";

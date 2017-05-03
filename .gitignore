@@ -36,6 +36,8 @@ hs_err_pid*.log
 # Ingore for C
 .zshrc
 
+*.pid
+
 # specific directories
 backup
 logs

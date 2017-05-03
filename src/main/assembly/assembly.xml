@@ -35,7 +35,7 @@
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>${project.build.directory}/classes/config</directory>
+			<directory>${project.build.outputDirectory}/config</directory>
 			<outputDirectory>config</outputDirectory>
 			<includes>
 				<include>*.properties</include>
