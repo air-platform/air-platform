@@ -42,16 +42,16 @@ public class Configuration {
 	private String defaultAvatar;
 
 	// for cloud file upload
-	@Value("${air.fileload.host}")
+	@Value("${air.fileupload.host}")
 	private String fileUploadHost;
 
-	@Value("${air.fileload.bucket}")
+	@Value("${air.fileupload.bucket}")
 	private String fileUploadBucket;
 
-	@Value("${air.fileload.access-key}")
+	@Value("${air.fileupload.access-key}")
 	private String fileUploadAccessKey;
 
-	@Value("${air.fileload.secret-key}")
+	@Value("${air.fileupload.secret-key}")
 	private String fileUploadSecretKey;
 
 	@Value("${air.order.email-notification}")
