@@ -69,8 +69,10 @@ import okhttp3.OkHttpClient;
 @EnableScheduling
 @SuppressWarnings("javadoc")
 public class Application {
-
 	private static final String KEY_ID = "air.access_token_key";
+	private static final String ISSUER = "AIR_PLATFORM_ISSUER";
+	private static final String AUDIENCE = "AIR_PLATFORM_AUDIENCE";
+	private static final String KEY_ID_PASSWORD = "AIR_PLATFORM_SECUREKEY_PASSWORD_9D8DD4ECBB9341D6BB364A053B058A34";
 
 	@Value("${air.dc-id}")
 	private long datacenterId;
@@ -133,6 +135,9 @@ public class Application {
 		accessTokenService.setAccessTokenConfigStorage(accessTokenKeyStorage(ctx));
 		AccessTokenConfig config = new AccessTokenConfig();
 		config.setKeyId(KEY_ID);
+		config.setKeyIdPassword(KEY_ID_PASSWORD);
+		config.setIssuer(ISSUER);
+		config.setAudience(AUDIENCE);
 		config.setExpirationTimeSeconds(expirationTimeSeconds);
 		config.setRefreshTimeSeconds(refreshTimeSeconds);
 		accessTokenService.initialize(config);

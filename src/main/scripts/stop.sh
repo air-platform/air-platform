@@ -33,5 +33,15 @@ echo "| Commit Time: $AIR_PLATFORM_COMMIT_TIME"
 echo "| Git Commit: $AIR_PLATFORM_COMMIT"
 echo "------------------------------------------------------"
 
-kill `cat ${AIR_PLATFORM_HOME}/@pidfile@`
-echo "AIR Platform v${AIR_PLATFORM_VERSION} stopped."
+
+PIDFILE=${AIR_PLATFORM_HOME}/@pidfile@
+
+if [[ ! -f ${PIDFILE} ]]
+then
+   echo "AIR Platform is already stopped."
+   echo ""
+   exit 1
+fi
+
+kill `cat ${PIDFILE}`
+echo "AIR Platform stopped."

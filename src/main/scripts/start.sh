@@ -42,6 +42,15 @@ JAVA_OPTIONS="$JAVA_OPTIONS -Dfile.encoding=UTF8"
 JAVA_OPTIONS="$JAVA_OPTIONS -Xms4G -Xmx4G -XX:+UseG1GC"
 JAVA_OPTIONS="$JAVA_OPTIONS -XX:+UseCompressedOops -XX:+OptimizeStringConcat"
 
+PIDFILE=${AIR_PLATFORM_HOME}/@pidfile@
+
+if [[ -f ${PIDFILE} ]]
+then
+   echo "AIR Platform is already running with PID: `cat ${PIDFILE}`"
+   echo ""
+   exit 1
+fi
+
 if [[ "${mode}" = "fg" ]]
 then
    echo  "Starting AIR Platform in foreground in [@activeProfile@] mode..."
