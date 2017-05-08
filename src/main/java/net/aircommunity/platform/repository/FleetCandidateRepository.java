@@ -19,6 +19,9 @@ public interface FleetCandidateRepository extends JpaRepository<FleetCandidate, 
 
 	Page<FleetCandidate> findDistinctOrderByVendorId(String tenantId, Pageable pageable);
 
+	Page<FleetCandidate> findDistinctOrderByVendorIdAndStatusNot(String tenantId, FleetCandidate.Status status,
+			Pageable pageable);
+
 	Page<FleetCandidate> findDistinctOrderByVendorIdAndOrderStatus(String tenantId, Order.Status status,
 			Pageable pageable);
 

@@ -80,7 +80,7 @@ public class FleetCandidate extends Persistable {
 	}
 
 	public enum Status {
-		CANDIDATE, SELECTED;
+		CANDIDATE, SELECTED, DELETED;
 	}
 
 }

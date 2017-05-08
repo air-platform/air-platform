@@ -74,6 +74,14 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public CharterOrder updateCharterOrderStatus(String orderId, Order.Status status) {
+		if (Order.Status.DELETED == status) {
+			// update all fleetCandidates as deleted when an order is deleted
+			List<FleetCandidate> fleetCandidates = fleetCandidateRepository.findByOrderId(orderId);
+			fleetCandidates.stream().forEach(fleetCandidate -> {
+				fleetCandidate.setStatus(FleetCandidate.Status.DELETED);
+			});
+			fleetCandidateRepository.save(fleetCandidates);
+		}
 		return doUpdateOrderStatus(orderId, status);
 	}
 
@@ -132,10 +140,15 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 
 	@Override
 	public Page<CharterOrder> listTenantCharterOrders(String tenantId, Status status, int page, int pageSize) {
+		if (Order.Status.DELETED == status) {
+			return Page.emptyPage(page, pageSize);
+		}
 		Page<FleetCandidate> data = null;
 		if (status == null) {
-			data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorId(tenantId,
-					Pages.createPageRequest(page, pageSize)));
+			data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorIdAndStatusNot(tenantId,
+					FleetCandidate.Status.DELETED, Pages.createPageRequest(page, pageSize)));
+			// data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorId(tenantId,
+			// Pages.createPageRequest(page, pageSize)));
 		}
 		else {
 			data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorIdAndOrderStatus(tenantId, status,
