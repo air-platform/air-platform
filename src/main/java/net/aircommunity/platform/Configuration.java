@@ -103,6 +103,13 @@ public class Configuration {
 	@Value("${air.airbb.token}")
 	private String nodebbToken;
 
+	// IDCard service
+	@Value("${air.idcard.url}")
+	private String idcardUrl;
+
+	@Value("${air.idcard.token}")
+	private String idcardToken;
+
 	public String getCompany() {
 		return company;
 	}
@@ -217,6 +224,14 @@ public class Configuration {
 
 	public String getNodebbToken() {
 		return nodebbToken;
+	}
+
+	public String getIdcardUrl() {
+		return idcardUrl;
+	}
+
+	public String getIdcardToken() {
+		return idcardToken;
 	}
 
 	// private static final String AUTH_METHODS_SEP = ",";

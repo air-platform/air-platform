@@ -64,6 +64,8 @@ public class LocalizedMessages extends NLSResource {
 	public static String SMS_TOO_MANY_VERIFICATION_REQUEST;
 	public static String SMS_SEND_FAILURE;
 
+	public static String IDCARD_VERIFICATION_FAILURE;
+
 	public static String AIRQ_ERROR;
 
 	public static String SERVICE_UNAVAILABLE;
