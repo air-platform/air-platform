@@ -1,0 +1,134 @@
+# The properties listed below are resolved by the apidoc message resolver.
+
+--- 
+account: 
+  register: 
+    summary: 注册新用户
+    description: 注册新用户
+    parameter: 
+      request: 手机号，验证码和密码都是必填项
+    response: 
+      201: 用户名注册成功
+      
+  auth: 
+    summary: 验证账号
+    description: 假如成功则返回Access Token, 可以用该Token进行后续的API请求
+    parameter: 
+      request: 账号的用户名和密码是必填项
+    response: 
+      401: 用户名或密码错误
+      404: 账号不存在
+      
+  request-verification: 
+    summary: 获取手机验证码
+    description: 获取手机验证码
+    parameter: 
+      mobile: 手机号
+    response: 
+      204: 发送手机验证码成功
+      
+  auth-refresh: 
+    summary: 刷新AccessToken
+    description: 假如成功则返回新的AccessToken
+    response: 
+      200: 生成新的AccessToken
+      401: 非法AccessToken
+      
+  airq: 
+    summary: 获取AirQ AccessToken
+    description: 获取AirQ AccessToken
+    response: 
+      200: 获取AccessToken成功
+      403: 该账号没有登陆
+      
+  profile: 
+    summary: 获取账号信息
+    description: 获取账号信息
+    response: 
+      200: 获取信息成功
+      401: 非法AccessToken
+      404: 账号不存在
+      
+  profile-auths: 
+    summary: 获取用户登陆信息
+    description: 获取用户个所有登陆信息
+    response: 
+      200: 成功返回信息
+      
+  profile-update: 
+    summary: 更新用户信息
+    description: 更新用户个人信息
+    parameter: 
+      newData: 新的用户信息
+    response: 
+      200: 更新成功
+      
+  password-update: 
+    summary: 更新账号密码
+    description: 更新账号密码
+    parameter: 
+      request: 新密码和旧密码
+    response: 
+      204: 更新成功
+      400: 非法新密码
+      401: 旧密码错误
+      404: 账号不存在
+      
+  password-reset-mobile: 
+    summary: 找回密码(手机)
+    description: 通过手机找回密码
+    parameter: 
+      request: 输入手机号，验证码和新密码
+    response: 
+      204: 重置密码成功
+      
+  password-reset-email: 
+    summary: 找回密码(邮箱)
+    description: 通过邮箱找回密码
+    response: 
+      204: 发送找回密码邮箱成功
+      
+  username-update: 
+    summary: 更改用户名
+    description: 更改用户名
+    parameter: 
+      request: 新用户名
+    response: 
+      204: 更改成功
+      
+  email-update: 
+    summary: 更新账号密码
+    description: 更新账号密码
+    parameter: 
+      request: 新邮箱地址
+    response: 
+      204: 更新成功
+      400: 非法邮箱格式
+      401: "非法Access Token"
+      404: 账号不存在
+      
+  email-confirm: 
+    summary: 确认邮箱
+    description: 确认邮箱
+    parameter: 
+      verificationCode: 验证码
+    response: 
+      200: 确认成功
+      
+  delete: 
+    summary: 销毁账号
+    description: 销毁账号，不可撤销
+    parameter: 
+      request: 用户名和密码
+    response: 
+      204: 销毁成功
+      401: 用户名或密码错误
+      
+  apikey-refresh: 
+    summary: 刷新API密钥
+    description: 刷新API密钥
+    parameter: 
+      apiKeyId: API密钥的唯一标示
+    response: 
+      401: 非法AccessToken
+      404: API密钥不存在

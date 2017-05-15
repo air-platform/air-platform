@@ -49,6 +49,10 @@ import io.micro.core.security.AccessTokenService;
 import io.micro.core.security.Claims;
 import io.micro.core.security.SimplePrincipal;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
@@ -76,8 +80,8 @@ import net.aircommunity.platform.service.VerificationService;
  * 
  * @author Bin.Zhang
  */
-@Api
 @RESTful
+@Api("account")
 @Path("account")
 public class AccountResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountResource.class);
@@ -103,8 +107,9 @@ public class AccountResource {
 	@Resource
 	private Configuration configuration;
 
+	@ApiOperation(value = "login", hidden = true)
 	@GET
-	@Path("/login")
+	@Path("login")
 	@PermitAll
 	@Produces(MediaType.TEXT_HTML)
 	public Response login(@Context SecurityContext context) {
@@ -134,8 +139,13 @@ public class AccountResource {
 		return Response.ok("ok").cookie(cookie).build();
 	}
 
+	/**
+	 * AirQ
+	 */
+	@ApiOperation(value = "airq", response = AccessToken.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 403, message = "") })
 	@GET
-	@Path("/airq")
+	@Path("airq")
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response airq(@Context SecurityContext context) {
@@ -143,7 +153,7 @@ public class AccountResource {
 		LOG.debug("principal: {}", principal);
 		String accountId = null;
 		if (principal == null) {
-			return Response.noContent().build();
+			return Response.status(Status.FORBIDDEN).build();
 		}
 		else {
 			accountId = principal.getName();
@@ -174,10 +184,13 @@ public class AccountResource {
 	/**
 	 * Create user (registration)
 	 */
+	@ApiOperation(value = "register")
+	@ApiResponses(value = { @ApiResponse(code = 201, message = "") })
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public Response createUserAccount(@NotNull @Valid UserAccountRequest request, @Context UriInfo uriInfo) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response createUserAccount(@ApiParam(required = true) @NotNull @Valid UserAccountRequest request,
+			@Context UriInfo uriInfo) {
 		Account account = accountService.createAccount(request.getMobile(), request.getPassword(),
 				request.getVerificationCode(), Role.USER /* force user */);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(account.getId()).build();
@@ -188,6 +201,7 @@ public class AccountResource {
 	/**
 	 * Create tenant (registration)
 	 */
+	@ApiOperation(value = "tenant-register", hidden = true)
 	@Path("tenant")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -205,11 +219,13 @@ public class AccountResource {
 	/**
 	 * Authenticate via internal(username,email,mobile) or external(3rd party) auth
 	 */
-	@Path("auth")
+	@ApiOperation(value = "auth", response = AccessToken.class)
+	@ApiResponses(value = { @ApiResponse(code = 401, message = ""), @ApiResponse(code = 404, message = "") })
 	@POST
+	@Path("auth")
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@PermitAll
 	public Response authenticate(@QueryParam("type") AuthType type, @NotNull @Valid AuthcRequest request) {
 		// Authenticate the user using the credentials provided against a database credentials can be account not found
 		// or via external auth
@@ -235,13 +251,15 @@ public class AccountResource {
 		}
 		catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
+			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
 		}
-		return Response.serverError().build();
 	}
 
 	/**
 	 * Send SMS verification code
 	 */
+	@ApiOperation(value = "request-verification")
+	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
 	@POST
 	@Path("verification")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -273,41 +291,46 @@ public class AccountResource {
 	/**
 	 * Refresh authc token
 	 */
+	@ApiOperation(value = "auth-refresh", response = AccessToken.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 401, message = "") })
 	@POST
 	@Path("auth/refresh")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response refreshToken(@Context SecurityContext context) {
+	public AccessToken refreshToken(@Context SecurityContext context) {
 		SimplePrincipal principal = (SimplePrincipal) context.getUserPrincipal();
 		String refreshedToken = accessTokenService.generateToken(principal.getClaims().getSubject(),
 				principal.getClaims().getClaimsMap());
-		return Response.ok(new AccessToken(refreshedToken)).build();
+		return new AccessToken(refreshedToken);
 	}
 
 	/**
 	 * Get API Key
 	 */
+	@ApiOperation(value = "apikey-refresh", response = AccessToken.class, hidden = true)
+	@ApiResponses(value = { @ApiResponse(code = 401, message = ""), @ApiResponse(code = 404, message = "") })
 	@GET
 	@Path("apikey")
-	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response findApiKey(@Context SecurityContext context) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public AccessToken findApiKey(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		Account account = accountService.findAccount(accountId);
-		return Response.ok(new AccessToken(account.getApiKey())).build();
+		return new AccessToken(account.getApiKey());
 	}
 
 	/**
 	 * Refresh API Key
 	 */
+	@ApiOperation(value = "apikey-refresh", response = AccessToken.class, hidden = true)
 	@POST
+	@Authenticated
 	@Path("apikey/refresh")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
-	public Response refreshApiKey(@Context SecurityContext context) {
+	public AccessToken refreshApiKey(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		Account account = accountService.refreshApiKey(accountId);
-		return Response.ok(new AccessToken(account.getApiKey())).build();
+		return new AccessToken(account.getApiKey());
 	}
 
 	/**
@@ -315,6 +338,7 @@ public class AccountResource {
 	 * 
 	 * TODO REMOVE?
 	 */
+	@ApiOperation(value = "account-id", hidden = true)
 	@GET
 	@Path("{accountId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -331,6 +355,9 @@ public class AccountResource {
 	/**
 	 * Get account profile for all (user/tenant/admin)
 	 */
+	@ApiOperation(value = "profile", response = Account.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 401, message = ""),
+			@ApiResponse(code = 404, message = "") })
 	@GET
 	@Path("profile")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -364,19 +391,22 @@ public class AccountResource {
 	/**
 	 * Get account auths of a profile
 	 */
+	@ApiOperation(value = "profile-auths", response = AccountAuth.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "") })
 	@GET
 	@Path("profile/auths")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response getSelfAccountAuths(@Context SecurityContext context) {
+	public List<AccountAuth> getSelfAccountAuths(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		List<AccountAuth> accountAuths = accountService.findAccountAuths(accountId);
-		return Response.ok(accountAuths).build();
+		return accountService.findAccountAuths(accountId);
 	}
 
 	/**
 	 * Update account (User/Tenant/Admin)
 	 */
+	@ApiOperation(value = "profile-update", response = Account.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "") })
 	@PUT
 	@Path("profile")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -398,13 +428,16 @@ public class AccountResource {
 		}
 		catch (Exception e) {
 			LOG.error(String.format("Failed to update account: %, cause: %s", json, e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
 		}
 	}
 
 	/**
 	 * Change password if old password is correct.
 	 */
+	@ApiOperation(value = "password-update")
+	@ApiResponses(value = { @ApiResponse(code = 204, message = ""), @ApiResponse(code = 401, message = ""),
+			@ApiResponse(code = 404, message = "") })
 	@POST
 	@Path("password")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -418,6 +451,8 @@ public class AccountResource {
 	/**
 	 * Reset/forget password via mobile
 	 */
+	@ApiOperation(value = "password-reset-mobile")
+	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
 	@POST
 	@Path("password/reset")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -439,6 +474,8 @@ public class AccountResource {
 	/**
 	 * Reset/forget password via email
 	 */
+	@ApiOperation(value = "password-reset-email")
+	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
 	@POST
 	@Path("password/reset/email")
 	@Authenticated
@@ -451,6 +488,8 @@ public class AccountResource {
 	/**
 	 * Change username
 	 */
+	@ApiOperation(value = "username-update")
+	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
 	@POST
 	@Path("username")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -464,6 +503,9 @@ public class AccountResource {
 	/**
 	 * Change email and need to be verified
 	 */
+	@ApiOperation(value = "email-update")
+	@ApiResponses(value = { @ApiResponse(code = 204, message = ""), @ApiResponse(code = 400, message = ""),
+			@ApiResponse(code = 401, message = ""), @ApiResponse(code = 404, message = "") })
 	@POST
 	@Path("email")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -477,10 +519,12 @@ public class AccountResource {
 	/**
 	 * Confirm email, account/email/confirm?token=xxx&code=xxx
 	 */
+	@ApiOperation(value = "email-confirm")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "") })
 	@GET
+	@TokenSecured
 	@Path("email/confirm")
 	@Produces(MediaType.TEXT_HTML)
-	@TokenSecured
 	public Response confirmEmail(@QueryParam("code") String verificationCode, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		Map<String, Object> bindings = new HashMap<>(3);
@@ -503,6 +547,8 @@ public class AccountResource {
 	/**
 	 * Delete self account
 	 */
+	@ApiOperation(value = "delete", hidden = true)
+	@ApiResponses(value = { @ApiResponse(code = 204, message = ""), @ApiResponse(code = 401, message = "") })
 	@DELETE
 	@Authenticated
 	public Response deleteSelfAccount(@NotNull @Valid AuthcRequest request) {

@@ -330,7 +330,9 @@
 						<includes>
 							<include>config/application-prd.properties</include>
 							<include>banner.txt</include>
+							<include>logo.*</include>
 							<include>messages*.properties</include>
+							<include>apidoc-messages*.yaml</include>
 						</includes>
 					</resource>
 				</resources>

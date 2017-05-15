@@ -20,6 +20,7 @@ public class UserAccountRequest implements Serializable {
 	@Mobile
 	private String mobile;
 
+	@NotNull
 	@NotEmpty
 	private String verificationCode;
 

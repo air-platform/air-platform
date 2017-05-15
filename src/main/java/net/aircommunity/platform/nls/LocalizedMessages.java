@@ -2,7 +2,7 @@ package net.aircommunity.platform.nls;
 
 import java.util.Locale;
 
-import io.micro.common.NLSResource;
+import io.micro.common.nls.NLSResource;
 
 /**
  * NLS Messages.
