@@ -7,7 +7,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -25,10 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.rest.BaseProductResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.FerryFlightService;
 
@@ -40,7 +39,7 @@ import net.aircommunity.platform.service.FerryFlightService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantFerryFlightResource {
+public class TenantFerryFlightResource extends BaseProductResource<FerryFlight> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantFerryFlightResource.class);
 
 	@Resource
@@ -60,24 +59,13 @@ public class TenantFerryFlightResource {
 	}
 
 	/**
-	 * Find
-	 */
-	@GET
-	@Path("{ferryFlightId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {
-		return ferryFlightService.findFerryFlight(ferryFlightId);
-	}
-
-	/**
 	 * List TODO query by departure/arrival/date/timeSlot
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<FerryFlight> result = ferryFlightService.listFerryFlights(tenantId, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+	public Page<FerryFlight> list(@PathParam("tenantId") String tenantId,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		return ferryFlightService.listFerryFlights(tenantId, page, pageSize);
 	}
 
 	/**
@@ -92,23 +80,33 @@ public class TenantFerryFlightResource {
 		return ferryFlightService.updateFerryFlight(ferryFlightId, newFerryFlight);
 	}
 
-	/**
-	 * Delete
-	 */
-	@DELETE
-	@Path("{ferryFlightId}")
-	public Response delete(@PathParam("ferryFlightId") String ferryFlightId) {
-		ferryFlightService.deleteFerryFlight(ferryFlightId);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * Delete all
-	 */
-	@DELETE
-	public Response deleteAll(@PathParam("tenantId") String tenantId) {
-		ferryFlightService.deleteFerryFlights(tenantId);
-		return Response.noContent().build();
-	}
+	// /**
+	// * Find
+	// */
+	// @GET
+	// @Path("{ferryFlightId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {
+	// return ferryFlightService.findFerryFlight(ferryFlightId);
+	// }
+	//
+	// /**
+	// * Delete
+	// */
+	// @DELETE
+	// @Path("{ferryFlightId}")
+	// public Response delete(@PathParam("ferryFlightId") String ferryFlightId) {
+	// ferryFlightService.deleteFerryFlight(ferryFlightId);
+	// return Response.noContent().build();
+	// }
+	//
+	// /**
+	// * Delete all
+	// */
+	// @DELETE
+	// public Response deleteAll(@PathParam("tenantId") String tenantId) {
+	// ferryFlightService.deleteFerryFlights(tenantId);
+	// return Response.noContent().build();
+	// }
 
 }

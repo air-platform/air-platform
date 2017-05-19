@@ -18,6 +18,10 @@ public class Tenant extends Account {
 	@Column(name = "email")
 	private String email;
 
+	// contact email
+	@Column(name = "verification")
+	private VerificationStatus verification = VerificationStatus.UNVERIFIED;
+
 	// vender website
 	@Column(name = "website")
 	private String website;
@@ -55,6 +59,14 @@ public class Tenant extends Account {
 		this.email = email;
 	}
 
+	public VerificationStatus getVerification() {
+		return verification;
+	}
+
+	public void setVerification(VerificationStatus verification) {
+		this.verification = verification;
+	}
+
 	public String getWebsite() {
 		return website;
 	}
@@ -90,9 +102,28 @@ public class Tenant extends Account {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Tenant [email=").append(email).append(", website=").append(website).append(", address=")
-				.append(address).append(", hotline=").append(hotline).append(", description=").append(description)
-				.append("]");
+		builder.append("Tenant [email=").append(email).append(", verification=").append(verification)
+				.append(", website=").append(website).append(", address=").append(address).append(", hotline=")
+				.append(hotline).append(", description=").append(description).append(", nickName=").append(nickName)
+				.append(", role=").append(role).append(", status=").append(status).append(", creationDate=")
+				.append(creationDate).append(", avatar=").append(avatar).append(", id=").append(id).append("]");
 		return builder.toString();
+	}
+
+	/**
+	 * A {@code VerificationStatus} represents the various states an Tenant may be in. Tenant MUST be verified before he
+	 * can publish any products on the platform
+	 */
+	public enum VerificationStatus {
+
+		/**
+		 * A unverified tenant status
+		 */
+		UNVERIFIED,
+
+		/**
+		 * A verified tenant status
+		 */
+		VERIFIED;
 	}
 }

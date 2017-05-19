@@ -19,7 +19,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
@@ -29,13 +28,13 @@ import io.micro.annotation.RESTful;
 import io.micro.core.security.AccessTokenService;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.Constants;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.Tenant.VerificationStatus;
 import net.aircommunity.platform.rest.AirJetResource;
 import net.aircommunity.platform.rest.AirportResource;
 import net.aircommunity.platform.rest.CommentResource;
@@ -93,8 +92,8 @@ public class AdminResource {
 	@GET
 	@Path("ping")
 	@PermitAll
-	public Response ping() {
-		return Response.noContent().build();
+	public void ping() {
+		LOG.info("Got ping");
 	}
 
 	// **************************************
@@ -120,11 +119,9 @@ public class AdminResource {
 	@GET
 	@Path(ACCOUNTS_PATH_PREFIX)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAllAccounts(@QueryParam("role") String role, @QueryParam("page") @DefaultValue("0") int page,
+	public Page<Account> listAllAccounts(@QueryParam("role") Role role, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<Account> accountPage = accountService.listAccounts(Role.of(role), page, pageSize);
-		return Response.ok(accountPage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(accountPage))
-				.build();
+		return accountService.listAccounts(role, page, pageSize);
 	}
 
 	/**
@@ -142,9 +139,8 @@ public class AdminResource {
 	 */
 	@POST
 	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/password/reset")
-	public Response resetAccountPassword(@PathParam("accountId") String accountId) {
+	public void resetAccountPassword(@PathParam("accountId") String accountId) {
 		accountService.resetPasswordViaEmail(accountId);
-		return Response.noContent().build();
 	}
 
 	/**
@@ -152,9 +148,8 @@ public class AdminResource {
 	 */
 	@POST
 	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/password/reset/default")
-	public Response resetAccountPasswordTo(@PathParam("accountId") String accountId) {
+	public void resetAccountPasswordTo(@PathParam("accountId") String accountId) {
 		accountService.resetPasswordTo(accountId, Constants.DEFAULT_PASSWORD);
-		return Response.noContent().build();
 	}
 
 	/**
@@ -162,9 +157,8 @@ public class AdminResource {
 	 */
 	@POST
 	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/lock")
-	public Response lockAccount(@PathParam("accountId") String accountId) {
+	public void lockAccount(@PathParam("accountId") String accountId) {
 		accountService.updateAccountStatus(accountId, Account.Status.DISABLED);
-		return Response.noContent().build();
 	}
 
 	/**
@@ -172,9 +166,26 @@ public class AdminResource {
 	 */
 	@POST
 	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/unlock")
-	public Response unlockAccount(@PathParam("accountId") String accountId) {
+	public void unlockAccount(@PathParam("accountId") String accountId) {
 		accountService.updateAccountStatus(accountId, Account.Status.ENABLED);
-		return Response.noContent().build();
+	}
+
+	/**
+	 * Verify a tenant account
+	 */
+	@POST
+	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/verified")
+	public void verifyTenantAccount(@PathParam("accountId") String accountId) {
+		accountService.updateTenantVerificationStatus(accountId, VerificationStatus.VERIFIED);
+	}
+
+	/**
+	 * Unverify a tenant account
+	 */
+	@POST
+	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/unverified")
+	public void unverifyTenantAccount(@PathParam("accountId") String accountId) {
+		accountService.updateTenantVerificationStatus(accountId, VerificationStatus.UNVERIFIED);
 	}
 
 	/**
@@ -182,9 +193,8 @@ public class AdminResource {
 	 */
 	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}")
 	@DELETE
-	public Response deleteAccount(@PathParam("accountId") String accountId) {
+	public void deleteAccount(@PathParam("accountId") String accountId) {
 		accountService.deleteAccount(accountId);
-		return Response.noContent().build();
 	}
 
 	// *************
@@ -215,11 +225,9 @@ public class AdminResource {
 	@GET
 	@Path("orders")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAllOrders(@QueryParam("user") String userId, @QueryParam("status") String status,
+	public Page<Order> listAllOrders(@QueryParam("user") String userId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		Order.Status orderStatus = Order.Status.of(status);
-		Page<Order> result = commonOrderService.listAllUserOrders(userId, orderStatus, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return commonOrderService.listAllUserOrders(userId, status, page, pageSize);
 	}
 
 	@GET
@@ -232,22 +240,16 @@ public class AdminResource {
 	@POST
 	@Path("orders/{orderId}/status")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateOrderStatus(@PathParam("orderId") String orderId,
-			@NotNull @QueryParam("status") String status) {
-		Order.Status orderStatus = Order.Status.of(status);
-		if (orderStatus == null) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		commonOrderService.updateOrderStatus(orderId, orderStatus);
-		return Response.noContent().build();
+	public void updateOrderStatus(@PathParam("orderId") String orderId,
+			@NotNull @QueryParam("status") Order.Status status) {
+		commonOrderService.updateOrderStatus(orderId, status);
 	}
 
 	@DELETE
 	@Path("orders/{orderId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteOrder(@PathParam("orderId") String orderId) {
+	public void deleteOrder(@PathParam("orderId") String orderId) {
 		commonOrderService.deleteOrder(orderId);
-		return Response.noContent().build();
 	}
 
 	// ***********************

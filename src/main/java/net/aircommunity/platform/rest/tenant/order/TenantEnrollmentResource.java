@@ -8,13 +8,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Enrollment;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
@@ -42,29 +40,14 @@ public class TenantEnrollmentResource extends BaseOrderResource<Enrollment> {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("tenantId") String tenantId, @QueryParam("status") String status,
+	public Page<Enrollment> list(@PathParam("tenantId") String tenantId, @QueryParam("status") Order.Status status,
 			@QueryParam("course") String courseId, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		LOG.debug("List all enrollments tenantId: {}, course: {}", tenantId, courseId);
-		Page<Enrollment> result = Page.emptyPage(page, pageSize);
 		if (courseId != null) {
-			result = enrollmentService.listEnrollmentsForTenantByCourse(tenantId, courseId, Order.Status.of(status),
-					page, pageSize);
+			return enrollmentService.listEnrollmentsForTenantByCourse(tenantId, courseId, status, page, pageSize);
 		}
-		else {
-			result = enrollmentService.listEnrollmentsForTenant(tenantId, Order.Status.of(status), page, pageSize);
-		}
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return enrollmentService.listEnrollmentsForTenant(tenantId, status, page, pageSize);
 	}
-
-	/**
-	 * Find
-	 */
-	// @GET
-	// @Path("{enrollmentId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public Enrollment find(@PathParam("enrollmentId") String enrollmentId) {
-	// return enrollmentService.findEnrollment(enrollmentId);
-	// }
 
 }

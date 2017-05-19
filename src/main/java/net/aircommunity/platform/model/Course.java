@@ -27,15 +27,15 @@ public class Course extends PricedProduct {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull
-	@XmlJavaTypeAdapter(DateAdapter.class)
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "start_date", nullable = false)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date startDate;
 
 	@NotNull
-	@XmlJavaTypeAdapter(DateAdapter.class)
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "end_date", nullable = false)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date endDate;
 
 	@Column(name = "enrollment")

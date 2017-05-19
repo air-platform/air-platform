@@ -13,7 +13,11 @@ public class LocalizedMessages extends NLSResource {
 	// NLS resource bundle
 	private static final String RESOURCE_BUNDLE_BASENAME = LocalizedMessages.class.getPackage().getName() + ".message";
 
+	public static String USERNAME_ANONYMOUS;
+
+	//
 	public static String PRODUCT_NOT_FOUND;
+	public static String PRODUCT_FAQ_NOT_FOUND;
 
 	public static String ORDER_OPERATION_SUBMIT;
 	public static String ORDER_OPERATION_CANCEL;
@@ -22,6 +26,7 @@ public class LocalizedMessages extends NLSResource {
 
 	public static String COMMENT_NOT_ALLOWED;
 	public static String COMMENT_NOT_FOUND;
+	public static String COMMENT_INVALID_SOURCE;
 	public static String COMMENT_NOT_ALLOWED_ORDER_NOT_FINISHED;
 
 	public static String SCHOOL_NOT_FOUND;
@@ -50,6 +55,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String ACCOUNT_CREATION_ADMIN_NOT_ALLOWED;
 	public static String ACCOUNT_CREATION_INVALID_VERIFICATION_CODE;
 	public static String ACCOUNT_ADD_PASSENGER_FAILURE;
+	public static String ACCOUNT_INVALID_PASSENGER_IDCARD;
 	public static String ACCOUNT_PASSENGER_NOT_ALLOWED;
 	public static String ACCOUNT_ADDRESS_NOT_ALLOWED;
 	public static String ACCOUNT_EMAIL_ALREADY_EXISTS;

@@ -38,13 +38,13 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 		if (existing != null) {
 			throw new AirException(Codes.FLEET_ALREADY_EXISTS, M.msg(M.FLEET_ALREADY_EXISTS, fleet.getFlightNo()));
 		}
-		return createProduct(tenantId, fleet);
+		return doCreateProduct(tenantId, fleet);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public Fleet findFleet(String fleetId) {
-		return findProduct(fleetId);
+		return doFindProduct(fleetId);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 	@CachePut(cacheNames = CACHE_NAME, key = "#fleetId")
 	@Override
 	public Fleet updateFleet(String fleetId, Fleet newFleet) {
-		return updateProduct(fleetId, newFleet);
+		return doUpdateProduct(fleetId, newFleet);
 	}
 
 	/**
@@ -84,12 +84,12 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 
 	@Override
 	public Page<Fleet> listFleets(String tenantId, int page, int pageSize) {
-		return listTenantProducts(tenantId, page, pageSize);
+		return doListTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Override
 	public Page<Fleet> listFleets(int page, int pageSize) {
-		return listAllProducts(page, pageSize);
+		return doListAllProducts(page, pageSize);
 	}
 
 	@Override
@@ -101,13 +101,13 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#fleetId")
 	@Override
 	public void deleteFleet(String fleetId) {
-		deleteProduct(fleetId);
+		doDeleteProduct(fleetId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteFleets(String tenantId) {
-		deleteProducts(tenantId);
+		doDeleteProducts(tenantId);
 	}
 
 	@Override

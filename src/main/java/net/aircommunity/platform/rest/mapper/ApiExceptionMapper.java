@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import io.micro.model.ErrorResponse;
 import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
+import net.aircommunity.platform.Codes;
 
 /**
  * Exception mapper for mapping a Exception that was thrown from an application into a human readable message and error
@@ -32,8 +34,11 @@ public class ApiExceptionMapper implements ExceptionMapper<AirException> {
 	public Response toResponse(AirException e) {
 		LOG.error(e.getLocalizedMessage(), e);
 		// build error response
-		return status(e.getCode().getStatus())
-				.entity(new ErrorResponse(e.getCode().getValue(), e.getLocalizedMessage()))
+		Code code = e.getCode();
+		if (code == null) {
+			code = Codes.INTERNAL_ERROR;
+		}
+		return status(code.getStatus()).entity(new ErrorResponse(code.getValue(), e.getLocalizedMessage()))
 				.type(MediaType.APPLICATION_JSON).build();
 
 	}

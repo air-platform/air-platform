@@ -31,19 +31,19 @@ public class JetCardServiceImpl extends AbstractProductService<JetCard> implemen
 
 	@Override
 	public JetCard createJetCard(String tenantId, JetCard jetCard) {
-		return createProduct(tenantId, jetCard);
+		return doCreateProduct(tenantId, jetCard);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public JetCard findJetCard(String jetCardId) {
-		return findProduct(jetCardId);
+		return doFindProduct(jetCardId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#jetCardId")
 	@Override
 	public JetCard updateJetCard(String jetCardId, JetCard newJetCard) {
-		return updateProduct(jetCardId, newJetCard);
+		return doUpdateProduct(jetCardId, newJetCard);
 	}
 
 	/**
@@ -59,24 +59,24 @@ public class JetCardServiceImpl extends AbstractProductService<JetCard> implemen
 
 	@Override
 	public Page<JetCard> listJetCards(String tenantId, int page, int pageSize) {
-		return listTenantProducts(tenantId, page, pageSize);
+		return doListTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Override
 	public Page<JetCard> listJetCards(int page, int pageSize) {
-		return listAllProducts(page, pageSize);
+		return doListAllProducts(page, pageSize);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#jetCardId")
 	@Override
 	public void deleteJetCard(String jetCardId) {
-		deleteProduct(jetCardId);
+		doDeleteProduct(jetCardId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteJetCards(String tenantId) {
-		deleteProducts(tenantId);
+		doDeleteProducts(tenantId);
 	}
 
 	@Override

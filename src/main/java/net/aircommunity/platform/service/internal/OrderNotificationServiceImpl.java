@@ -32,6 +32,7 @@ import net.aircommunity.platform.model.FleetCandidate;
 import net.aircommunity.platform.model.JetCardOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.FleetService;
@@ -50,10 +51,6 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 
 	private static final Map<Order.Type, String> orderTypeMapping = new HashMap<>();
 	private static final Map<Order.Status, String> orderOperationsMapping = new HashMap<>();
-	private static final String ORDER_TYPE_AIRJET = "Air Jet";
-	private static final String ORDER_TYPE_AIRTAXI = "Air Taxi";
-	private static final String ORDER_TYPE_AIRTRANSPORTION = "Air Transportion";
-	private static final String ORDER_TYPE_AIRTRAINING = "Air Training";
 
 	@Resource
 	private Configuration configuration;
@@ -75,14 +72,23 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 		orderOperationsMapping.put(Order.Status.CANCELLED, M.msg(M.ORDER_OPERATION_CANCEL));
 		orderOperationsMapping.put(Order.Status.PENDING, M.msg(M.ORDER_OPERATION_SUBMIT));
 		//
-		orderTypeMapping.put(Order.Type.FLEET, ORDER_TYPE_AIRJET);
-		orderTypeMapping.put(Order.Type.FERRYFLIGHT, ORDER_TYPE_AIRJET);
-		orderTypeMapping.put(Order.Type.JETCARD, ORDER_TYPE_AIRJET);
-		orderTypeMapping.put(Order.Type.AIRTAXI, ORDER_TYPE_AIRTAXI);
-		orderTypeMapping.put(Order.Type.AIRTOUR, ORDER_TYPE_AIRTAXI);
-		orderTypeMapping.put(Order.Type.AIRTRANSPORT, ORDER_TYPE_AIRTRANSPORTION);
-		orderTypeMapping.put(Order.Type.COURSE, ORDER_TYPE_AIRTRAINING);
+		String airjet = normalizeProductCategory(Category.AIR_JET);
+		String airtaxi = normalizeProductCategory(Category.AIR_TAXI);
+		String airtrans = normalizeProductCategory(Category.AIR_TRANS);
+		String airtraining = normalizeProductCategory(Category.AIR_TRAINING);
+		orderTypeMapping.put(Order.Type.FLEET, airjet);
+		orderTypeMapping.put(Order.Type.FERRYFLIGHT, airjet);
+		orderTypeMapping.put(Order.Type.JETCARD, airjet);
+		orderTypeMapping.put(Order.Type.AIRTAXI, airtaxi);
+		orderTypeMapping.put(Order.Type.AIRTOUR, airtaxi);
+		orderTypeMapping.put(Order.Type.AIRTRANSPORT, airtrans);
+		orderTypeMapping.put(Order.Type.COURSE, airtraining);
 		eventBus.register(this);
+	}
+
+	private static String normalizeProductCategory(Category category) {
+		String[] parts = category.name().split("_");
+		return new StringBuilder(Strings.capitalize(parts[0])).append(Strings.capitalize(parts[1])).toString();
 	}
 
 	@Subscribe

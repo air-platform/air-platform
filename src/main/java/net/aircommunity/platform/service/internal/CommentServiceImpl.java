@@ -17,14 +17,15 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Comment;
+import net.aircommunity.platform.model.Comment.Source;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.CommentRepository;
-import net.aircommunity.platform.repository.OrderRepository;
-import net.aircommunity.platform.repository.ProductRepository;
 import net.aircommunity.platform.service.CommentService;
+import net.aircommunity.platform.service.CommonOrderService;
+import net.aircommunity.platform.service.CommonProductService;
 
 /**
  * Comment service implementation.
@@ -41,62 +42,91 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	@Resource
 	private CommentRepository commentRepository;
 
-	// TODO make it cached (productId, product) ?
 	@Resource
-	private ProductRepository productRepository;
+	private CommonProductService commonProductService;
 
 	@Resource
-	private OrderRepository orderRepository;
+	private CommonOrderService commonOrderService;
+
+	// TODO make it cached (productId, product) ?
+	// @Resource
+	// private ProductRepository productRepository;
 
 	@Override
 	public boolean isCommentAllowed(String accountId, String orderId) {
-		Order order = findOrder(orderId);
+		Order order = commonOrderService.findOrder(orderId);
 		boolean isOrderOwner = accountId.equals(order.getOwner().getId());
 		return !order.getCommented() && isOrderOwner;
 	}
 
 	@Override
-	public Comment createComment(String accountId, String orderId, Comment comment) {
+	public Comment createComment(String accountId, Source source, String sourceId, Comment comment) {
+		if (source == null) {
+			LOG.error("Account [{}] cannot create comment [{}] with sourceId [{}], because source is null", accountId,
+					comment, sourceId);
+			throw new AirException(Codes.COMMENT_INVALID_DATA, M.msg(M.COMMENT_INVALID_SOURCE));
+		}
 		Account owner = findAccount(accountId, Account.class);
-		Order order = findOrder(orderId);
-		boolean isOrderOwner = accountId.equals(order.getOwner().getId());
-		if (order.getCommented() || !isOrderOwner) {
-			LOG.error("Account {} comment on order {} is not allowed, already commented or your are not order owner",
-					accountId, orderId);
-			throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.msg(M.COMMENT_NOT_ALLOWED));
+		Product product = null;
+		Order order = null;
+		switch (source) {
+		case PRODUCT:
+			// create comment from product
+			product = commonProductService.findProduct(sourceId/* productId */);
+			break;
+
+		case ORDER:
+			String orderId = sourceId;
+			order = commonOrderService.findOrder(orderId);
+			boolean isOrderOwner = accountId.equals(order.getOwner().getId());
+			if (order.getCommented() || !isOrderOwner) {
+				LOG.error(
+						"Account {} comment on order {} is not allowed, already commented or your are not order owner",
+						accountId, orderId);
+				throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.msg(M.COMMENT_NOT_ALLOWED));
+			}
+			if (order.getStatus() != Order.Status.FINISHED) {
+				LOG.error("Account {} comment on order {} is not allowed, order is not FINISHED", accountId, orderId);
+				throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.msg(M.COMMENT_NOT_ALLOWED_ORDER_NOT_FINISHED));
+			}
+			// only can be null if CharterOrder
+			product = order.getProduct();
+			if (product == null) {
+				LOG.error("Comment failed, product of order {} not found", orderId);
+				throw new AirException(Codes.PRODUCT_NOT_FOUND, M.msg(M.PRODUCT_NOT_FOUND));
+			}
+			break;
+
+		default: // never happen
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
 		}
-		if (order.getStatus() != Order.Status.FINISHED) {
-			LOG.error("Account {} comment on order {} is not allowed, order is not FINISHED", accountId, orderId);
-			throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.msg(M.COMMENT_NOT_ALLOWED_ORDER_NOT_FINISHED));
-		}
-		// only can be null if CharterOrder
-		Product product = order.getProduct();
-		if (product == null) {
-			LOG.error("Comment failed, product of order {}not found", orderId);
-			throw new AirException(Codes.PRODUCT_NOT_FOUND, M.msg(M.PRODUCT_NOT_FOUND));
-		}
-		// create new
+
+		// create comment
 		Comment newComment = new Comment();
 		newComment.setDate(new Date());
 		newComment.setContent(comment.getContent());
-		newComment.setRate(comment.getRate());
+		newComment.setRate(source == Source.ORDER ? comment.getRate() : 0);
 		newComment.setOwner(owner);
 		newComment.setProduct(product);
 		Comment savedComment = commentRepository.save(newComment);
-		double score = product.getScore();
-		if (savedComment.getRate() > 0) {
-			double productScore = product.getScore();
-			if (productScore > 0) {
-				score = (score + savedComment.getRate()) / 2.0;
-				product.setScore(Maths.round(score, 2, BigDecimal.ROUND_HALF_UP));
+
+		// calculate score if comment from order
+		if (source == Source.ORDER) {
+			double score = product.getScore();
+			if (savedComment.getRate() > 0) {
+				double productScore = product.getScore();
+				if (productScore > 0) {
+					score = (score + savedComment.getRate()) / 2.0;
+					product.setScore(Maths.round(score, 2, BigDecimal.ROUND_HALF_UP));
+				}
+				else {
+					product.setScore(savedComment.getRate());
+				}
 			}
-			else {
-				product.setScore(savedComment.getRate());
-			}
+			order.setCommented(true);
+			commonOrderService.saveOrder(order);
+			// productRepository.save(product); // TODO REMOVE? do we need save product?
 		}
-		order.setCommented(true);
-		orderRepository.save(order);
-		productRepository.save(product);
 		return savedComment;
 	}
 
@@ -109,15 +139,6 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 			throw new AirException(Codes.COMMENT_NOT_FOUND, M.msg(M.COMMENT_NOT_FOUND));
 		}
 		return comment;
-	}
-
-	private Order findOrder(String orderId) {
-		Order order = orderRepository.findOne(orderId);
-		if (order == null) {
-			LOG.warn("Order {} not found", orderId);
-			throw new AirException(Codes.ORDER_NOT_FOUND, M.msg(M.ORDER_NOT_FOUND));
-		}
-		return order;
 	}
 
 	@Override

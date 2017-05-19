@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Comment;
+import net.aircommunity.platform.model.Comment.Source;
 import net.aircommunity.platform.model.Page;
 
 /**
@@ -23,15 +24,17 @@ public interface CommentService {
 	boolean isCommentAllowed(@Nonnull String accountId, @Nonnull String orderId);
 
 	/**
-	 * Create a Comment.
+	 * Create a Comment from a source, and rate is ignored if source is product.
 	 * 
 	 * @param accountId the accountId
-	 * @param productId the productId
+	 * @param source the source
+	 * @param sourceId either orderId or productId
 	 * @param comment the comment to be created
 	 * @return Comment created
 	 */
 	@Nonnull
-	Comment createComment(@Nonnull String accountId, @Nonnull String productId, @Nonnull Comment comment);
+	Comment createComment(@Nonnull String accountId, @Nonnull Source source, @Nonnull String sourceId,
+			@Nonnull Comment comment);
 
 	/**
 	 * Retrieves the specified Comment.

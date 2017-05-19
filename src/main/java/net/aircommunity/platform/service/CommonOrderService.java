@@ -23,6 +23,15 @@ public interface CommonOrderService {
 	Order findOrder(@Nonnull String orderId);
 
 	/**
+	 * Save/Update order
+	 * 
+	 * @param order the order to be saved
+	 * @return order updated
+	 */
+	@Nonnull
+	Order saveOrder(@Nonnull Order order);
+
+	/**
 	 * Update order status
 	 * 
 	 * @param orderId the orderId

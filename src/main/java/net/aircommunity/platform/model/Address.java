@@ -37,9 +37,9 @@ public class Address extends Persistable {
 	@Column(name = "is_default")
 	private boolean isDefault;
 
-	@XmlJavaTypeAdapter(AccountAdapter.class)
 	@ManyToOne
 	@JoinColumn(name = "account_id", nullable = false)
+	@XmlJavaTypeAdapter(AccountAdapter.class)
 	private User owner;
 
 	public Address() {

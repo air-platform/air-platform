@@ -8,14 +8,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.AirTaxiService;
@@ -45,17 +43,13 @@ public class AirTaxiResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAll(@QueryParam("departure") String departure, @QueryParam("page") int page,
+	public Page<AirTaxi> listAll(@QueryParam("departure") String departure, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
 		LOG.debug("list all air taxi with departure: {}", departure);
-		Page<AirTaxi> result = Page.emptyPage(page, pageSize);
 		if (departure == null) {
-			result = airTaxiService.listAirTaxis(page, pageSize);
+			return airTaxiService.listAirTaxis(page, pageSize);
 		}
-		else {
-			result = airTaxiService.listAirTaxisByDeparture(departure, page, pageSize);
-		}
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return airTaxiService.listAirTaxisByDeparture(departure, page, pageSize);
 	}
 
 	/**

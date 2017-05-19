@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.AirJet;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
@@ -60,10 +59,10 @@ public class AirJetResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		LOG.debug("list all airJets");
+		LOG.debug("List all airJets with page: {} pageSize: {}", page, pageSize);
 		if (page > 0) {
 			Page<AirJet> result = airJetService.listAirJets(page, pageSize);
-			return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+			return Response.ok(result).build();
 		}
 		return Response.ok(airJetService.listAirJets()).build();
 	}
@@ -125,9 +124,8 @@ public class AirJetResource {
 	@DELETE
 	@Path("{airJetId}")
 	@RolesAllowed(Roles.ROLE_ADMIN)
-	public Response delete(@PathParam("airJetId") String airJetId) {
+	public void delete(@PathParam("airJetId") String airJetId) {
 		airJetService.deleteAirJet(airJetId);
-		return Response.noContent().build();
 	}
 
 	/**
@@ -135,9 +133,8 @@ public class AirJetResource {
 	 */
 	@DELETE
 	@RolesAllowed(Roles.ROLE_ADMIN)
-	public Response deleteAll() {
+	public void deleteAll() {
 		airJetService.deleteAirJets();
-		return Response.noContent().build();
 	}
 
 }

@@ -33,19 +33,19 @@ public class AirTourServiceImpl extends AircraftAwareService<AirTour> implements
 
 	@Override
 	public AirTour createAirTour(String tenantId, AirTour airTour) {
-		return createProduct(tenantId, airTour);
+		return doCreateProduct(tenantId, airTour);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public AirTour findAirTour(String airTourId) {
-		return findProduct(airTourId);
+		return doFindProduct(airTourId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#airTourId")
 	@Override
 	public AirTour updateAirTour(String airTourId, AirTour newAirTour) {
-		return updateProduct(airTourId, newAirTour);
+		return doUpdateProduct(airTourId, newAirTour);
 	}
 
 	@Override
@@ -62,12 +62,12 @@ public class AirTourServiceImpl extends AircraftAwareService<AirTour> implements
 
 	@Override
 	public Page<AirTour> listAirTours(int page, int pageSize) {
-		return listAllProducts(page, pageSize);
+		return doListAllProducts(page, pageSize);
 	}
 
 	@Override
 	public Page<AirTour> listAirTours(String tenantId, int page, int pageSize) {
-		return listTenantProducts(tenantId, page, pageSize);
+		return doListTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Override
@@ -78,13 +78,13 @@ public class AirTourServiceImpl extends AircraftAwareService<AirTour> implements
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTourId")
 	@Override
 	public void deleteAirTour(String airTourId) {
-		deleteProduct(airTourId);
+		doDeleteProduct(airTourId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAirTours(String tenantId) {
-		deleteProducts(tenantId);
+		doDeleteProducts(tenantId);
 	}
 
 	@Override

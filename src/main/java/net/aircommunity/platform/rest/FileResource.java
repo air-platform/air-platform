@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import org.slf4j.Logger;
@@ -53,13 +52,13 @@ public class FileResource {
 	@PermitAll
 	// @Authenticated
 	// TODO enable Authenticated, once markdown editor can support auth
-	public Response uploadFileToCloud(@MultipartForm StreamingImageFile inputFile, @Context SecurityContext context) {
+	public FileUploadResult uploadFileToCloud(@MultipartForm StreamingImageFile inputFile,
+			@Context SecurityContext context) {
 		try {
 			LOG.debug("Uploading file {} to cloud", inputFile.getFileName());
 			String extension = MoreFiles.getExtension(inputFile.getFileName());
-			FileUploadResult result = fileUploadService
-					.upload(String.format(FILE_NAME_FORMAT, UUIDs.shortRandom(), extension), inputFile.getFileData());
-			return Response.ok(result).build();
+			return fileUploadService.upload(String.format(FILE_NAME_FORMAT, UUIDs.shortRandom(), extension),
+					inputFile.getFileData());
 		}
 		finally {
 			if (inputFile != null) {

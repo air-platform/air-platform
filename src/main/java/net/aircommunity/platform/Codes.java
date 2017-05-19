@@ -46,6 +46,8 @@ public final class Codes {
 
 	// AIR JET
 	public static final Code PRODUCT_NOT_FOUND = Code.notFound(11_003_0001);
+	public static final Code PRODUCT_FAQ_NOT_FOUND = Code.notFound(11_003_0001); // TODO re-org-code
+
 	public static final Code ORDER_NOT_FOUND = Code.notFound(11_003_0002);
 	public static final Code ORDER_ILLEGAL_STATUS = Code.illegalAccess(11_003_0003);
 	public static final Code AIRJET_ALREADY_EXISTS = Code.alreadyExists(11_003_0004);
@@ -93,6 +95,7 @@ public final class Codes {
 	// comment
 	public static final Code COMMENT_NOT_FOUND = Code.notFound(11_013_0001);
 	public static final Code COMMENT_NOT_ALLOWED = Code.notAuthorized(11_013_0002);
+	public static final Code COMMENT_INVALID_DATA = Code.invalidArgument(11_013_0003);
 
 	private Codes() {
 		throw new AssertionError();

@@ -1,8 +1,11 @@
 package net.aircommunity.platform.repository;
 
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import net.aircommunity.platform.model.AirTransport;
 
@@ -13,6 +16,14 @@ import net.aircommunity.platform.model.AirTransport;
  * @author Bin.Zhang
  */
 public interface AirTransportRepository extends BaseProductRepository<AirTransport> {
+
+	/**
+	 * List all transport families.
+	 * 
+	 * @return a list of families
+	 */
+	@Query("SELECT DISTINCT t.family FROM #{#entityName} t")
+	Set<String> listFamilies();
 
 	/**
 	 * Find all AirTransport.

@@ -7,7 +7,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -25,10 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.AirTransport;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.rest.BaseProductResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.AirTransportService;
 
@@ -40,7 +39,7 @@ import net.aircommunity.platform.service.AirTransportService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantAirTransportResource {
+public class TenantAirTransportResource extends BaseProductResource<AirTransport> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantAirTransportResource.class);
 
 	@Resource
@@ -60,24 +59,13 @@ public class TenantAirTransportResource {
 	}
 
 	/**
-	 * Find
-	 */
-	@GET
-	@Path("{transportId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public AirTransport find(@PathParam("transportId") String transportId) {
-		return airTransportService.findAirTransport(transportId);
-	}
-
-	/**
 	 * List (TODO more query)
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<AirTransport> result = airTransportService.listAirTransports(tenantId, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+	public Page<AirTransport> list(@PathParam("tenantId") String tenantId,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		return airTransportService.listAirTransports(tenantId, page, pageSize);
 	}
 
 	/**
@@ -92,23 +80,33 @@ public class TenantAirTransportResource {
 		return airTransportService.updateAirTransport(transportId, newAirTransport);
 	}
 
-	/**
-	 * Delete
-	 */
-	@DELETE
-	@Path("{transportId}")
-	public Response delete(@PathParam("transportId") String transportId) {
-		airTransportService.deleteAirTransport(transportId);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * Delete all
-	 */
-	@DELETE
-	public Response deleteAll(@PathParam("tenantId") String tenantId) {
-		airTransportService.deleteAirTransports(tenantId);
-		return Response.noContent().build();
-	}
+	// /**
+	// * Find
+	// */
+	// @GET
+	// @Path("{transportId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public AirTransport find(@PathParam("transportId") String transportId) {
+	// return airTransportService.findAirTransport(transportId);
+	// }
+	//
+	// /**
+	// * Delete
+	// */
+	// @DELETE
+	// @Path("{transportId}")
+	// public Response delete(@PathParam("transportId") String transportId) {
+	// airTransportService.deleteAirTransport(transportId);
+	// return Response.noContent().build();
+	// }
+	//
+	// /**
+	// * Delete all
+	// */
+	// @DELETE
+	// public Response deleteAll(@PathParam("tenantId") String tenantId) {
+	// airTransportService.deleteAirTransports(tenantId);
+	// return Response.noContent().build();
+	// }
 
 }

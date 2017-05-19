@@ -13,6 +13,7 @@ import net.aircommunity.platform.service.TrainingService;
 
 /**
  * Created by guankai on 11/04/2017. TODO
+ * @deprecated
  */
 @Service
 @Transactional

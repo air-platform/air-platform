@@ -8,7 +8,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * Created by guankai on 11/04/2017.
+ * Created by guankai on 11/04/2017. TODO NOT USED
+ * 
+ * @deprecated
  */
 @Entity
 @Table(name = "air_platform_training_banner")

@@ -64,11 +64,9 @@ public class AirTransportOrderResource extends BaseOrderResource<AirTransportOrd
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("userId") String userId, @QueryParam("status") String status,
+	public Page<AirTransportOrder> list(@PathParam("userId") String userId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<AirTransportOrder> result = airTransportOrderService.listUserAirTransportOrders(userId,
-				Order.Status.of(status), page, pageSize);
-		return buildPageResponse(result);
+		return airTransportOrderService.listUserAirTransportOrders(userId, status, page, pageSize);
 	}
 
 	/**
@@ -81,71 +79,4 @@ public class AirTransportOrderResource extends BaseOrderResource<AirTransportOrd
 	public AirTransportOrder update(@PathParam("orderId") String orderId, @NotNull @Valid AirTransportOrder newOrder) {
 		return airTransportOrderService.updateAirTransportOrder(orderId, newOrder);
 	}
-
-	// /**
-	// * Find
-	// */
-	// @GET
-	// @Path("{orderId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public AirTransportOrder find(@PathParam("orderId") String orderId) {
-	// return airTransportOrderService.findAirTransportOrder(orderId);
-	// }
-	//
-	// /**
-	// * Cancel order
-	// */
-	// @POST
-	// @Path("{orderId}/cancel")
-	// public Response cancelOrder(@PathParam("orderId") String orderId) {
-	// airTransportOrderService.updateAirTransportOrderStatus(orderId, Order.Status.CANCELLED);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete (mark order as DELETED)
-	// */
-	// @DELETE
-	// @Path("{orderId}")
-	// public Response delete(@PathParam("orderId") String orderId) {
-	// airTransportOrderService.updateAirTransportOrderStatus(orderId, Order.Status.DELETED);
-	// return Response.noContent().build();
-	// }
-	//
-	// // **************
-	// // ADMIN ONLY
-	// // **************
-	//
-	// /**
-	// * Mark order as Paid
-	// */
-	// @POST
-	// @Path("{orderId}/paid")
-	// @RolesAllowed(Roles.ROLE_ADMIN)
-	// public Response markPaidOrder(@PathParam("orderId") String orderId) {
-	// airTransportOrderService.updateAirTransportOrderStatus(orderId, Order.Status.PAID);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete
-	// */
-	// @DELETE
-	// @Path("{orderId}")
-	// @RolesAllowed(Roles.ROLE_ADMIN)
-	// public Response forceDelete(@PathParam("orderId") String orderId) {
-	// airTransportOrderService.deleteAirTransportOrder(orderId);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete all
-	// */
-	// @DELETE
-	// @RolesAllowed(Roles.ROLE_ADMIN)
-	// public Response deleteAll(@PathParam("userId") String userId) {
-	// airTransportOrderService.deleteAirTransportOrders(userId);
-	// return Response.noContent().build();
-	// }
-
 }

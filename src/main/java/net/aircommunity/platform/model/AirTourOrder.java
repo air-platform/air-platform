@@ -34,11 +34,6 @@ public class AirTourOrder extends AircraftAwareOrder {
 	@JoinColumn(name = "airtour_id", nullable = false)
 	private AirTour airTour;
 
-	// passengers
-	// @NotEmpty
-	// @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	// private Set<PassengerItem> passengers = new HashSet<>();
-
 	public Date getDate() {
 		return date;
 	}

@@ -8,17 +8,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.JetCard;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.JetCardService;
@@ -48,11 +44,10 @@ public class JetCardResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
+	public Page<JetCard> listAll(@QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all air jet cards");
-		Page<JetCard> result = jetCardService.listJetCards(page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return jetCardService.listJetCards(page, pageSize);
 	}
 
 	/**

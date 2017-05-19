@@ -43,11 +43,6 @@ public class AirTransportOrder extends AircraftAwareOrder {
 	@JoinColumn(name = "airtransport_id", nullable = false)
 	private AirTransport airTransport;
 
-	// passengers
-	// @NotEmpty
-	// @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	// private Set<PassengerItem> passengers = new HashSet<>();
-
 	public int getPassengerNum() {
 		return passengerNum;
 	}

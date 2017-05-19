@@ -17,6 +17,7 @@ public final class Code implements Serializable {
 	 */
 	private static final int INVALID_ARGUMENT = 400;
 	private static final int NOT_AUTHORIZED = 401;
+	private static final int NOT_PERIMITTED = 403;
 	private static final int NOT_FOUND = 404;
 	private static final int ALREADY_EXISTS = 409;
 	private static final int ILLEGAL_ACCESS = 409;
@@ -66,6 +67,10 @@ public final class Code implements Serializable {
 
 	public static Code notAuthorized(int value) {
 		return new Code(NOT_AUTHORIZED, value);
+	}
+
+	public static Code notPerimitted(int value) {
+		return new Code(NOT_PERIMITTED, value);
 	}
 
 	public static Code notFound(int value) {

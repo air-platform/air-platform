@@ -226,7 +226,7 @@ public abstract class Order extends Persistable {
 		 */
 		DELETED;
 
-		public static Status of(String value) {
+		public static Status fromString(String value) {
 			for (Status e : values()) {
 				if (e.name().equalsIgnoreCase(value)) {
 					return e;

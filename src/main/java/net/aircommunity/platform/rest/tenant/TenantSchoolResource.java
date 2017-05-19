@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.School;
@@ -74,10 +73,9 @@ public class TenantSchoolResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("1") int page,
+	public Page<School> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		Page<School> result = schoolService.listSchools(tenantId, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return schoolService.listSchools(tenantId, page, pageSize);
 	}
 
 	/**
@@ -96,18 +94,16 @@ public class TenantSchoolResource {
 	 */
 	@DELETE
 	@Path("{schoolId}")
-	public Response delete(@PathParam("schoolId") String schoolId) {
+	public void delete(@PathParam("schoolId") String schoolId) {
 		schoolService.deleteSchool(schoolId);
-		return Response.noContent().build();
 	}
 
 	/**
 	 * Delete all
 	 */
 	@DELETE
-	public Response deleteAll(@PathParam("tenantId") String tenantId) {
+	public void deleteAll(@PathParam("tenantId") String tenantId) {
 		schoolService.deleteSchools(tenantId);
-		return Response.noContent().build();
 	}
 
 }

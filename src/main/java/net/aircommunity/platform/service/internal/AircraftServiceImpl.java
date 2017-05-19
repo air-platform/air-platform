@@ -39,19 +39,19 @@ public class AircraftServiceImpl extends AbstractProductService<Aircraft> implem
 			throw new AirException(Codes.AIRCRAFT_ALREADY_EXISTS,
 					M.msg(M.AIRCRAFT_ALREADY_EXISTS, aircraft.getFlightNo()));
 		}
-		return createProduct(tenantId, aircraft);
+		return doCreateProduct(tenantId, aircraft);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public Aircraft findAircraft(String aircraftId) {
-		return findProduct(aircraftId);
+		return doFindProduct(aircraftId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#aircraftId")
 	@Override
 	public Aircraft updateAircraft(String aircraftId, Aircraft newAircraft) {
-		return updateProduct(aircraftId, newAircraft);
+		return doUpdateProduct(aircraftId, newAircraft);
 	}
 
 	/**
@@ -71,24 +71,24 @@ public class AircraftServiceImpl extends AbstractProductService<Aircraft> implem
 
 	@Override
 	public Page<Aircraft> listAircrafts(String tenantId, int page, int pageSize) {
-		return listTenantProducts(tenantId, page, pageSize);
+		return doListTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Override
 	public Page<Aircraft> listAircrafts(int page, int pageSize) {
-		return listAllProducts(page, pageSize);
+		return doListAllProducts(page, pageSize);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#aircraftId")
 	@Override
 	public void deleteAircraft(String aircraftId) {
-		deleteProduct(aircraftId);
+		doDeleteProduct(aircraftId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAircrafts(String tenantId) {
-		deleteProducts(tenantId);
+		doDeleteProducts(tenantId);
 	}
 
 	@Override

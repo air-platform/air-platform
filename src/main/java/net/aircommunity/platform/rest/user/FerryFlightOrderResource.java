@@ -64,11 +64,9 @@ public class FerryFlightOrderResource extends BaseOrderResource<FerryFlightOrder
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("userId") String userId, @QueryParam("status") String status,
+	public Page<FerryFlightOrder> list(@PathParam("userId") String userId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<FerryFlightOrder> result = ferryFlightOrderService.listUserFerryFlightOrders(userId,
-				Order.Status.of(status), page, pageSize);
-		return buildPageResponse(result);
+		return ferryFlightOrderService.listUserFerryFlightOrders(userId, status, page, pageSize);
 	}
 
 	/**
@@ -81,71 +79,5 @@ public class FerryFlightOrderResource extends BaseOrderResource<FerryFlightOrder
 	public FerryFlightOrder update(@PathParam("orderId") String orderId, @NotNull @Valid FerryFlightOrder newOrder) {
 		return ferryFlightOrderService.updateFerryFlightOrder(orderId, newOrder);
 	}
-
-	// /**
-	// * Find
-	// */
-	// @GET
-	// @Path("{orderId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public FerryFlightOrder find(@PathParam("orderId") String orderId) {
-	// return ferryFlightOrderService.findFerryFlightOrder(orderId);
-	// }
-	//
-	// /**
-	// * Cancel order
-	// */
-	// @POST
-	// @Path("{orderId}/cancel")
-	// public Response cancel(@PathParam("orderId") String orderId) {
-	// ferryFlightOrderService.updateFerryFlightOrderStatus(orderId, Order.Status.CANCELLED);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete (mark order as DELETED)
-	// */
-	// @DELETE
-	// @Path("{orderId}")
-	// public Response delete(@PathParam("orderId") String orderId) {
-	// ferryFlightOrderService.updateFerryFlightOrderStatus(orderId, Order.Status.DELETED);
-	// return Response.noContent().build();
-	// }
-	//
-	// // **************
-	// // ADMIN ONLY
-	// // **************
-	//
-	// /**
-	// * Mark order as Paid
-	// */
-	// @POST
-	// @Path("{orderId}/paid")
-	// @RolesAllowed(Roles.ROLE_ADMIN)
-	// public Response markPaidOrder(@PathParam("orderId") String orderId) {
-	// ferryFlightOrderService.updateFerryFlightOrderStatus(orderId, Order.Status.PAID);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete
-	// */
-	// @DELETE
-	// @Path("{orderId}/force")
-	// @RolesAllowed(Roles.ROLE_ADMIN)
-	// public Response forceDelete(@PathParam("orderId") String orderId) {
-	// ferryFlightOrderService.deleteFerryFlightOrder(orderId);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete all
-	// */
-	// @DELETE
-	// @RolesAllowed(Roles.ROLE_ADMIN)
-	// public Response deleteAll(@PathParam("userId") String userId) {
-	// ferryFlightOrderService.deleteFerryFlightOrders(userId);
-	// return Response.noContent().build();
-	// }
 
 }

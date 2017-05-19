@@ -8,7 +8,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,32 +40,10 @@ public class TenantAirTaxiOrderResource extends BaseOrderResource<AirTaxiOrder> 
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("tenantId") String tenantId, @QueryParam("status") String status,
+	public Page<AirTaxiOrder> list(@PathParam("tenantId") String tenantId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all orders with  status: {} for tenant: {} ", status, tenantId);
-		Page<AirTaxiOrder> result = airTaxiOrderService.listTenantAirTaxiOrders(tenantId, Order.Status.of(status), page,
-				pageSize);
-		return buildPageResponse(result);
+		return airTaxiOrderService.listTenantAirTaxiOrders(tenantId, status, page, pageSize);
 	}
-
-	/**
-	 * Find
-	 */
-	// @GET
-	// @Path("{orderId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public AirTaxiOrder find(@PathParam("orderId") String orderId) {
-	// return airTaxiOrderService.findAirTaxiOrder(orderId);
-	// }
-
-	/**
-	 * Mark order as Paid
-	 */
-	// @POST
-	// @Path("{orderId}/paid")
-	// public Response markOrderPaid(@PathParam("orderId") String orderId) {
-	// airTaxiOrderService.updateAirTaxiOrderStatus(orderId, Order.Status.PAID);
-	// return Response.noContent().build();
-	// }
 
 }

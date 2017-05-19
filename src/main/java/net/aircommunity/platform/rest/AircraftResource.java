@@ -9,14 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Aircraft;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.AircraftService;
@@ -46,11 +44,10 @@ public class AircraftResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
+	public Page<Aircraft> listAll(@QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("list all aircrafts");
-		Page<Aircraft> result = aircraftService.listAircrafts(page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return aircraftService.listAircrafts(page, pageSize);
 	}
 
 	/**

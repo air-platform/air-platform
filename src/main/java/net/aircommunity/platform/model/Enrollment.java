@@ -39,15 +39,6 @@ public class Enrollment extends VendorAwareOrder {
 	@Embedded
 	private Contact contact;
 
-	// person name
-	// @NotEmpty
-	// @Column(name = "person", nullable = false)
-	// private String person;
-	//
-	// @NotEmpty
-	// @Column(name = "identity")
-	// private String identity;
-
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "course_id", nullable = false)

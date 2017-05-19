@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.FerryFlightService;
@@ -54,7 +53,7 @@ public class FerryFlightResource {
 		}
 		LOG.debug("List all ferryFlights for departure: {}", departure);
 		Page<FerryFlight> result = ferryFlightService.listFerryFlightsByDeparture(departure, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return Response.ok(result).build();
 	}
 
 	/**
@@ -65,7 +64,6 @@ public class FerryFlightResource {
 	@Path("{ferryFlightId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {
-		LOG.debug("Find ferryFlight: {}", ferryFlightId);
 		return ferryFlightService.findFerryFlight(ferryFlightId);
 	}
 

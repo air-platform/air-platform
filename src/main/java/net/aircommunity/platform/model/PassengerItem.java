@@ -27,12 +27,6 @@ import net.aircommunity.platform.model.jaxb.OrderAdapter;
 public class PassengerItem extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "order_id")
-	@XmlJavaTypeAdapter(OrderAdapter.class)
-	private Order order;
-
 	// Passenger name
 	@Column(name = "name")
 	@XmlTransient
@@ -47,6 +41,12 @@ public class PassengerItem extends Persistable {
 	@XmlTransient
 	@Column(name = "identity")
 	private String identity;
+
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "order_id")
+	@XmlJavaTypeAdapter(OrderAdapter.class)
+	private Order order;
 
 	// TODO REMOVE
 	// @ManyToOne

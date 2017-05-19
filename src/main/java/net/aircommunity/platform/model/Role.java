@@ -18,6 +18,11 @@ public enum Role {
 	TENANT(Roles.ROLE_TENANT),
 
 	/**
+	 * Customer Service.
+	 */
+	CUSTOMER_SERVICE(Roles.ROLE_CUSTOMER_SERVICE),
+
+	/**
 	 * Normal user.
 	 */
 	USER(Roles.ROLE_USER);
@@ -32,7 +37,7 @@ public enum Role {
 		return value;
 	}
 
-	public static Role of(String value) {
+	public static Role fromString(String value) {
 		for (Role e : values()) {
 			if (e.name().equalsIgnoreCase(value)) {
 				return e;

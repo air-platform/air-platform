@@ -34,20 +34,20 @@ public class AirTaxiServiceImpl extends AircraftAwareService<AirTaxi> implements
 
 	@Override
 	public AirTaxi createAirTaxi(String tenantId, AirTaxi airTaxi) {
-		AirTaxi created = createProduct(tenantId, airTaxi);
+		AirTaxi created = doCreateProduct(tenantId, airTaxi);
 		return airTaxiRepository.save(created);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public AirTaxi findAirTaxi(String taxiId) {
-		return findProduct(taxiId);
+		return doFindProduct(taxiId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#taxiId")
 	@Override
 	public AirTaxi updateAirTaxi(String taxiId, AirTaxi newAirTaxi) {
-		return updateProduct(taxiId, newAirTaxi);
+		return doUpdateProduct(taxiId, newAirTaxi);
 	}
 
 	@Override
@@ -62,13 +62,13 @@ public class AirTaxiServiceImpl extends AircraftAwareService<AirTaxi> implements
 
 	@Override
 	public Page<AirTaxi> listAirTaxis(int page, int pageSize) {
-		return listAllProducts(page, pageSize);
+		return doListAllProducts(page, pageSize);
 	}
 
 	@Nonnull
 	@Override
 	public Page<AirTaxi> listAirTaxis(String tenantId, int page, int pageSize) {
-		return listTenantProducts(tenantId, page, pageSize);
+		return doListTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Nonnull
@@ -80,13 +80,13 @@ public class AirTaxiServiceImpl extends AircraftAwareService<AirTaxi> implements
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTaxiId")
 	@Override
 	public void deleteAirTaxi(String airTaxiId) {
-		deleteProduct(airTaxiId);
+		doDeleteProduct(airTaxiId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAirTaxis(String tenantId) {
-		deleteProducts(tenantId);
+		doDeleteProducts(tenantId);
 	}
 
 	@Override

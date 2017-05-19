@@ -15,6 +15,7 @@ import net.aircommunity.platform.model.Address;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.Role;
+import net.aircommunity.platform.model.Tenant.VerificationStatus;
 
 /**
  * Account service manages {@code Account}s. The account principal can be username, mobile or email.
@@ -112,6 +113,16 @@ public interface AccountService {
 	 */
 	@Nonnull
 	Account updateAccountStatus(@Nonnull String accountId, @Nonnull Status newStatus);
+
+	/**
+	 * Update tenant account verification status.
+	 * 
+	 * @param accountId the accountId
+	 * @param newStatus the new verification status
+	 * @return updated account
+	 */
+	@Nonnull
+	Account updateTenantVerificationStatus(@Nonnull String accountId, @Nonnull VerificationStatus newStatus);
 
 	/**
 	 * Find an account by apiKey.

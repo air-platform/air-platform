@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.Set;
+
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -35,19 +37,19 @@ public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> 
 
 	@Override
 	public AirTransport createAirTransport(String tenantId, AirTransport airTransport) {
-		return createProduct(tenantId, airTransport);
+		return doCreateProduct(tenantId, airTransport);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public AirTransport findAirTransport(String airTransportId) {
-		return findProduct(airTransportId);
+		return doFindProduct(airTransportId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#airTransportId")
 	@Override
 	public AirTransport updateAirTransport(String airTransportId, AirTransport newAirTransport) {
-		return updateProduct(airTransportId, newAirTransport);
+		return doUpdateProduct(airTransportId, newAirTransport);
 	}
 
 	@Override
@@ -58,13 +60,18 @@ public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> 
 	}
 
 	@Override
+	public Set<String> listAirTransportFamilies() {
+		return airTransportRepository.listFamilies();
+	}
+
+	@Override
 	public Page<AirTransport> listAirTransports(String tenantId, int page, int pageSize) {
-		return listTenantProducts(tenantId, page, pageSize);
+		return doListTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Override
 	public Page<AirTransport> listAirTransports(int page, int pageSize) {
-		return listAllProducts(page, pageSize);
+		return doListAllProducts(page, pageSize);
 	}
 
 	@Override
@@ -79,13 +86,13 @@ public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTransportId")
 	@Override
 	public void deleteAirTransport(String airTransportId) {
-		deleteProduct(airTransportId);
+		doDeleteProduct(airTransportId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAirTransports(String tenantId) {
-		deleteProducts(tenantId);
+		doDeleteProducts(tenantId);
 	}
 
 	@Override
@@ -97,5 +104,4 @@ public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> 
 	protected BaseProductRepository<AirTransport> getProductRepository() {
 		return airTransportRepository;
 	}
-
 }

@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.AirException;
@@ -42,6 +44,14 @@ public interface AirTransportService {
 	 */
 	@Nonnull
 	AirTransport updateAirTransport(@Nonnull String airTransportId, @Nonnull AirTransport newAirTransport);
+
+	/**
+	 * List all transport families.
+	 * 
+	 * @return a list of families
+	 */
+	@Nonnull
+	Set<String> listAirTransportFamilies();
 
 	/**
 	 * List all AirTransports by pagination filter by tenantId.

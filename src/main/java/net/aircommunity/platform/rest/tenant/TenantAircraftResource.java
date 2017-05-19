@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Aircraft;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
@@ -70,14 +69,13 @@ public class TenantAircraftResource {
 	}
 
 	/**
-	 * List TODO query
+	 * List
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
+	public Page<Aircraft> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<Aircraft> result = aircraftService.listAircrafts(tenantId, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return aircraftService.listAircrafts(tenantId, page, pageSize);
 	}
 
 	/**
@@ -96,18 +94,16 @@ public class TenantAircraftResource {
 	 */
 	@DELETE
 	@Path("{aircraftId}")
-	public Response delete(@PathParam("aircraftId") String aircraftId) {
+	public void delete(@PathParam("aircraftId") String aircraftId) {
 		aircraftService.deleteAircraft(aircraftId);
-		return Response.noContent().build();
 	}
 
 	/**
 	 * Delete all
 	 */
 	@DELETE
-	public Response deleteAll(@PathParam("tenantId") String tenantId) {
+	public void deleteAll(@PathParam("tenantId") String tenantId) {
 		aircraftService.deleteAircrafts(tenantId);
-		return Response.noContent().build();
 	}
 
 }

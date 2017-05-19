@@ -1,5 +1,7 @@
 package net.aircommunity.platform.rest.user;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
@@ -15,13 +17,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Address;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
@@ -56,11 +56,11 @@ public class UserResource {
 	 */
 	@GET
 	@Path("addresses")
-	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response listUserAddresses(@Context SecurityContext context) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Address> listUserAddresses(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		return Response.ok(accountService.listUserAddresses(accountId)).build();
+		return accountService.listUserAddresses(accountId);
 	}
 
 	/**
@@ -68,12 +68,11 @@ public class UserResource {
 	 */
 	@POST
 	@Path("addresses")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response addUserAddress(@NotNull @Valid Address address, @Context SecurityContext context) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void addUserAddress(@NotNull @Valid Address address, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.addUserAddress(accountId, address);
-		return Response.noContent().build();
 	}
 
 	/**
@@ -81,12 +80,11 @@ public class UserResource {
 	 */
 	@DELETE
 	@Path("addresses/{addressId}")
-	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response removeUserAddress(@PathParam("addressId") String addressId, @Context SecurityContext context) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public void removeUserAddress(@PathParam("addressId") String addressId, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.removeUserAddress(accountId, addressId);
-		return Response.noContent().build();
 	}
 
 	/**
@@ -94,11 +92,11 @@ public class UserResource {
 	 */
 	@GET
 	@Path("passengers")
-	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response listUserPassengers(@Context SecurityContext context) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Passenger> listUserPassengers(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		return Response.ok(accountService.listUserPassengers(accountId)).build();
+		return accountService.listUserPassengers(accountId);
 	}
 
 	/**
@@ -106,12 +104,11 @@ public class UserResource {
 	 */
 	@POST
 	@Path("passengers")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response addPassenger(@NotNull @Valid Passenger passenger, @Context SecurityContext context) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Passenger addPassenger(@NotNull @Valid Passenger passenger, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		Passenger passengerAdded = accountService.addUserPassenger(accountId, passenger);
-		return Response.ok(passengerAdded).build();
+		return accountService.addUserPassenger(accountId, passenger);
 	}
 
 	/**
@@ -119,13 +116,11 @@ public class UserResource {
 	 */
 	@DELETE
 	@Path("passengers/{passengerId}")
-	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response removeUserPassenger(@PathParam("passengerId") String passengerId,
-			@Context SecurityContext context) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public void removeUserPassenger(@PathParam("passengerId") String passengerId, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.removeUserPassenger(accountId, passengerId);
-		return Response.noContent().build();
 	}
 
 	// *******//
@@ -138,7 +133,7 @@ public class UserResource {
 	@GET
 	@Path("orders")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAllOrders(@QueryParam("page") @DefaultValue("1") int page,
+	public Page<Order> listAllOrders(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
 		return buildOrdersResponse(null, page, pageSize, context);
 	}
@@ -146,7 +141,7 @@ public class UserResource {
 	@GET
 	@Path("orders/pending")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAllPendingOrders(@QueryParam("page") @DefaultValue("1") int page,
+	public Page<Order> listAllPendingOrders(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
 		return buildOrdersResponse(Order.Status.PENDING, page, pageSize, context);
 	}
@@ -154,7 +149,7 @@ public class UserResource {
 	@GET
 	@Path("orders/paid")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAllPaidOrders(@QueryParam("page") @DefaultValue("1") int page,
+	public Page<Order> listAllPaidOrders(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
 		return buildOrdersResponse(Order.Status.PAID, page, pageSize, context);
 	}
@@ -162,7 +157,7 @@ public class UserResource {
 	@GET
 	@Path("orders/finished")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAllFinishedOrders(@QueryParam("page") @DefaultValue("1") int page,
+	public Page<Order> listAllFinishedOrders(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
 		return buildOrdersResponse(Order.Status.FINISHED, page, pageSize, context);
 	}
@@ -170,15 +165,14 @@ public class UserResource {
 	@GET
 	@Path("orders/cancelled")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAllCancelledOrders(@QueryParam("page") @DefaultValue("1") int page,
+	public Page<Order> listAllCancelledOrders(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
 		return buildOrdersResponse(Order.Status.CANCELLED, page, pageSize, context);
 	}
 
-	private Response buildOrdersResponse(Order.Status status, int page, int pageSize, SecurityContext context) {
+	private Page<Order> buildOrdersResponse(Order.Status status, int page, int pageSize, SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		Page<Order> result = commonOrderService.listUserOrders(accountId, status, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return commonOrderService.listUserOrders(accountId, status, page, pageSize);
 	}
 
 	@GET
@@ -191,25 +185,22 @@ public class UserResource {
 	@POST
 	@Path("orders/{orderId}/pay")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response payOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
+	public void payOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.PAID);
-		return Response.noContent().build();
 	}
 
 	@POST
 	@Path("orders/{orderId}/cancel")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response cancelOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
+	public void cancelOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.CANCELLED);
-		return Response.noContent().build();
 	}
 
 	@DELETE
 	@Path("orders/{orderId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
+	public void deleteOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
-		return Response.noContent().build();
 	}
 
 	// ***********************

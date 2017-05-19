@@ -4,6 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Date;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,24 +12,32 @@ import org.slf4j.LoggerFactory;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.AircraftAwareProduct;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.ProductFaq;
 import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
+import net.aircommunity.platform.repository.ProductFaqRepository;
 
 /**
  * Abstract Product service support.
  * 
  * @author Bin.Zhang
  */
+@SuppressWarnings("unchecked")
 abstract class AbstractProductService<T extends Product> extends AbstractServiceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractProductService.class);
+
+	protected static final String CACHE_NAME = "cache.product";
+
+	@Resource
+	protected ProductFaqRepository productFAQRepository;
 
 	protected Class<T> type;
 
 	@PostConstruct
-	@SuppressWarnings("unchecked")
 	private void init() {
 		ParameterizedType pt = ParameterizedType.class.cast(getClass().getGenericSuperclass());
 		type = (Class<T>) pt.getActualTypeArguments()[0];
@@ -42,7 +51,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	// Generic CRUD shared
 	// *********************
 
-	protected T createProduct(String tenantId, T product) {
+	protected final T doCreateProduct(String tenantId, T product) {
 		Tenant vendor = findAccount(tenantId, Tenant.class);
 		T newProduct = null;
 		try {
@@ -57,6 +66,15 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		newProduct.setImage(product.getImage());
 		newProduct.setClientManagers(product.getClientManagers());
 		newProduct.setDescription(product.getDescription());
+		newProduct.setPutOnSale(false);
+		// for AircraftAwareProduct
+		if (AircraftAwareProduct.class.isAssignableFrom(newProduct.getClass())) {
+			AircraftAwareProduct newAircraftAwareProduct = AircraftAwareProduct.class.cast(newProduct);
+			AircraftAwareProduct aircraftAwareProduct = AircraftAwareProduct.class.cast(product);
+			// TODO need validate the dates format?
+			newAircraftAwareProduct.setUnavailableDates(aircraftAwareProduct.getUnavailableDates());
+			newAircraftAwareProduct.setCurrentTime(new Date());
+		}
 		copyProperties(product, newProduct);
 		// set props cannot be overridden by subclass
 		newProduct.setCreationDate(new Date());
@@ -71,7 +89,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		}
 	}
 
-	protected T findProduct(String productId) {
+	protected final T doFindProduct(String productId) {
 		T product = getProductRepository().findOne(productId);
 		if (product == null) {
 			LOG.error("{}: {} is not found", type.getSimpleName(), productId);
@@ -80,8 +98,8 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		return product;
 	}
 
-	protected T updateProduct(String productId, T newProduct) {
-		T product = findProduct(productId);
+	protected final T doUpdateProduct(String productId, T newProduct) {
+		T product = doFindProduct(productId);
 		product.setName(newProduct.getName());
 		product.setImage(newProduct.getImage());
 		product.setClientManagers(newProduct.getClientManagers());
@@ -97,13 +115,26 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		}
 	}
 
+	protected final T doPutProductOnSale(String productId, boolean putOnSale) {
+		T product = doFindProduct(productId);
+		try {
+			product.setPutOnSale(putOnSale);
+			return getProductRepository().save(product);
+		}
+		catch (Exception e) {
+			LOG.error(String.format("Update %s: %s with putOnSale: %b failed, cause: %s", type.getSimpleName(),
+					productId, putOnSale, e.getMessage()), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+		}
+	}
+
 	protected void copyProperties(T src, T tgt) {
 	}
 
 	/**
 	 * For USER (Exclude Products in DELETED status)
 	 */
-	protected Page<T> listTenantProducts(String tenantId, int page, int pageSize) {
+	protected final Page<T> doListTenantProducts(String tenantId, int page, int pageSize) {
 		return Pages.adapt(getProductRepository().findByVendorIdOrderByCreationDateDesc(tenantId,
 				Pages.createPageRequest(page, pageSize)));
 	}
@@ -111,16 +142,72 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	/**
 	 * For ADMIN (Products of any tenant)
 	 */
-	protected Page<T> listAllProducts(int page, int pageSize) {
+	protected final Page<T> doListAllProducts(int page, int pageSize) {
 		return Pages.adapt(
 				getProductRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
 	}
 
-	protected void deleteProduct(String productId) {
+	protected final void doDeleteProduct(String productId) {
 		getProductRepository().delete(productId);
 	}
 
-	protected void deleteProducts(String tenantId) {
+	protected final void doDeleteProducts(String tenantId) {
 		getProductRepository().deleteByVendorId(tenantId);
 	}
+
+	// *********************
+	// Generic CRUD FAQ
+	// *********************
+	protected final ProductFaq doCreateProductFaq(String productId, ProductFaq faq) {
+		Product product = doFindProduct(productId);
+		ProductFaq newFaq = new ProductFaq();
+		newFaq.setContent(faq.getContent());
+		newFaq.setDate(new Date());
+		newFaq.setTitle(faq.getTitle());
+		newFaq.setProduct(product);
+		try {
+			return productFAQRepository.save(newFaq);
+		}
+		catch (Exception e) {
+			LOG.error(String.format("Create FAQ: %s for product %s failed, cause: %s", faq, product, e.getMessage()),
+					e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+		}
+	}
+
+	protected final ProductFaq doFindProductFaq(String productFaqId) {
+		ProductFaq faq = productFAQRepository.findOne(productFaqId);
+		if (faq == null) {
+			LOG.error("Product FAQ: {} is not found", productFaqId);
+			throw new AirException(Codes.PRODUCT_FAQ_NOT_FOUND, M.msg(M.PRODUCT_FAQ_NOT_FOUND));
+		}
+		return faq;
+	}
+
+	protected final ProductFaq doUpdateProductFaq(String productFaqId, ProductFaq newFaq) {
+		ProductFaq faq = doFindProductFaq(productFaqId);
+		faq.setContent(newFaq.getContent());
+		faq.setTitle(newFaq.getTitle());
+		try {
+			return productFAQRepository.save(newFaq);
+		}
+		catch (Exception e) {
+			LOG.error(String.format("Update FAQ: %s to %s failed, cause: %s", productFaqId, newFaq, e.getMessage()), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+		}
+	}
+
+	protected final Page<ProductFaq> doListProductFaqs(String productId, int page, int pageSize) {
+		return Pages.adapt(productFAQRepository.findByProductIdOrderByDateDesc(productId,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	protected final void doDeleteProductFaq(String productFaqId) {
+		productFAQRepository.delete(productFaqId);
+	}
+
+	protected final void doDeleteProductFaqs(String productId) {
+		productFAQRepository.deleteByProductId(productId);
+	}
+
 }

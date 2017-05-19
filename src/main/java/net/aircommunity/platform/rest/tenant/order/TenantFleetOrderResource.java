@@ -8,7 +8,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,48 +40,13 @@ public class TenantFleetOrderResource extends BaseOrderResource<CharterOrder> {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("tenantId") String tenantId, @QueryParam("status") String status,
+	public Page<CharterOrder> list(@PathParam("tenantId") String tenantId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		LOG.debug("List all orders with  status: {} for tenant: {} ", status, tenantId);
-		Order.Status orderStatus = Order.Status.of(status);
-		Page<CharterOrder> result = Page.emptyPage(page, pageSize);
-		if (orderStatus == Order.Status.PUBLISHED) {
-			result = charterOrderService.listCharterOrders(orderStatus, page, pageSize);
+		LOG.debug("List all orders with status: {} for tenant: {} ", status, tenantId);
+		if (Order.Status.PUBLISHED == status) {
+			return charterOrderService.listCharterOrders(status, page, pageSize);
 		}
-		else {
-			result = charterOrderService.listTenantCharterOrders(tenantId, orderStatus, page, pageSize);
-		}
-		return buildPageResponse(result);
+		return charterOrderService.listTenantCharterOrders(tenantId, status, page, pageSize);
 	}
-
-	// /**
-	// * Find
-	// */
-	// @GET
-	// @Path("{orderId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public CharterOrder find(@PathParam("orderId") String orderId) {
-	// return charterOrderService.findCharterOrder(orderId);
-	// }
-	//
-	// /**
-	// * Mark order as Paid
-	// */
-	// @POST
-	// @Path("{orderId}/paid")
-	// public Response markOrderPaid(@PathParam("orderId") String orderId) {
-	// charterOrderService.updateCharterOrderStatus(orderId, Order.Status.PAID);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Finish order
-	// */
-	// @POST
-	// @Path("{orderId}/finish")
-	// public Response finishOrder(@PathParam("orderId") String orderId) {
-	// charterOrderService.updateCharterOrderStatus(orderId, Order.Status.FINISHED);
-	// return Response.noContent().build();
-	// }
 
 }

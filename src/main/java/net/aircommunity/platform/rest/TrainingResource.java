@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.TrainingBanner;
@@ -46,7 +45,7 @@ public class TrainingResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed(Roles.ROLE_ADMIN)
-	public Response createTrainingBanner(@NotNull @Valid TrainingBanner request, @Context UriInfo uriInfo) {
+	public Response create(@NotNull @Valid TrainingBanner request, @Context UriInfo uriInfo) {
 		TrainingBanner tb = trainingService.createTrainingBanner(request);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(tb.getId()).build();
 		LOG.debug("Created Training Banner: {}", uri);
@@ -56,10 +55,9 @@ public class TrainingResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTrainingBannerList(@QueryParam("page") @DefaultValue("1") int page,
+	public Page<TrainingBanner> listAll(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		Page<TrainingBanner> tbPage = trainingService.getAllTrainingBanner(page, pageSize);
-		return Response.ok(tbPage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(tbPage)).build();
+		return trainingService.getAllTrainingBanner(page, pageSize);
 	}
 
 }

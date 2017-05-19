@@ -10,14 +10,17 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.jaxb.DateAdapter;
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
  * AircraftAware Product of an {@code Tenant}.
@@ -30,7 +33,7 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
 public abstract class AircraftAwareProduct extends Product {
 	private static final long serialVersionUID = 1L;
 
-	// available date, e.g. 2017-5-1
+	// available date, e.g. 2017-5-1 XXX useful? we already have unavailableDates
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "available_date")
 	@XmlJavaTypeAdapter(DateAdapter.class)
@@ -39,6 +42,15 @@ public abstract class AircraftAwareProduct extends Product {
 	// in presalesDays before
 	@Column(name = "presales_days")
 	protected int presalesDays = 0;
+
+	// format of: 2017-05(); 2017-05(1,3-7,15-20); 2017-12(1,3,7)
+	@Lob
+	@Column(name = "unavailable_dates")
+	protected String unavailableDates;
+
+	@Transient
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	protected Date currentTime;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	protected Set<AircraftItem> aircraftItems = new HashSet<>();
@@ -57,6 +69,22 @@ public abstract class AircraftAwareProduct extends Product {
 
 	public void setPresalesDays(int presalesDays) {
 		this.presalesDays = presalesDays;
+	}
+
+	public String getUnavailableDates() {
+		return unavailableDates;
+	}
+
+	public void setUnavailableDates(String unavailableDates) {
+		this.unavailableDates = unavailableDates;
+	}
+
+	public Date getCurrentTime() {
+		return currentTime;
+	}
+
+	public void setCurrentTime(Date currentTime) {
+		this.currentTime = currentTime;
 	}
 
 	public Set<AircraftItem> getAircraftItems() {

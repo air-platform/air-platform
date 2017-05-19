@@ -64,11 +64,9 @@ public class AirTaxiOrderResource extends BaseOrderResource<AirTaxiOrder> {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("userId") String userId, @QueryParam("status") String status,
+	public Page<AirTaxiOrder> list(@PathParam("userId") String userId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<AirTaxiOrder> result = airTaxiOrderService.listUserAirTaxiOrders(userId, Order.Status.of(status), page,
-				pageSize);
-		return buildPageResponse(result);
+		return airTaxiOrderService.listUserAirTaxiOrders(userId, status, page, pageSize);
 	}
 
 	/**
@@ -81,66 +79,4 @@ public class AirTaxiOrderResource extends BaseOrderResource<AirTaxiOrder> {
 	public AirTaxiOrder update(@PathParam("orderId") String orderId, @NotNull @Valid AirTaxiOrder newOrder) {
 		return airTaxiOrderService.updateAirTaxiOrder(orderId, newOrder);
 	}
-
-	// **************
-	// ADMIN ONLY
-	// **************
-
-	/**
-	 * Delete
-	 */
-	// @DELETE
-	// @Path("{orderId}")
-	// @RolesAllowed(Roles.ROLE_ADMIN)
-	// public Response forceDelete(@PathParam("orderId") String orderId) {
-	// airTaxiOrderService.deleteAirTaxiOrder(orderId);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete all
-	// */
-	// @DELETE
-	// @RolesAllowed(Roles.ROLE_ADMIN)
-	// public Response deleteAll(@PathParam("userId") String userId) {
-	// airTaxiOrderService.deleteAirTaxiOrders(userId);
-	// return Response.noContent().build();
-	// }
-	// /**
-	// * Find
-	// */
-	// @GET
-	// @Path("{orderId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public AirTaxiOrder find(@PathParam("orderId") String orderId) {
-	// return airTaxiOrderService.findAirTaxiOrder(orderId);
-	// }
-	// /**
-	// * Cancel order
-	// */
-	// @POST
-	// @Path("{orderId}/cancel")
-	// public Response cancelOrder(@PathParam("orderId") String orderId) {
-	// airTaxiOrderService.updateAirTaxiOrderStatus(orderId, Order.Status.CANCELLED);
-	// return Response.noContent().build();
-	// }
-	// /**
-	// * Delete (mark order as DELETED)
-	// */
-	// @DELETE
-	// @Path("{orderId}")
-	// public Response delete(@PathParam("orderId") String orderId) {
-	// airTaxiOrderService.updateAirTaxiOrderStatus(orderId, Order.Status.DELETED);
-	// return Response.noContent().build();
-	// }
-	// /**
-	// * Mark order as Paid
-	// */
-	// @POST
-	// @Path("{orderId}/paid")
-	// @RolesAllowed(Roles.ROLE_ADMIN)
-	// public Response markPaidOrder(@PathParam("orderId") String orderId) {
-	// airTaxiOrderService.updateAirTaxiOrderStatus(orderId, Order.Status.PAID);
-	// return Response.noContent().build();
-	// }
 }

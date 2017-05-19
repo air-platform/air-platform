@@ -40,12 +40,13 @@ public class School extends Persistable {
 	@Lob
 	@Column(name = "description")
 	private String description;
+
 	@Lob
 	@Column(name = "base_desc")
 	private String baseDesc;
 
-	@XmlJavaTypeAdapter(AccountAdapter.class)
 	@ManyToOne
+	@XmlJavaTypeAdapter(AccountAdapter.class)
 	@JoinColumn(name = "tenant_id", nullable = false)
 	private Tenant vendor;
 
@@ -96,6 +97,14 @@ public class School extends Persistable {
 		this.contact = contact;
 	}
 
+	public String getBaseDesc() {
+		return baseDesc;
+	}
+
+	public void setBaseDesc(String baseDesc) {
+		this.baseDesc = baseDesc;
+	}
+
 	public Tenant getVendor() {
 		return vendor;
 	}
@@ -104,11 +113,13 @@ public class School extends Persistable {
 		this.vendor = vendor;
 	}
 
-	public String getBaseDesc() {
-		return baseDesc;
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("School [name=").append(name).append(", image=").append(image).append(", address=")
+				.append(address).append(", contact=").append(contact).append(", description=").append(description)
+				.append(", baseDesc=").append(baseDesc).append(", id=").append(id).append("]");
+		return builder.toString();
 	}
 
-	public void setBaseDesc(String baseDesc) {
-		this.baseDesc = baseDesc;
-	}
 }

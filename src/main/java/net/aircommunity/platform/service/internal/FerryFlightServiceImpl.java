@@ -41,19 +41,19 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 			throw new AirException(Codes.FERRYFLIGHT_ALREADY_EXISTS,
 					M.msg(M.FERRYFLIGHT_ALREADY_EXISTS, ferryFlight.getFlightNo()));
 		}
-		return createProduct(tenantId, ferryFlight);
+		return doCreateProduct(tenantId, ferryFlight);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public FerryFlight findFerryFlight(String ferryFlightId) {
-		return findProduct(ferryFlightId);
+		return doFindProduct(ferryFlightId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#ferryFlightId")
 	@Override
 	public FerryFlight updateFerryFlight(String ferryFlightId, FerryFlight newFerryFlight) {
-		return updateProduct(ferryFlightId, newFerryFlight);
+		return doUpdateProduct(ferryFlightId, newFerryFlight);
 	}
 
 	/**
@@ -77,12 +77,12 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 
 	@Override
 	public Page<FerryFlight> listFerryFlights(String tenantId, int page, int pageSize) {
-		return listTenantProducts(tenantId, page, pageSize);
+		return doListTenantProducts(tenantId, page, pageSize);
 	}
 
 	@Override
 	public Page<FerryFlight> listFerryFlights(int page, int pageSize) {
-		return listAllProducts(page, pageSize);
+		return doListAllProducts(page, pageSize);
 	}
 
 	@Override
@@ -105,13 +105,13 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#ferryFlightId")
 	@Override
 	public void deleteFerryFlight(String ferryFlightId) {
-		deleteProduct(ferryFlightId);
+		doDeleteProduct(ferryFlightId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteFerryFlights(String tenantId) {
-		deleteProducts(tenantId);
+		doDeleteProducts(tenantId);
 	}
 
 	@Override

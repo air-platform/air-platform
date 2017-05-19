@@ -7,7 +7,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -25,22 +24,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.rest.BaseProductResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.AirTaxiService;
 
 /**
  * AirTour RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
- * 
- * Created by guankai on 15/04/2017.
  */
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantAirTaxiResource {
+public class TenantAirTaxiResource extends BaseProductResource<AirTaxi> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantAirTaxiResource.class);
 
 	@Resource
@@ -60,24 +57,13 @@ public class TenantAirTaxiResource {
 	}
 
 	/**
-	 * Find
-	 */
-	@GET
-	@Path("{airTaxiId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public AirTaxi find(@PathParam("airTaxiId") String airTaxiId) {
-		return airTaxiService.findAirTaxi(airTaxiId);
-	}
-
-	/**
 	 * List TODO query
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
+	public Page<AirTaxi> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<AirTaxi> result = airTaxiService.listAirTaxis(tenantId, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return airTaxiService.listAirTaxis(tenantId, page, pageSize);
 	}
 
 	/**
@@ -91,23 +77,32 @@ public class TenantAirTaxiResource {
 		return airTaxiService.updateAirTaxi(airTaxiId, newAirTaxi);
 	}
 
-	/**
-	 * Delete
-	 */
-	@DELETE
-	@Path("{airTaxiId}")
-	public Response delete(@PathParam("airTaxiId") String airTaxiId) {
-		airTaxiService.deleteAirTaxi(airTaxiId);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * Delete all
-	 */
-	@DELETE
-	public Response deleteAll(@PathParam("tenantId") String tenantId) {
-		airTaxiService.deleteAirTaxis(tenantId);
-		return Response.noContent().build();
-	}
+	// /**
+	// * Find
+	// */
+	// @GET
+	// @Path("{airTaxiId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public AirTaxi find(@PathParam("airTaxiId") String airTaxiId) {
+	// return airTaxiService.findAirTaxi(airTaxiId);
+	// }
+	// /**
+	// * Delete
+	// */
+	// @DELETE
+	// @Path("{airTaxiId}")
+	// public Response delete(@PathParam("airTaxiId") String airTaxiId) {
+	// airTaxiService.deleteAirTaxi(airTaxiId);
+	// return Response.noContent().build();
+	// }
+	//
+	// /**
+	// * Delete all
+	// */
+	// @DELETE
+	// public Response deleteAll(@PathParam("tenantId") String tenantId) {
+	// airTaxiService.deleteAirTaxis(tenantId);
+	// return Response.noContent().build();
+	// }
 
 }

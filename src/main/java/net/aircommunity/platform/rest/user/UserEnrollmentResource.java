@@ -63,42 +63,8 @@ public class UserEnrollmentResource extends BaseOrderResource<Enrollment> {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("userId") String userId, @QueryParam("status") String status,
+	public Page<Enrollment> list(@PathParam("userId") String userId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		Page<Enrollment> result = enrollmentService.listUserEnrollments(userId, Order.Status.of(status), page,
-				pageSize);
-		return buildPageResponse(result);
+		return enrollmentService.listUserEnrollments(userId, status, page, pageSize);
 	}
-
-	// /**
-	// * Cancel
-	// */
-	// @POST
-	// @Path("{enrollmentId}/cancel")
-	// public Response cancelEnrollment(@PathParam("enrollmentId") String enrollmentId) {
-	// enrollmentService.updateEnrollmentStatus(enrollmentId, Order.Status.CANCELLED);
-	// return Response.noContent().build();
-	// }
-	// ADMIN ONLY
-	// /**
-	// * Find
-	// */
-	// @GET
-	// @Path("{enrollmentId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public Enrollment find(@PathParam("enrollmentId") String enrollmentId) {
-	// return enrollmentService.findEnrollment(enrollmentId);
-	// }
-	//
-	// /**
-	// * Delete
-	// */
-	// @DELETE
-	// @Path("{enrollmentId}/force")
-	// @RolesAllowed(Roles.ROLE_ADMIN)
-	// public Response forceDelete(@PathParam("enrollmentId") String enrollmentId) {
-	// enrollmentService.deleteEnrollment(enrollmentId);
-	// return Response.noContent().build();
-	// }
-
 }

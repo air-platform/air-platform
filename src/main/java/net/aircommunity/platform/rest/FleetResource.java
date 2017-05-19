@@ -9,7 +9,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.FleetService;
@@ -48,17 +46,13 @@ public class FleetResource {
 	@PermitAll
 	@ApiOperation(value = "List All Fleets", response = Fleet.class, responseContainer = "List")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listAll(@QueryParam("type") String type, @QueryParam("page") @DefaultValue("0") int page,
+	public Page<Fleet> listAll(@QueryParam("type") String type, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all fleets");
-		Page<Fleet> result = Page.emptyPage(page, pageSize);
 		if (type != null) {
-			result = fleetService.listFleetsByType(type, page, pageSize);
+			return fleetService.listFleetsByType(type, page, pageSize);
 		}
-		else {
-			result = fleetService.listFleets(page, pageSize);
-		}
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return fleetService.listFleets(page, pageSize);
 	}
 
 	/**

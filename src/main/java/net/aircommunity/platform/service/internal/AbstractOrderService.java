@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.retry.support.RetryTemplate;
 
 import com.google.common.eventbus.EventBus;
 
@@ -41,6 +42,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	@Resource
 	private EventBus eventBus;
+
+	@Resource
+	private RetryTemplate retryTemplate;
 
 	@Resource
 	private OrderNoGenerator orderNoGenerator;
@@ -86,7 +90,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		newOrder.setCreationDate(new Date());
 		newOrder.setStatus(status);
 		newOrder.setCommented(false);
-		newOrder.setOrderNo(orderNoGenerator.next());
+		newOrder.setOrderNo(nextOrderNo());
 		copyProperties(order, newOrder);
 		// set vendor
 		newOrder.setOwner(owner);
@@ -98,8 +102,14 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		catch (Exception e) {
 			LOG.error(String.format("Create %s: %s for user %s failed, cause: %s", type.getSimpleName(), order, userId,
 					e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
 		}
+	}
+
+	private String nextOrderNo() {
+		return retryTemplate.execute(context -> {
+			return orderNoGenerator.next();
+		});
 	}
 
 	protected void copyPropertiesAircraftAware(AircraftAwareOrder src, AircraftAwareOrder tgt) {

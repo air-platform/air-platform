@@ -5,30 +5,22 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.ExportMetricWriter;
-import org.springframework.boot.actuate.endpoint.MetricReaderPublicMetrics;
-import org.springframework.boot.actuate.endpoint.PublicMetrics;
-import org.springframework.boot.actuate.metrics.aggregate.AggregateMetricReader;
-import org.springframework.boot.actuate.metrics.export.MetricExportProperties;
-import org.springframework.boot.actuate.metrics.jmx.JmxMetricWriter;
-import org.springframework.boot.actuate.metrics.reader.MetricReader;
-import org.springframework.boot.actuate.metrics.repository.redis.RedisMetricRepository;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.system.ApplicationPidFileWriter;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.jmx.export.MBeanExporter;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -61,14 +53,16 @@ import okhttp3.OkHttpClient;
  * @author Bin.Zhang
  */
 @EnableJaxrs
-@SpringBootApplication
-@EnableCaching(proxyTargetClass = true)
-@EnableTransactionManagement(proxyTargetClass = true)
-@EnableConfigurationProperties
-@EnableAutoConfiguration
 @EnableScheduling
+@EnableAutoConfiguration
+@EnableConfigurationProperties
+@EnableRetry(proxyTargetClass = true)
+@EnableTransactionManagement(proxyTargetClass = true)
+@SpringBootApplication
 @SuppressWarnings("javadoc")
 public class Application {
+	private static final Logger LOG = LoggerFactory.getLogger(Application.class);
+
 	private static final String KEY_ID = "air.access_token_key";
 	private static final String ISSUER = "AIR_PLATFORM_ISSUER";
 	private static final String AUDIENCE = "AIR_PLATFORM_AUDIENCE";
@@ -89,12 +83,6 @@ public class Application {
 	@Resource
 	private TokenVerificationService appkeyVerificationService;
 
-	@Resource
-	private RedisConnectionFactory redisConnectionFactory;
-
-	@Resource
-	private MetricExportProperties export;
-
 	@Bean
 	public OrderNoGenerator orderNoGenerator() {
 		return new OrderNoGenerator(datacenterId, nodeId);
@@ -103,15 +91,6 @@ public class Application {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	public RedisTemplate<String, String> counterTemplate(RedisConnectionFactory redisConnectionFactory) {
-		RedisTemplate<String, String> stringTemplate = new RedisTemplate<>();
-		stringTemplate.setConnectionFactory(redisConnectionFactory);
-		stringTemplate.setDefaultSerializer(new StringRedisSerializer());
-		stringTemplate.afterPropertiesSet();
-		return stringTemplate;
 	}
 
 	@Bean
@@ -170,36 +149,16 @@ public class Application {
 	}
 
 	@Bean
-	@ExportMetricWriter
-	// metrics are exported to a Redis cache for aggregation
-	public RedisMetricRepository redisMetricWriter() {
-		return new RedisMetricRepository(redisConnectionFactory, export.getRedis().getPrefix(),
-				export.getRedis().getKey());
-	}
+	public RetryTemplate retryTemplate() {
+		SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
+		retryPolicy.setMaxAttempts(5);
+		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
+		backOffPolicy.setBackOffPeriod(1000); // 1 seconds
 
-	@Bean
-	@ExportMetricWriter
-	// metrics are exported as MBeans to the local server
-	public JmxMetricWriter jmxMetricWriter(@Qualifier("mbeanExporter") MBeanExporter exporter) {
-		return new JmxMetricWriter(exporter);
-	}
-
-	@Bean
-	public PublicMetrics metricsAggregate() {
-		return new MetricReaderPublicMetrics(aggregatesMetricReader());
-	}
-
-	// The MetricReaders blew are not @Beans and are not marked as @ExportMetricReader because they are just collecting
-	// and analyzing data from other repositories, and don’t want to export their values.
-	private MetricReader aggregatesMetricReader() {
-		AggregateMetricReader repository = new AggregateMetricReader(globalMetricsForAggregation());
-		repository.setKeyPattern(export.getAggregate().getKeyPattern());
-		return repository;
-	}
-
-	private MetricReader globalMetricsForAggregation() {
-		return new RedisMetricRepository(redisConnectionFactory, export.getRedis().getAggregatePrefix(),
-				export.getRedis().getKey());
+		RetryTemplate template = new RetryTemplate();
+		template.setRetryPolicy(retryPolicy);
+		template.setBackOffPolicy(backOffPolicy);
+		return template;
 	}
 
 	/**
@@ -212,8 +171,8 @@ public class Application {
 		try {
 			app.run(args);
 		}
-		catch (Exception e) {
-			e.printStackTrace();
+		catch (Throwable e) {
+			LOG.error("Application exiting... run into error:" + e.getMessage(), e);
 			System.exit(1);
 		}
 	}

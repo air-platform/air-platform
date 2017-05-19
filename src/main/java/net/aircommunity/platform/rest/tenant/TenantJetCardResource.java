@@ -7,7 +7,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -25,10 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.JetCard;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.rest.BaseProductResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.JetCardService;
 
@@ -40,7 +39,7 @@ import net.aircommunity.platform.service.JetCardService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantJetCardResource {
+public class TenantJetCardResource extends BaseProductResource<JetCard> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantJetCardResource.class);
 
 	@Resource
@@ -60,24 +59,13 @@ public class TenantJetCardResource {
 	}
 
 	/**
-	 * Find
-	 */
-	@GET
-	@Path("{jetCardId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public JetCard find(@PathParam("jetCardId") String jetCardId) {
-		return jetCardService.findJetCard(jetCardId);
-	}
-
-	/**
-	 * List TODO query
+	 * List
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
+	public Page<JetCard> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<JetCard> result = jetCardService.listJetCards(tenantId, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return jetCardService.listJetCards(tenantId, page, pageSize);
 	}
 
 	/**
@@ -91,23 +79,33 @@ public class TenantJetCardResource {
 		return jetCardService.updateJetCard(jetCardId, newJetCard);
 	}
 
-	/**
-	 * Delete
-	 */
-	@DELETE
-	@Path("{jetCardId}")
-	public Response delete(@PathParam("jetCardId") String jetCardId) {
-		jetCardService.deleteJetCard(jetCardId);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * Delete all
-	 */
-	@DELETE
-	public Response deleteAll(@PathParam("tenantId") String tenantId) {
-		jetCardService.deleteJetCards(tenantId);
-		return Response.noContent().build();
-	}
+	// /**
+	// * Find
+	// */
+	// @GET
+	// @Path("{jetCardId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public JetCard find(@PathParam("jetCardId") String jetCardId) {
+	// return jetCardService.findJetCard(jetCardId);
+	// }
+	//
+	// /**
+	// * Delete
+	// */
+	// @DELETE
+	// @Path("{jetCardId}")
+	// public Response delete(@PathParam("jetCardId") String jetCardId) {
+	// jetCardService.deleteJetCard(jetCardId);
+	// return Response.noContent().build();
+	// }
+	//
+	// /**
+	// * Delete all
+	// */
+	// @DELETE
+	// public Response deleteAll(@PathParam("tenantId") String tenantId) {
+	// jetCardService.deleteJetCards(tenantId);
+	// return Response.noContent().build();
+	// }
 
 }

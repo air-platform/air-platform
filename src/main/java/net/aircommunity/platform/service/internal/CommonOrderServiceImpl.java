@@ -40,6 +40,11 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	}
 
 	@Override
+	public Order saveOrder(Order order) {
+		return baseOrderRepository.save(order);
+	}
+
+	@Override
 	public Page<Order> listAllOrders(Order.Status status, int page, int pageSize) {
 		return doListAllOrders(status, page, pageSize);
 	}

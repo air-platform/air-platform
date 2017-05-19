@@ -150,6 +150,16 @@ public class AccountAuth extends Persistable {
 		this.account = account;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("AccountAuth [type=").append(type).append(", principal=").append(principal).append(", expires=")
+				.append(expires).append(", verified=").append(verified).append(", creationDate=").append(creationDate)
+				.append(", lastAccessedDate=").append(lastAccessedDate).append(", lastAccessedIp=")
+				.append(lastAccessedIp).append(", id=").append(id).append("]");
+		return builder.toString();
+	}
+
 	/**
 	 * Authentication types.
 	 */

@@ -48,6 +48,10 @@ public abstract class Product extends Persistable {
 	@Column(name = "image")
 	protected String image;
 
+	// product put on sale/pull off shelves
+	@Column(name = "put_onsale")
+	protected boolean putOnSale;
+
 	// product score
 	@Column(name = "score", nullable = false)
 	protected double score;
@@ -92,6 +96,14 @@ public abstract class Product extends Persistable {
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+
+	public boolean isPutOnSale() {
+		return putOnSale;
+	}
+
+	public void setPutOnSale(boolean putOnSale) {
+		this.putOnSale = putOnSale;
 	}
 
 	public double getScore() {
@@ -149,5 +161,12 @@ public abstract class Product extends Persistable {
 
 	public void setVendor(Tenant vendor) {
 		this.vendor = vendor;
+	}
+
+	/**
+	 * Product Category
+	 */
+	public enum Category {
+		AIR_JET, AIR_TAXI, AIR_TRANS, AIR_TRAINING
 	}
 }

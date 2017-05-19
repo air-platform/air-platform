@@ -12,14 +12,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.CourseService;
@@ -47,11 +45,10 @@ public class CourseResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@QueryParam("airType") String airType, @QueryParam("page") @DefaultValue("1") int page,
+	public Page<Course> list(@QueryParam("airType") String airType, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		LOG.debug("list all courses with airType: {}", airType);
-		Page<Course> courses = courseService.listCoursesByAirType(airType, page, pageSize);
-		return Response.ok(courses).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(courses)).build();
+		return courseService.listCoursesByAirType(airType, page, pageSize);
 	}
 
 	/**
@@ -61,10 +58,9 @@ public class CourseResource {
 	@PermitAll
 	@Path("hot")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response top10Hot(@QueryParam("page") @DefaultValue("1") int page,
+	public List<Course> top10Hot(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		List<Course> courses = courseService.listTop10HotCourses();
-		return Response.ok(courses).build();
+		return courseService.listTop10HotCourses();
 	}
 
 	/**
@@ -74,20 +70,18 @@ public class CourseResource {
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("school")
-	public Response listBySchool(@NotNull @QueryParam("id") String schoolId,
+	public Page<Course> listBySchool(@NotNull @QueryParam("id") String schoolId,
 			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		Page<Course> coursePage = courseService.listCoursesBySchool(schoolId, page, pageSize);
-		return Response.ok(coursePage).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(coursePage))
-				.build();
+		return courseService.listCoursesBySchool(schoolId, page, pageSize);
 	}
 
 	/**
 	 * Find
 	 */
 	@GET
+	@PermitAll
 	@Path("{courseId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll
 	public Course find(@PathParam("courseId") String courseId) {
 		return courseService.findCourse(courseId);
 	}

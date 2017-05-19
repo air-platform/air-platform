@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Comment;
+import net.aircommunity.platform.model.Comment.Source;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
@@ -64,10 +64,9 @@ public class CommentResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@NotNull @QueryParam("product") String productId,
+	public Page<Comment> list(@NotNull @QueryParam("product") String productId,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		Page<Comment> result = commentService.listComments(productId, page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return commentService.listComments(productId, page, pageSize);
 	}
 
 	/**
@@ -100,15 +99,16 @@ public class CommentResource {
 	}
 
 	/**
-	 * Create: ?orderId=xxx TODO only user buys this product, he can make comment
+	 * Create: ?source=order&sourceId=xxx
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response create(@NotNull @QueryParam("order") String orderId, @NotNull @Valid Comment comment,
-			@Context UriInfo uriInfo, @Context SecurityContext context) {
+	public Response create(@NotNull @QueryParam("source") Source source,
+			@NotNull @QueryParam("sourceId") String sourceId, @NotNull @Valid Comment comment, @Context UriInfo uriInfo,
+			@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
-		Comment created = commentService.createComment(accountId, orderId, comment);
+		Comment created = commentService.createComment(accountId, source, sourceId, comment);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();

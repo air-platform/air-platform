@@ -9,12 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Enrollment;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
@@ -41,11 +39,10 @@ public class EnrollmentResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response list(@QueryParam("status") String status, @QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+	public Page<Enrollment> list(@QueryParam("status") Order.Status status,
+			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		LOG.debug("list all enrollments...");
-		Page<Enrollment> result = enrollmentService.listEnrollments(Order.Status.of(status), page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return enrollmentService.listEnrollments(status, page, pageSize);
 	}
 
 	/**

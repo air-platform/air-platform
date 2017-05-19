@@ -104,4 +104,21 @@ public class Comment extends Persistable {
 		return builder.toString();
 	}
 
+	/**
+	 * Comment from which source
+	 */
+	public enum Source {
+		ORDER, PRODUCT;
+
+		// According to JSR 311 spec, if used in @QueryParam, fromString is a naming conversion
+		public static Source fromString(String source) {
+			for (Source e : Source.values()) {
+				if (e.name().equalsIgnoreCase(source)) {
+					return e;
+				}
+			}
+			return null;
+		}
+	}
+
 }

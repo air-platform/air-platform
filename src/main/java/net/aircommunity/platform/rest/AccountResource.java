@@ -81,7 +81,7 @@ import net.aircommunity.platform.service.VerificationService;
  * @author Bin.Zhang
  */
 @RESTful
-@Api("account")
+@Api
 @Path("account")
 public class AccountResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountResource.class);
@@ -107,6 +107,7 @@ public class AccountResource {
 	@Resource
 	private Configuration configuration;
 
+	// TODO AirQ
 	@ApiOperation(value = "login", hidden = true)
 	@GET
 	@Path("login")
@@ -142,6 +143,7 @@ public class AccountResource {
 	/**
 	 * AirQ
 	 */
+	// TODO AirQ
 	@ApiOperation(value = "airq", response = AccessToken.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 403, message = "") })
 	@GET
@@ -175,8 +177,7 @@ public class AccountResource {
 		AccountAuth accountAuthMobile = accountService.findAccountMobile(account.getId());
 		String nickName = account.getNickName();
 		if (Strings.isBlank(nickName)) {
-			nickName = accountAuthMobile != null ? accountAuthMobile.getPrincipal()
-					: Constants.CLAIM_USERNAME_ANONYMOUS;
+			nickName = accountAuthMobile != null ? accountAuthMobile.getPrincipal() : M.msg(M.USERNAME_ANONYMOUS);
 		}
 		return nickName;
 	}
@@ -264,8 +265,7 @@ public class AccountResource {
 	@Path("verification")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public Response requestVerification(@NotNull @QueryParam("mobile") String mobile,
-			@Context HttpServletRequest request) {
+	public void requestVerification(@NotNull @QueryParam("mobile") String mobile, @Context HttpServletRequest request) {
 		String forwardIp = "";
 		try {
 			// when using Heroku, the remote host is the AWS application tier, therefore the EC2 ip address.
@@ -285,7 +285,6 @@ public class AccountResource {
 			String code = verificationService.generateCode(mobile, ip);
 			smsService.sendSms(mobile, code);
 		}
-		return Response.noContent().build();
 	}
 
 	/**
@@ -294,9 +293,9 @@ public class AccountResource {
 	@ApiOperation(value = "auth-refresh", response = AccessToken.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 401, message = "") })
 	@POST
+	@Authenticated
 	@Path("auth/refresh")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
 	public AccessToken refreshToken(@Context SecurityContext context) {
 		SimplePrincipal principal = (SimplePrincipal) context.getUserPrincipal();
 		String refreshedToken = accessTokenService.generateToken(principal.getClaims().getSubject(),
@@ -412,7 +411,7 @@ public class AccountResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response updateAccount(@NotNull @Valid JsonObject newData, @Context SecurityContext context) {
+	public Account updateAccount(@NotNull @Valid JsonObject newData, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		Account account = accountService.findAccount(accountId);
 		// convert to json string
@@ -424,7 +423,7 @@ public class AccountResource {
 		try {
 			Account newAccount = objectMapper.readValue(json, account.getClass());
 			Account accountUpdated = accountService.updateAccount(accountId, newAccount);
-			return Response.ok(accountUpdated).build();
+			return accountUpdated;
 		}
 		catch (Exception e) {
 			LOG.error(String.format("Failed to update account: %, cause: %s", json, e.getMessage()), e);
@@ -440,12 +439,11 @@ public class AccountResource {
 			@ApiResponse(code = 404, message = "") })
 	@POST
 	@Path("password")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response updatePassword(@NotNull @Valid PasswordRequest request, @Context SecurityContext context) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updatePassword(@NotNull @Valid PasswordRequest request, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.updatePassword(accountId, request.getOldPassword(), request.getNewPassword());
-		return Response.noContent().build();
 	}
 
 	/**
@@ -455,8 +453,8 @@ public class AccountResource {
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
 	@POST
 	@Path("password/reset")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@PermitAll
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response resetPassword(@NotNull @Valid PasswordResetRequest request) {
 		if (!configuration.isMobileVerificationEnabled()) {
 			LOG.warn(
@@ -477,12 +475,11 @@ public class AccountResource {
 	@ApiOperation(value = "password-reset-email")
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
 	@POST
-	@Path("password/reset/email")
 	@Authenticated
-	public Response resetPassword(@Context SecurityContext context) {
+	@Path("password/reset/email")
+	public void resetPassword(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.resetPasswordViaEmail(accountId);
-		return Response.noContent().build();
 	}
 
 	/**
@@ -492,12 +489,11 @@ public class AccountResource {
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
 	@POST
 	@Path("username")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response updateUsername(@NotNull @Valid UsernameRequest request, @Context SecurityContext context) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateUsername(@NotNull @Valid UsernameRequest request, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.updateUsername(accountId, request.getUsername());
-		return Response.noContent().build();
 	}
 
 	/**
@@ -508,12 +504,11 @@ public class AccountResource {
 			@ApiResponse(code = 401, message = ""), @ApiResponse(code = 404, message = "") })
 	@POST
 	@Path("email")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response updateEmail(@NotNull @Valid EmailRequest request, @Context SecurityContext context) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateEmail(@NotNull @Valid EmailRequest request, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.updateEmail(accountId, request.getEmail());
-		return Response.noContent().build();
 	}
 
 	/**

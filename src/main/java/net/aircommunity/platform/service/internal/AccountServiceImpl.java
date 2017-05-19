@@ -41,12 +41,14 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Tenant;
+import net.aircommunity.platform.model.Tenant.VerificationStatus;
 import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AccountAuthRepository;
 import net.aircommunity.platform.repository.AccountRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.service.AccountService;
+import net.aircommunity.platform.service.IdentityCardService;
 import net.aircommunity.platform.service.MailService;
 import net.aircommunity.platform.service.TemplateService;
 import net.aircommunity.platform.service.VerificationService;
@@ -100,6 +102,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Resource
 	private AccessTokenService accessTokenService;
+
+	@Resource
+	private IdentityCardService identityCardService;
 
 	@Resource
 	private AirBBAccountService airBBAccountService;
@@ -370,9 +375,23 @@ public class AccountServiceImpl implements AccountService {
 	public Account updateAccountStatus(String accountId, Status newStatus) {
 		Account account = findAccount(accountId);
 		if (account.getRole() == Role.ADMIN) {
+			LOG.warn("Cannot update admin account {} status", account);
 			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED_PERMISSION, M.msg(M.ACCOUNT_UNAUTHORIZED_PERMISSION));
 		}
 		account.setStatus(newStatus);
+		return accountRepository.save(account);
+	}
+
+	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@Override
+	public Account updateTenantVerificationStatus(String accountId, VerificationStatus newStatus) {
+		Account account = findAccount(accountId);
+		if (account.getRole() != Role.TENANT) {
+			LOG.warn("Tenant account required, but was: {}", account);
+			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED_PERMISSION, M.msg(M.ACCOUNT_UNAUTHORIZED_PERMISSION));
+		}
+		Tenant tenant = (Tenant) account;
+		tenant.setVerification(newStatus);
 		return accountRepository.save(account);
 	}
 
@@ -468,6 +487,11 @@ public class AccountServiceImpl implements AccountService {
 		if (account.getRole() != Role.USER) {
 			throw new AirException(Codes.ACCOUNT_PASSENGER_NOT_ALLOWED,
 					M.msg(M.ACCOUNT_PASSENGER_NOT_ALLOWED, account.getNickName()));
+		}
+		// verify ID Card
+		boolean valid = identityCardService.verifyIdentityCard(passenger.getIdentity(), passenger.getName());
+		if (!valid) {
+			throw new AirException(Codes.ACCOUNT_ADD_PASSENGER_FAILURE, M.msg(M.ACCOUNT_INVALID_PASSENGER_IDCARD));
 		}
 		User user = User.class.cast(account);
 		user.addPassenger(passenger);

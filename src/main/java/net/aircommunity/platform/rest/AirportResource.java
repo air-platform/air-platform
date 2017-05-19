@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.common.net.HttpHeaders;
 import net.aircommunity.platform.model.Airport;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
@@ -72,7 +71,7 @@ public class AirportResource {
 		}
 		LOG.debug("list all Airports");
 		Page<Airport> result = airportService.listAirports(page, pageSize);
-		return Response.ok(result).header(HttpHeaders.HEADER_PAGINATION, HttpHeaders.pagination(result)).build();
+		return Response.ok(result).build();
 	}
 
 	/**
@@ -118,9 +117,8 @@ public class AirportResource {
 	@DELETE
 	@Path("{airportId}")
 	@RolesAllowed(Roles.ROLE_ADMIN)
-	public Response delete(@PathParam("airportId") String airportId) {
+	public void delete(@PathParam("airportId") String airportId) {
 		airportService.deleteAirport(airportId);
-		return Response.noContent().build();
 	}
 
 	/**
@@ -128,9 +126,8 @@ public class AirportResource {
 	 */
 	@DELETE
 	@RolesAllowed(Roles.ROLE_ADMIN)
-	public Response deleteAll() {
+	public void deleteAll() {
 		airportService.deleteAllAirports();
-		return Response.noContent().build();
 	}
 
 }
