@@ -23,8 +23,10 @@ public final class Codes {
 	public static final Code TOO_MANY_VERIFICATION_REQUEST = Code.rateLimiting(11_000_0008);
 
 	// account
-	public static final Code ACCOUNT_UNAUTHORIZED_PERMISSION = Code.notAuthorized(11_001_0001);
+	public static final Code ACCOUNT_UNAUTHORIZED = Code.notAuthorized(11_001_0001);
+	public static final Code ACCOUNT_PERMISSION_DENIED = Code.notPerimitted(11_001_0001);
 	public static final Code ACCOUNT_CREATION_FAILURE = Code.invalidArgument(11_001_0002);
+	public static final Code ACCOUNT_NOT_TENANT = Code.invalidArgument(11_001_0002);
 	public static final Code ACCOUNT_INVALID_VERIFICATION_CODE = Code.invalidArgument(11_001_0003);
 	public static final Code ACCOUNT_INVALID_USERNAME = Code.invalidArgument(11_001_0004);
 	public static final Code ACCOUNT_PASSWORD_MISMATCH = Code.invalidArgument(11_001_0005);
@@ -94,7 +96,7 @@ public final class Codes {
 
 	// comment
 	public static final Code COMMENT_NOT_FOUND = Code.notFound(11_013_0001);
-	public static final Code COMMENT_NOT_ALLOWED = Code.notAuthorized(11_013_0002);
+	public static final Code COMMENT_NOT_ALLOWED = Code.notPerimitted(11_013_0002);
 	public static final Code COMMENT_INVALID_DATA = Code.invalidArgument(11_013_0003);
 
 	private Codes() {

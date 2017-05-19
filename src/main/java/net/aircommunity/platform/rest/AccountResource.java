@@ -239,6 +239,7 @@ public class AccountResource {
 			account = accountService.authenticateAccount(request.getPrincipal(), request.getCredential(),
 					request.isOtp());
 		}
+		// should never happen here, just check it for sure
 		if (account == null) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
@@ -346,7 +347,7 @@ public class AccountResource {
 		String selfAccountId = context.getUserPrincipal().getName();
 		// denied for: 1) not self, 2) not admin
 		if (!(selfAccountId.equals(accountId) || context.isUserInRole(Role.ADMIN.name()))) {
-			return Response.status(Status.UNAUTHORIZED).build();
+			return Response.status(Status.FORBIDDEN).build();
 		}
 		return buildAccountResponse(accountId);
 	}
@@ -546,14 +547,10 @@ public class AccountResource {
 	@ApiResponses(value = { @ApiResponse(code = 204, message = ""), @ApiResponse(code = 401, message = "") })
 	@DELETE
 	@Authenticated
-	public Response deleteSelfAccount(@NotNull @Valid AuthcRequest request) {
+	public void deleteSelfAccount(@NotNull @Valid AuthcRequest request) {
 		Account account = accountService.authenticateAccount(request.getPrincipal(), request.getCredential(),
 				request.isOtp());
-		if (account == null) {
-			return Response.status(Response.Status.UNAUTHORIZED).build();
-		}
 		accountService.deleteAccount(account.getId());
-		return Response.noContent().build();
 	}
 
 }

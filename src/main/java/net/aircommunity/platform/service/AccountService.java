@@ -32,6 +32,7 @@ public interface AccountService {
 	 * @param isOtp whether is one time password or not (dynamic code via mobile)
 	 * @return authenticated account, null otherwise
 	 */
+	@Nonnull
 	Account authenticateAccount(@Nonnull String principal, @Nonnull String credential, boolean isOtp);
 
 	/**
@@ -43,6 +44,7 @@ public interface AccountService {
 	 * @param expires the account authentication expiry
 	 * @return the authenticated account
 	 */
+	@Nonnull
 	Account authenticateAccount(@Nonnull AuthType type, @Nonnull String principal, @Nonnull String credential,
 			long expires);
 

@@ -152,9 +152,14 @@ public class AccountServiceImpl implements AccountService {
 			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.msg(M.ACCOUNT_NOT_FOUND));
 		}
 		Account account = auth.getAccount();
+		if (account == null) {
+			LOG.error("Failed to authenticate, account {} data corrupted, auth info exists but account is not found",
+					principal);
+			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.msg(M.ACCOUNT_NOT_FOUND));
+		}
 		if (account.getStatus() != Status.ENABLED) {
 			LOG.warn("Account {} is not enabled, cannot be authenticated", principal);
-			return null;
+			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED, M.msg(M.ACCOUNT_UNAUTHORIZED_LOCKED));
 		}
 		boolean valid = false;
 		// OTP is available for mobile
@@ -170,7 +175,10 @@ public class AccountServiceImpl implements AccountService {
 		else {
 			valid = passwordEncoder.matches(credential, account.getPassword());
 		}
-		return valid ? account : null;
+		if (!valid) {
+			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED, M.msg(M.ACCOUNT_UNAUTHORIZED));
+		}
+		return account;
 	}
 
 	@Override
@@ -376,7 +384,7 @@ public class AccountServiceImpl implements AccountService {
 		Account account = findAccount(accountId);
 		if (account.getRole() == Role.ADMIN) {
 			LOG.warn("Cannot update admin account {} status", account);
-			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED_PERMISSION, M.msg(M.ACCOUNT_UNAUTHORIZED_PERMISSION));
+			throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.ACCOUNT_UPDATE_ADMIN_STATUS_NOT_ALLOWED));
 		}
 		account.setStatus(newStatus);
 		return accountRepository.save(account);
@@ -388,7 +396,7 @@ public class AccountServiceImpl implements AccountService {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.TENANT) {
 			LOG.warn("Tenant account required, but was: {}", account);
-			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED_PERMISSION, M.msg(M.ACCOUNT_UNAUTHORIZED_PERMISSION));
+			throw new AirException(Codes.ACCOUNT_NOT_TENANT, M.msg(M.ACCOUNT_NOT_TENANT));
 		}
 		Tenant tenant = (Tenant) account;
 		tenant.setVerification(newStatus);
