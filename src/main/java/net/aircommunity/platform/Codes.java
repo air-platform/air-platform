@@ -48,7 +48,8 @@ public final class Codes {
 
 	// AIR JET
 	public static final Code PRODUCT_NOT_FOUND = Code.notFound(11_003_0001);
-	public static final Code PRODUCT_FAQ_NOT_FOUND = Code.notFound(11_003_0001); // TODO re-org-code
+	public static final Code PROMOTION_NOT_FOUND = Code.notFound(11_003_0002);
+	public static final Code PRODUCT_FAQ_NOT_FOUND = Code.notFound(11_003_0003); // TODO re-org-code
 
 	public static final Code ORDER_NOT_FOUND = Code.notFound(11_003_0002);
 	public static final Code ORDER_ILLEGAL_STATUS = Code.illegalAccess(11_003_0003);

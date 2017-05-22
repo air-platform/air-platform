@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -20,7 +21,7 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_fleet_candidate")
+@Table(name = "air_platfrom_fleet_candidate", indexes = { @Index(name = "idx_status", columnList = "status") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FleetCandidate extends Persistable {
 	private static final long serialVersionUID = 1L;

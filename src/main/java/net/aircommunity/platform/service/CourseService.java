@@ -3,6 +3,7 @@ package net.aircommunity.platform.service;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.Page;
@@ -44,6 +45,10 @@ public interface CourseService {
 
 	@Nonnull
 	Page<Course> listCoursesByAirType(@Nonnull String airType, int page, int pageSize);
+
+	@Nonnull
+	Page<Course> listCoursesWithConditions(@Nullable String location, @Nullable String license,
+			@Nullable String aircraftType, int page, int pageSize);
 
 	/**
 	 * delete a course

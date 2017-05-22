@@ -2,6 +2,7 @@ package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,7 +16,7 @@ import io.micro.annotation.constraint.NotEmpty;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_airjet")
+@Table(name = "air_platfrom_airjet", indexes = { @Index(name = "idx_type", columnList = "type") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AirJet extends Persistable {
 	private static final long serialVersionUID = 1L;

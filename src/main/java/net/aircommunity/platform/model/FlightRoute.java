@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 import io.micro.annotation.constraint.NotEmpty;
 
@@ -13,6 +15,7 @@ import io.micro.annotation.constraint.NotEmpty;
  * @author Bin.Zhang
  */
 @Embeddable
+@XmlAccessorType(XmlAccessType.FIELD)
 public class FlightRoute implements Serializable {
 	private static final long serialVersionUID = 1L;
 

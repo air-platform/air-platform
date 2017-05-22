@@ -1,0 +1,98 @@
+package net.aircommunity.platform.model;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+/**
+ * Promotion of an product.
+ * 
+ * @author Bin.Zhang
+ */
+@Entity
+@Table(name = "air_platfrom_promotion_item")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class PromotionItem extends Persistable {
+	private static final long serialVersionUID = 1L;
+
+	@Size(max = 255)
+	@Column(name = "title", length = 255)
+	private String title;
+
+	@Size(max = 255)
+	@Column(name = "image")
+	private String image;
+
+	// product link
+	@Size(max = 1024)
+	@Column(name = "link", length = 1024)
+	private String link;
+
+	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "creation_date", nullable = false)
+	private Date creationDate;
+
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "promotion_id", nullable = false)
+	private Promotion promotion;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public Promotion getPromotion() {
+		return promotion;
+	}
+
+	public void setPromotion(Promotion promotion) {
+		this.promotion = promotion;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("PromotionItem [title=").append(title).append(", image=").append(image).append(", link=")
+				.append(link).append(", creationDate=").append(creationDate).append(", id=").append(id).append("]");
+		return builder.toString();
+	}
+
+}

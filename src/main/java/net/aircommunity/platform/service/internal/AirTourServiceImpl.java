@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.Set;
+
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
@@ -58,6 +60,11 @@ public class AirTourServiceImpl extends AircraftAwareService<AirTour> implements
 		tgt.setTourTime(src.getTourTime());
 		tgt.setTraffic(src.getTraffic());
 		tgt.setTourRoute(src.getTourRoute());
+	}
+
+	@Override
+	public Set<String> listAirTourCities() {
+		return airTourRepository.listCities();
 	}
 
 	@Override

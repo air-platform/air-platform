@@ -8,6 +8,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 import io.micro.annotation.constraint.NotEmpty;
 
@@ -17,6 +19,7 @@ import io.micro.annotation.constraint.NotEmpty;
  * @author Bin.Zhang
  */
 @Entity
+@XmlAccessorType(XmlAccessType.FIELD)
 @Table(name = "air_platfrom_fleet", indexes = { @Index(name = "idx_aircraft_type", columnList = "aircraft_type") })
 public class Fleet extends PricedProduct {
 	private static final long serialVersionUID = 1L;

@@ -3,6 +3,7 @@ package net.aircommunity.platform.service.internal;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
@@ -18,6 +19,7 @@ import net.aircommunity.platform.service.CommonProductService;
  * @author Bin.Zhang
  */
 @Service
+@Transactional
 public class CommonProductServiceImpl extends AbstractProductService<Product> implements CommonProductService {
 
 	@Resource

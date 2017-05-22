@@ -167,6 +167,15 @@ public abstract class Product extends Persistable {
 	 * Product Category
 	 */
 	public enum Category {
-		AIR_JET, AIR_TAXI, AIR_TRANS, AIR_TRAINING
+		AIR_JET, AIR_TAXI, AIR_TRANS, AIR_TRAINING;
+
+		public static Category fromString(String value) {
+			for (Category e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
 	}
 }

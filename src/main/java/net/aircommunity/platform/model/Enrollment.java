@@ -24,8 +24,8 @@ public class Enrollment extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
-	@Column(name = "air_type", nullable = false)
-	private String airType;
+	@Column(name = "aircraft_type", nullable = false)
+	private String aircraftType;
 
 	@NotEmpty
 	@Column(name = "license", nullable = false)
@@ -51,12 +51,12 @@ public class Enrollment extends VendorAwareOrder {
 		this.id = id;
 	}
 
-	public String getAirType() {
-		return airType;
+	public String getAircraftType() {
+		return aircraftType;
 	}
 
-	public void setAirType(String airType) {
-		this.airType = airType;
+	public void setAircraftType(String aircraftType) {
+		this.aircraftType = aircraftType;
 	}
 
 	public String getLicense() {
@@ -105,7 +105,7 @@ public class Enrollment extends VendorAwareOrder {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Enrollment [airType=").append(airType).append(", license=").append(license)
+		builder.append("Enrollment [aircraftType=").append(aircraftType).append(", license=").append(license)
 				.append(", location=").append(location).append(", contact=").append(contact).append(", orderNo=")
 				.append(orderNo).append(", status=").append(status).append(", creationDate=").append(creationDate)
 				.append(", paymentDate=").append(paymentDate).append(", finishedDate=").append(finishedDate)

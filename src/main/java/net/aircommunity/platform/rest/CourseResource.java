@@ -40,15 +40,16 @@ public class CourseResource {
 	// ***********************
 
 	/**
-	 * List by air type
+	 * List
 	 */
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<Course> list(@QueryParam("airType") String airType, @QueryParam("page") @DefaultValue("1") int page,
+	public Page<Course> list(@QueryParam("location") String location, @QueryParam("license") String license,
+			@QueryParam("aircraftType") String aircraftType, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		LOG.debug("list all courses with airType: {}", airType);
-		return courseService.listCoursesByAirType(airType, page, pageSize);
+		LOG.debug("list all courses with location: {}, license: {}, aircraftType: {}", location, license, aircraftType);
+		return courseService.listCoursesWithConditions(location, license, aircraftType, page, pageSize);
 	}
 
 	/**

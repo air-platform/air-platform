@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 import javax.ws.rs.FormParam;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 import io.micro.annotation.multipart.MultipartFilename;
 import io.micro.annotation.multipart.MultipartType;
@@ -18,6 +20,7 @@ import io.micro.annotation.multipart.MultipartType;
  * 
  * @author Bin.Zhang
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class StreamingImageFile implements Serializable {
 	private static final long serialVersionUID = 1L;
 

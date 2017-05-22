@@ -38,6 +38,7 @@ import net.aircommunity.platform.model.Tenant.VerificationStatus;
 import net.aircommunity.platform.rest.AirJetResource;
 import net.aircommunity.platform.rest.AirportResource;
 import net.aircommunity.platform.rest.CommentResource;
+import net.aircommunity.platform.rest.PromotionResource;
 import net.aircommunity.platform.rest.tenant.TenantAirTaxiResource;
 import net.aircommunity.platform.rest.tenant.TenantAirTourResourse;
 import net.aircommunity.platform.rest.tenant.TenantAirTransportResource;
@@ -200,6 +201,17 @@ public class AdminResource {
 	// *************
 	// Common
 	// *************
+	// ***********************
+	// Promotion
+	// ***********************
+	@Resource
+	private PromotionResource promotionResource;
+
+	@Path("")
+	public PromotionResource promotions() {
+		return promotionResource;
+	}
+
 	@Resource
 	private AirJetResource airJetResource;
 
@@ -496,5 +508,4 @@ public class AdminResource {
 	public UserEnrollmentResource userEnrollments(@PathParam("userId") String userId) {
 		return userEnrollmentResource;
 	}
-
 }

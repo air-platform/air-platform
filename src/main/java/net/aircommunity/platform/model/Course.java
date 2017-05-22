@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -21,10 +22,31 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
  * Created by guankai on 12/04/2017.
  */
 @Entity
-@Table(name = "air_platform_course")
+//@formatter:off
+@Table(name = "air_platform_course", indexes = { 
+		@Index(name = "idx_aircraft_type", columnList = "aircraft_type"),
+		@Index(name = "idx_location", columnList = "location"), 
+		@Index(name = "idx_license", columnList = "license") 
+})
+//@formatter:on
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Course extends PricedProduct {
 	private static final long serialVersionUID = 1L;
+
+	// aircraft type
+	@NotEmpty
+	@Column(name = "aircraft_type", nullable = false)
+	private String aircraftType;
+
+	// which city
+	@NotEmpty
+	@Column(name = "location", nullable = false)
+	private String location;
+
+	// air driving license
+	@NotEmpty
+	@Column(name = "license", nullable = false)
+	private String license;
 
 	@NotNull
 	@Temporal(value = TemporalType.DATE)
@@ -49,18 +71,6 @@ public class Course extends PricedProduct {
 
 	@Column(name = "enroll_num")
 	private int enrollNum;
-
-	@NotEmpty
-	@Column(name = "air_type", nullable = false)
-	private String airType;
-
-	@NotEmpty
-	@Column(name = "license", nullable = false)
-	private String license;
-
-	@NotEmpty
-	@Column(name = "location", nullable = false)
-	private String location;
 
 	@NotNull
 	@ManyToOne
@@ -122,12 +132,12 @@ public class Course extends PricedProduct {
 		this.enrollNum = enrollNum;
 	}
 
-	public String getAirType() {
-		return airType;
+	public String getAircraftType() {
+		return aircraftType;
 	}
 
-	public void setAirType(String airType) {
-		this.airType = airType;
+	public void setAircraftType(String aircraftType) {
+		this.aircraftType = aircraftType;
 	}
 
 	public String getLicense() {
@@ -160,11 +170,11 @@ public class Course extends PricedProduct {
 		builder.append("Course [startDate=").append(startDate).append(", endDate=").append(endDate).append(", image=")
 				.append(image).append(", enrollment=").append(enrollment).append(", courseService=")
 				.append(courseService).append(", totalNum=").append(totalNum).append(", enrollNum=").append(enrollNum)
-				.append(", airType=").append(airType).append(", license=").append(license).append(", location=")
-				.append(location).append(", price=").append(price).append(", currencyUnit=").append(currencyUnit)
-				.append(", name=").append(name).append(", score=").append(score).append(", creationDate=")
-				.append(creationDate).append(", description=").append(description).append(", id=").append(id)
-				.append("]");
+				.append(", aircraftType=").append(aircraftType).append(", license=").append(license)
+				.append(", location=").append(location).append(", price=").append(price).append(", currencyUnit=")
+				.append(currencyUnit).append(", name=").append(name).append(", score=").append(score)
+				.append(", creationDate=").append(creationDate).append(", description=").append(description)
+				.append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

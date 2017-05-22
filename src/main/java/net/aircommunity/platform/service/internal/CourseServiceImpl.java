@@ -4,16 +4,25 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Course;
+import net.aircommunity.platform.model.Course_;
 import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.School;
@@ -51,7 +60,7 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
 	private void copyProperties(Course src, Course tgt) {
 		tgt.setName(src.getName());
 		tgt.setDescription(src.getDescription());
-		tgt.setAirType(src.getAirType());
+		tgt.setAircraftType(src.getAircraftType());
 		tgt.setCourseService(src.getCourseService());
 		tgt.setEnrollment(src.getEnrollment());
 		tgt.setImage(src.getImage());
@@ -114,8 +123,39 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
 			return Pages.adapt(courseRepository.findByEndDateGreaterThanEqualOrderByStartDateDesc(now,
 					Pages.createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(courseRepository.findByEndDateGreaterThanEqualAndAirTypeContainingOrderByStartDateDesc(now,
-				airType, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseRepository.findByEndDateGreaterThanEqualAndAircraftTypeContainingOrderByStartDateDesc(
+				now, airType, Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<Course> listCoursesWithConditions(String location, String license, String aircraftType, int page,
+			int pageSize) {
+		Specification<Course> spec = new Specification<Course>() {
+			@Override
+			public Predicate toPredicate(Root<Course> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+				// TODO REMOVE
+				// List<Predicate> predicatesList = new ArrayList<>();
+				// Predicate[] p = predicatesList.toArray(new Predicate[predicatesList.size()]);
+				// query.where(p).orderBy(cb.desc(root.get(Course_.startDate)));
+
+				Predicate predicate = cb.conjunction();
+				List<Expression<Boolean>> expressions = predicate.getExpressions();
+				Path<Date> p = root.get(Course_.startDate);
+				query.orderBy(cb.desc(p));
+				if (Strings.isNotBlank(license)) {
+					expressions.add(cb.equal(root.get(Course_.location), license));
+				}
+				if (Strings.isNotBlank(license)) {
+					expressions.add(cb.equal(root.get(Course_.license), license));
+				}
+				if (Strings.isNotBlank(aircraftType)) {
+					expressions.add(cb.equal(root.get(Course_.aircraftType), aircraftType));
+				}
+				expressions.add(cb.greaterThanOrEqualTo(root.get(Course_.endDate), new Date()/* now */));
+				return predicate;
+			}
+		};
+		return Pages.adapt(courseRepository.findAll(spec, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#courseId")

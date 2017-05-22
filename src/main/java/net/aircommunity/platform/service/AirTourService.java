@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
@@ -19,6 +21,14 @@ public interface AirTourService {
 
 	@Nonnull
 	AirTour updateAirTour(@Nonnull String airTourId, @Nonnull AirTour newAirTour);
+
+	/**
+	 * List all tour cities.
+	 * 
+	 * @return a list of cities
+	 */
+	@Nonnull
+	Set<String> listAirTourCities();
 
 	@Nonnull
 	Page<AirTour> listAirTours(int page, int pageSize);

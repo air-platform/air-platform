@@ -2,6 +2,7 @@ package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
@@ -9,7 +10,7 @@ import javax.persistence.Table;
  * AirTour
  */
 @Entity
-@Table(name = "air_platfrom_airtour")
+@Table(name = "air_platfrom_airtour", indexes = { @Index(name = "idx_city", columnList = "city") })
 public class AirTour extends AircraftAwareProduct {
 	private static final long serialVersionUID = 1L;
 

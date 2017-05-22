@@ -1,5 +1,7 @@
 package net.aircommunity.platform.rest;
 
+import java.util.Set;
+
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
@@ -36,6 +38,18 @@ public class AirTourResourse {
 	// ***********************
 	// ANYONE
 	// ***********************
+
+	/**
+	 * List all cities
+	 */
+	@GET
+	@PermitAll
+	@Path("flight/cities")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Set<String> listAllCities() {
+		LOG.debug("List all air tour cities");
+		return airTourService.listAirTourCities();
+	}
 
 	/**
 	 * List all TODO query by

@@ -3,6 +3,8 @@ package net.aircommunity.platform.model;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 import io.micro.annotation.constraint.Mobile;
 import io.micro.annotation.constraint.NotEmpty;
@@ -13,6 +15,7 @@ import io.micro.annotation.constraint.Password;
  * 
  * @author Bin.Zhang
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UserAccountRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -145,11 +145,6 @@ public class Account extends Persistable {
 		 * A disabled account may not login to applications.
 		 */
 		DISABLED;
-
-		/**
-		 * TODO REMOVE An unverified account is a disabled account that does not have a verified email address.
-		 */
-		// UNVERIFIED
 	}
 
 }

@@ -14,8 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -28,7 +26,6 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@XmlAccessorType(XmlAccessType.FIELD)
 public class User extends Account {
 	private static final long serialVersionUID = 1L;
 
