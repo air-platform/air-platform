@@ -71,7 +71,6 @@ public final class Codes {
 
 	// ferry flight
 	public static final Code FERRYFLIGHT_NOT_FOUND = Code.notFound(11_005_0001);
-	public static final Code FERRYFLIGHT_ALREADY_EXISTS = Code.alreadyExists(11_005_0002);
 	public static final Code FERRYFLIGHT_ORDER_NOT_FOUND = Code.notFound(11_005_0003);
 
 	// jet card

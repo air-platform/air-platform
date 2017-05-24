@@ -30,9 +30,9 @@ public class FerryFlight extends PricedProduct {
 	// name:
 	// price: whole price (full load)
 
-	// Flight NO.
+	// Flight NO. cannot be unique, because it can be different date
 	@NotEmpty
-	@Column(name = "flight_no", nullable = false, unique = true)
+	@Column(name = "flight_no", nullable = false)
 	private String flightNo;
 
 	// e.g. Gulfstream 450

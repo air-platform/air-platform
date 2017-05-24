@@ -16,8 +16,6 @@ import net.aircommunity.platform.model.FerryFlight;
  */
 public interface FerryFlightRepository extends BaseProductRepository<FerryFlight> {
 
-	FerryFlight findByFlightNo(String flightNo);
-
 	List<FerryFlight> findTop3ByOrderByCreationDateDesc();
 
 	List<FerryFlight> findTop3ByDepartureOrderByCreationDateDesc(String departure);

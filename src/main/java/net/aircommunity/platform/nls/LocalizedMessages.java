@@ -35,7 +35,6 @@ public class LocalizedMessages extends NLSResource {
 
 	public static String FLEET_NOT_FOUND;
 	public static String FLEET_ALREADY_EXISTS;
-	public static String FERRYFLIGHT_ALREADY_EXISTS;
 
 	public static String AIRPORT_ICAO_ALREADY_EXISTS;
 	public static String AIRPORT_IATA_ALREADY_EXISTS;
