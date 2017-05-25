@@ -54,7 +54,8 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
 		newCourse.setEnrollNum(0);
 		newCourse.setVendor(school.getVendor());
 		newCourse.setSchool(school);
-		return courseRepository.save(newCourse);
+		return safeExecute(() -> courseRepository.save(newCourse), "Create course %s for school %s failed", course,
+				schoolId);
 	}
 
 	private void copyProperties(Course src, Course tgt) {
@@ -91,7 +92,7 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
 		School newSchool = schoolService.findSchool(newCourse.getSchool().getId());
 		copyProperties(newCourse, course);
 		course.setSchool(newSchool);
-		return courseRepository.save(course);
+		return safeExecute(() -> courseRepository.save(course), "Update course %s to %s failed", courseId, newCourse);
 	}
 
 	@Override
@@ -161,13 +162,13 @@ public class CourseServiceImpl extends AbstractServiceSupport implements CourseS
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#courseId")
 	@Override
 	public void deleteCourse(String courseId) {
-		courseRepository.delete(courseId);
+		safeExecute(() -> courseRepository.delete(courseId), "Delete course %s failed", courseId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteCourses(String schoolId) {
-		courseRepository.deleteBySchoolId(schoolId);
+		safeExecute(() -> courseRepository.deleteBySchoolId(schoolId), "Delete all courses for school %s", schoolId);
 	}
 
 }

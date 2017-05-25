@@ -1,13 +1,12 @@
 package net.aircommunity.platform.model;
 
-import javax.persistence.Column;
+import java.util.List;
+
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,19 +25,9 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
 public class AircraftItem extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-	// product price
-	@Min(0)
-	@Column(name = "price", nullable = false)
-	private int price;
-
-	// single seat price
-	@Column(name = "seat_price")
-	private int seatPrice;
-
-	// product price CurrencyUnit
-	@Column(name = "currency_unit", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private CurrencyUnit currencyUnit = CurrencyUnit.RMB;
+	@NotNull
+	@Embedded
+	private List<SalesPackage> salesPackages;
 
 	@NotNull
 	@ManyToOne
@@ -58,28 +47,12 @@ public class AircraftItem extends Persistable {
 		this.id = id;
 	}
 
-	public int getPrice() {
-		return price;
+	public List<SalesPackage> getSalesPackages() {
+		return salesPackages;
 	}
 
-	public void setPrice(int price) {
-		this.price = price;
-	}
-
-	public int getSeatPrice() {
-		return seatPrice;
-	}
-
-	public void setSeatPrice(int seatPrice) {
-		this.seatPrice = seatPrice;
-	}
-
-	public CurrencyUnit getCurrencyUnit() {
-		return currencyUnit;
-	}
-
-	public void setCurrencyUnit(CurrencyUnit currencyUnit) {
-		this.currencyUnit = currencyUnit;
+	public void setSalesPackages(List<SalesPackage> salesPackages) {
+		this.salesPackages = salesPackages;
 	}
 
 	public Aircraft getAircraft() {
@@ -102,8 +75,8 @@ public class AircraftItem extends Persistable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((aircraft == null) ? 0 : aircraft.getId().hashCode());
-		result = prime * result + ((product == null) ? 0 : product.isNew() ? 0 : product.getId().hashCode());
+		result = prime * result + ((aircraft == null) ? 0 : aircraft.hashCode());
+		result = prime * result + ((product == null) ? 0 : product.hashCode());
 		return result;
 	}
 
@@ -120,13 +93,13 @@ public class AircraftItem extends Persistable {
 			if (other.aircraft != null)
 				return false;
 		}
-		else if (!aircraft.getId().equals(other.aircraft.getId()))
+		else if (!aircraft.equals(other.aircraft))
 			return false;
 		if (product == null) {
 			if (other.product != null)
 				return false;
 		}
-		else if (!product.getId().equals(other.product.getId()))
+		else if (!product.equals(other.product))
 			return false;
 		return true;
 	}
@@ -134,8 +107,8 @@ public class AircraftItem extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AircraftItem [price=").append(price).append(", seatPrice=").append(seatPrice)
-				.append(", currencyUnit=").append(currencyUnit).append(", id=").append(id).append("]");
+		builder.append("AircraftItem [salesPackages=").append(salesPackages).append(", aircraft=").append(aircraft)
+				.append(", product=").append(product).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

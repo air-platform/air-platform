@@ -26,7 +26,7 @@ import io.micro.annotation.constraint.NotEmpty;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class AircraftAwareOrder extends CharterableOrder {
+public abstract class AircraftAwareOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	// selected aircraftItem

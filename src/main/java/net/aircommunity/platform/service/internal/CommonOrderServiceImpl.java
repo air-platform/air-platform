@@ -41,7 +41,7 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 
 	@Override
 	public Order saveOrder(Order order) {
-		return baseOrderRepository.save(order);
+		return safeExecute(() -> baseOrderRepository.save(order), "Save order %s failed", order);
 	}
 
 	@Override
@@ -51,7 +51,6 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 
 	@Override
 	public Page<Order> listAllUserOrders(String userId, Order.Status status, int page, int pageSize) {
-
 		return doListAllUserOrders(userId, status, page, pageSize);
 	}
 

@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -12,17 +13,8 @@ import javax.persistence.Table;
 public class AirTaxi extends AircraftAwareProduct {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "departure", nullable = false)
-	private String departure;
-
-	@Column(name = "arrvial", nullable = false)
-	private String arrival;
-
-	@Column(name = "depart_loc", nullable = false)
-	private String departLoc;
-
-	@Column(name = "arrival_loc", nullable = false)
-	private String arrivalLoc;
+	@Embedded
+	private FlightRoute flightRoute;
 
 	@Column(name = "distance")
 	private String distance;
@@ -37,36 +29,12 @@ public class AirTaxi extends AircraftAwareProduct {
 		this.id = id;
 	}
 
-	public String getDeparture() {
-		return departure;
+	public FlightRoute getFlightRoute() {
+		return flightRoute;
 	}
 
-	public void setDeparture(String departure) {
-		this.departure = departure;
-	}
-
-	public String getArrival() {
-		return arrival;
-	}
-
-	public void setArrival(String arrival) {
-		this.arrival = arrival;
-	}
-
-	public String getDepartLoc() {
-		return departLoc;
-	}
-
-	public void setDepartLoc(String departLoc) {
-		this.departLoc = departLoc;
-	}
-
-	public String getArrivalLoc() {
-		return arrivalLoc;
-	}
-
-	public void setArrivalLoc(String arrivalLoc) {
-		this.arrivalLoc = arrivalLoc;
+	public void setFlightRoute(FlightRoute flightRoute) {
+		this.flightRoute = flightRoute;
 	}
 
 	public String getDistance() {
@@ -88,10 +56,13 @@ public class AirTaxi extends AircraftAwareProduct {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AirTaxi [departure=").append(departure).append(", arrival=").append(arrival)
-				.append(", departLoc=").append(departLoc).append(", arrivalLoc=").append(arrivalLoc).append(", name=")
-				.append(name).append(", score=").append(score).append(", creationDate=").append(creationDate)
-				.append(", description=").append(description).append(", id=").append(id).append("]");
+		builder.append("AirTaxi [flightRoute=").append(flightRoute).append(", distance=").append(distance)
+				.append(", duration=").append(duration).append(", presalesDays=").append(presalesDays)
+				.append(", currentTime=").append(currentTime).append(", name=").append(name).append(", image=")
+				.append(image).append(", score=").append(score).append(", rank=").append(rank).append(", creationDate=")
+				.append(creationDate).append(", description=").append(description).append(", published=")
+				.append(published).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
+
 }

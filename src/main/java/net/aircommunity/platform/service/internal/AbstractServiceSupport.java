@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
 import java.io.Serializable;
+import java.util.concurrent.Callable;
 
 import javax.annotation.Resource;
 
@@ -37,8 +38,38 @@ abstract class AbstractServiceSupport {
 		}
 		catch (Exception e) {
 			LOG.error("Internal error:" + e.getMessage(), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+			throw newInternalException();
 		}
+	}
+
+	protected <T> T safeExecute(Callable<T> action, String errorMessageTemplate, Object... errorMessageArgs) {
+		try {
+			return action.call();
+		}
+		catch (Exception e) {
+			String errorMessage = String.format(errorMessageTemplate, errorMessageArgs);
+			LOG.error(String.format("%s, casue: %s", errorMessage, e.getMessage()), e);
+			throw newInternalException();
+		}
+	}
+
+	protected void safeExecute(Runnable action, String errorMessageTemplate, Object... errorMessageArgs) {
+		try {
+			action.run();
+		}
+		catch (Exception e) {
+			String errorMessage = String.format(errorMessageTemplate, errorMessageArgs);
+			LOG.error(String.format("%s, casue: %s", errorMessage, e.getMessage()), e);
+			throw newInternalException();
+		}
+	}
+
+	protected AirException newInternalException() {
+		return new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+	}
+
+	protected AirException newServiceUnavailableException() {
+		return new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
 	}
 
 	protected <T, ID extends Serializable> Page<T> findAll(JpaRepository<T, ID> repository, int page, int pageSize) {

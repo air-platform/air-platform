@@ -52,9 +52,15 @@ public class Comment extends Persistable {
 
 	// owner
 	@ManyToOne
-	@JoinColumn(name = "account_id", nullable = false)
+	@JoinColumn(name = "owner_id", nullable = false)
 	@XmlJavaTypeAdapter(CommenterAdapter.class)
 	private Account owner;
+
+	// reply to
+	@ManyToOne
+	@JoinColumn(name = "reply_to_id", nullable = true)
+	@XmlJavaTypeAdapter(CommenterAdapter.class)
+	private Account replyTo;
 
 	public int getRate() {
 		return rate;
@@ -94,6 +100,14 @@ public class Comment extends Persistable {
 
 	public void setOwner(Account owner) {
 		this.owner = owner;
+	}
+
+	public Account getReplyTo() {
+		return replyTo;
+	}
+
+	public void setReplyTo(Account replyTo) {
+		this.replyTo = replyTo;
 	}
 
 	@Override

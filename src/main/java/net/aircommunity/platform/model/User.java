@@ -14,7 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -47,7 +46,6 @@ public class User extends Account {
 
 	@Temporal(value = TemporalType.DATE)
 	@XmlJavaTypeAdapter(DateAdapter.class)
-	@XmlElement
 	@Column(name = "birthday")
 	private Date birthday;
 

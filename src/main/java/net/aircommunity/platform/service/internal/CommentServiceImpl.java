@@ -21,6 +21,7 @@ import net.aircommunity.platform.model.Comment.Source;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.CommentRepository;
 import net.aircommunity.platform.service.CommentService;
@@ -47,10 +48,6 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 
 	@Resource
 	private CommonOrderService commonOrderService;
-
-	// TODO make it cached (productId, product) ?
-	// @Resource
-	// private ProductRepository productRepository;
 
 	@Override
 	public boolean isCommentAllowed(String accountId, String orderId) {
@@ -108,26 +105,37 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		newComment.setRate(source == Source.ORDER ? comment.getRate() : 0);
 		newComment.setOwner(owner);
 		newComment.setProduct(product);
-		Comment savedComment = commentRepository.save(newComment);
-
-		// calculate score if comment from order
-		if (source == Source.ORDER) {
-			double score = product.getScore();
-			if (savedComment.getRate() > 0) {
-				double productScore = product.getScore();
-				if (productScore > 0) {
-					score = (score + savedComment.getRate()) / 2.0;
-					product.setScore(Maths.round(score, 2, BigDecimal.ROUND_HALF_UP));
-				}
-				else {
-					product.setScore(savedComment.getRate());
-				}
-			}
-			order.setCommented(true);
-			commonOrderService.saveOrder(order);
-			// productRepository.save(product); // TODO REMOVE? do we need save product?
+		Account replyTo = comment.getReplyTo();
+		if (replyTo != null) {
+			replyTo = findAccount(replyTo.getId(), User.class);
+			newComment.setReplyTo(replyTo);
 		}
-		return savedComment;
+		try {
+			Comment savedComment = commentRepository.save(newComment);
+			// calculate score if comment from order
+			if (source == Source.ORDER) {
+				double score = product.getScore();
+				if (savedComment.getRate() > 0) {
+					double productScore = product.getScore();
+					if (productScore > 0) {
+						score = (score + savedComment.getRate()) / 2.0;
+						product.setScore(Maths.round(score, 2, BigDecimal.ROUND_HALF_UP));
+					}
+					else {
+						product.setScore(savedComment.getRate());
+					}
+				}
+				order.setCommented(true);
+				commonOrderService.saveOrder(order);
+				// productRepository.save(product); // TODO REMOVE? do we need save product?
+			}
+			return savedComment;
+		}
+		catch (Exception e) {
+			LOG.error(String.format("User %s create comment %s with source %s and sourceId %s failed, cause: %s",
+					accountId, comment, source, sourceId, e.getMessage()), e);
+			throw newInternalException();
+		}
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -150,13 +158,14 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#commentId")
 	@Override
 	public void deleteComment(String commentId) {
-		commentRepository.delete(commentId);
+		safeExecute(() -> commentRepository.delete(commentId), "Delete comment %s failed", commentId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteComments(String productId) {
-		commentRepository.deleteByProductId(productId);
+		safeExecute(() -> commentRepository.deleteByProductId(productId), "Delete comments for product %s failed",
+				productId);
 	}
 
 }

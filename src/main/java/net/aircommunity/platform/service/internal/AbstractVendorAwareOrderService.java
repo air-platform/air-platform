@@ -11,7 +11,6 @@ import net.aircommunity.platform.repository.VendorAwareOrderRepository;
  * @author Bin.Zhang
  */
 abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> extends AbstractOrderService<T> {
-	// private static final Logger LOG = LoggerFactory.getLogger(AbstractVendorAwareOrderService.class);
 
 	protected abstract VendorAwareOrderRepository<T> getOrderRepository();
 

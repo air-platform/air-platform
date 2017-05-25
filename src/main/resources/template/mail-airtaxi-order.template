@@ -7,7 +7,7 @@
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{{airTaxi.departure}} &#8640 {{airTaxi.arrival}} &nbsp; {{date | datetimeformat('%Y-%m-%d') }}
+		{{airTaxi.flightRoute.departure}} &#8640 {{airTaxi.flightRoute.arrival}} &nbsp; {{date | datetimeformat('%Y-%m-%d') }}
 	</td>
 </tr>
 <tr>

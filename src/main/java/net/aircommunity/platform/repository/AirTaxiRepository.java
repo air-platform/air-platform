@@ -17,5 +17,5 @@ public interface AirTaxiRepository extends BaseProductRepository<AirTaxi> {
 	 * @param pageable
 	 * @return page of taxi
 	 */
-	Page<AirTaxi> findByDeparture(String departure, Pageable pageable);
+	Page<AirTaxi> findByFlightRouteDeparture(String departure, Pageable pageable);
 }

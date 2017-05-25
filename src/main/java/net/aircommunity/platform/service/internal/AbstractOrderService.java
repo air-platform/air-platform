@@ -20,6 +20,7 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.model.AircraftAwareOrder;
 import net.aircommunity.platform.model.AircraftItem;
+import net.aircommunity.platform.model.CharterableOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
@@ -85,25 +86,26 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		catch (Exception unexpected) {
 			LOG.error(String.format("Failed to create instance %s for user %s, cause: %s", type, userId,
 					unexpected.getMessage()), unexpected);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+			throw newInternalException();
 		}
 		newOrder.setCreationDate(new Date());
 		newOrder.setStatus(status);
 		newOrder.setCommented(false);
 		newOrder.setOrderNo(nextOrderNo());
+		if (CharterableOrder.class.isAssignableFrom(newOrder.getClass())) {
+			CharterableOrder newCharterableOrder = CharterableOrder.class.cast(newOrder);
+			CharterableOrder charterableOrder = CharterableOrder.class.cast(order);
+			newCharterableOrder.setChartered(charterableOrder.isChartered());
+		}
 		copyProperties(order, newOrder);
 		// set vendor
 		newOrder.setOwner(owner);
-		try {
-			T orderSaved = getOrderRepository().save(newOrder);
+		final T orderToSave = newOrder;
+		return safeExecute(() -> {
+			T orderSaved = getOrderRepository().save(orderToSave);
 			eventBus.post(new OrderEvent(OrderEvent.EventType.CREATION, orderSaved));
 			return orderSaved;
-		}
-		catch (Exception e) {
-			LOG.error(String.format("Create %s: %s for user %s failed, cause: %s", type.getSimpleName(), order, userId,
-					e.getMessage()), e);
-			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
-		}
+		}, "Create %s: %s for user %s failed", type.getSimpleName(), order, userId);
 	}
 
 	private String nextOrderNo() {
@@ -169,18 +171,11 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return order;
 	}
 
-	// XXX
 	protected T doUpdateOrder(String orderId, T newOrder) {
 		T order = doFindOrder(orderId); // FIXME findOrder is NOT cached?
 		copyProperties(newOrder, order);
-		try {
-			return getOrderRepository().save(order);
-		}
-		catch (Exception e) {
-			LOG.error(String.format("Update %s: %s with %s failed, cause: %s", type.getSimpleName(), orderId, newOrder,
-					e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
-		}
+		return safeExecute(() -> getOrderRepository().save(order), "Update %s: %s with %s failed", type.getSimpleName(),
+				orderId, newOrder);
 	}
 
 	protected void copyProperties(T src, T tgt) {
@@ -226,12 +221,14 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		default:// noop
 		}
 		order.setStatus(status);
-		T orderUpdated = getOrderRepository().save(order);
-		if (orderUpdated.getStatus() == Order.Status.CANCELLED) {
-			eventBus.post(new OrderEvent(OrderEvent.EventType.CANCELLATION, orderUpdated));
-			LOG.info("Notify client managers on order cancellation: {}", orderUpdated);
-		}
-		return orderUpdated;
+		return safeExecute(() -> {
+			T orderUpdated = getOrderRepository().save(order);
+			if (orderUpdated.getStatus() == Order.Status.CANCELLED) {
+				eventBus.post(new OrderEvent(OrderEvent.EventType.CANCELLATION, orderUpdated));
+				LOG.info("Notify client managers on order cancellation: {}", orderUpdated);
+			}
+			return orderUpdated;
+		}, "Update %s: %s to status %s failed", type.getSimpleName(), orderId, status);
 	}
 
 	private void throwInvalidOrderStatus(String orderId, Order.Status status) {
@@ -284,13 +281,14 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * For ADMIN
 	 */
 	protected void doDeleteOrder(String orderId) {
-		getOrderRepository().delete(orderId);
+		safeExecute(() -> getOrderRepository().delete(orderId), "Hard delete order %s failed", orderId);
 	}
 
 	/**
 	 * For ADMIN
 	 */
 	protected void doDeleteOrders(String userId) {
-		getOrderRepository().deleteByOwnerId(userId);
+		safeExecute(() -> getOrderRepository().deleteByOwnerId(userId), "Hard delete all orders for user %s failed",
+				userId);
 	}
 }

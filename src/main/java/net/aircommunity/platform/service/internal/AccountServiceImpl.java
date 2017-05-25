@@ -60,7 +60,7 @@ import net.aircommunity.platform.service.VerificationService;
  */
 @Service
 @Transactional
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceImpl extends AbstractServiceSupport implements AccountService {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountServiceImpl.class);
 
 	private static final String CACHE_NAME_ACCOUNT = "cache.account";
@@ -316,24 +316,31 @@ public class AccountServiceImpl implements AccountService {
 			throw new AirException(Codes.ACCOUNT_CREATION_FAILURE, M.msg(M.ACCOUNT_CREATION_FAILURE));
 		}
 
-		Account accountCreated = accountRepository.save(newAccount);
-		if (type == AuthType.EMAIL) {
-			sendConfirmationEmail(principal, credential, accountCreated, expires);
+		try {
+			Account accountCreated = accountRepository.save(newAccount);
+			if (type == AuthType.EMAIL) {
+				sendConfirmationEmail(principal, credential, accountCreated, expires);
+			}
+			// create account auth info
+			auth = new AccountAuth();
+			auth.setAccount(accountCreated);
+			auth.setCredential(credential);
+			auth.setPrincipal(principal);
+			auth.setType(type);
+			auth.setExpires(expires);
+			auth.setVerified(verified);
+			auth.setCreationDate(new Date());
+			auth.setLastAccessedDate(auth.getCreationDate());
+			accountAuthRepository.save(auth);
+			// create account in NodeBB
+			airBBAccountService.createAccount(principal, password);
+			return accountCreated;
 		}
-		// create account auth info
-		auth = new AccountAuth();
-		auth.setAccount(accountCreated);
-		auth.setCredential(credential);
-		auth.setPrincipal(principal);
-		auth.setType(type);
-		auth.setExpires(expires);
-		auth.setVerified(verified);
-		auth.setCreationDate(new Date());
-		auth.setLastAccessedDate(auth.getCreationDate());
-		accountAuthRepository.save(auth);
-		// create account in NodeBB
-		airBBAccountService.createAccount(principal, password);
-		return accountCreated;
+		catch (Exception e) {
+			LOG.error(String.format("Create account with auth: %s, principal: %s failed, casue: %s", type, principal,
+					e.getMessage()), e);
+			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
+		}
 	}
 
 	@Override
@@ -375,7 +382,8 @@ public class AccountServiceImpl implements AccountService {
 
 		default: // noop
 		}
-		return accountRepository.save(account);
+		return safeExecute(() -> accountRepository.save(account), "Update account %s to %s failed", accountId,
+				newAccount);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
@@ -387,7 +395,8 @@ public class AccountServiceImpl implements AccountService {
 			throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.ACCOUNT_UPDATE_ADMIN_STATUS_NOT_ALLOWED));
 		}
 		account.setStatus(newStatus);
-		return accountRepository.save(account);
+		return safeExecute(() -> accountRepository.save(account), "Update account %s status to %s failed", accountId,
+				newStatus);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
@@ -400,7 +409,8 @@ public class AccountServiceImpl implements AccountService {
 		}
 		Tenant tenant = (Tenant) account;
 		tenant.setVerification(newStatus);
-		return accountRepository.save(account);
+		return safeExecute(() -> accountRepository.save(account),
+				"Update tenant account %s VerificationStatus to %s failed", accountId, newStatus);
 	}
 
 	// TODO enable cache
@@ -461,7 +471,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 		User user = User.class.cast(account);
 		user.addAddress(address);
-		return accountRepository.save(user);
+		return safeExecute(() -> accountRepository.save(user), "Add user %s address %s failed", accountId, address);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
@@ -474,7 +484,8 @@ public class AccountServiceImpl implements AccountService {
 		}
 		User user = User.class.cast(account);
 		user.removeAddressById(addressId);
-		return accountRepository.save(user);
+		return safeExecute(() -> accountRepository.save(user), "Remove user %s address %s failed", accountId,
+				addressId);
 	}
 
 	@Override
@@ -503,14 +514,17 @@ public class AccountServiceImpl implements AccountService {
 		}
 		User user = User.class.cast(account);
 		user.addPassenger(passenger);
-		User userSaved = accountRepository.save(user);
-		Optional<Passenger> passengerAdded = userSaved.getPassengers().stream()
-				.filter(p -> p.getIdentity().equals(passenger.getIdentity())).findFirst();
-		if (!passengerAdded.isPresent()) {
-			throw new AirException(Codes.ACCOUNT_ADD_PASSENGER_FAILURE,
-					M.msg(M.ACCOUNT_ADD_PASSENGER_FAILURE, passenger.getIdentity()));
-		}
-		return passengerAdded.get();
+
+		return safeExecute(() -> {
+			User userSaved = accountRepository.save(user);
+			Optional<Passenger> passengerAdded = userSaved.getPassengers().stream()
+					.filter(p -> p.getIdentity().equals(passenger.getIdentity())).findFirst();
+			if (!passengerAdded.isPresent()) {
+				throw new AirException(Codes.ACCOUNT_ADD_PASSENGER_FAILURE,
+						M.msg(M.ACCOUNT_ADD_PASSENGER_FAILURE, passenger.getIdentity()));
+			}
+			return passengerAdded.get();
+		}, "Add user %s passenger %s failed", accountId, passenger);
 	}
 
 	// TODO REMOVE
@@ -524,8 +538,10 @@ public class AccountServiceImpl implements AccountService {
 		}
 		User user = User.class.cast(account);
 		user.removePassengerById(passengerId);
-		passengerRepository.delete(passengerId);
-		accountRepository.save(user);
+		safeExecute(() -> {
+			passengerRepository.delete(passengerId);
+			accountRepository.save(user);
+		}, "Remove user %s passenger %s failed", accountId, passengerId);
 	}
 
 	@Override
@@ -556,11 +572,13 @@ public class AccountServiceImpl implements AccountService {
 		}
 		AccountAuth auth = accountAuthRepository.findByAccountIdAndType(accountId, AuthType.USERNAME);
 		auth.setPrincipal(username);
-		accountAuthRepository.save(auth);
+		safeExecute(() -> accountAuthRepository.save(auth), "Update account %s username to %s failed", accountId,
+				username);
 	}
 
 	@Override
 	public void updateEmail(String accountId, String email) {
+		Account account = findAccount(accountId);
 		AccountAuth existingAuth = accountAuthRepository.findByTypeAndPrincipal(AuthType.EMAIL, email);
 		// email not equals with others's email
 		if (existingAuth != null && !existingAuth.getAccount().getId().equals(accountId)) {
@@ -570,7 +588,6 @@ public class AccountServiceImpl implements AccountService {
 		String verificationCode = UUIDs.shortRandom();
 		AccountAuth auth = accountAuthRepository.findByAccountIdAndType(accountId, AuthType.EMAIL);
 		if (auth == null) {
-			Account account = findAccount(accountId);
 			auth = new AccountAuth();
 			auth.setAccount(account);
 			auth.setType(AuthType.EMAIL);
@@ -581,12 +598,12 @@ public class AccountServiceImpl implements AccountService {
 		}
 		auth.setPrincipal(email);
 		auth.setCredential(String.format(VERIFICATION_CODE_FORMAT, verificationCode, System.currentTimeMillis()));
-		accountAuthRepository.save(auth);
-		Account account = findAccount(accountId);
-		sendConfirmationEmail(email, verificationCode, account, AccountAuth.EXPIRES_IN_ONE_DAY);
-
+		final AccountAuth authToSave = auth;
+		safeExecute(() -> accountAuthRepository.save(authToSave), "Update account %s email to %s failed", accountId,
+				email);
 		// update NodeBB user email
 		airBBAccountService.updateAccountProfile(account.getNickName(), email);
+		sendConfirmationEmail(email, verificationCode, account, AccountAuth.EXPIRES_IN_ONE_DAY);
 	}
 
 	/**
@@ -644,7 +661,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 		auth.setVerified(true);
 		auth.setCredential(null);
-		accountAuthRepository.save(auth);
+		safeExecute(() -> accountAuthRepository.save(auth), "Confirm account %s email failed", accountId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
@@ -659,7 +676,7 @@ public class AccountServiceImpl implements AccountService {
 
 		// update NodeBB account password
 		airBBAccountService.updateAccountPassword(account.getNickName(), newPassword);
-		return accountRepository.save(account);
+		return safeExecute(() -> accountRepository.save(account), "Update account %s password failed", accountId);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
@@ -667,7 +684,7 @@ public class AccountServiceImpl implements AccountService {
 	public Account resetPasswordTo(String accountId, String newPassword) {
 		Account account = findAccount(accountId);
 		account.setPassword(passwordEncoder.encode(newPassword));
-		return accountRepository.save(account);
+		return safeExecute(() -> accountRepository.save(account), "Reset account %s password failed", accountId);
 	}
 
 	@Override
@@ -678,7 +695,8 @@ public class AccountServiceImpl implements AccountService {
 		}
 		Account account = auth.getAccount();
 		account.setPassword(passwordEncoder.encode(newPassword));
-		return accountRepository.save(account);
+		return safeExecute(() -> accountRepository.save(account), "Reset account password via mobile %s failed",
+				mobile);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
@@ -708,7 +726,7 @@ public class AccountServiceImpl implements AccountService {
 	public Account refreshApiKey(String accountId) {
 		Account account = findAccount(accountId);
 		account.setApiKey(UUIDs.shortRandom());
-		return accountRepository.save(account);
+		return safeExecute(() -> accountRepository.save(account), "Refresh account %s apikey failed", accountId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")

@@ -13,6 +13,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
  * Promotion of an product.
@@ -40,6 +43,7 @@ public class PromotionItem extends Persistable {
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private Date creationDate;
 
 	@NotNull

@@ -1,12 +1,13 @@
 package net.aircommunity.platform.service;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.AirTransport;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.ProductFamily;
 
 /**
  * AirTransport service.
@@ -51,7 +52,7 @@ public interface AirTransportService {
 	 * @return a list of families
 	 */
 	@Nonnull
-	Set<String> listAirTransportFamilies();
+	List<ProductFamily> listAirTransportFamilies();
 
 	/**
 	 * List all AirTransports by pagination filter by tenantId.
@@ -77,13 +78,13 @@ public interface AirTransportService {
 	/**
 	 * List all AirTransports by family and pagination.
 	 * 
-	 * @param family the family
+	 * @param familyId the familyId
 	 * @param page the page number
 	 * @param pageSize the pageSize
 	 * @return a page of AirTransports or empty
 	 */
 	@Nonnull
-	Page<AirTransport> listAirTransportsByFamily(@Nonnull String family, int page, int pageSize);
+	Page<AirTransport> listAirTransportsByFamily(@Nonnull String familyId, int page, int pageSize);
 
 	/**
 	 * Delete a AirTransport.

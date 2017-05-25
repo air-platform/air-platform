@@ -36,7 +36,7 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Product extends Persistable {
+public abstract class Product extends Reviewable {
 	private static final long serialVersionUID = 1L;
 
 	// product name
@@ -48,13 +48,13 @@ public abstract class Product extends Persistable {
 	@Column(name = "image")
 	protected String image;
 
-	// product put on sale/pull off shelves
-	@Column(name = "put_onsale")
-	protected boolean putOnSale;
-
 	// product score
 	@Column(name = "score", nullable = false)
 	protected double score;
+
+	// product rank (low rank will considered as hot, sort by rank ASC)
+	@Column(name = "rank")
+	protected int rank = 0;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
@@ -98,20 +98,20 @@ public abstract class Product extends Persistable {
 		this.image = image;
 	}
 
-	public boolean isPutOnSale() {
-		return putOnSale;
-	}
-
-	public void setPutOnSale(boolean putOnSale) {
-		this.putOnSale = putOnSale;
-	}
-
 	public double getScore() {
 		return score;
 	}
 
 	public void setScore(double score) {
 		this.score = score;
+	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
 	}
 
 	public Date getCreationDate() {

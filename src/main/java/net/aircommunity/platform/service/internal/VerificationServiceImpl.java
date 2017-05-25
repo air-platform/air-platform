@@ -22,8 +22,7 @@ import net.aircommunity.platform.service.VerificationService;
 public class VerificationServiceImpl implements VerificationService {
 	private static final int REQUEST_PER_IP = 10;
 	private static final int VERIFICATION_CODE_LENGTH = 6;
-	// account verification code
-	private static final String VERIFICATION_CODD_KEY_FORMAT = "account:vc:%s";
+	private static final String VERIFICATION_CODD_KEY_FORMAT = "account:vc:%s"; // account verification code
 	private static final String IP_KEY_FORMAT = "account:ip:%s";
 
 	@Resource
@@ -39,8 +38,7 @@ public class VerificationServiceImpl implements VerificationService {
 		if (ipRequested != null) {
 			int requests = Integer.valueOf(ipRequested);
 			if (requests <= 0) {
-				throw new AirException(Codes.TOO_MANY_VERIFICATION_REQUEST,
-						M.msg(M.SMS_TOO_MANY_VERIFICATION_REQUEST));
+				throw new AirException(Codes.TOO_MANY_VERIFICATION_REQUEST, M.msg(M.SMS_TOO_MANY_VERIFICATION_REQUEST));
 			}
 			// dec by 1 (AKA. incr -1)
 			counterTemplate.opsForValue().increment(String.format(IP_KEY_FORMAT, ip), -1l);

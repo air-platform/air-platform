@@ -19,6 +19,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String PRODUCT_NOT_FOUND;
 	public static String PROMOTION_NOT_FOUND;
 	public static String PRODUCT_FAQ_NOT_FOUND;
+	public static String PRODUCT_FAMILY_NOT_FOUND;
 
 	public static String ORDER_OPERATION_SUBMIT;
 	public static String ORDER_OPERATION_CANCEL;

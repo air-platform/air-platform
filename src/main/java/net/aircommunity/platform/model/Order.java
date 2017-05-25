@@ -211,6 +211,8 @@ public abstract class Order extends Persistable {
 		 */
 		PAID,
 
+		REFUND, // TODO
+
 		/**
 		 * Finished
 		 */

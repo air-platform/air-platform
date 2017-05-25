@@ -7,7 +7,6 @@ import javax.validation.constraints.Min;
 
 import io.micro.annotation.constraint.NotEmpty;
 
-
 /**
  * Aircraft for (Taxi, Transportation, Tour).
  * 

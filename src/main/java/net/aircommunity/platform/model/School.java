@@ -42,8 +42,8 @@ public class School extends Persistable {
 	private String description;
 
 	@Lob
-	@Column(name = "base_desc")
-	private String baseDesc;
+	@Column(name = "base_description")
+	private String baseDescription;
 
 	@ManyToOne
 	@XmlJavaTypeAdapter(AccountAdapter.class)
@@ -97,12 +97,12 @@ public class School extends Persistable {
 		this.contact = contact;
 	}
 
-	public String getBaseDesc() {
-		return baseDesc;
+	public String getBaseDescription() {
+		return baseDescription;
 	}
 
-	public void setBaseDesc(String baseDesc) {
-		this.baseDesc = baseDesc;
+	public void setBaseDescription(String baseDescription) {
+		this.baseDescription = baseDescription;
 	}
 
 	public Tenant getVendor() {
@@ -118,7 +118,7 @@ public class School extends Persistable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("School [name=").append(name).append(", image=").append(image).append(", address=")
 				.append(address).append(", contact=").append(contact).append(", description=").append(description)
-				.append(", baseDesc=").append(baseDesc).append(", id=").append(id).append("]");
+				.append(", baseDescription=").append(baseDescription).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

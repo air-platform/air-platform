@@ -33,7 +33,7 @@ import net.aircommunity.platform.service.AirJetService;
  */
 @Service
 @Transactional
-public class AirJetServiceImpl implements AirJetService {
+public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetService {
 	private static final Logger LOG = LoggerFactory.getLogger(AirJetServiceImpl.class);
 
 	private static final String CACHE_NAME = "cache.airjet";
@@ -86,7 +86,7 @@ public class AirJetServiceImpl implements AirJetService {
 		}
 		AirJet newAirJet = new AirJet();
 		copyProperties(airJet, newAirJet);
-		return airjetRepository.save(newAirJet);
+		return safeExecute(() -> airjetRepository.save(newAirJet), "Create airJet %s failed", airJet);
 	}
 
 	private void copyProperties(AirJet src, AirJet tgt) {
@@ -127,7 +127,7 @@ public class AirJetServiceImpl implements AirJetService {
 			throw new AirException(Codes.AIRJET_ALREADY_EXISTS, M.msg(M.AIRJET_ALREADY_EXISTS, airJet.getType()));
 		}
 		copyProperties(newAirJet, airJet);
-		return airjetRepository.save(airJet);
+		return safeExecute(() -> airjetRepository.save(airJet), "Update airJet %s to %s failed", airJetId, airJet);
 	}
 
 	@Override
@@ -138,13 +138,13 @@ public class AirJetServiceImpl implements AirJetService {
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airJetId")
 	@Override
 	public void deleteAirJet(String airJetId) {
-		airjetRepository.delete(airJetId);
+		safeExecute(() -> airjetRepository.delete(airJetId), "Delete airJet %s failed", airJetId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAirJets() {
-		airjetRepository.deleteAll();
+		safeExecute(() -> airjetRepository.deleteAll(), "Update all airJets failed");
 	}
 
 }

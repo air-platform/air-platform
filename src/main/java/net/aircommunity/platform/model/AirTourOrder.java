@@ -10,6 +10,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
  * Created by guankai on 15/04/2017.
@@ -23,6 +26,7 @@ public class AirTourOrder extends AircraftAwareOrder {
 	@NotNull
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "date", nullable = false)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date date;
 
 	// e.g. 8:00-9:00
@@ -72,13 +76,12 @@ public class AirTourOrder extends AircraftAwareOrder {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AirTourOrder [chartered=").append(chartered).append(", date=").append(date)
-				.append(", timeSlot=").append(timeSlot).append(", airTour=").append(airTour).append(", passengers=")
-				.append(passengers).append(", orderNo=").append(orderNo).append(", status=").append(status)
-				.append(", commented=").append(commented).append(", creationDate=").append(creationDate)
-				.append(", paymentDate=").append(paymentDate).append(", finishedDate=").append(finishedDate)
-				.append(", aircraftItem=").append(aircraftItem).append(", contact=").append(contact).append(", note=")
-				.append(note).append(", id=").append(id).append("]");
+		builder.append("AirTourOrder [date=").append(date).append(", timeSlot=").append(timeSlot).append(", airTour=")
+				.append(airTour).append(", passengers=").append(passengers).append(", orderNo=").append(orderNo)
+				.append(", status=").append(status).append(", commented=").append(commented).append(", creationDate=")
+				.append(creationDate).append(", paymentDate=").append(paymentDate).append(", finishedDate=")
+				.append(finishedDate).append(", aircraftItem=").append(aircraftItem).append(", contact=")
+				.append(contact).append(", note=").append(note).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

@@ -1,6 +1,6 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -14,8 +14,11 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTransport;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Product.Category;
+import net.aircommunity.platform.model.ProductFamily;
 import net.aircommunity.platform.repository.AirTransportRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
+import net.aircommunity.platform.repository.ProductFamilyRepository;
 import net.aircommunity.platform.service.AirTransportService;
 import net.aircommunity.platform.service.AircraftService;
 
@@ -34,6 +37,9 @@ public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> 
 
 	@Resource
 	private AirTransportRepository airTransportRepository;
+
+	@Resource
+	private ProductFamilyRepository productFamilyRepository;
 
 	@Override
 	public AirTransport createAirTransport(String tenantId, AirTransport airTransport) {
@@ -60,8 +66,8 @@ public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> 
 	}
 
 	@Override
-	public Set<String> listAirTransportFamilies() {
-		return airTransportRepository.listFamilies();
+	public List<ProductFamily> listAirTransportFamilies() {
+		return productFamilyRepository.findByCategory(Category.AIR_TRANS);
 	}
 
 	@Override
@@ -75,11 +81,11 @@ public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> 
 	}
 
 	@Override
-	public Page<AirTransport> listAirTransportsByFamily(String family, int page, int pageSize) {
-		if (family == null) {
+	public Page<AirTransport> listAirTransportsByFamily(String familyId, int page, int pageSize) {
+		if (familyId == null) {
 			return listAirTransports(page, pageSize);
 		}
-		return Pages.adapt(airTransportRepository.findByFamilyOrderByCreationDateDesc(family,
+		return Pages.adapt(airTransportRepository.findByFamilyIdOrderByCreationDateDesc(familyId,
 				Pages.createPageRequest(page, pageSize)));
 	}
 

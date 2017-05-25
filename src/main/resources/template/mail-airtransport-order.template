@@ -7,7 +7,7 @@
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{{airTransport.family}} {{airTransport.name}}&nbsp; <br>
+		{{airTransport.family.name}} {{airTransport.name}}&nbsp; <br>
 		{{airTransport.flightRoute.departure}} &#8640 {{airTransport.flightRoute.arrival}}&nbsp; 
 		{{date | datetimeformat('%Y-%m-%d') }} &nbsp; {{timeSlot}} 出发
 	</td>

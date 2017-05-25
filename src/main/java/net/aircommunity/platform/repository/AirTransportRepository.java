@@ -1,11 +1,8 @@
 package net.aircommunity.platform.repository;
 
-import java.util.Set;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import net.aircommunity.platform.model.AirTransport;
 
@@ -22,15 +19,15 @@ public interface AirTransportRepository extends BaseProductRepository<AirTranspo
 	 * 
 	 * @return a list of families
 	 */
-	@Query("SELECT DISTINCT t.family FROM #{#entityName} t")
-	Set<String> listFamilies();
+	// @Query("SELECT DISTINCT t.family FROM #{#entityName} t")
+	// Set<String> listFamilies();
 
 	/**
 	 * Find all AirTransport.
 	 * 
-	 * @param family the family
+	 * @param familyId the familyId
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<AirTransport> findByFamilyOrderByCreationDateDesc(String family, Pageable pageable);
+	Page<AirTransport> findByFamilyIdOrderByCreationDateDesc(String familyId, Pageable pageable);
 }

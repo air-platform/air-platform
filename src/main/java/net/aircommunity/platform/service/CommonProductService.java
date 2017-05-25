@@ -30,11 +30,11 @@ public interface CommonProductService {
 	 * Put product on sale of pull product off sale
 	 * 
 	 * @param productId the productId
-	 * @param putOnSale the put on sale or pull off sale
+	 * @param published the put on sale or pull off sale
 	 * @return product update
 	 */
 	@Nonnull
-	Product putProductOnSale(@Nonnull String productId, boolean putOnSale);
+	Product publishProduct(String productId, boolean published);
 
 	/**
 	 * Delete a product.

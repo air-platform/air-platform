@@ -34,8 +34,8 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 	}
 
 	@Override
-	public Product putProductOnSale(String productId, boolean putOnSale) {
-		return doPutProductOnSale(productId, putOnSale);
+	public Product publishProduct(String productId, boolean published) {
+		return doPublishProduct(productId, published);
 	}
 
 	@Override

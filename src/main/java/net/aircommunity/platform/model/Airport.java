@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -27,15 +28,22 @@ public class Airport extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// airport name
+	@NotNull
+	@Column(name = "name", nullable = false)
 	private String name;
 
 	// of which city
+	@NotNull
+	@Column(name = "city", nullable = false)
 	private String city;
 
 	// of which country
+	@NotNull
+	@Column(name = "country", nullable = false)
 	private String country;
 
 	// IATA 3-Letter Code
+	@Column(name = "iata3")
 	private String iata3;
 
 	// ICAO 4-Letter Code
@@ -43,12 +51,15 @@ public class Airport extends Persistable {
 	private String icao4;
 
 	// Decimal degrees, usually to six significant digits. Negative is South, positive is North.
+	@Column(name = "lat")
 	private double latitude;
 
 	// Decimal degrees, usually to six significant digits. Negative is West, positive is East.
+	@Column(name = "lon")
 	private double longitude;
 
 	// Hours offset from UTC. Fractional hours are expressed as decimals, eg. India is 5.5.
+	@Column(name = "timezone")
 	private String timezone;
 
 	public Airport() {

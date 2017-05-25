@@ -10,8 +10,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.micro.annotation.constraint.NotEmpty;
+import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
  * AirTransport Order on a {@code AirTransport}.
@@ -31,6 +33,7 @@ public class AirTransportOrder extends AircraftAwareOrder {
 	@NotNull
 	@Temporal(value = TemporalType.DATE)
 	@Column(name = "date", nullable = false)
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date date;
 
 	// e.g. 08:00-09:00, HHmm
@@ -89,13 +92,13 @@ public class AirTransportOrder extends AircraftAwareOrder {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AirTransportOrder [chartered=").append(chartered).append(", date=").append(date)
-				.append(", timeSlot=").append(timeSlot).append(", airTransport=").append(airTransport)
-				.append(", passengers=").append(passengers).append(", orderNo=").append(orderNo).append(", status=")
-				.append(status).append(", commented=").append(commented).append(", creationDate=").append(creationDate)
-				.append(", paymentDate=").append(paymentDate).append(", finishedDate=").append(finishedDate)
-				.append(", aircraftItem=").append(aircraftItem).append(", contact=").append(contact).append(", note=")
-				.append(note).append(", id=").append(id).append("]");
+		builder.append("AirTransportOrder [date=").append(date).append(", timeSlot=").append(timeSlot)
+				.append(", airTransport=").append(airTransport).append(", passengers=").append(passengers)
+				.append(", orderNo=").append(orderNo).append(", status=").append(status).append(", commented=")
+				.append(commented).append(", creationDate=").append(creationDate).append(", paymentDate=")
+				.append(paymentDate).append(", finishedDate=").append(finishedDate).append(", aircraftItem=")
+				.append(aircraftItem).append(", contact=").append(contact).append(", note=").append(note)
+				.append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

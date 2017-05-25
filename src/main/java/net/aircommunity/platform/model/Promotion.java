@@ -19,11 +19,13 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.google.common.collect.ImmutableSet;
 
 import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.Product.Category;
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
  * Promotion of an product.
@@ -46,6 +48,7 @@ public class Promotion extends Persistable {
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private Date creationDate;
 
 	// product description

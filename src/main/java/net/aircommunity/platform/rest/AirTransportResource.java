@@ -1,6 +1,6 @@
 package net.aircommunity.platform.rest;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -19,6 +19,7 @@ import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.AirTransport;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.ProductFamily;
 import net.aircommunity.platform.service.AirTransportService;
 
 /**
@@ -47,7 +48,7 @@ public class AirTransportResource {
 	@PermitAll
 	@Path("flight/families")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Set<String> listAllFamilies() {
+	public List<ProductFamily> listAllFamilies() {
 		LOG.debug("List all air transport families");
 		return airTransportService.listAirTransportFamilies();
 	}
@@ -58,10 +59,10 @@ public class AirTransportResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<AirTransport> listAll(@QueryParam("family") String family,
+	public Page<AirTransport> listAll(@QueryParam("family") String familyId,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		LOG.debug("List all air transports for family: {}", family);
-		return airTransportService.listAirTransportsByFamily(family, page, pageSize);
+		LOG.debug("List all air transports for family: {}", familyId);
+		return airTransportService.listAirTransportsByFamily(familyId, page, pageSize);
 	}
 
 	/**

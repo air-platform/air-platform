@@ -34,8 +34,7 @@ public class AirTaxiServiceImpl extends AircraftAwareService<AirTaxi> implements
 
 	@Override
 	public AirTaxi createAirTaxi(String tenantId, AirTaxi airTaxi) {
-		AirTaxi created = doCreateProduct(tenantId, airTaxi);
-		return airTaxiRepository.save(created);
+		return doCreateProduct(tenantId, airTaxi);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -52,10 +51,7 @@ public class AirTaxiServiceImpl extends AircraftAwareService<AirTaxi> implements
 
 	@Override
 	protected void doCopyProperties(AirTaxi src, AirTaxi tgt) {
-		tgt.setArrival(src.getArrival());
-		tgt.setArrivalLoc(src.getArrivalLoc());
-		tgt.setDeparture(src.getDeparture());
-		tgt.setDepartLoc(src.getDepartLoc());
+		tgt.setFlightRoute(src.getFlightRoute());
 		tgt.setDistance(src.getDistance());
 		tgt.setDuration(src.getDuration());
 	}
@@ -74,7 +70,8 @@ public class AirTaxiServiceImpl extends AircraftAwareService<AirTaxi> implements
 	@Nonnull
 	@Override
 	public Page<AirTaxi> listAirTaxisByDeparture(String departure, int page, int pageSize) {
-		return Pages.adapt(airTaxiRepository.findByDeparture(departure, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(
+				airTaxiRepository.findByFlightRouteDeparture(departure, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTaxiId")

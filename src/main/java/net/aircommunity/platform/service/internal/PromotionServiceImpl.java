@@ -26,7 +26,7 @@ import net.aircommunity.platform.service.PromotionService;
  */
 @Service
 @Transactional
-public class PromotionServiceImpl implements PromotionService {
+public class PromotionServiceImpl extends AbstractServiceSupport implements PromotionService {
 	private static final String CACHE_NAME = "cache.promotion";
 
 	@Resource
@@ -40,7 +40,7 @@ public class PromotionServiceImpl implements PromotionService {
 		newPromotion.setDescription(promotion.getDescription());
 		newPromotion.setCreationDate(new Date());
 		newPromotion.setItems(promotion.getItems());
-		return promotionRepository.save(newPromotion);
+		return safeExecute(() -> promotionRepository.save(newPromotion), "Create promotion %s failed", promotion);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -61,7 +61,8 @@ public class PromotionServiceImpl implements PromotionService {
 		promotion.setName(newPromotion.getName());
 		promotion.setDescription(newPromotion.getDescription());
 		promotion.setItems(newPromotion.getItems());
-		return promotionRepository.save(promotion);
+		return safeExecute(() -> promotionRepository.save(promotion), "Update promotion %s to %s failed", promotionId,
+				newPromotion);
 	}
 
 	@Override
@@ -72,13 +73,13 @@ public class PromotionServiceImpl implements PromotionService {
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#promotionId")
 	@Override
 	public void deletePromotion(String promotionId) {
-		promotionRepository.delete(promotionId);
+		safeExecute(() -> promotionRepository.delete(promotionId), "Delete promotion %s failed", promotionId);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deletePromotions() {
-		promotionRepository.deleteAll();
+		safeExecute(() -> promotionRepository.deleteAll(), "Delete all promotions failed");
 	}
 
 }

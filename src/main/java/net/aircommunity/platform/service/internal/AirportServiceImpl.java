@@ -29,7 +29,7 @@ import net.aircommunity.platform.service.AirportService;
  */
 @Service
 @Transactional
-public class AirportServiceImpl implements AirportService {
+public class AirportServiceImpl extends AbstractServiceSupport implements AirportService {
 	private static final Logger LOG = LoggerFactory.getLogger(AirportServiceImpl.class);
 
 	private static final String CACHE_NAME = "cache.airport";
@@ -44,7 +44,7 @@ public class AirportServiceImpl implements AirportService {
 		checkExistence(airport);
 		Airport newAirport = new Airport();
 		copyProperties(airport, newAirport);
-		return airportRepository.save(airport);
+		return safeExecute(() -> airportRepository.save(newAirport), "Create airport %s failed", airport);
 	}
 
 	private void checkExistence(Airport airport) {
@@ -124,7 +124,8 @@ public class AirportServiceImpl implements AirportService {
 		}
 		Airport airport = findAirport(airportId);
 		copyProperties(newAirport, airport);
-		return airportRepository.save(airport);
+		return safeExecute(() -> airportRepository.save(airport), "Update airport %s to %s failed", airportId,
+				newAirport);
 	}
 
 	private void copyProperties(Airport src, Airport tgt) {
@@ -164,14 +165,14 @@ public class AirportServiceImpl implements AirportService {
 	@Override
 	public Airport deleteAirport(String airportId) {
 		Airport airport = airportRepository.findOne(airportId);
-		airportRepository.delete(airportId);
+		safeExecute(() -> airportRepository.delete(airportId), "Delete airport %s failed", airportId);
 		return airport;
 	}
 
 	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_IATA3, CACHE_NAME_ICAO4 }, allEntries = true)
 	@Override
 	public void deleteAllAirports() {
-		airportRepository.deleteAll();
+		safeExecute(() -> airportRepository.deleteAll(), "Delete all airports failed");
 	}
 
 }

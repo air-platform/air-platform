@@ -3,10 +3,10 @@ package net.aircommunity.platform.model;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import io.micro.annotation.constraint.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * Air Transport
@@ -14,13 +14,14 @@ import io.micro.annotation.constraint.NotEmpty;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_airtransport", indexes = { @Index(name = "idx_family", columnList = "family") })
+@Table(name = "air_platfrom_airtransport")
 public class AirTransport extends AircraftAwareProduct {
 	private static final long serialVersionUID = 1L;
 
-	@NotEmpty
-	@Column(name = "family", nullable = false)
-	private String family;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "family_id", nullable = false)
+	private ProductFamily family;
 
 	// in minutes
 	@Column(name = "time_estimation", nullable = false)
@@ -36,11 +37,11 @@ public class AirTransport extends AircraftAwareProduct {
 		this.id = id;
 	}
 
-	public String getFamily() {
+	public ProductFamily getFamily() {
 		return family;
 	}
 
-	public void setFamily(String family) {
+	public void setFamily(ProductFamily family) {
 		this.family = family;
 	}
 

@@ -33,7 +33,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	protected static final String CACHE_NAME = "cache.product";
 
 	@Resource
-	protected ProductFaqRepository productFAQRepository;
+	protected ProductFaqRepository productFaqRepository;
 
 	protected Class<T> type;
 
@@ -60,33 +60,27 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		catch (Exception unexpected) {
 			LOG.error(String.format("Failed to create instance %s for user %s, cause: %s", type, tenantId,
 					unexpected.getMessage()), unexpected);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+			throw newInternalException();
 		}
 		newProduct.setName(product.getName());
 		newProduct.setImage(product.getImage());
 		newProduct.setClientManagers(product.getClientManagers());
 		newProduct.setDescription(product.getDescription());
-		newProduct.setPutOnSale(false);
+		newProduct.setRank(0);
+		newProduct.setPublished(false);
 		// for AircraftAwareProduct
 		if (AircraftAwareProduct.class.isAssignableFrom(newProduct.getClass())) {
 			AircraftAwareProduct newAircraftAwareProduct = AircraftAwareProduct.class.cast(newProduct);
 			AircraftAwareProduct aircraftAwareProduct = AircraftAwareProduct.class.cast(product);
-			// TODO need validate the dates format?
-			newAircraftAwareProduct.setUnavailableDates(aircraftAwareProduct.getUnavailableDates());
-			newAircraftAwareProduct.setCurrentTime(new Date());
+			newAircraftAwareProduct.setPresalesDays(aircraftAwareProduct.getPresalesDays());
 		}
 		copyProperties(product, newProduct);
 		// set props cannot be overridden by subclass
 		newProduct.setCreationDate(new Date());
 		newProduct.setVendor(vendor);
-		try {
-			return getProductRepository().save(newProduct);
-		}
-		catch (Exception e) {
-			LOG.error(String.format("Create %s: %s for user %s failed, cause: %s", type.getSimpleName(), product,
-					tenantId, e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
-		}
+		final T productToSaved = newProduct;
+		return safeExecute(() -> getProductRepository().save(productToSaved), "Create %s: %s for tenant %s failed",
+				type.getSimpleName(), product, tenantId);
 	}
 
 	protected final T doFindProduct(String productId) {
@@ -105,27 +99,31 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		product.setClientManagers(newProduct.getClientManagers());
 		product.setDescription(newProduct.getDescription());
 		copyProperties(newProduct, product);
+		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s with %s failed",
+				type.getSimpleName(), productId, newProduct);
+	}
+
+	protected final T doPublishProduct(String productId, boolean published) {
+		T product = doFindProduct(productId);
 		try {
+			product.setPublished(published);
 			return getProductRepository().save(product);
 		}
 		catch (Exception e) {
-			LOG.error(String.format("Update %s: %s with %s failed, cause: %s", type.getSimpleName(), productId,
-					newProduct, e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+			LOG.error(String.format("Update %s: %s with published: %b failed, cause: %s", type.getSimpleName(),
+					productId, published, e.getMessage()), e);
+			throw newInternalException();
 		}
 	}
 
-	protected final T doPutProductOnSale(String productId, boolean putOnSale) {
+	protected final T doUpdateProductRank(String productId, int rank) {
 		T product = doFindProduct(productId);
-		try {
-			product.setPutOnSale(putOnSale);
-			return getProductRepository().save(product);
+		if (rank < 0) {
+			rank = 0;
 		}
-		catch (Exception e) {
-			LOG.error(String.format("Update %s: %s with putOnSale: %b failed, cause: %s", type.getSimpleName(),
-					productId, putOnSale, e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
-		}
+		product.setRank(rank);
+		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s to rank: %d",
+				type.getSimpleName(), productId, rank);
 	}
 
 	protected void copyProperties(T src, T tgt) {
@@ -148,11 +146,12 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	}
 
 	protected final void doDeleteProduct(String productId) {
-		getProductRepository().delete(productId);
+		safeExecute(() -> getProductRepository().delete(productId), "Delete product %s failed", productId);
 	}
 
 	protected final void doDeleteProducts(String tenantId) {
-		getProductRepository().deleteByVendorId(tenantId);
+		safeExecute(() -> getProductRepository().deleteByVendorId(tenantId), "Delete all products for tenant %s failed",
+				tenantId);
 	}
 
 	// *********************
@@ -165,18 +164,12 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		newFaq.setDate(new Date());
 		newFaq.setTitle(faq.getTitle());
 		newFaq.setProduct(product);
-		try {
-			return productFAQRepository.save(newFaq);
-		}
-		catch (Exception e) {
-			LOG.error(String.format("Create FAQ: %s for product %s failed, cause: %s", faq, product, e.getMessage()),
-					e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
-		}
+		return safeExecute(() -> productFaqRepository.save(newFaq), "Create FAQ: %s for product %s failed", faq,
+				product);
 	}
 
 	protected final ProductFaq doFindProductFaq(String productFaqId) {
-		ProductFaq faq = productFAQRepository.findOne(productFaqId);
+		ProductFaq faq = productFaqRepository.findOne(productFaqId);
 		if (faq == null) {
 			LOG.error("Product FAQ: {} is not found", productFaqId);
 			throw new AirException(Codes.PRODUCT_FAQ_NOT_FOUND, M.msg(M.PRODUCT_FAQ_NOT_FOUND));
@@ -188,26 +181,22 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		ProductFaq faq = doFindProductFaq(productFaqId);
 		faq.setContent(newFaq.getContent());
 		faq.setTitle(newFaq.getTitle());
-		try {
-			return productFAQRepository.save(newFaq);
-		}
-		catch (Exception e) {
-			LOG.error(String.format("Update FAQ: %s to %s failed, cause: %s", productFaqId, newFaq, e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
-		}
+		return safeExecute(() -> productFaqRepository.save(newFaq), "Update FAQ: %s to %s failed", productFaqId,
+				newFaq);
 	}
 
 	protected final Page<ProductFaq> doListProductFaqs(String productId, int page, int pageSize) {
-		return Pages.adapt(productFAQRepository.findByProductIdOrderByDateDesc(productId,
+		return Pages.adapt(productFaqRepository.findByProductIdOrderByDateDesc(productId,
 				Pages.createPageRequest(page, pageSize)));
 	}
 
 	protected final void doDeleteProductFaq(String productFaqId) {
-		productFAQRepository.delete(productFaqId);
+		safeExecute(() -> productFaqRepository.delete(productFaqId), "Delete FAQ: %s failed", productFaqId);
 	}
 
 	protected final void doDeleteProductFaqs(String productId) {
-		productFAQRepository.deleteByProductId(productId);
+		safeExecute(() -> productFaqRepository.deleteByProductId(productId), "Delete FAQs for product %s failed",
+				productId);
 	}
 
 }

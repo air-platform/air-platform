@@ -60,22 +60,22 @@ public abstract class BaseProductResource<T extends Product> {
 	 * On Sale
 	 */
 	@POST
-	@Path("{productId}/onsale")
+	@Path("{productId}/publish")
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-	public Product putProductOnSale(@PathParam("productId") String productId) {
-		return commonProductService.putProductOnSale(productId, true);
+	public Product publishProduct(@PathParam("productId") String productId) {
+		return commonProductService.publishProduct(productId, true);
 	}
 
 	/**
 	 * Off Sale
 	 */
 	@POST
-	@Path("{productId}/offsale")
+	@Path("{productId}/unpublish")
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-	public Product pullProductOffSale(@PathParam("productId") String productId) {
-		return commonProductService.putProductOnSale(productId, false);
+	public Product unpublishProduct(@PathParam("productId") String productId) {
+		return commonProductService.publishProduct(productId, false);
 	}
 
 	/**
