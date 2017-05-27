@@ -22,7 +22,7 @@ import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.FileUploadResult;
 import net.aircommunity.platform.model.StreamingImageFile;
-import net.aircommunity.platform.service.FileUploadService;
+import net.aircommunity.platform.service.FileService;
 
 /**
  * Files RESTful API.
@@ -39,7 +39,7 @@ public class FileResource {
 	private Configuration configuration;
 
 	@Resource
-	private FileUploadService fileUploadService;
+	private FileService fileService;
 
 	/**
 	 * File upload to cloud
@@ -55,8 +55,7 @@ public class FileResource {
 		try {
 			LOG.debug("Uploading file {} to cloud", inputFile.getFileName());
 			String extension = MoreFiles.getExtension(inputFile.getFileName());
-			return fileUploadService.upload(
-					String.format(Constants.FILE_UPLOAD_NAME_FORMAT, UUIDs.shortRandom(), extension),
+			return fileService.upload(String.format(Constants.FILE_UPLOAD_NAME_FORMAT, UUIDs.shortRandom(), extension),
 					inputFile.getFileData());
 		}
 		finally {

@@ -17,6 +17,8 @@ public class FileUploadResult implements Serializable {
 	private static final int SUCCESS = 1;
 	private static final int FAILURE = 0;
 
+	// the field name is required by MD editor
+
 	// 0:failure, 1: success
 	private int success;
 
@@ -50,6 +52,10 @@ public class FileUploadResult implements Serializable {
 
 	public String getUrl() {
 		return url;
+	}
+
+	public boolean isSuccess() {
+		return success == SUCCESS;
 	}
 
 	@Override

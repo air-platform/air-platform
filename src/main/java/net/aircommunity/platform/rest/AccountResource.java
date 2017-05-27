@@ -68,7 +68,7 @@ import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.AuthcRequest;
 import net.aircommunity.platform.model.AvatarImage;
 import net.aircommunity.platform.model.EmailRequest;
-import net.aircommunity.platform.model.FileUploadResult;
+import net.aircommunity.platform.model.ImageCropResult;
 import net.aircommunity.platform.model.PasswordRequest;
 import net.aircommunity.platform.model.PasswordResetRequest;
 import net.aircommunity.platform.model.Role;
@@ -76,7 +76,7 @@ import net.aircommunity.platform.model.UserAccountRequest;
 import net.aircommunity.platform.model.UsernameRequest;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.AccountService;
-import net.aircommunity.platform.service.FileUploadService;
+import net.aircommunity.platform.service.FileService;
 import net.aircommunity.platform.service.SmsService;
 import net.aircommunity.platform.service.TemplateService;
 import net.aircommunity.platform.service.VerificationService;
@@ -99,7 +99,7 @@ public class AccountResource {
 	private AccountService accountService;
 
 	@Resource
-	private FileUploadService fileUploadService;
+	private FileService fileService;
 
 	@Resource
 	private AccessTokenService accessTokenService;
@@ -185,30 +185,22 @@ public class AccountResource {
 		return Response.ok(new AccessToken(token)).build();
 	}
 
-	private String getUsername(Account account) {
-		AccountAuth accountAuthUsername = accountService.findAccountUsername(account.getId());
-		if (accountAuthUsername != null) {
-			return accountAuthUsername.getPrincipal();
-		}
-		AccountAuth accountAuthMobile = accountService.findAccountMobile(account.getId());
-		return accountAuthMobile.getPrincipal();
-	}
-
 	/**
-	 * Avatar upload to cloud
+	 * Avatar upload to cloud, e.g. ?cropOptions=300x300a50a50 ( {cropsize}a<dx>a<dy> )
 	 */
 	@POST
 	@Path("avatars")
 	@Authenticated
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public FileUploadResult uploadAvatarToCloud(@MultipartForm AvatarImage avatarImage) {
+	public ImageCropResult uploadAvatarToCloud(@QueryParam("cropOptions") String cropOptions,
+			@MultipartForm AvatarImage avatarImage) {
 		try {
 			LOG.debug("Uploading avatar {} to cloud", avatarImage.getFileName());
 			String extension = MoreFiles.getExtension(avatarImage.getFileName());
-			return fileUploadService.upload(
+			return fileService.cropImage(
 					String.format(Constants.FILE_UPLOAD_NAME_FORMAT, UUIDs.shortRandom(), extension),
-					avatarImage.getFileData());
+					avatarImage.getFileData(), cropOptions);
 		}
 		finally {
 			if (avatarImage != null) {
@@ -281,8 +273,12 @@ public class AccountResource {
 		try {
 			// Issue a token for this account
 			String username = getUsername(account);
-			String token = accessTokenService.generateToken(account.getId(), ImmutableMap.of(Claims.CLAIM_ROLES,
-					ImmutableSet.of(account.getRole().name()), Constants.CLAIM_USERNAME, username));
+			Map<String, Object> claims = ImmutableMap.<String, Object> builder()
+					.put(Claims.CLAIM_ROLES, ImmutableSet.of(account.getRole().name()))
+					.put(Claims.CLAIM_EXPIRY, configuration.getTokenExpirationTimeSeconds())
+					.put(Constants.CLAIM_ID, account.getId()).put(Constants.CLAIM_USERNAME, username)
+					.put(Constants.CLAIM_NICKNAME, account.getNickName()).build();
+			String token = accessTokenService.generateToken(account.getId(), claims);
 			// Return the token on the response
 			return Response.ok(new AccessToken(token)).build();
 		}
@@ -290,6 +286,15 @@ public class AccountResource {
 			LOG.error(e.getLocalizedMessage(), e);
 			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
 		}
+	}
+
+	private String getUsername(Account account) {
+		AccountAuth accountAuthUsername = accountService.findAccountUsername(account.getId());
+		if (accountAuthUsername != null) {
+			return accountAuthUsername.getPrincipal();
+		}
+		AccountAuth accountAuthMobile = accountService.findAccountMobile(account.getId());
+		return accountAuthMobile.getPrincipal();
 	}
 
 	/**
