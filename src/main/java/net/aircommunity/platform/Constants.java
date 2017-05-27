@@ -22,6 +22,9 @@ public final class Constants {
 	public static final String TEMPLATE_MAIL_ORDER_NOTIFICATION = TEMPLATE_DIR + "/mail-%s-order.template";
 	// @formatter:on
 
+	// randomString.extension, e.g. jki45hkfh945k3j5.jpg
+	public static final String FILE_UPLOAD_NAME_FORMAT = "%s.%s";
+
 	// bindings
 	public static final String TEMPLATE_BINDING_USERNAME = "username";
 	public static final String TEMPLATE_BINDING_COMPANY = "company";
@@ -46,7 +49,9 @@ public final class Constants {
 
 	//
 	public static final String CLAIM_API_KEY = "claim.apikey";
+	public static final String CLAIM_ID = "id";
 	public static final String CLAIM_USERNAME = "username";
+	public static final String CLAIM_NICKNAME = "nickName";
 	public static final String DEFAULT_ADMIN_USERNAME = "admin";
 	public static final String DEFAULT_ADMIN_PASSWORD = "p0o9i8u7";
 	public static final String DEFAULT_ADMIN_EMAIL = "ac_eb@hnair.com";

@@ -186,7 +186,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 				AirTaxiOrder airTaxiOrder = AirTaxiOrder.class.cast(order);
 				context.put("airTaxi", airTaxiOrder.getAirTaxi());
 				context.put("passengers", airTaxiOrder.getPassengers());
-				context.put("aircraftType", airTaxiOrder.getAircraftItem().getAircraft().getName()); // XXX
+				context.put("aircraftType", airTaxiOrder.getSalesPackage().getAircraft().getName()); // XXX
 				context.put("date", airTaxiOrder.getDate());
 				context.put("timeSlot", airTaxiOrder.getTimeSlot());
 				context.put("contact", airTaxiOrder.getContact());
@@ -196,7 +196,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 				AirTourOrder airTourOrder = AirTourOrder.class.cast(order);
 				context.put("airTour", airTourOrder.getAirTour());
 				context.put("passengers", airTourOrder.getPassengers());
-				context.put("aircraftType", airTourOrder.getAircraftItem().getAircraft().getName());
+				context.put("aircraftType", airTourOrder.getSalesPackage().getAircraft().getName());
 				context.put("date", airTourOrder.getDate());
 				context.put("timeSlot", airTourOrder.getTimeSlot());
 				context.put("contact", airTourOrder.getContact());
@@ -208,7 +208,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 				context.put("passengerNum", airTransportOrder.getPassengerNum() == 0
 						? airTransportOrder.getPassengers().size() : airTransportOrder.getPassengerNum());
 				context.put("passengers", airTransportOrder.getPassengers());
-				context.put("aircraftType", airTransportOrder.getAircraftItem().getAircraft().getName());
+				context.put("aircraftType", airTransportOrder.getSalesPackage().getAircraft().getName());
 				context.put("date", airTransportOrder.getDate());
 				context.put("timeSlot", airTransportOrder.getTimeSlot());
 				context.put("contact", airTransportOrder.getContact());

@@ -44,7 +44,10 @@ import com.google.common.collect.ImmutableSet;
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.micro.annotation.TokenSecured;
+import io.micro.annotation.multipart.MultipartForm;
 import io.micro.common.Strings;
+import io.micro.common.UUIDs;
+import io.micro.common.io.MoreFiles;
 import io.micro.core.security.AccessTokenService;
 import io.micro.core.security.Claims;
 import io.micro.core.security.SimplePrincipal;
@@ -63,7 +66,9 @@ import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.AuthcRequest;
+import net.aircommunity.platform.model.AvatarImage;
 import net.aircommunity.platform.model.EmailRequest;
+import net.aircommunity.platform.model.FileUploadResult;
 import net.aircommunity.platform.model.PasswordRequest;
 import net.aircommunity.platform.model.PasswordResetRequest;
 import net.aircommunity.platform.model.Role;
@@ -71,6 +76,7 @@ import net.aircommunity.platform.model.UserAccountRequest;
 import net.aircommunity.platform.model.UsernameRequest;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.AccountService;
+import net.aircommunity.platform.service.FileUploadService;
 import net.aircommunity.platform.service.SmsService;
 import net.aircommunity.platform.service.TemplateService;
 import net.aircommunity.platform.service.VerificationService;
@@ -93,6 +99,9 @@ public class AccountResource {
 	private AccountService accountService;
 
 	@Resource
+	private FileUploadService fileUploadService;
+
+	@Resource
 	private AccessTokenService accessTokenService;
 
 	@Resource
@@ -108,6 +117,9 @@ public class AccountResource {
 	private Configuration configuration;
 
 	// TODO AirQ
+	/**
+	 * @deprecated
+	 */
 	@ApiOperation(value = "login", hidden = true)
 	@GET
 	@Path("login")
@@ -142,6 +154,7 @@ public class AccountResource {
 
 	/**
 	 * AirQ
+	 * @deprecated
 	 */
 	// TODO AirQ
 	@ApiOperation(value = "airq", response = AccessToken.class)
@@ -163,9 +176,12 @@ public class AccountResource {
 		Account account = accountService.findAccount(accountId);
 		LOG.debug("account: {}", account);
 		String username = getUsername(account);
-		String token = accessTokenService.generateToken(username,
-				ImmutableMap.of(Claims.CLAIM_ROLES, ImmutableSet.of(account.getRole().name()), Claims.CLAIM_EXPIRY,
-						configuration.getTokenExpirationTimeSeconds(), Constants.CLAIM_USERNAME, username));
+		Map<String, Object> claims = ImmutableMap.<String, Object> builder()
+				.put(Claims.CLAIM_ROLES, ImmutableSet.of(account.getRole().name()))
+				.put(Claims.CLAIM_EXPIRY, configuration.getTokenExpirationTimeSeconds())
+				.put(Constants.CLAIM_ID, account.getId()).put(Constants.CLAIM_USERNAME, username)
+				.put(Constants.CLAIM_NICKNAME, account.getNickName()).build();
+		String token = accessTokenService.generateToken(account.getId(), claims);
 		return Response.ok(new AccessToken(token)).build();
 	}
 
@@ -175,11 +191,30 @@ public class AccountResource {
 			return accountAuthUsername.getPrincipal();
 		}
 		AccountAuth accountAuthMobile = accountService.findAccountMobile(account.getId());
-		String nickName = account.getNickName();
-		if (Strings.isBlank(nickName)) {
-			nickName = accountAuthMobile != null ? accountAuthMobile.getPrincipal() : M.msg(M.USERNAME_ANONYMOUS);
+		return accountAuthMobile.getPrincipal();
+	}
+
+	/**
+	 * Avatar upload to cloud
+	 */
+	@POST
+	@Path("avatars")
+	@Authenticated
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public FileUploadResult uploadAvatarToCloud(@MultipartForm AvatarImage avatarImage) {
+		try {
+			LOG.debug("Uploading avatar {} to cloud", avatarImage.getFileName());
+			String extension = MoreFiles.getExtension(avatarImage.getFileName());
+			return fileUploadService.upload(
+					String.format(Constants.FILE_UPLOAD_NAME_FORMAT, UUIDs.shortRandom(), extension),
+					avatarImage.getFileData());
 		}
-		return nickName;
+		finally {
+			if (avatarImage != null) {
+				avatarImage.close();
+			}
+		}
 	}
 
 	/**

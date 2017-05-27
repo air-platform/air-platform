@@ -80,7 +80,7 @@ public class AirTourOrder extends AircraftAwareOrder {
 				.append(airTour).append(", passengers=").append(passengers).append(", orderNo=").append(orderNo)
 				.append(", status=").append(status).append(", commented=").append(commented).append(", creationDate=")
 				.append(creationDate).append(", paymentDate=").append(paymentDate).append(", finishedDate=")
-				.append(finishedDate).append(", aircraftItem=").append(aircraftItem).append(", contact=")
+				.append(finishedDate).append(", salesPackageNum=").append(salesPackageNum).append(", contact=")
 				.append(contact).append(", note=").append(note).append(", id=").append(id).append("]");
 		return builder.toString();
 	}

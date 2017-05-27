@@ -54,7 +54,7 @@ public class AirTourServiceImpl extends AircraftAwareService<AirTour> implements
 	protected void doCopyProperties(AirTour src, AirTour tgt) {
 		tgt.setCity(src.getCity());
 		tgt.setTourDistance(src.getTourDistance());
-		tgt.setBoardingLoc(src.getBoardingLoc());
+		tgt.setBoardingLocation(src.getBoardingLocation());
 		tgt.setTourPoint(src.getTourPoint());
 		tgt.setTourShow(src.getTourShow());
 		tgt.setTourTime(src.getTourTime());

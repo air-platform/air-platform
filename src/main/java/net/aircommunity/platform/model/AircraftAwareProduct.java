@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -30,40 +29,17 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 public abstract class AircraftAwareProduct extends Product {
 	private static final long serialVersionUID = 1L;
 
-	// in presalesDays before
-	@Column(name = "presales_days")
-	protected int presalesDays = 0;
-
-	// TODO REMOVE below
-	// available date, e.g. 2017-5-1 XXX useful? we already have unavailableDates
-	// @Temporal(value = TemporalType.DATE)
-	// @Column(name = "available_date")
-	// @XmlJavaTypeAdapter(DateAdapter.class)
-	// protected Date availableDate;
-
-	// format of: 2017-05(); 2017-05(1,3-7,15-20); 2017-12(1,3,7)
-	// @Lob
-	// @Column(name = "unavailable_dates")
-	// protected String unavailableDates;
-
+	// TODO a better place?
 	@Transient
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	protected Date currentTime;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	protected Set<AircraftItem> aircraftItems = new HashSet<>();
+	protected Set<SalesPackage> salesPackages = new HashSet<>();
 
 	@PostLoad
 	private void afterLoad() {
 		setCurrentTime(new Date());
-	}
-
-	public int getPresalesDays() {
-		return presalesDays;
-	}
-
-	public void setPresalesDays(int presalesDays) {
-		this.presalesDays = presalesDays;
 	}
 
 	public Date getCurrentTime() {
@@ -74,30 +50,31 @@ public abstract class AircraftAwareProduct extends Product {
 		this.currentTime = currentTime;
 	}
 
-	public Set<AircraftItem> getAircraftItems() {
-		return aircraftItems;
+	public Set<SalesPackage> getSalesPackages() {
+		return salesPackages;
 	}
 
-	public void setAircraftItems(Set<AircraftItem> aircraftItems) {
-		if (aircraftItems != null) {
-			aircraftItems.stream().forEach(item -> item.setProduct(this));
-			this.aircraftItems.clear();
-			this.aircraftItems.addAll(aircraftItems);
+	public void setSalesPackages(Set<SalesPackage> salesPackages) {
+		this.salesPackages = salesPackages;
+		if (salesPackages != null) {
+			salesPackages.stream().forEach(item -> item.setProduct(this));
+			this.salesPackages.clear();
+			this.salesPackages.addAll(salesPackages);
 		}
 	}
 
-	public boolean addAircraftItem(AircraftItem item) {
-		if (aircraftItems.contains(item)) {
+	public boolean addSalesPackage(SalesPackage item) {
+		if (salesPackages.contains(item)) {
 			return false;
 		}
 		item.setProduct(this);
-		return aircraftItems.add(item);
+		return salesPackages.add(item);
 	}
 
-	public boolean removeAircraftItem(AircraftItem item) {
-		if (!aircraftItems.contains(item)) {
+	public boolean removeSalesPackage(SalesPackage item) {
+		if (!salesPackages.contains(item)) {
 			return false;
 		}
-		return aircraftItems.remove(item);
+		return salesPackages.remove(item);
 	}
 }

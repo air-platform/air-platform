@@ -1,6 +1,7 @@
 package net.aircommunity.platform.rest.admin;
 
 import java.net.URI;
+import java.util.Base64;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -28,6 +29,7 @@ import io.micro.annotation.RESTful;
 import io.micro.core.security.AccessTokenService;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.Constants;
+import net.aircommunity.platform.model.AccessToken;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.Order;
@@ -88,7 +90,7 @@ public class AdminResource {
 	private AccessTokenService accessTokenService;
 
 	/**
-	 * Ping server to make sure server is still alive, it is used for monitoring purpose.
+	 * Ping server to make sure server is still responsive, it is used for monitoring purpose.
 	 */
 	@GET
 	@Path("ping")
@@ -100,6 +102,17 @@ public class AdminResource {
 	// **************************************
 	// Account administration
 	// **************************************
+
+	/**
+	 * Get access token Secret
+	 */
+	@GET
+	@Path("accesstoken/secret")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public AccessToken getAccessTokenPublicKey() {
+		String key = Base64.getEncoder().encodeToString(accessTokenService.getPublicKey().getEncoded());
+		return new AccessToken(key);
+	}
 
 	/**
 	 * Create a tenant account

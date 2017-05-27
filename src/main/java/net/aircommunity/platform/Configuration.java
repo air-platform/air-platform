@@ -97,11 +97,14 @@ public class Configuration {
 	private String smsTmplCode;
 
 	// NodeBB
-	@Value("${air.airbb.url}")
-	private String nodebbUrl;
+	@Value("${air.airq.url}")
+	private String airqUrl;
 
-	@Value("${air.airbb.token}")
-	private String nodebbToken;
+	@Value("${air.airq.token}")
+	private String airqToken;
+
+	@Value("${air.airq.account-sync}")
+	private boolean airqAccountSync;
 
 	// IDCard service
 	@Value("${air.idcard.url}")
@@ -218,12 +221,16 @@ public class Configuration {
 		return smsTmplCode;
 	}
 
-	public String getNodebbUrl() {
-		return nodebbUrl;
+	public String getAirqUrl() {
+		return airqUrl;
 	}
 
-	public String getNodebbToken() {
-		return nodebbToken;
+	public String getAirqToken() {
+		return airqToken;
+	}
+
+	public boolean isAirqAccountSync() {
+		return airqAccountSync;
 	}
 
 	public String getIdcardUrl() {

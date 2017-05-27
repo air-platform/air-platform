@@ -19,6 +19,7 @@ import io.micro.common.UUIDs;
 import io.micro.common.io.MoreFiles;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.Configuration;
+import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.FileUploadResult;
 import net.aircommunity.platform.model.StreamingImageFile;
 import net.aircommunity.platform.service.FileUploadService;
@@ -33,9 +34,6 @@ import net.aircommunity.platform.service.FileUploadService;
 @Path("files")
 public class FileResource {
 	private static final Logger LOG = LoggerFactory.getLogger(FileResource.class);
-
-	// randomString.extension, e.g. jki45hkfh945k3j5.jpg
-	private static final String FILE_NAME_FORMAT = "%s.%s";
 
 	@Resource
 	private Configuration configuration;
@@ -57,7 +55,8 @@ public class FileResource {
 		try {
 			LOG.debug("Uploading file {} to cloud", inputFile.getFileName());
 			String extension = MoreFiles.getExtension(inputFile.getFileName());
-			return fileUploadService.upload(String.format(FILE_NAME_FORMAT, UUIDs.shortRandom(), extension),
+			return fileUploadService.upload(
+					String.format(Constants.FILE_UPLOAD_NAME_FORMAT, UUIDs.shortRandom(), extension),
 					inputFile.getFileData());
 		}
 		finally {

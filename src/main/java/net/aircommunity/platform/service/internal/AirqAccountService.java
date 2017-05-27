@@ -27,14 +27,15 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * AirBB Account CRUD.
+ * AirQ Account CRUD.
  * 
  * @author luocheng
  */
 @Service
-public class AirBBAccountService {
-	private static final Logger LOG = LoggerFactory.getLogger(AirBBAccountService.class);
+public class AirqAccountService {
+	private static final Logger LOG = LoggerFactory.getLogger(AirqAccountService.class);
 
+	private static final String AUTHZ_HEADER_FORMAT = "Bearer %s";
 	private static final String APPLICATION_JSON = "application/json";
 	private static final String USER_API_URL_FORMAT = "%s/api/v1/users";
 	private static final String USER_API_USERS_URL_FORMAT = "%s/api/users?_uid=1";
@@ -50,7 +51,7 @@ public class AirBBAccountService {
 
 	@PostConstruct
 	private void init() {
-		userApiUrl = String.format(USER_API_URL_FORMAT, configuration.getNodebbUrl());
+		userApiUrl = String.format(USER_API_URL_FORMAT, configuration.getAirqUrl());
 		userApiUrlBase = userApiUrl + "/";
 	}
 
@@ -63,7 +64,7 @@ public class AirBBAccountService {
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", APPLICATION_JSON);
-			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
+			conn.setRequestProperty("Authorization", String.format(AUTHZ_HEADER_FORMAT, configuration.getAirqToken()));
 			String json = Json.createObjectBuilder().add("username", username).add("password", password)
 					.add("email", "").add("_uid", "1").build().toString();
 
@@ -91,7 +92,7 @@ public class AirBBAccountService {
 			conn.setDoOutput(true);
 			conn.setRequestMethod("PUT");
 			conn.setRequestProperty("Content-Type", APPLICATION_JSON);
-			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
+			conn.setRequestProperty("Authorization", String.format(AUTHZ_HEADER_FORMAT, configuration.getAirqToken()));
 
 			String json = Json.createObjectBuilder().add("uid", userID).add("new", newPassword).add("_uid", "1").build()
 					.toString();
@@ -120,7 +121,7 @@ public class AirBBAccountService {
 			conn.setDoOutput(true);
 			conn.setRequestMethod("PUT");
 			conn.setRequestProperty("Content-Type", APPLICATION_JSON);
-			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
+			conn.setRequestProperty("Authorization", String.format(AUTHZ_HEADER_FORMAT, configuration.getAirqToken()));
 
 			String json = Json.createObjectBuilder().add("email", email).add("_uid", "1").build().toString();
 			OutputStream os = conn.getOutputStream();
@@ -149,7 +150,7 @@ public class AirBBAccountService {
 			conn.setDoOutput(true);
 			conn.setRequestMethod("DELETE");
 			conn.setRequestProperty("Content-Type", APPLICATION_JSON);
-			conn.setRequestProperty("Authorization", configuration.getNodebbToken());
+			conn.setRequestProperty("Authorization", String.format(AUTHZ_HEADER_FORMAT, configuration.getAirqToken()));
 
 			String json = Json.createObjectBuilder().add("_uid", "1").build().toString();
 			OutputStream os = conn.getOutputStream();
@@ -171,7 +172,7 @@ public class AirBBAccountService {
 	public String getUsername(String username) {
 		String userID = null;
 		try {
-			String url = String.format(USER_API_USERS_URL_FORMAT, configuration.getNodebbUrl());
+			String url = String.format(USER_API_USERS_URL_FORMAT, configuration.getAirqUrl());
 			LOG.debug("Get username url: {}", url);
 			Request request = new Request.Builder().url(url).headers(buildHeaders()).get().build();
 			Response response = httpClient.newCall(request).execute();
@@ -205,7 +206,7 @@ public class AirBBAccountService {
 	private Headers buildHeaders() {
 		Headers.Builder headers = new Headers.Builder();
 		headers.add(HttpHeaders.ACCEPT, APPLICATION_JSON).add(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON)
-				.add(HttpHeaders.AUTHORIZATION, configuration.getNodebbToken());
+				.add(HttpHeaders.AUTHORIZATION, String.format(AUTHZ_HEADER_FORMAT, configuration.getAirqToken()));
 		return headers.build();
 	}
 }

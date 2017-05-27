@@ -4,6 +4,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ import net.aircommunity.platform.service.VerificationService;
  */
 @Service
 public class VerificationServiceImpl implements VerificationService {
+	private static final Logger LOG = LoggerFactory.getLogger(VerificationServiceImpl.class);
+
 	private static final int REQUEST_PER_IP = 10;
 	private static final int VERIFICATION_CODE_LENGTH = 6;
 	private static final String VERIFICATION_CODD_KEY_FORMAT = "account:vc:%s"; // account verification code
@@ -33,40 +37,39 @@ public class VerificationServiceImpl implements VerificationService {
 
 	@Override
 	public String generateCode(String key, String ip, long expires) {
-		// per IP address 120 seconds
-		String ipRequested = counterTemplate.opsForValue().get(String.format(IP_KEY_FORMAT, ip));
-		if (ipRequested != null) {
-			int requests = Integer.valueOf(ipRequested);
-			if (requests <= 0) {
-				throw new AirException(Codes.TOO_MANY_VERIFICATION_REQUEST, M.msg(M.SMS_TOO_MANY_VERIFICATION_REQUEST));
+		try {
+			// per IP address 120 seconds
+			String ipRequested = counterTemplate.opsForValue().get(String.format(IP_KEY_FORMAT, ip));
+			if (ipRequested != null) {
+				int requests = Integer.valueOf(ipRequested);
+				if (requests <= 0) {
+					throw new AirException(Codes.TOO_MANY_VERIFICATION_REQUEST,
+							M.msg(M.SMS_TOO_MANY_VERIFICATION_REQUEST));
+				}
+				// dec by 1 (AKA. incr -1)
+				counterTemplate.opsForValue().increment(String.format(IP_KEY_FORMAT, ip), -1l);
 			}
-			// dec by 1 (AKA. incr -1)
-			counterTemplate.opsForValue().increment(String.format(IP_KEY_FORMAT, ip), -1l);
-		}
-		else {
-			counterTemplate.opsForValue().set(String.format(IP_KEY_FORMAT, ip), REQUEST_PER_IP + "", expires,
+			else {
+				counterTemplate.opsForValue().set(String.format(IP_KEY_FORMAT, ip), REQUEST_PER_IP + "", expires,
+						TimeUnit.SECONDS);
+			}
+			String code = findCode(key);
+			if (code != null) {
+				return code;
+			}
+			code = Randoms.randomNumeric(VERIFICATION_CODE_LENGTH);
+			redisTemplate.opsForValue().set(String.format(VERIFICATION_CODD_KEY_FORMAT, key), code, expires,
 					TimeUnit.SECONDS);
-		}
-		String code = findCode(key);
-		if (code != null) {
 			return code;
 		}
-		code = Randoms.randomNumeric(VERIFICATION_CODE_LENGTH);
-		redisTemplate.opsForValue().set(String.format(VERIFICATION_CODD_KEY_FORMAT, key), code, expires,
-				TimeUnit.SECONDS);
-		return code;
-	}
-
-	@Override
-	public String generateCode(String key, long expires) {
-		String code = findCode(key);
-		if (code != null) {
-			return code;
+		catch (Exception e) {
+			LOG.error(String.format("Error when generate verification code with key: %s, ip: %s, expires: %d", key, ip,
+					expires, e.getMessage()), e);
+			if (AirException.class.isAssignableFrom(e.getClass())) {
+				throw e;
+			}
+			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
 		}
-		code = Randoms.randomNumeric(VERIFICATION_CODE_LENGTH);
-		redisTemplate.opsForValue().set(String.format(VERIFICATION_CODD_KEY_FORMAT, key), code, expires,
-				TimeUnit.SECONDS);
-		return code;
 	}
 
 	@Override

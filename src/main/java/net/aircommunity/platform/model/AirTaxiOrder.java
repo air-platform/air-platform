@@ -76,12 +76,13 @@ public class AirTaxiOrder extends AircraftAwareOrder {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AirTaxiOrder [date=").append(date).append(", timeSlot=").append(timeSlot).append(", airTaxi=")
-				.append(airTaxi).append(", passengers=").append(passengers).append(", orderNo=").append(orderNo)
-				.append(", status=").append(status).append(", commented=").append(commented).append(", creationDate=")
-				.append(creationDate).append(", paymentDate=").append(paymentDate).append(", finishedDate=")
-				.append(finishedDate).append(", aircraftItem=").append(aircraftItem).append(", contact=")
-				.append(contact).append(", note=").append(note).append(", id=").append(id).append("]");
+		builder.append("AirTaxiOrder [date=").append(date).append(", timeSlot=").append(timeSlot)
+				.append(", salesPackageNum=").append(salesPackageNum).append(", contact=").append(contact)
+				.append(", orderNo=").append(orderNo).append(", status=").append(status).append(", commented=")
+				.append(commented).append(", creationDate=").append(creationDate).append(", paymentDate=")
+				.append(paymentDate).append(", finishedDate=").append(finishedDate).append(", cancelledDate=")
+				.append(cancelledDate).append(", deletedDate=").append(deletedDate).append(", confirmation=")
+				.append(confirmation).append(", note=").append(note).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

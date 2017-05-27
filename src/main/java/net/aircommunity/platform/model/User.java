@@ -201,10 +201,10 @@ public class User extends Account {
 		StringBuilder builder = new StringBuilder();
 		builder.append("User [points=").append(points).append(", rank=").append(rank).append(", realName=")
 				.append(realName).append(", gender=").append(gender).append(", birthday=").append(birthday)
-				.append(", city=").append(city).append(", hobbies=").append(hobbies).append(", addresses=")
-				.append(addresses).append(", passengers=").append(passengers).append(", nickName=").append(nickName)
-				.append(", role=").append(role).append(", status=").append(status).append(", creationDate=")
-				.append(creationDate).append(", avatar=").append(avatar).append(", id=").append(id).append("]");
+				.append(", city=").append(city).append(", hobbies=").append(hobbies).append(", nickName=")
+				.append(nickName).append(", role=").append(role).append(", status=").append(status)
+				.append(", creationDate=").append(creationDate).append(", avatar=").append(avatar).append(", id=")
+				.append(id).append("]");
 		return builder.toString();
 	}
 

@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.AircraftAwareProduct;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.ProductFaq;
@@ -68,12 +67,6 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		newProduct.setDescription(product.getDescription());
 		newProduct.setRank(0);
 		newProduct.setPublished(false);
-		// for AircraftAwareProduct
-		if (AircraftAwareProduct.class.isAssignableFrom(newProduct.getClass())) {
-			AircraftAwareProduct newAircraftAwareProduct = AircraftAwareProduct.class.cast(newProduct);
-			AircraftAwareProduct aircraftAwareProduct = AircraftAwareProduct.class.cast(product);
-			newAircraftAwareProduct.setPresalesDays(aircraftAwareProduct.getPresalesDays());
-		}
 		copyProperties(product, newProduct);
 		// set props cannot be overridden by subclass
 		newProduct.setCreationDate(new Date());

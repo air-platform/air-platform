@@ -19,17 +19,17 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.model.AircraftAwareOrder;
-import net.aircommunity.platform.model.AircraftItem;
 import net.aircommunity.platform.model.CharterableOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.PassengerItem;
+import net.aircommunity.platform.model.SalesPackage;
 import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.nls.M;
-import net.aircommunity.platform.repository.AircraftItemRepository;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
+import net.aircommunity.platform.repository.SalesPackageRepository;
 
 /**
  * Abstract Order service support.
@@ -51,7 +51,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	private OrderNoGenerator orderNoGenerator;
 
 	@Resource
-	private AircraftItemRepository aircraftItemRepository;
+	private SalesPackageRepository salesPackageRepository;
 
 	@Resource
 	private PassengerRepository passengerRepository;
@@ -115,13 +115,14 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	protected void copyPropertiesAircraftAware(AircraftAwareOrder src, AircraftAwareOrder tgt) {
-		AircraftItem aircraftItem = src.getAircraftItem();
-		AircraftItem found = aircraftItemRepository.findOne(aircraftItem.getId());
+		SalesPackage salesPackage = src.getSalesPackage();
+		SalesPackage found = salesPackageRepository.findOne(salesPackage.getId());
 		if (found == null) {
-			LOG.error("Aircraftitem {} is not found", aircraftItem);
-			throw new AirException(Codes.AIRCRAFT_ITEM_NOT_FOUND, M.msg(M.AIRCRAFT_ITEM_NOT_FOUND));
+			LOG.error("SalesPackage {} is not found", salesPackage);
+			throw new AirException(Codes.SALESPACKAGE_NOT_FOUND, M.msg(M.SALESPACKAGE_NOT_FOUND));
 		}
-		tgt.setAircraftItem(found);
+		tgt.setSalesPackage(salesPackage);
+		tgt.setSalesPackageNum(src.getSalesPackageNum());
 	}
 
 	/**

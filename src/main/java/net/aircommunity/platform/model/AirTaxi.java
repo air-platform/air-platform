@@ -57,11 +57,10 @@ public class AirTaxi extends AircraftAwareProduct {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTaxi [flightRoute=").append(flightRoute).append(", distance=").append(distance)
-				.append(", duration=").append(duration).append(", presalesDays=").append(presalesDays)
-				.append(", currentTime=").append(currentTime).append(", name=").append(name).append(", image=")
-				.append(image).append(", score=").append(score).append(", rank=").append(rank).append(", creationDate=")
-				.append(creationDate).append(", description=").append(description).append(", published=")
-				.append(published).append(", id=").append(id).append("]");
+				.append(", duration=").append(duration).append(", currentTime=").append(currentTime).append(", name=")
+				.append(name).append(", image=").append(image).append(", score=").append(score).append(", rank=")
+				.append(rank).append(", creationDate=").append(creationDate).append(", description=")
+				.append(description).append(", published=").append(published).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

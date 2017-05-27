@@ -74,6 +74,12 @@ public abstract class Order extends Persistable {
 	@Column(name = "deleted_date")
 	protected Date deletedDate;
 
+	// information for customer, reject reason?
+	@XmlElement
+	@Lob
+	@Column(name = "confirmation")
+	protected String confirmation;
+
 	// customer extra information for an order
 	@XmlElement
 	@Lob
@@ -205,6 +211,10 @@ public abstract class Order extends Persistable {
 		 * Pending
 		 */
 		PENDING,
+
+		// TODO
+
+		CONFIRMED,
 
 		/**
 		 * Paid

@@ -107,7 +107,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	private IdentityCardService identityCardService;
 
 	@Resource
-	private AirBBAccountService airBBAccountService;
+	private AirqAccountService airqAccountService;
 
 	private String emailConfirmationLink;
 
@@ -332,8 +332,11 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			auth.setCreationDate(new Date());
 			auth.setLastAccessedDate(auth.getCreationDate());
 			accountAuthRepository.save(auth);
-			// create account in NodeBB
-			airBBAccountService.createAccount(principal, password);
+			// create account in AirQ
+			if (configuration.isAirqAccountSync()) {
+				LOG.info("Create corresponding account on AirQ for {}", principal);
+				airqAccountService.createAccount(principal, password);
+			}
 			return accountCreated;
 		}
 		catch (Exception e) {
@@ -601,8 +604,11 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		final AccountAuth authToSave = auth;
 		safeExecute(() -> accountAuthRepository.save(authToSave), "Update account %s email to %s failed", accountId,
 				email);
-		// update NodeBB user email
-		airBBAccountService.updateAccountProfile(account.getNickName(), email);
+		// update AirQ user email
+		if (configuration.isAirqAccountSync()) {
+			LOG.info("Update corresponding account on AirQ for {}", account);
+			airqAccountService.updateAccountProfile(account.getNickName(), email);
+		}
 		sendConfirmationEmail(email, verificationCode, account, AccountAuth.EXPIRES_IN_ONE_DAY);
 	}
 
@@ -674,8 +680,11 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 		account.setPassword(passwordEncoder.encode(newPassword));
 
-		// update NodeBB account password
-		airBBAccountService.updateAccountPassword(account.getNickName(), newPassword);
+		// update AirQ account password
+		if (configuration.isAirqAccountSync()) {
+			LOG.info("Update corresponding account password on AirQ for {}", account);
+			airqAccountService.updateAccountPassword(account.getNickName(), newPassword);
+		}
 		return safeExecute(() -> accountRepository.save(account), "Update account %s password failed", accountId);
 	}
 
@@ -739,8 +748,11 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			accountAuthRepository.deleteByAccountId(account.getId());
 			accountRepository.delete(account);
 
-			// delete NodeBB account
-			airBBAccountService.deleteAccount(account.getNickName());
+			// delete AirQ account
+			if (configuration.isAirqAccountSync()) {
+				LOG.info("Delete corresponding account on AirQ for {}", account);
+				airqAccountService.deleteAccount(account.getNickName());
+			}
 			LOG.info("Delete account: {}", account);
 		}
 	}

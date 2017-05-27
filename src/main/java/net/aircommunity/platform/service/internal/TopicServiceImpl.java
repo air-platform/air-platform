@@ -1,23 +1,30 @@
 package net.aircommunity.platform.service.internal;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
+import java.io.StringReader;
+import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.ws.rs.core.HttpHeaders;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.ImmutableList;
+
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.Topic;
 import net.aircommunity.platform.service.TopicService;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by luocheng on 2017/4/17.
@@ -26,45 +33,63 @@ import net.aircommunity.platform.service.TopicService;
 public class TopicServiceImpl implements TopicService {
 	private static final Logger LOG = LoggerFactory.getLogger(TopicServiceImpl.class);
 
+	private static final String APPLICATION_JSON = "application/json";
+	private static final String API_URL_FORMAT = "%s/api/recent";
+	private static final String TOPIC_URL_FORMAT = "%s/topic/%d";
+	private String apiUrl;
+
 	@Resource
 	private Configuration configuration;
 
+	@Resource
+	private OkHttpClient httpClient;
+
+	@PostConstruct
+	private void init() {
+		apiUrl = String.format(API_URL_FORMAT, configuration.getAirqUrl());
+	}
+
 	@Override
 	public List<Topic> listRecentTopics() {
-		List<Topic> topics = new ArrayList<>();
+		LOG.debug("List recet topics url: {}", apiUrl);
 		try {
-			URL url = new URL(configuration.getNodebbUrl() + "/api/recent");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("GET");
-			conn.setRequestProperty("Content-Type", "application/json");
-			int respCode = conn.getResponseCode();
-			if (respCode != HttpURLConnection.HTTP_OK) {
-				LOG.debug("Get NodeBB recent topics Failed : HTTP error code : " + respCode);
+			Request request = new Request.Builder().url(apiUrl).headers(buildHeaders()).get().build();
+			Response response = httpClient.newCall(request).execute();
+			String body = response.body().string();
+			if (response.isSuccessful()) {
+				try (JsonReader jsonReader = Json.createReader(new StringReader(body))) {
+					JsonObject jsonObj = jsonReader.readObject();
+					JsonArray topicsArray = jsonObj.getJsonArray("topics");
+					ImmutableList.Builder<Topic> builder = ImmutableList.builder();
+					int size = topicsArray.size();
+					for (int i = 0; i < size; i++) {
+						JsonObject t = topicsArray.getJsonObject(i);
+						LOG.debug("Topics: {}", t);
+						String category = t.getJsonObject("category").getString("name");
+						String title = t.getString("title");
+						int tid = t.getInt("tid");
+						Topic topic = new Topic();
+						topic.setCategory(category);
+						topic.setTitle(title);
+						topic.setUrl(String.format(TOPIC_URL_FORMAT, configuration.getAirqUrl(), tid));
+						builder.add(topic);
+					}
+					return builder.build();
+				}
 			}
-
-			JsonReader jsonReader = Json.createReader(conn.getInputStream());
-			JsonObject jsonObj = jsonReader.readObject();
-			JsonArray topicsArray = jsonObj.getJsonArray("topics");
-			for (int i = 0; i < topicsArray.size(); i++) {
-				JsonObject t = topicsArray.getJsonObject(i);
-
-				String category = t.getJsonObject("category").getString("name");
-				String title = t.getString("title");
-				int tid = t.getInt("tid");
-				String urlTopic = configuration.getNodebbUrl() + "/topic/" + tid;
-				Topic topic = new Topic();
-				topic.setCategory(category);
-				topic.setTitle(title);
-				topic.setUrl(urlTopic);
-				topics.add(topic);
-			}
-			jsonReader.close();
-			conn.disconnect();
 		}
 		catch (Exception e) {
-			LOG.error("Got error when List recent AIR BB topics:" + e.getMessage(), e);
+			LOG.error("Got error when List recent AirQ topics:" + e.getMessage(), e);
 		}
-		return topics;
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Build HTTP headers
+	 */
+	private Headers buildHeaders() {
+		Headers.Builder headers = new Headers.Builder();
+		headers.add(HttpHeaders.ACCEPT, APPLICATION_JSON).add(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON);
+		return headers.build();
 	}
 }

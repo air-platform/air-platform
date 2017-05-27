@@ -29,11 +29,16 @@ import io.micro.annotation.constraint.NotEmpty;
 public abstract class AircraftAwareOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
-	// selected aircraftItem
+	// the number of package in this order
+	@NotNull
+	@JoinColumn(name = "salespackage_num", nullable = false)
+	protected int salesPackageNum;
+
+	// selected salesPackage
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "aircraftitem_id", nullable = false)
-	protected AircraftItem aircraftItem;
+	@JoinColumn(name = "salespackage_id", nullable = false)
+	protected SalesPackage salesPackage;
 
 	// passengers
 	@NotEmpty
@@ -44,12 +49,20 @@ public abstract class AircraftAwareOrder extends VendorAwareOrder {
 	@Embedded
 	protected Contact contact;
 
-	public AircraftItem getAircraftItem() {
-		return aircraftItem;
+	public int getSalesPackageNum() {
+		return salesPackageNum;
 	}
 
-	public void setAircraftItem(AircraftItem aircraftItem) {
-		this.aircraftItem = aircraftItem;
+	public void setSalesPackageNum(int salesPackageNum) {
+		this.salesPackageNum = salesPackageNum;
+	}
+
+	public SalesPackage getSalesPackage() {
+		return salesPackage;
+	}
+
+	public void setSalesPackage(SalesPackage salesPackage) {
+		this.salesPackage = salesPackage;
 	}
 
 	public Set<PassengerItem> getPassengers() {

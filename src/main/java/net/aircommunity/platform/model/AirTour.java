@@ -32,8 +32,8 @@ public class AirTour extends AircraftAwareProduct {
 	@Column(name = "tour_show")
 	private String tourShow;
 
-	@Column(name = "boarding_loc")
-	private String boardingLoc;
+	@Column(name = "boarding_location")
+	private String boardingLocation;
 
 	@Lob
 	@Column(name = "traffic")
@@ -90,12 +90,12 @@ public class AirTour extends AircraftAwareProduct {
 		this.tourShow = tourShow;
 	}
 
-	public String getBoardingLoc() {
-		return boardingLoc;
+	public String getBoardingLocation() {
+		return boardingLocation;
 	}
 
-	public void setBoardingLoc(String boardingLoc) {
-		this.boardingLoc = boardingLoc;
+	public void setBoardingLocation(String boardingLocation) {
+		this.boardingLocation = boardingLocation;
 	}
 
 	public String getTraffic() {
@@ -119,9 +119,10 @@ public class AirTour extends AircraftAwareProduct {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTour [city=").append(city).append(", tourPoint=").append(tourPoint).append(", tourDistance=")
 				.append(tourDistance).append(", tourTime=").append(tourTime).append(", tourShow=").append(tourShow)
-				.append(", boardingLoc=").append(boardingLoc).append(", traffic=").append(traffic).append(", name=")
-				.append(name).append(", score=").append(score).append(", creationDate=").append(creationDate)
-				.append(", description=").append(description).append(", id=").append(id).append("]");
+				.append(", boardingLocation=").append(boardingLocation).append(", traffic=").append(traffic)
+				.append(", name=").append(name).append(", score=").append(score).append(", creationDate=")
+				.append(creationDate).append(", description=").append(description).append(", id=").append(id)
+				.append("]");
 		return builder.toString();
 	}
 }
