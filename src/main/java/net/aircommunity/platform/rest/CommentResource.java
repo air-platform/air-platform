@@ -64,9 +64,9 @@ public class CommentResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<Comment> list(@NotNull @QueryParam("product") String productId,
+	public Page<Comment> list(@NotNull @QueryParam("product") String productId, @QueryParam("source") Source source,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		return commentService.listComments(productId, page, pageSize);
+		return commentService.listComments(productId, source, page, pageSize);
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Comment;
@@ -50,12 +51,13 @@ public interface CommentService {
 	 * List all Comments by pagination filter by productId.
 	 * 
 	 * @param productId the productId
+	 * @param source the source
 	 * @param page the page number
 	 * @param pageSize the pageSize
 	 * @return a page of Comments or empty
 	 */
 	@Nonnull
-	Page<Comment> listComments(@Nonnull String productId, int page, int pageSize);
+	Page<Comment> listComments(@Nonnull String productId, @Nullable Source source, int page, int pageSize);
 
 	/**
 	 * Delete a Comment.

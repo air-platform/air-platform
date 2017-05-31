@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.micro.annotation.constraint.NotEmpty;
-import net.aircommunity.platform.model.jaxb.DateAdapter;
+import net.aircommunity.platform.model.jaxb.DateTimeShortAdapter;
 import net.aircommunity.platform.model.jaxb.OrderAdapter;
 
 /**
@@ -40,11 +40,11 @@ public class FlightLeg extends Persistable {
 	@Column(name = "arrival", nullable = false)
 	private String arrival;
 
-	// departure date, e.g. 2017-5-1
+	// departure date, e.g. 2017-5-1 15:30
 	@NotNull
-	@Temporal(value = TemporalType.DATE)
+	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "date", nullable = false)
-	@XmlJavaTypeAdapter(DateAdapter.class)
+	@XmlJavaTypeAdapter(DateTimeShortAdapter.class)
 	private Date date;
 
 	// the number of passengers

@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -12,6 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -39,6 +42,11 @@ public class Comment extends Persistable {
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "date", nullable = false)
 	private Date date;
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "source")
+	private Source source = Source.USER;
 
 	@Lob
 	@Column(name = "content")
@@ -86,6 +94,14 @@ public class Comment extends Persistable {
 		this.content = content;
 	}
 
+	public Source getSource() {
+		return source;
+	}
+
+	public void setSource(Source source) {
+		this.source = source;
+	}
+
 	public Product getProduct() {
 		return product;
 	}
@@ -113,8 +129,9 @@ public class Comment extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Comment [rate=").append(rate).append(", date=").append(date).append(", content=")
-				.append(content).append(", id=").append(id).append("]");
+		builder.append("Comment [rate=").append(rate).append(", date=").append(date).append(", source=").append(source)
+				.append(", content=").append(content).append(", replyTo=").append(replyTo).append(", id=").append(id)
+				.append("]");
 		return builder.toString();
 	}
 
@@ -122,7 +139,16 @@ public class Comment extends Persistable {
 	 * Comment from which source
 	 */
 	public enum Source {
-		ORDER, PRODUCT;
+
+		/**
+		 * Product Buyer
+		 */
+		BUYER,
+
+		/**
+		 * Normal user
+		 */
+		USER;
 
 		// According to JSR 311 spec, if used in @QueryParam, fromString is a naming conversion
 		public static Source fromString(String source) {

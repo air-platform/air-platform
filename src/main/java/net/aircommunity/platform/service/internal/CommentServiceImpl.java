@@ -67,12 +67,12 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		Product product = null;
 		Order order = null;
 		switch (source) {
-		case PRODUCT:
+		case USER:
 			// create comment from product
 			product = commonProductService.findProduct(sourceId/* productId */);
 			break;
 
-		case ORDER:
+		case BUYER:
 			String orderId = sourceId;
 			order = commonOrderService.findOrder(orderId);
 			boolean isOrderOwner = accountId.equals(order.getOwner().getId());
@@ -102,9 +102,10 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		Comment newComment = new Comment();
 		newComment.setDate(new Date());
 		newComment.setContent(comment.getContent());
-		newComment.setRate(source == Source.ORDER ? comment.getRate() : 0);
+		newComment.setRate(source == Source.BUYER ? comment.getRate() : 0);
 		newComment.setOwner(owner);
 		newComment.setProduct(product);
+		newComment.setSource(source);
 		Account replyTo = comment.getReplyTo();
 		if (replyTo != null) {
 			replyTo = findAccount(replyTo.getId(), User.class);
@@ -113,7 +114,7 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		try {
 			Comment savedComment = commentRepository.save(newComment);
 			// calculate score if comment from order
-			if (source == Source.ORDER) {
+			if (source == Source.BUYER) {
 				double score = product.getScore();
 				if (savedComment.getRate() > 0) {
 					double productScore = product.getScore();
@@ -150,9 +151,13 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	}
 
 	@Override
-	public Page<Comment> listComments(String productId, int page, int pageSize) {
-		return Pages.adapt(
-				commentRepository.findByProductIdOrderByDateDesc(productId, Pages.createPageRequest(page, pageSize)));
+	public Page<Comment> listComments(String productId, Source source, int page, int pageSize) {
+		if (source == null) {
+			return Pages.adapt(commentRepository.findByProductIdOrderByDateDesc(productId,
+					Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(commentRepository.findByProductIdAndSourceOrderByDateDesc(productId, source,
+				Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#commentId")

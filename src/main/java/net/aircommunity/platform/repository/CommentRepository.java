@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.model.Comment;
+import net.aircommunity.platform.model.Comment.Source;
 
 /**
  * Repository interface for {@link Comment} instances. Provides basic CRUD operations due to the extension of
@@ -33,6 +34,16 @@ public interface CommentRepository extends JpaRepository<Comment, String> {
 	 * @return page of comment
 	 */
 	Page<Comment> findByProductIdOrderByDateDesc(String productId, Pageable pageable);
+
+	/**
+	 * Find by comments by product.
+	 * 
+	 * @param productId the productId
+	 * @param source the source
+	 * @param pageable the page request
+	 * @return page of comment
+	 */
+	Page<Comment> findByProductIdAndSourceOrderByDateDesc(String productId, Source source, Pageable pageable);
 
 	long deleteByProductId(String productId);
 
