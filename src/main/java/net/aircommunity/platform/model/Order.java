@@ -40,6 +40,11 @@ public abstract class Order extends Persistable {
 	@Column(name = "order_no", nullable = false, unique = true)
 	protected String orderNo;
 
+	// Order total price
+	@XmlElement
+	@Column(name = "total_price", nullable = false)
+	protected double totalPrice;
+
 	@XmlElement
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -203,17 +208,26 @@ public abstract class Order extends Persistable {
 	public enum Status {
 
 		/**
-		 * Published
+		 * Published (for airjet published without any aircraft info)
 		 */
 		PUBLISHED,
 
 		/**
 		 * Pending
+		 * @deprecated
 		 */
 		PENDING,
 
+		/**
+		 * Created
+		 */
+		CREATED,
+
 		// TODO
 
+		/**
+		 * Confirmed by Tenant
+		 */
 		CONFIRMED,
 
 		/**
@@ -221,6 +235,9 @@ public abstract class Order extends Persistable {
 		 */
 		PAID,
 
+		/**
+		 * Refund
+		 */
 		REFUND, // TODO
 
 		/**

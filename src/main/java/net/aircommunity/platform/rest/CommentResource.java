@@ -28,13 +28,16 @@ import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import io.swagger.annotations.Api;
+import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Comment;
 import net.aircommunity.platform.model.Comment.Source;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
+import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CommentService;
 
 /**
@@ -50,6 +53,9 @@ public class CommentResource {
 	private static final Logger LOG = LoggerFactory.getLogger(CommentResource.class);
 
 	private static final String HEADER_COMMENT_ALLOWED = "Comment-Allowed";
+
+	@Resource
+	private AccountService accountService;
 
 	@Resource
 	private CommentService commentService;
@@ -105,9 +111,13 @@ public class CommentResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
 	public Response create(@NotNull @QueryParam("source") Source source,
-			@NotNull @QueryParam("sourceId") String sourceId, @NotNull @Valid Comment comment, @Context UriInfo uriInfo,
-			@Context SecurityContext context) {
+			@NotNull @QueryParam("sourceId") String sourceId, @QueryParam("replyTo") String replyTo,
+			@NotNull @Valid Comment comment, @Context UriInfo uriInfo, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
+		if (Strings.isNotBlank(replyTo)) {
+			Account replyToAccount = accountService.findAccount(replyTo);
+			comment.setReplyTo(replyToAccount);
+		}
 		Comment created = commentService.createComment(accountId, source, sourceId, comment);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);

@@ -21,7 +21,6 @@ import net.aircommunity.platform.model.Comment.Source;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
-import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.CommentRepository;
 import net.aircommunity.platform.service.CommentService;
@@ -106,11 +105,12 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		newComment.setOwner(owner);
 		newComment.setProduct(product);
 		newComment.setSource(source);
-		Account replyTo = comment.getReplyTo();
-		if (replyTo != null) {
-			replyTo = findAccount(replyTo.getId(), User.class);
-			newComment.setReplyTo(replyTo);
-		}
+		// TODO REMOVE: already set from REST before creation
+		// Account replyTo = comment.getReplyTo();
+		// if (replyTo != null) {
+		// replyTo = findAccount(replyTo.getId(), User.class);
+		// newComment.setReplyTo(replyTo);
+		// }
 		try {
 			Comment savedComment = commentRepository.save(newComment);
 			// calculate score if comment from order

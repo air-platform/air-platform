@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.jaxb.CommenterAdapter;
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 import net.aircommunity.platform.model.jaxb.ProductAdapter;
 
 /**
@@ -41,6 +42,7 @@ public class Comment extends Persistable {
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "date", nullable = false)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private Date date;
 
 	@NotNull
