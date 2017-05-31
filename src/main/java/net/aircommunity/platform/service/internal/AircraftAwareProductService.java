@@ -14,10 +14,16 @@ import net.aircommunity.platform.service.AircraftService;
  * 
  * @author Bin.Zhang
  */
-abstract class AircraftAwareService<T extends AircraftAwareProduct> extends AbstractProductService<T> {
+abstract class AircraftAwareProductService<T extends AircraftAwareProduct> extends AbstractProductService<T> {
 
 	@Resource
 	protected AircraftService aircraftService;
+
+	@Override
+	protected final void copyProperties(T src, T tgt) {
+		tgt.setSalesPackages(applySalesPackages(src.getSalesPackages()));
+		doCopyProperties(src, tgt);
+	}
 
 	protected Set<SalesPackage> applySalesPackages(Set<SalesPackage> srcSalesPackages) {
 		if (srcSalesPackages != null) {
@@ -30,12 +36,6 @@ abstract class AircraftAwareService<T extends AircraftAwareProduct> extends Abst
 			});
 		}
 		return srcSalesPackages;
-	}
-
-	@Override
-	protected final void copyProperties(T src, T tgt) {
-		tgt.setSalesPackages(applySalesPackages(src.getSalesPackages()));
-		doCopyProperties(src, tgt);
 	}
 
 	protected void doCopyProperties(T src, T tgt) {

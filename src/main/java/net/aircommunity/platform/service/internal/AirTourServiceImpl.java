@@ -24,7 +24,7 @@ import net.aircommunity.platform.service.AircraftService;
  */
 @Service
 @Transactional
-public class AirTourServiceImpl extends AircraftAwareService<AirTour> implements AirTourService {
+public class AirTourServiceImpl extends AircraftAwareProductService<AirTour> implements AirTourService {
 	private static final String CACHE_NAME = "cache.airtour";
 
 	@Resource

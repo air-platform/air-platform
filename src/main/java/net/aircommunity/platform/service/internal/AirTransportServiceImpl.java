@@ -29,7 +29,7 @@ import net.aircommunity.platform.service.AircraftService;
  */
 @Service
 @Transactional
-public class AirTransportServiceImpl extends AircraftAwareService<AirTransport> implements AirTransportService {
+public class AirTransportServiceImpl extends AircraftAwareProductService<AirTransport> implements AirTransportService {
 	private static final String CACHE_NAME = "cache.airtransport";
 
 	@Resource

@@ -55,7 +55,6 @@ public abstract class AircraftAwareProduct extends Product {
 	}
 
 	public void setSalesPackages(Set<SalesPackage> salesPackages) {
-		this.salesPackages = salesPackages;
 		if (salesPackages != null) {
 			salesPackages.stream().forEach(item -> item.setProduct(this));
 			this.salesPackages.clear();
