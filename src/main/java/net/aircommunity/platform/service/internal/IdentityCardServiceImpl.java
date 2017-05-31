@@ -3,10 +3,12 @@ package net.aircommunity.platform.service.internal;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -17,10 +19,13 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.collect.ImmutableMap;
 
+import io.micro.common.DateFormats;
 import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
+import net.aircommunity.platform.model.IdCardInfo;
+import net.aircommunity.platform.model.User.Gender;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.IdentityCardService;
 import okhttp3.Headers;
@@ -42,6 +47,12 @@ public class IdentityCardServiceImpl implements IdentityCardService {
 	private static final String REQUEST_PROP_NAME = "name";
 	private static final String RESPONSE_PROP_RESP = "resp";
 	private static final String RESPONSE_PROP_CODE = "code";
+	private static final String RESPONSE_PROP_DATA = "data";
+	private static final String RESPONSE_PROP_DATA_SEX = "sex";
+	private static final String DATA_SEX_MALE = "M";
+	private static final String RESPONSE_PROP_DATA_ADDRESS = "address";
+	private static final String RESPONSE_PROP_DATA_BIRTHDAY = "birthday";
+	private static final SimpleDateFormat BIRTHDAY_FORMATTER = DateFormats.simple("yyyy-MM-dd");
 	private static final int RESPONSE_CODE_SUCCESS = 0;
 	// private static final int RESPONSE_CODE_UNMATCH = 5;
 	// private static final int RESPONSE_CODE_UNKNOWN_IDNO = 14;
@@ -73,6 +84,12 @@ public class IdentityCardServiceImpl implements IdentityCardService {
 	 */
 	@Override
 	public boolean verifyIdentityCard(String cardNo, String name) {
+		IdCardInfo info = getIdCardInfo(cardNo, name);
+		return info != null;
+	}
+
+	@Override
+	public IdCardInfo getIdCardInfo(String cardNo, String name) {
 		try {
 			Request request = new Request.Builder()
 					.url(buildUrl(configuration.getIdcardUrl(), API_PATH,
@@ -84,9 +101,16 @@ public class IdentityCardServiceImpl implements IdentityCardService {
 				String body = response.body().string();
 				LOG.debug("Got result body: {}", body);
 				try (JsonReader jsonReader = Json.createReader(new StringReader(body))) {
-					int resultCode = jsonReader.readObject().getJsonObject(RESPONSE_PROP_RESP)
-							.getInt(RESPONSE_PROP_CODE);
-					return resultCode == RESPONSE_CODE_SUCCESS;
+					JsonObject jsonData = jsonReader.readObject();
+					int resultCode = jsonData.getJsonObject(RESPONSE_PROP_RESP).getInt(RESPONSE_PROP_CODE);
+					if (resultCode == RESPONSE_CODE_SUCCESS) {
+						JsonObject data = jsonData.getJsonObject(RESPONSE_PROP_DATA);
+						Gender gender = DATA_SEX_MALE.equalsIgnoreCase(data.getString(RESPONSE_PROP_DATA_SEX))
+								? Gender.MALE : Gender.FEMALE;
+						String address = data.getString(RESPONSE_PROP_DATA_ADDRESS);
+						String birthday = data.getString(RESPONSE_PROP_DATA_BIRTHDAY);
+						return new IdCardInfo(cardNo, name, address, BIRTHDAY_FORMATTER.parse(birthday), gender);
+					}
 				}
 			}
 		}
@@ -95,7 +119,7 @@ public class IdentityCardServiceImpl implements IdentityCardService {
 					e.getMessage()), e);
 			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.IDCARD_VERIFICATION_FAILURE));
 		}
-		return false;
+		return null;
 	}
 
 	/**

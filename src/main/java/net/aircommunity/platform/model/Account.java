@@ -125,9 +125,9 @@ public class Account extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Account [nickName=").append(nickName).append(", role=").append(role).append(", status=")
-				.append(status).append(", creationDate=").append(creationDate).append(", avatar=").append(avatar)
-				.append(", id=").append(id).append("]");
+		builder.append("Account [nickName=").append(nickName).append(", apiKey=").append("*****").append(", role=")
+				.append(role).append(", status=").append(status).append(", creationDate=").append(creationDate)
+				.append(", avatar=").append(avatar).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

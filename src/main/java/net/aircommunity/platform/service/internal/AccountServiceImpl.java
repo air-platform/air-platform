@@ -37,6 +37,7 @@ import net.aircommunity.platform.model.Account.Status;
 import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.Address;
+import net.aircommunity.platform.model.IdCardInfo;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.Role;
@@ -381,6 +382,18 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			user.setGender(newUser.getGender());
 			user.setHobbies(newUser.getHobbies());
 			user.setRealName(newUser.getRealName());
+			String identity = newUser.getIdentity();
+			if (Strings.isNotBlank(identity)) {
+				IdCardInfo cardInfo = identityCardService.getIdCardInfo(user.getIdentity(), user.getRealName());
+				if (cardInfo == null) {
+					throw new AirException(Codes.ACCOUNT_INVALID_IDCARD, M.msg(M.ACCOUNT_INVALID_IDCARD));
+				}
+				// update data with the real info retrieved
+				user.setIdentity(cardInfo.getIdentity());
+				user.setBirthday(cardInfo.getBirthday());
+				user.setRealName(cardInfo.getName());
+				user.setGender(cardInfo.getGender());
+			}
 			break;
 
 		default: // noop
@@ -513,7 +526,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		// verify ID Card
 		boolean valid = identityCardService.verifyIdentityCard(passenger.getIdentity(), passenger.getName());
 		if (!valid) {
-			throw new AirException(Codes.ACCOUNT_ADD_PASSENGER_FAILURE, M.msg(M.ACCOUNT_INVALID_PASSENGER_IDCARD));
+			throw new AirException(Codes.ACCOUNT_ADD_PASSENGER_FAILURE, M.msg(M.ACCOUNT_INVALID_IDCARD));
 		}
 		User user = User.class.cast(account);
 		user.addPassenger(passenger);

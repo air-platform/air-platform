@@ -1,5 +1,10 @@
 package net.aircommunity.platform.service;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.aircommunity.platform.model.IdCardInfo;
+
 /**
  * Resident identification card service.
  * 
@@ -14,6 +19,16 @@ public interface IdentityCardService {
 	 * @param name the person name of ID card
 	 * @return true if matches, false otherwise
 	 */
-	boolean verifyIdentityCard(String cardNo, String name);
+	boolean verifyIdentityCard(@Nonnull String cardNo, @Nonnull String name);
+
+	/**
+	 * Get ID card info.
+	 * 
+	 * @param cardNo the ID card number
+	 * @param name the person name of ID card
+	 * @return ID Card Info or null if the card No. and name is invalid
+	 */
+	@Nullable
+	IdCardInfo getIdCardInfo(@Nonnull String cardNo, @Nonnull String name);
 
 }

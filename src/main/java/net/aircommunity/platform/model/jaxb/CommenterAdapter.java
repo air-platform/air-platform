@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model.jaxb;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -22,6 +23,7 @@ public class CommenterAdapter extends XmlAdapter<Map<String, Object>, Account> {
 				put("id", user.getId());
 				put("name", user.getNickName());
 				put("avatar", user.getAvatar());
+				put("role", user.getRole().name().toLowerCase(Locale.ENGLISH));
 			}
 		};
 	}
