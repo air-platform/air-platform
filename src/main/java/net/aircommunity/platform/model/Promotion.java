@@ -99,7 +99,10 @@ public class Promotion extends Persistable {
 
 	public void setItems(List<PromotionItem> items) {
 		if (items != null) {
-			items.stream().forEach(item -> item.setPromotion(this));
+			items.stream().forEach(item -> {
+				item.setPromotion(this);
+				item.setCreationDate(new Date());
+			});
 			this.items.clear();
 			this.items.addAll(ImmutableSet.copyOf(items));
 		}
