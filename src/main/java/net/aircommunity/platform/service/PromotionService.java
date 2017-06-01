@@ -3,6 +3,7 @@ package net.aircommunity.platform.service;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Product.Category;
@@ -47,11 +48,11 @@ public interface PromotionService {
 	/**
 	 * List all Promotions
 	 * 
-	 * @param category the promotion category
+	 * @param category the promotion category or null to list all
 	 * @return a list of Promotions or empty
 	 */
 	@Nonnull
-	List<Promotion> listPromotions(@Nonnull Category category);
+	List<Promotion> listPromotions(@Nullable Category category);
 
 	/**
 	 * Delete a Promotion.

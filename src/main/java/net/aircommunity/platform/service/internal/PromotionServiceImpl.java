@@ -67,6 +67,9 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 
 	@Override
 	public List<Promotion> listPromotions(Category category) {
+		if (category == null) {
+			return promotionRepository.findAll();
+		}
 		return promotionRepository.findByCategory(category);
 	}
 
