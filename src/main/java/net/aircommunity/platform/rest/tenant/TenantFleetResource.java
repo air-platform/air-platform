@@ -23,11 +23,13 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.Fleet;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseProductResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.FleetService;
 
@@ -39,7 +41,7 @@ import net.aircommunity.platform.service.FleetService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantFleetResource extends BaseProductResource<Fleet> {
+public class TenantFleetResource extends TenantProductResourceSupport<Fleet> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantFleetResource.class);
 
 	@Resource
@@ -50,6 +52,7 @@ public class TenantFleetResource extends BaseProductResource<Fleet> {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid Fleet fleet,
 			@Context UriInfo uriInfo) {
 		Fleet created = fleetService.createFleet(tenantId, fleet);
@@ -63,6 +66,7 @@ public class TenantFleetResource extends BaseProductResource<Fleet> {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<Fleet> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return fleetService.listFleets(tenantId, page, pageSize);
@@ -75,37 +79,8 @@ public class TenantFleetResource extends BaseProductResource<Fleet> {
 	@Path("{fleetId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Fleet update(@PathParam("fleetId") String fleetId, @NotNull @Valid Fleet newFleet) {
 		return fleetService.updateFleet(fleetId, newFleet);
 	}
-
-	// /**
-	// * Find
-	// */
-	// @GET
-	// @Path("{fleetId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public Fleet find(@PathParam("fleetId") String fleetId) {
-	// return fleetService.findFleet(fleetId);
-	// }
-	//
-	// /**
-	// * Delete
-	// */
-	// @DELETE
-	// @Path("{fleetId}")
-	// public Response delete(@PathParam("fleetId") String fleetId) {
-	// fleetService.deleteFleet(fleetId);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete all
-	// */
-	// @DELETE
-	// public Response deleteAll(@PathParam("tenantId") String tenantId) {
-	// fleetService.deleteFleets(tenantId);
-	// return Response.noContent().build();
-	// }
-
 }

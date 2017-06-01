@@ -24,8 +24,11 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.Aircraft;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
@@ -50,6 +53,7 @@ public class TenantAircraftResource {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid Aircraft aircraft,
 			@Context UriInfo uriInfo) {
 		Aircraft created = aircraftService.createAircraft(tenantId, aircraft);
@@ -64,6 +68,7 @@ public class TenantAircraftResource {
 	@GET
 	@Path("{aircraftId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Aircraft find(@PathParam("aircraftId") String aircraftId) {
 		return aircraftService.findAircraft(aircraftId);
 	}
@@ -73,6 +78,7 @@ public class TenantAircraftResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<Aircraft> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return aircraftService.listAircrafts(tenantId, page, pageSize);
@@ -85,6 +91,7 @@ public class TenantAircraftResource {
 	@Path("{aircraftId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Aircraft update(@PathParam("aircraftId") String aircraftId, @NotNull @Valid Aircraft newAircraft) {
 		return aircraftService.updateAircraft(aircraftId, newAircraft);
 	}

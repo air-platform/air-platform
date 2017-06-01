@@ -5,6 +5,8 @@ import java.net.URI;
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -84,6 +86,18 @@ public class CommentResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Comment find(@PathParam("commentId") String commentId) {
 		return commentService.findComment(commentId);
+	}
+
+	/**
+	 * Count
+	 */
+	@GET
+	@PermitAll
+	@Path("count")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JsonObject totalCount() {
+		long count = commentService.getTotalCommentsCount();
+		return Json.createObjectBuilder().add("count", count).build();
 	}
 
 	// TODO query by xxx

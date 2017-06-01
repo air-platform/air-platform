@@ -12,9 +12,12 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.AirTaxi;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.AirTaxiService;
 
@@ -27,7 +30,7 @@ import net.aircommunity.platform.service.AirTaxiService;
 @RESTful
 @PermitAll
 @Path("taxis")
-public class AirTaxiResource {
+public class AirTaxiResource extends ProductResourceSupport<AirTaxi> {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTaxiResource.class);
 
 	@Resource
@@ -38,11 +41,11 @@ public class AirTaxiResource {
 	// ***********************
 
 	/**
-	 * List all TODO query by
+	 * List all
 	 */
 	@GET
-	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Page<AirTaxi> listAll(@QueryParam("departure") String departure, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
 		LOG.debug("list all air taxi with departure: {}", departure);
@@ -56,9 +59,9 @@ public class AirTaxiResource {
 	 * Find
 	 */
 	@GET
-	@PermitAll
 	@Path("{airTaxiId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public AirTaxi find(@PathParam("airTaxiId") String airTaxiId) {
 		return airTaxiService.findAirTaxi(airTaxiId);
 	}

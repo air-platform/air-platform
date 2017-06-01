@@ -23,11 +23,13 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.AirTour;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseProductResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.AirTourService;
 
@@ -39,7 +41,7 @@ import net.aircommunity.platform.service.AirTourService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantAirTourResourse extends BaseProductResource<AirTour> {
+public class TenantAirTourResourse extends TenantProductResourceSupport<AirTour> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantAirTourResourse.class);
 
 	@Resource
@@ -50,6 +52,7 @@ public class TenantAirTourResourse extends BaseProductResource<AirTour> {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid AirTour airTour,
 			@Context UriInfo uriInfo) {
 		AirTour created = airTourService.createAirTour(tenantId, airTour);
@@ -63,6 +66,7 @@ public class TenantAirTourResourse extends BaseProductResource<AirTour> {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<AirTour> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		return airTourService.listAirTours(tenantId, page, pageSize);
@@ -75,35 +79,9 @@ public class TenantAirTourResourse extends BaseProductResource<AirTour> {
 	@Path("{airTourId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public AirTour update(@PathParam("airTourId") String airTourId, @NotNull @Valid AirTour newAirTour) {
 		return airTourService.updateAirTour(airTourId, newAirTour);
 	}
 
-	// /**
-	// * Find
-	// */
-	// @GET
-	// @Path("{airTourId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public AirTour find(@PathParam("airTourId") String airTourId) {
-	// return airTourService.findAirTour(airTourId);
-	// }
-	// /**
-	// * Delete
-	// */
-	// @DELETE
-	// @Path("{airTourId}")
-	// public Response delete(@PathParam("airTourId") String airTourId) {
-	// airTourService.deleteAirTour(airTourId);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete all
-	// */
-	// @DELETE
-	// public Response deleteAll(@PathParam("tenantId") String tenantId) {
-	// airTourService.deleteAirTours(tenantId);
-	// return Response.noContent().build();
-	// }
 }

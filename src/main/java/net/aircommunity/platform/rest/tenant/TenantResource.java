@@ -5,9 +5,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 
 import io.micro.annotation.RESTful;
@@ -33,8 +31,8 @@ import net.aircommunity.platform.service.CommonOrderService;
 @Api
 @RESTful
 @Path("tenant")
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
 @AllowResourceOwner
+@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
 public class TenantResource {
 
 	// ***********************
@@ -148,7 +146,6 @@ public class TenantResource {
 
 	@POST
 	@Path("orders/{orderId}/finish")
-	@Produces(MediaType.APPLICATION_JSON)
 	public void finishOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.FINISHED);
 	}

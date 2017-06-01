@@ -16,9 +16,12 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Course;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.CourseService;
 
@@ -29,7 +32,7 @@ import net.aircommunity.platform.service.CourseService;
 @RESTful
 @PermitAll
 @Path("courses")
-public class CourseResource {
+public class CourseResource extends ProductResourceSupport<Course> {
 	private static final Logger LOG = LoggerFactory.getLogger(CourseResource.class);
 
 	@Resource
@@ -43,8 +46,8 @@ public class CourseResource {
 	 * List
 	 */
 	@GET
-	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Page<Course> list(@QueryParam("location") String location, @QueryParam("license") String license,
 			@QueryParam("aircraftType") String aircraftType, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
@@ -56,9 +59,9 @@ public class CourseResource {
 	 * Top10 Hot courses
 	 */
 	@GET
-	@PermitAll
 	@Path("hot")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public List<Course> top10Hot(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		return courseService.listTop10HotCourses();
@@ -68,9 +71,9 @@ public class CourseResource {
 	 * List courses of a school
 	 */
 	@GET
-	@PermitAll
-	@Produces(MediaType.APPLICATION_JSON)
 	@Path("school")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Page<Course> listBySchool(@NotNull @QueryParam("id") String schoolId,
 			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		return courseService.listCoursesBySchool(schoolId, page, pageSize);
@@ -80,9 +83,9 @@ public class CourseResource {
 	 * Find
 	 */
 	@GET
-	@PermitAll
 	@Path("{courseId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Course find(@PathParam("courseId") String courseId) {
 		return courseService.findCourse(courseId);
 	}

@@ -14,9 +14,12 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.FerryFlight;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.FerryFlightService;
 
@@ -29,7 +32,7 @@ import net.aircommunity.platform.service.FerryFlightService;
 @RESTful
 @PermitAll
 @Path("ferryflights")
-public class FerryFlightResource {
+public class FerryFlightResource extends ProductResourceSupport<FerryFlight> {
 	private static final Logger LOG = LoggerFactory.getLogger(FerryFlightResource.class);
 
 	@Resource
@@ -43,8 +46,8 @@ public class FerryFlightResource {
 	 * List all TODO query by departure/arrival/date/timeSlot
 	 */
 	@GET
-	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Response listAll(@QueryParam("recommended") boolean recommended, @QueryParam("departure") String departure,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		if (recommended) {
@@ -60,9 +63,9 @@ public class FerryFlightResource {
 	 * Find one
 	 */
 	@GET
-	@PermitAll
 	@Path("{ferryFlightId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {
 		return ferryFlightService.findFerryFlight(ferryFlightId);
 	}

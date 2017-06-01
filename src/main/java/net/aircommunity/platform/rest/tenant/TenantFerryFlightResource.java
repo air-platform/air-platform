@@ -23,11 +23,13 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.FerryFlight;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseProductResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.FerryFlightService;
 
@@ -39,7 +41,7 @@ import net.aircommunity.platform.service.FerryFlightService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantFerryFlightResource extends BaseProductResource<FerryFlight> {
+public class TenantFerryFlightResource extends TenantProductResourceSupport<FerryFlight> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantFerryFlightResource.class);
 
 	@Resource
@@ -50,6 +52,7 @@ public class TenantFerryFlightResource extends BaseProductResource<FerryFlight> 
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid FerryFlight ferryFlight,
 			@Context UriInfo uriInfo) {
 		FerryFlight created = ferryFlightService.createFerryFlight(tenantId, ferryFlight);
@@ -63,6 +66,7 @@ public class TenantFerryFlightResource extends BaseProductResource<FerryFlight> 
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<FerryFlight> list(@PathParam("tenantId") String tenantId,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return ferryFlightService.listFerryFlights(tenantId, page, pageSize);
@@ -75,38 +79,9 @@ public class TenantFerryFlightResource extends BaseProductResource<FerryFlight> 
 	@Path("{ferryFlightId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public FerryFlight update(@PathParam("ferryFlightId") String ferryFlightId,
 			@NotNull @Valid FerryFlight newFerryFlight) {
 		return ferryFlightService.updateFerryFlight(ferryFlightId, newFerryFlight);
 	}
-
-	// /**
-	// * Find
-	// */
-	// @GET
-	// @Path("{ferryFlightId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {
-	// return ferryFlightService.findFerryFlight(ferryFlightId);
-	// }
-	//
-	// /**
-	// * Delete
-	// */
-	// @DELETE
-	// @Path("{ferryFlightId}")
-	// public Response delete(@PathParam("ferryFlightId") String ferryFlightId) {
-	// ferryFlightService.deleteFerryFlight(ferryFlightId);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete all
-	// */
-	// @DELETE
-	// public Response deleteAll(@PathParam("tenantId") String tenantId) {
-	// ferryFlightService.deleteFerryFlights(tenantId);
-	// return Response.noContent().build();
-	// }
-
 }

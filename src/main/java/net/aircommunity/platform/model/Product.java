@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.Splitter;
 
 import io.micro.annotation.constraint.NotEmpty;
@@ -65,6 +66,7 @@ public abstract class Product extends Reviewable {
 	@ContactList
 	@Lob
 	@Column(name = "client_managers")
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected String clientManagers;
 
 	// product description

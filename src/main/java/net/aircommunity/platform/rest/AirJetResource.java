@@ -25,9 +25,12 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.AirJet;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.service.AirJetService;
@@ -57,6 +60,7 @@ public class AirJetResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Response listAll(@QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all airJets with page: {} pageSize: {}", page, pageSize);
@@ -74,6 +78,7 @@ public class AirJetResource {
 	@PermitAll
 	@Path("{airJetId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public AirJet find(@PathParam("airJetId") String airJetId) {
 		return airJetService.findAirJet(airJetId);
 	}
@@ -85,6 +90,7 @@ public class AirJetResource {
 	@PermitAll
 	@Path("type/{type}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public AirJet findByType(@PathParam("type") String type) {
 		return airJetService.findAirJetByType(type);
 	}
@@ -92,6 +98,9 @@ public class AirJetResource {
 	// *************
 	// ADMIN ONLY
 	// *************
+	// XXX
+	// NOTE: JsonView should be also applied to GET(none admin resources), once the Json view is enabled on AirJet model
+	// We haven't used any @JsonView on AirJet model, so @JsonView will just ignored
 
 	/**
 	 * Create
@@ -99,6 +108,7 @@ public class AirJetResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed(Roles.ROLE_ADMIN)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response create(@NotNull @Valid AirJet airJet, @Context UriInfo uriInfo) {
 		AirJet created = airJetService.createAirJet(airJet);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
@@ -114,6 +124,7 @@ public class AirJetResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(Roles.ROLE_ADMIN)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public AirJet update(@PathParam("airJetId") String airJetId, @NotNull @Valid AirJet newAirJet) {
 		return airJetService.updateAirJet(airJetId, newAirJet);
 	}

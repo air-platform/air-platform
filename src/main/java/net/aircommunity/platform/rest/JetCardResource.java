@@ -13,9 +13,12 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JetCard;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.JetCardService;
 
@@ -28,7 +31,7 @@ import net.aircommunity.platform.service.JetCardService;
 @RESTful
 @PermitAll
 @Path("jetcards")
-public class JetCardResource {
+public class JetCardResource extends ProductResourceSupport<JetCard> {
 	private static final Logger LOG = LoggerFactory.getLogger(JetCardResource.class);
 
 	@Resource
@@ -39,11 +42,11 @@ public class JetCardResource {
 	// ***********************
 
 	/**
-	 * List all TODO query by
+	 * List all
 	 */
 	@GET
-	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Page<JetCard> listAll(@QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all air jet cards");
@@ -54,9 +57,9 @@ public class JetCardResource {
 	 * Find
 	 */
 	@GET
-	@PermitAll
 	@Path("{jetCardId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public JetCard find(@PathParam("jetCardId") String jetCardId) {
 		return jetCardService.findJetCard(jetCardId);
 	}

@@ -1,9 +1,8 @@
-package net.aircommunity.platform.rest;
+package net.aircommunity.platform.rest.tenant;
 
 import java.net.URI;
 
 import javax.annotation.Resource;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -25,6 +24,9 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.ProductFaq;
@@ -36,8 +38,8 @@ import net.aircommunity.platform.service.CommonProductService;
  * 
  * @author Bin.Zhang
  */
-public abstract class BaseProductResource<T extends Product> {
-	private static final Logger LOG = LoggerFactory.getLogger(BaseProductResource.class);
+public abstract class TenantProductResourceSupport<T extends Product> {
+	private static final Logger LOG = LoggerFactory.getLogger(TenantProductResourceSupport.class);
 
 	@Resource
 	protected CommonProductService commonProductService;
@@ -49,9 +51,9 @@ public abstract class BaseProductResource<T extends Product> {
 	 * Find
 	 */
 	@GET
-	@PermitAll
 	@Path("{productId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
 	public Product findProduct(@PathParam("productId") String productId) {
 		return commonProductService.findProduct(productId);
 	}
@@ -63,6 +65,7 @@ public abstract class BaseProductResource<T extends Product> {
 	@Path("{productId}/publish")
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Product publishProduct(@PathParam("productId") String productId) {
 		return commonProductService.publishProduct(productId, true);
 	}
@@ -74,6 +77,7 @@ public abstract class BaseProductResource<T extends Product> {
 	@Path("{productId}/unpublish")
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Product unpublishProduct(@PathParam("productId") String productId) {
 		return commonProductService.publishProduct(productId, false);
 	}
@@ -83,6 +87,7 @@ public abstract class BaseProductResource<T extends Product> {
 	 */
 	@DELETE
 	@Path("{productId}")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
 	public void deleteProduct(@PathParam("productId") String productId) {
 		commonProductService.deleteProduct(productId);
 	}
@@ -91,6 +96,7 @@ public abstract class BaseProductResource<T extends Product> {
 	 * Delete all
 	 */
 	@DELETE
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
 	public void deleteProducts(@PathParam("tenantId") String tenantId) {
 		commonProductService.deleteProducts(tenantId);
 	}
@@ -102,9 +108,10 @@ public abstract class BaseProductResource<T extends Product> {
 	 * List all FAQs
 	 */
 	@GET
-	@PermitAll
 	@Path("{productId}/faqs")
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<ProductFaq> listProductFaqs(@PathParam("productId") String productId,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return commonProductService.listProductFaqs(productId, page, pageSize);
@@ -117,6 +124,7 @@ public abstract class BaseProductResource<T extends Product> {
 	@Path("{productId}/faqs")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response createProductFaq(@PathParam("productId") String productId, @NotNull @Valid ProductFaq faq,
 			@Context UriInfo uriInfo) {
 		ProductFaq created = commonProductService.createProductFaq(productId, faq);
@@ -129,9 +137,10 @@ public abstract class BaseProductResource<T extends Product> {
 	 * Find FAQ
 	 */
 	@GET
-	@PermitAll
 	@Path("{productId}/faqs/{productFaqId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public ProductFaq findProductFaq(@PathParam("productFaqId") String productFaqId) {
 		return commonProductService.findProductFaq(productFaqId);
 	}
@@ -144,6 +153,7 @@ public abstract class BaseProductResource<T extends Product> {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public ProductFaq updateProductFaq(@PathParam("productFaqId") String productFaqId, @NotNull ProductFaq newFaq) {
 		return commonProductService.updateProductFaq(productFaqId, newFaq);
 	}

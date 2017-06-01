@@ -24,7 +24,10 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.School;
@@ -50,6 +53,7 @@ public class TenantSchoolResource {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid School request,
 			@Context UriInfo uriInfo) {
 		School created = schoolService.createSchool(tenantId, request);
@@ -64,15 +68,17 @@ public class TenantSchoolResource {
 	@GET
 	@Path("{schoolId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public School find(@PathParam("schoolId") String schoolId) {
 		return schoolService.findSchool(schoolId);
 	}
 
 	/**
-	 * List TODO query by xxx etc.
+	 * List
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<School> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		return schoolService.listSchools(tenantId, page, pageSize);
@@ -85,6 +91,7 @@ public class TenantSchoolResource {
 	@Path("{schoolId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public School update(@PathParam("schoolId") String schoolId, @NotNull @Valid School school) {
 		return schoolService.updateSchool(schoolId, school);
 	}

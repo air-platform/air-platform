@@ -23,11 +23,13 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.AirTaxi;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseProductResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.AirTaxiService;
 
@@ -37,7 +39,7 @@ import net.aircommunity.platform.service.AirTaxiService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantAirTaxiResource extends BaseProductResource<AirTaxi> {
+public class TenantAirTaxiResource extends TenantProductResourceSupport<AirTaxi> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantAirTaxiResource.class);
 
 	@Resource
@@ -48,6 +50,7 @@ public class TenantAirTaxiResource extends BaseProductResource<AirTaxi> {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid AirTaxi airTaxi,
 			@Context UriInfo uriInfo) {
 		AirTaxi created = airTaxiService.createAirTaxi(tenantId, airTaxi);
@@ -61,6 +64,7 @@ public class TenantAirTaxiResource extends BaseProductResource<AirTaxi> {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<AirTaxi> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return airTaxiService.listAirTaxis(tenantId, page, pageSize);
@@ -73,36 +77,9 @@ public class TenantAirTaxiResource extends BaseProductResource<AirTaxi> {
 	@Path("{airTaxiId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public AirTaxi update(@PathParam("airTaxiId") String airTaxiId, @NotNull AirTaxi newAirTaxi) {
 		return airTaxiService.updateAirTaxi(airTaxiId, newAirTaxi);
 	}
-
-	// /**
-	// * Find
-	// */
-	// @GET
-	// @Path("{airTaxiId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public AirTaxi find(@PathParam("airTaxiId") String airTaxiId) {
-	// return airTaxiService.findAirTaxi(airTaxiId);
-	// }
-	// /**
-	// * Delete
-	// */
-	// @DELETE
-	// @Path("{airTaxiId}")
-	// public Response delete(@PathParam("airTaxiId") String airTaxiId) {
-	// airTaxiService.deleteAirTaxi(airTaxiId);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete all
-	// */
-	// @DELETE
-	// public Response deleteAll(@PathParam("tenantId") String tenantId) {
-	// airTaxiService.deleteAirTaxis(tenantId);
-	// return Response.noContent().build();
-	// }
 
 }

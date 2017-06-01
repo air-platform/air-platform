@@ -9,13 +9,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Topic;
 import net.aircommunity.platform.service.TopicService;
 
 /**
- * AirBB Topics RESTful API.
+ * AirQ Topics RESTful API.
  *
  * @author luocheng
  */
@@ -29,8 +32,8 @@ public class TopicsResource {
 	private TopicService topicService;
 
 	@GET
-	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public List<Topic> list() {
 		return topicService.listRecentTopics();
 	}

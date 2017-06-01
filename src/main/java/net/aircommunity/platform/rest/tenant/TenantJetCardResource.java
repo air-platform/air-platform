@@ -23,11 +23,13 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.JetCard;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseProductResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.JetCardService;
 
@@ -39,7 +41,7 @@ import net.aircommunity.platform.service.JetCardService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantJetCardResource extends BaseProductResource<JetCard> {
+public class TenantJetCardResource extends TenantProductResourceSupport<JetCard> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantJetCardResource.class);
 
 	@Resource
@@ -50,6 +52,7 @@ public class TenantJetCardResource extends BaseProductResource<JetCard> {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid JetCard jetCard,
 			@Context UriInfo uriInfo) {
 		JetCard created = jetCardService.createJetCard(tenantId, jetCard);
@@ -63,6 +66,7 @@ public class TenantJetCardResource extends BaseProductResource<JetCard> {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<JetCard> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return jetCardService.listJetCards(tenantId, page, pageSize);
@@ -75,37 +79,9 @@ public class TenantJetCardResource extends BaseProductResource<JetCard> {
 	@Path("{jetCardId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public JetCard update(@PathParam("jetCardId") String jetCardId, @NotNull @Valid JetCard newJetCard) {
 		return jetCardService.updateJetCard(jetCardId, newJetCard);
 	}
-
-	// /**
-	// * Find
-	// */
-	// @GET
-	// @Path("{jetCardId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public JetCard find(@PathParam("jetCardId") String jetCardId) {
-	// return jetCardService.findJetCard(jetCardId);
-	// }
-	//
-	// /**
-	// * Delete
-	// */
-	// @DELETE
-	// @Path("{jetCardId}")
-	// public Response delete(@PathParam("jetCardId") String jetCardId) {
-	// jetCardService.deleteJetCard(jetCardId);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete all
-	// */
-	// @DELETE
-	// public Response deleteAll(@PathParam("tenantId") String tenantId) {
-	// jetCardService.deleteJetCards(tenantId);
-	// return Response.noContent().build();
-	// }
 
 }

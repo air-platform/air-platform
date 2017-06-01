@@ -16,6 +16,13 @@ import net.aircommunity.platform.model.Page;
 public interface CommentService {
 
 	/**
+	 * Get total comments count overall
+	 * 
+	 * @return total comments count
+	 */
+	long getTotalCommentsCount();
+
+	/**
 	 * Check if the account can make comment on the product.
 	 * 
 	 * @param accountId the accountId

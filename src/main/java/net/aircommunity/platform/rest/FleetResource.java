@@ -13,10 +13,12 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import net.aircommunity.platform.model.Fleet;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.FleetService;
 
@@ -29,7 +31,7 @@ import net.aircommunity.platform.service.FleetService;
 @RESTful
 @PermitAll
 @Path("fleets")
-public class FleetResource {
+public class FleetResource extends ProductResourceSupport<Fleet> {
 	private static final Logger LOG = LoggerFactory.getLogger(FleetResource.class);
 
 	@Resource
@@ -40,12 +42,11 @@ public class FleetResource {
 	// ***********************
 
 	/**
-	 * List all TODO query
+	 * List all
 	 */
 	@GET
-	@PermitAll
-	@ApiOperation(value = "List All Fleets", response = Fleet.class, responseContainer = "List")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Page<Fleet> listAll(@QueryParam("type") String type, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all fleets");
@@ -59,9 +60,9 @@ public class FleetResource {
 	 * Find
 	 */
 	@GET
-	@PermitAll
 	@Path("{fleetId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Fleet find(@PathParam("fleetId") String fleetId) {
 		return fleetService.findFleet(fleetId);
 	}
@@ -70,9 +71,9 @@ public class FleetResource {
 	 * Find by flightNo
 	 */
 	@GET
-	@PermitAll
 	@Path("query/flightno/{flightNo}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Fleet findFlightNo(@PathParam("flightNo") String flightNo) {
 		return fleetService.findFleetByFlightNo(flightNo);
 	}

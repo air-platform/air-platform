@@ -23,11 +23,13 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.Course;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseProductResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.CourseService;
 
@@ -39,7 +41,7 @@ import net.aircommunity.platform.service.CourseService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantCourseResource extends BaseProductResource<Course> {
+public class TenantCourseResource extends TenantProductResourceSupport<Course> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantCourseResource.class);
 
 	@Resource
@@ -50,6 +52,7 @@ public class TenantCourseResource extends BaseProductResource<Course> {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response create(@NotNull @Valid Course request, @Context UriInfo uriInfo) {
 		Course created = courseService.createCourse(request.getSchool().getId(), request);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
@@ -58,10 +61,11 @@ public class TenantCourseResource extends BaseProductResource<Course> {
 	}
 
 	/**
-	 * List TODO more query?
+	 * List
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<Course> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		return courseService.listCourses(tenantId, page, pageSize);
@@ -73,37 +77,9 @@ public class TenantCourseResource extends BaseProductResource<Course> {
 	@PUT
 	@Path("{courseId}")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Course update(@PathParam("courseId") String courseId, @NotNull @Valid Course request) {
 		return courseService.updateCourse(courseId, request);
 	}
-
-	// /**
-	// * Find
-	// */
-	// @GET
-	// @Path("{courseId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public Course find(@PathParam("courseId") String courseId) {
-	// return courseService.findCourse(courseId);
-	// }
-	//
-	// /**
-	// * Delete
-	// */
-	// @DELETE
-	// @Path("{courseId}")
-	// public Response delete(@PathParam("courseId") String courseId) {
-	// courseService.deleteCourse(courseId);
-	// return Response.noContent().build();
-	// }
-	//
-	// /**
-	// * Delete all
-	// */
-	// @DELETE
-	// public Response deleteAll(@PathParam("schoolId") String schoolId) {
-	// courseService.deleteCourses(schoolId);
-	// return Response.noContent().build();
-	// }
 
 }

@@ -14,9 +14,12 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.AirTour;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.AirTourService;
 
@@ -29,7 +32,7 @@ import net.aircommunity.platform.service.AirTourService;
 @RESTful
 @PermitAll
 @Path("tours")
-public class AirTourResourse {
+public class AirTourResourse extends ProductResourceSupport<AirTour> {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTourResourse.class);
 
 	@Resource
@@ -43,7 +46,6 @@ public class AirTourResourse {
 	 * List all cities
 	 */
 	@GET
-	@PermitAll
 	@Path("flight/cities")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Set<String> listAllCities() {
@@ -52,11 +54,11 @@ public class AirTourResourse {
 	}
 
 	/**
-	 * List all TODO query by
+	 * List all
 	 */
 	@GET
-	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Page<AirTour> listAll(@QueryParam("city") String city, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
 		LOG.debug("list all air tours");
@@ -70,9 +72,9 @@ public class AirTourResourse {
 	 * Find
 	 */
 	@GET
-	@PermitAll
 	@Path("{airTourId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public AirTour find(@PathParam("airTourId") String airTourId) {
 		return airTourService.findAirTour(airTourId);
 	}

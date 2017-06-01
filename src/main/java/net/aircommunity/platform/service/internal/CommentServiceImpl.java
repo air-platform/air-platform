@@ -49,6 +49,11 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	private CommonOrderService commonOrderService;
 
 	@Override
+	public long getTotalCommentsCount() {
+		return commentRepository.count();
+	}
+
+	@Override
 	public boolean isCommentAllowed(String accountId, String orderId) {
 		Order order = commonOrderService.findOrder(orderId);
 		boolean isOrderOwner = accountId.equals(order.getOwner().getId());
@@ -172,5 +177,4 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		safeExecute(() -> commentRepository.deleteByProductId(productId), "Delete comments for product %s failed",
 				productId);
 	}
-
 }

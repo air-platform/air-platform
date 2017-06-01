@@ -13,8 +13,11 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.School;
 import net.aircommunity.platform.service.SchoolService;
@@ -42,8 +45,8 @@ public class SchoolResource {
 	 * List all
 	 */
 	@GET
-	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Page<School> listAll(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		LOG.debug("List all schools");
@@ -54,9 +57,9 @@ public class SchoolResource {
 	 * Find
 	 */
 	@GET
-	@PermitAll
 	@Path("{schoolId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public School find(@PathParam("schoolId") String schoolId) {
 		return schoolService.findSchool(schoolId);
 	}
