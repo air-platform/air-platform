@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
+import net.aircommunity.platform.model.jaxb.PromotionAdapter;
 
 /**
  * Promotion of an product.
@@ -49,6 +50,7 @@ public class PromotionItem extends Persistable {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "promotion_id", nullable = false)
+	@XmlJavaTypeAdapter(PromotionAdapter.class)
 	private Promotion promotion;
 
 	public String getTitle() {
