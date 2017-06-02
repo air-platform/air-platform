@@ -44,8 +44,9 @@ public class FileServiceImpl implements FileService {
 	private static final int OP_SUCCESS = 0;
 	private static final int OP_PENDING = 1;
 	private static final int OP_PROCESSING = 2;
+	private static final int TOKEN_EXPIRES = 5 * 60; // 5 minutes
 
-	private String uploadToken;
+	private Auth auth;
 	private UploadManager uploadManager;
 	private OperationManager operationManager;
 
@@ -56,14 +57,14 @@ public class FileServiceImpl implements FileService {
 	private void init() {
 		com.qiniu.storage.Configuration config = new com.qiniu.storage.Configuration(Zone.autoZone());
 		uploadManager = new UploadManager(config);
-		Auth auth = Auth.create(configuration.getFileUploadAccessKey(), configuration.getFileUploadSecretKey());
-		uploadToken = auth.uploadToken(configuration.getFileUploadBucket());
+		auth = Auth.create(configuration.getFileUploadAccessKey(), configuration.getFileUploadSecretKey());
 		operationManager = new OperationManager(auth, config);
 	}
 
 	@Override
 	public FileUploadResult upload(String fileName, InputStream stream) {
 		try {
+			String uploadToken = auth.uploadToken(configuration.getFileUploadBucket(), null, TOKEN_EXPIRES, null, true);
 			Response response = uploadManager.put(stream, fileName, uploadToken, null, MIME);
 			if (response.isOK()) {
 				return FileUploadResult
