@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.model.Product;
-import net.aircommunity.platform.model.Tenant;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
 /**
  * Repository interface for {@link Product} instances. Provides basic CRUD operations due to the extension of
@@ -16,7 +16,19 @@ import net.aircommunity.platform.model.Tenant;
 public interface BaseProductRepository<T extends Product> extends JpaRepository<T, String> {
 
 	/**
-	 * Find all products.
+	 * Find all products by review status. (For END USER mainly). Only show approved and published product.
+	 * 
+	 * @param reviewStatus the reviewStatus
+	 * @param published the published status
+	 * @param pageable the page request
+	 * @return page of products
+	 */
+	Page<T> findByPublishedOrderByRankAscScoreDesc(boolean published, Pageable pageable);
+	// Page<T> findByReviewStatusAndPublishedOrderByRankAscScoreDesc(ReviewStatus reviewStatus, boolean published,
+	// Pageable pageable);
+
+	/**
+	 * Find all products. (For ADMIN ONLY)
 	 * 
 	 * @param pageable the page request
 	 * @return page of products
@@ -24,33 +36,41 @@ public interface BaseProductRepository<T extends Product> extends JpaRepository<
 	Page<T> findAllByOrderByCreationDateDesc(Pageable pageable);
 
 	/**
-	 * Find all products by approved status.
+	 * Find all products by review status. (For ADMIN ONLY)
 	 * 
-	 * @param approved the approved status
+	 * @param reviewStatus the reviewStatus
 	 * @param pageable the page request
-	 * @return page of products
+	 * @return @return page of products
 	 */
-	Page<T> findByApprovedOrderByCreationDateDesc(boolean approved, Pageable pageable);
+	Page<T> findByReviewStatusOrderByCreationDateDesc(ReviewStatus reviewStatus, Pageable pageable);
 
 	/**
-	 * Count all products by approved status.
+	 * Count all products by review status. (For ADMIN ONLY)
 	 * 
-	 * @param approved the approved status
+	 * @param reviewStatus the review status
 	 * @return count of products
 	 */
-	long countByApproved(boolean approved);
+	long countByReviewStatus(ReviewStatus reviewStatus);
 
 	/**
-	 * Find by products by vendor.
+	 * Count tenant products. (For TENANT)
 	 * 
-	 * @param vendor the vendor
-	 * @param pageable the page request
-	 * @return page of products
+	 * @param tenantId the tenantId
+	 * @return count of products
 	 */
-	Page<T> findByVendorOrderByCreationDateDesc(Tenant vendor, Pageable pageable);
+	long countByVendorId(String tenantId);
 
 	/**
-	 * Find by products by vendor.
+	 * Count tenant products by review status. (For TENANT)
+	 * 
+	 * @param tenantId the tenantId
+	 * @param reviewStatus the review status
+	 * @return count of products
+	 */
+	long countByVendorIdAndReviewStatus(String tenantId, ReviewStatus reviewStatus);
+
+	/**
+	 * Find by products by vendor. (For TENANT)
 	 * 
 	 * @param tenantId the tenantId
 	 * @param pageable the page request
@@ -59,16 +79,18 @@ public interface BaseProductRepository<T extends Product> extends JpaRepository<
 	Page<T> findByVendorIdOrderByCreationDateDesc(String tenantId, Pageable pageable);
 
 	/**
-	 * Delete all the orders of a vendor.
+	 * Find by products by vendor. (For TENANT)
 	 * 
-	 * @param userId the userId
-	 * @return the records deleted
+	 * @param tenantId the tenantId
+	 * @param reviewStatus the reviewStatus
+	 * @param pageable the page request
+	 * @return page of products
 	 */
-	long deleteByVendor(Tenant vendor);
+	Page<T> findByVendorIdAndReviewStatusOrderByCreationDateDesc(String tenantId, ReviewStatus reviewStatus,
+			Pageable pageable);
 
 	/**
-	 * Delete all the products of a vendor.
-	 * 
+	 * Delete all the products of a vendor. (For ADMIN ONLY)
 	 * @param tenantId the tenantId
 	 * @return the records deleted
 	 */

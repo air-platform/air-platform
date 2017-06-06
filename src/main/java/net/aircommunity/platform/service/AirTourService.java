@@ -3,13 +3,17 @@ package net.aircommunity.platform.service;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import net.aircommunity.platform.model.AirTour;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
 /**
- * Created by guankai on 14/04/2017.
+ * AirTour Service.
+ * 
+ * @author guankai
  */
 public interface AirTourService {
 
@@ -30,16 +34,28 @@ public interface AirTourService {
 	@Nonnull
 	Set<String> listAirTourCities();
 
+	/**
+	 * ADMIN
+	 */
+	@Nonnull
+	Page<AirTour> listAllAirTours(@Nullable ReviewStatus reviewStatus, int page, int pageSize);
+
+	long countAllAirTours(@Nullable ReviewStatus reviewStatus);
+
+	/**
+	 * TENANT
+	 */
+	@Nonnull
+	Page<AirTour> listTenantAirTours(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus, int page,
+			int pageSize);
+
+	long countTenantAirTours(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus);
+
+	/**
+	 * USER
+	 */
 	@Nonnull
 	Page<AirTour> listAirTours(int page, int pageSize);
-
-	@Nonnull
-	Page<AirTour> listAirTours(boolean approved, int page, int pageSize);
-
-	long countAirTours(boolean approved);
-
-	@Nonnull
-	Page<AirTour> listAirTours(@Nonnull String tenantId, int page, int pageSize);
 
 	@Nonnull
 	Page<AirTour> listAirToursByCity(@Nonnull String city, int page, int pageSize);

@@ -62,7 +62,7 @@ public abstract class Order extends Persistable {
 	@Column(name = "total_price", nullable = false)
 	protected double totalPrice;
 
-	// TODO add nextStatus?
+	// TODO add tradeStatus? FINISHED, processing/IN_PROGRESS/pending, CLOSED?
 	@XmlElement
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -305,7 +305,9 @@ public abstract class Order extends Persistable {
 	public enum Status {
 
 		/**
-		 * Published (for airjet published without any aircraft info)
+		 * Published (for airjet published without any aircraft info).
+		 * 
+		 * XXX NOT USED FOR NOW
 		 */
 		PUBLISHED,
 
@@ -317,27 +319,27 @@ public abstract class Order extends Persistable {
 		/**
 		 * Confirmation
 		 */
-		PENDING, CONFIRMED,
+		CONFIRMED,
 
 		/**
-		 * Contract (for airjet)
+		 * Contract (for airjet & training)
 		 */
-		CONTRACT_PENDING, CONTRACT_SIGNED,
+		CONTRACT_SIGNED,
 
 		/**
 		 * Payment
 		 */
-		TO_BE_PAID, PAID,
+		PAID,
 
 		/**
 		 * Ticketing
 		 */
-		TICKETING, TICKET_RELEASED,
+		TICKET_RELEASED,
 
 		/**
 		 * Waiting to travel
 		 */
-		WAITING_TO_TRAVEL,
+		// WAITING_TO_TRAVEL,
 
 		/**
 		 * Refund

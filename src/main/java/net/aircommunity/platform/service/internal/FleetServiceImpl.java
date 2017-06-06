@@ -13,6 +13,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.FleetRepository;
@@ -66,9 +67,6 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 		return doUpdateProduct(fleetId, newFleet);
 	}
 
-	/**
-	 * Copy properties from src to tgt without ID
-	 */
 	@Override
 	protected void copyProperties(Fleet src, Fleet tgt) {
 		tgt.setFlightNo(src.getFlightNo());
@@ -87,29 +85,34 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 	}
 
 	@Override
-	public Page<Fleet> listFleets(String tenantId, int page, int pageSize) {
-		return doListTenantProducts(tenantId, page, pageSize);
+	public Page<Fleet> listAllFleets(ReviewStatus reviewStatus, int page, int pageSize) {
+		return doListAllProducts(reviewStatus, page, pageSize);
+	}
+
+	@Override
+	public long countAllFleets(ReviewStatus reviewStatus) {
+		return doCountAllProducts(reviewStatus);
+	}
+
+	@Override
+	public Page<Fleet> listTenantFleets(String tenantId, ReviewStatus reviewStatus, int page, int pageSize) {
+		return doListTenantProducts(tenantId, reviewStatus, page, pageSize);
+	}
+
+	@Override
+	public long countTenantFleets(String tenantId, ReviewStatus reviewStatus) {
+		return doCountTenantProducts(tenantId, reviewStatus);
 	}
 
 	@Override
 	public Page<Fleet> listFleets(int page, int pageSize) {
-		return doListAllProducts(page, pageSize);
+		return doListProductsForUsers(page, pageSize);
 	}
 
 	@Override
-	public Page<Fleet> listFleets(boolean approved, int page, int pageSize) {
-		return doListAllProducts(approved, page, pageSize);
-	}
-
-	@Override
-	public long countFleets(boolean approved) {
-		return doCountAllProducts(approved);
-	}
-
-	@Override
-	public Page<Fleet> listFleetsByType(String type, int page, int pageSize) {
-		return Pages.adapt(fleetRepository.findByAircraftTypeOrderByCreationDateDesc(type,
-				Pages.createPageRequest(page, pageSize)));
+	public Page<Fleet> listFleetsByType(String aircraftType, int page, int pageSize) {
+		return Pages.adapt(
+				fleetRepository.findByAircraftTypeForUser(aircraftType, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#fleetId")

@@ -73,8 +73,8 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 
 	@PostConstruct
 	private void init() {
-		orderOperationsMapping.put(Order.Status.CANCELLED, M.msg(M.ORDER_OPERATION_CANCEL));
-		orderOperationsMapping.put(Order.Status.PENDING, M.msg(M.ORDER_OPERATION_SUBMIT));
+		orderOperationsMapping.put(Order.Status.CANCELLED, M.msg(M.ORDER_OPERATION_CANCEL)); // TODO CHECK
+		orderOperationsMapping.put(Order.Status.CREATED, M.msg(M.ORDER_OPERATION_SUBMIT)); // TODO CHECK
 		//
 		String airjet = normalizeProductCategory(Category.AIR_JET);
 		String airtaxi = normalizeProductCategory(Category.AIR_TAXI);

@@ -3,10 +3,12 @@ package net.aircommunity.platform.service;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
 /**
  * Fleet service.
@@ -49,18 +51,34 @@ public interface FleetService {
 	Fleet updateFleet(@Nonnull String fleetId, @Nonnull Fleet newFleet);
 
 	/**
-	 * List all fleets by pagination filter by tenantId.
+	 * List all fleets by pagination filter by reviewStatus. (ADMIN)
 	 * 
-	 * @param tenantId the tenantId
+	 * @param reviewStatus the reviewStatus
 	 * @param page the page number
 	 * @param pageSize the pageSize
 	 * @return a page of fleets or empty
 	 */
 	@Nonnull
-	Page<Fleet> listFleets(@Nonnull String tenantId, int page, int pageSize);
+	Page<Fleet> listAllFleets(@Nullable ReviewStatus reviewStatus, int page, int pageSize);
+
+	long countAllFleets(@Nullable ReviewStatus reviewStatus);
 
 	/**
-	 * List all fleets by pagination.
+	 * List tenant fleets by pagination filter by reviewStatus. (TENANT)
+	 * 
+	 * @param tenantId the tenantId
+	 * @param reviewStatus the reviewStatus
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of fleets or empty
+	 */
+	@Nonnull
+	Page<Fleet> listTenantFleets(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus, int page, int pageSize);
+
+	long countTenantFleets(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus);
+
+	/**
+	 * List all fleets by pagination. (USER)
 	 * 
 	 * @param page the page number
 	 * @param pageSize the pageSize
@@ -68,19 +86,6 @@ public interface FleetService {
 	 */
 	@Nonnull
 	Page<Fleet> listFleets(int page, int pageSize);
-
-	/**
-	 * List all Fleets by pagination.
-	 * 
-	 * @param approved the approved status
-	 * @param page the page number
-	 * @param pageSize the pageSize
-	 * @return a page of AirTransports or empty
-	 */
-	@Nonnull
-	Page<Fleet> listFleets(boolean approved, int page, int pageSize);
-
-	long countFleets(boolean approved);
 
 	@Nonnull
 	default List<Fleet> listFleets() {
@@ -90,13 +95,13 @@ public interface FleetService {
 	/**
 	 * List all fleets by type and pagination.
 	 * 
-	 * @param type the fleet type
+	 * @param aircraftType the fleet aircraftType
 	 * @param page the page number
 	 * @param pageSize the pageSize
 	 * @return a page of fleets or empty
 	 */
 	@Nonnull
-	Page<Fleet> listFleetsByType(String type, int page, int pageSize);
+	Page<Fleet> listFleetsByType(@Nonnull String aircraftType, int page, int pageSize);
 
 	/**
 	 * Delete a fleet.

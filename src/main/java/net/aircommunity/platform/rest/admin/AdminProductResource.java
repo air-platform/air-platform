@@ -23,6 +23,7 @@ import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.ProductFamily;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.ProductResourceSupport;
 import net.aircommunity.platform.service.AirTaxiService;
@@ -73,12 +74,9 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("families")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<ProductFamily> listProductFamilies(@QueryParam("approved") Boolean approved,
+	public Page<ProductFamily> listProductFamilies(@QueryParam("status") ReviewStatus reviewStatus,
 			@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
-		if (approved == null) {
-			return productFamilyService.listProductFamilies(page, pageSize);
-		}
-		return productFamilyService.listProductFamilies(approved, page, pageSize);
+		return productFamilyService.listAllProductFamilies(reviewStatus, page, pageSize);
 	}
 
 	/**
@@ -87,9 +85,13 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("families/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listProductFamiliesToBeApproved() {
-		return buildCountResponse(productFamilyService.countProductFamilies(false));
+	public JsonObject listProductFamiliesToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
+		return buildCountResponse(productFamilyService.countAllProductFamilies(reviewStatus));
 	}
+
+	// *********
+	// TAXI
+	// *********
 
 	/**
 	 * List all taxis
@@ -97,12 +99,9 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("taxis")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<AirTaxi> listTaxis(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
+	public Page<AirTaxi> listTaxis(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
-		if (approved == null) {
-			return airTaxiService.listAirTaxis(page, pageSize);
-		}
-		return airTaxiService.listAirTaxis(approved, page, pageSize);
+		return airTaxiService.listAllAirTaxis(reviewStatus, page, pageSize);
 	}
 
 	/**
@@ -111,9 +110,13 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("taxis/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listTaxisToBeApproved() {
-		return buildCountResponse(airTaxiService.countAirTaxis(false));
+	public JsonObject listTaxisToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
+		return buildCountResponse(airTaxiService.countAllAirTaxis(reviewStatus));
 	}
+
+	// *********
+	// TRANS
+	// *********
 
 	/**
 	 * List all Trans
@@ -121,12 +124,9 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("transports")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<AirTransport> listTrans(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
+	public Page<AirTransport> listTrans(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
-		if (approved == null) {
-			return airTransportService.listAirTransports(page, pageSize);
-		}
-		return airTransportService.listAirTransports(approved, page, pageSize);
+		return airTransportService.listAllAirTransports(reviewStatus, page, pageSize);
 	}
 
 	/**
@@ -135,22 +135,22 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("transports/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listTransportsToBeApproved() {
-		return buildCountResponse(airTransportService.countAirTransports(false));
+	public JsonObject listTransportsToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
+		return buildCountResponse(airTransportService.countAllAirTransports(reviewStatus));
 	}
 
+	// *********
+	// TOURS
+	// *********
 	/**
 	 * List all Tours
 	 */
 	@GET
 	@Path("tours")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<AirTour> listTours(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
+	public Page<AirTour> listTours(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
-		if (approved == null) {
-			return airTourService.listAirTours(page, pageSize);
-		}
-		return airTourService.listAirTours(approved, page, pageSize);
+		return airTourService.listAllAirTours(reviewStatus, page, pageSize);
 	}
 
 	/**
@@ -159,22 +159,22 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("tours/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listToursToBeApproved() {
-		return buildCountResponse(airTourService.countAirTours(false));
+	public JsonObject listToursToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
+		return buildCountResponse(airTourService.countAllAirTours(reviewStatus));
 	}
 
+	// *********
+	// FERRYFLIGHTS
+	// *********
 	/**
 	 * List all ferryflights
 	 */
 	@GET
 	@Path("ferryflights")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<FerryFlight> listFerryFlights(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
-			@QueryParam("pageSize") int pageSize) {
-		if (approved == null) {
-			return ferryFlightService.listFerryFlights(page, pageSize);
-		}
-		return ferryFlightService.listFerryFlights(approved, page, pageSize);
+	public Page<FerryFlight> listFerryFlights(@QueryParam("status") ReviewStatus reviewStatus,
+			@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
+		return ferryFlightService.listAllFerryFlights(reviewStatus, page, pageSize);
 	}
 
 	/**
@@ -183,22 +183,22 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("ferryflights/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listFerryFlightsToBeApproved() {
-		return buildCountResponse(ferryFlightService.countFerryFlights(false));
+	public JsonObject listFerryFlightsToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
+		return buildCountResponse(ferryFlightService.countAllFerryFlights(reviewStatus));
 	}
 
+	// *********
+	// FLEETS
+	// *********
 	/**
 	 * List all fleets
 	 */
 	@GET
 	@Path("fleets")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<Fleet> listFleets(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
+	public Page<Fleet> listFleets(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
-		if (approved == null) {
-			return fleetService.listFleets(page, pageSize);
-		}
-		return fleetService.listFleets(approved, page, pageSize);
+		return fleetService.listAllFleets(reviewStatus, page, pageSize);
 	}
 
 	/**
@@ -207,22 +207,22 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("fleets/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listFleetsToBeApproved() {
-		return buildCountResponse(fleetService.countFleets(false));
+	public JsonObject listFleetsToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
+		return buildCountResponse(fleetService.countAllFleets(reviewStatus));
 	}
 
+	// *********
+	// COURSES
+	// *********
 	/**
 	 * List all courses
 	 */
 	@GET
 	@Path("courses")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<Course> listCourses(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
+	public Page<Course> listCourses(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
-		if (approved == null) {
-			return courseService.listCourses(page, pageSize);
-		}
-		return courseService.listCourses(approved, page, pageSize);
+		return courseService.listAllCourses(reviewStatus, page, pageSize);
 	}
 
 	/**
@@ -231,17 +231,20 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("courses/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listCoursesToBeApproved() {
-		return buildCountResponse(courseService.countCourses(false));
+	public JsonObject listCoursesToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
+		return buildCountResponse(courseService.countAllCourses(reviewStatus));
 	}
 
+	// *********
+	// approve
+	// *********
 	/**
 	 * Approve a tenant product
 	 */
 	@POST
 	@Path("{productId}/approve")
 	public void approveProduct(@PathParam("productId") String productId) {
-		commonProductService.reviewProduct(productId, true, null);
+		commonProductService.reviewProduct(productId, ReviewStatus.APPROVED, null);
 	}
 
 	/**
@@ -255,7 +258,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 		if (rejectedReason != null) {
 			reason = rejectedReason.getString("reason");
 		}
-		commonProductService.reviewProduct(productId, false, reason);
+		commonProductService.reviewProduct(productId, ReviewStatus.REJECTED, reason);
 	}
 
 	private JsonObject buildCountResponse(long count) {

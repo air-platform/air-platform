@@ -13,6 +13,7 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFamily;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.ProductFamilyRepository;
@@ -36,7 +37,7 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 		Tenant tenant = findAccount(tenantId, Tenant.class);
 		ProductFamily newProductFamily = new ProductFamily();
 		copyProperties(productFamily, newProductFamily);
-		newProductFamily.setApproved(false);
+		newProductFamily.setReviewStatus(ReviewStatus.PENDING);
 		newProductFamily.setVendor(tenant);
 		return safeExecute(() -> productFamilyRepository.save(newProductFamily), "Create %s for tenant %s failed",
 				productFamily, tenantId);
@@ -63,19 +64,14 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#productFamilyId")
 	@Override
-	public ProductFamily reviewProductFamily(String productFamilyId, boolean approved, String rejectedReason) {
+	public ProductFamily reviewProductFamily(String productFamilyId, ReviewStatus reviewStatus, String rejectedReason) {
 		ProductFamily productFamily = findProductFamily(productFamilyId);
-		productFamily.setApproved(approved);
-		if (!approved) {
+		productFamily.setReviewStatus(reviewStatus);
+		if (reviewStatus == ReviewStatus.APPROVED) {
 			productFamily.setRejectedReason(rejectedReason);
 		}
-		return safeExecute(() -> productFamilyRepository.save(productFamily), "Review product family %s to %b failed",
-				productFamilyId, approved);
-	}
-
-	@Override
-	public long countProductFamilies(boolean approved) {
-		return productFamilyRepository.countByApproved(approved);
+		return safeExecute(() -> productFamilyRepository.save(productFamily), "Review product family %s to %s failed",
+				productFamilyId, reviewStatus);
 	}
 
 	private void copyProperties(ProductFamily src, ProductFamily tgt) {
@@ -86,43 +82,60 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 	}
 
 	@Override
-	public Page<ProductFamily> listProductFamilies(String tenantId, int page, int pageSize) {
-		return Pages.adapt(productFamilyRepository.findByVendorId(tenantId, Pages.createPageRequest(page, pageSize)));
-	}
-
-	@Override
-	public Page<ProductFamily> listProductFamilies(String tenantId, boolean approved, int page, int pageSize) {
-		return Pages.adapt(productFamilyRepository.findByVendorIdAndApproved(tenantId, approved,
+	public Page<ProductFamily> listAllProductFamilies(ReviewStatus reviewStatus, int page, int pageSize) {
+		if (reviewStatus == null) {
+			return Pages.adapt(
+					productFamilyRepository.findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(productFamilyRepository.findByReviewStatusOrderByCreationDateDesc(reviewStatus,
 				Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
-	public Page<ProductFamily> listProductFamiliesByCategory(String tenantId, Category category, int page,
-			int pageSize) {
-		return Pages.adapt(productFamilyRepository.findByVendorIdAndCategory(tenantId, category,
-				Pages.createPageRequest(page, pageSize)));
+	public long countAllProductFamilies(ReviewStatus reviewStatus) {
+		if (reviewStatus == null) {
+			return productFamilyRepository.count();
+		}
+		return productFamilyRepository.countByReviewStatus(reviewStatus);
 	}
 
 	@Override
-	public Page<ProductFamily> listProductFamiliesByCategory(String tenantId, Category category, boolean approved,
+	public Page<ProductFamily> listTenantProductFamilies(String tenantId, ReviewStatus reviewStatus, Category category,
 			int page, int pageSize) {
-		return Pages.adapt(productFamilyRepository.findByVendorIdAndCategoryAndApproved(tenantId, category, approved,
-				Pages.createPageRequest(page, pageSize)));
+		if (reviewStatus == null) {
+			// filter by category
+			if (category == null) {
+				return Pages.adapt(productFamilyRepository.findByVendorIdOrderByCreationDateDesc(tenantId,
+						Pages.createPageRequest(page, pageSize)));
+			}
+			return Pages.adapt(productFamilyRepository.findByVendorIdAndCategoryOrderByCreationDateDesc(tenantId,
+					category, Pages.createPageRequest(page, pageSize)));
+		}
+		// filter by reviewStatus and then by category
+		if (category == null) {
+			return Pages.adapt(productFamilyRepository.findByVendorIdAndReviewStatusOrderByCreationDateDesc(tenantId,
+					reviewStatus, Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(productFamilyRepository.findByVendorIdAndReviewStatusAndCategoryOrderByCreationDateDesc(
+				tenantId, reviewStatus, category, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
-	public Page<ProductFamily> listProductFamilies(int page, int pageSize) {
-		return Pages.adapt(productFamilyRepository.findAll(Pages.createPageRequest(page, pageSize)));
+	public long countTenantProductFamilies(String tenantId, ReviewStatus reviewStatus) {
+		if (reviewStatus == null) {
+			return productFamilyRepository.countByVendorId(tenantId);
+		}
+		return productFamilyRepository.countByVendorIdAndReviewStatus(tenantId, reviewStatus);
 	}
 
 	@Override
-	public Page<ProductFamily> listProductFamilies(boolean approved, int page, int pageSize) {
-		return Pages.adapt(productFamilyRepository.findByApproved(approved, Pages.createPageRequest(page, pageSize)));
-	}
-
-	@Override
-	public Page<ProductFamily> listProductFamiliesByCategory(Category category, int page, int pageSize) {
-		return Pages.adapt(productFamilyRepository.findByCategory(category, Pages.createPageRequest(page, pageSize)));
+	public Page<ProductFamily> listProductFamilies(Category category, int page, int pageSize) {
+		if (category == null) {
+			return Pages.adapt(productFamilyRepository.findByReviewStatusOrderByCreationDateDesc(ReviewStatus.APPROVED,
+					Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(productFamilyRepository.findByReviewStatusAndCategoryOrderByCreationDateDesc(
+				ReviewStatus.APPROVED, category, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#productFamilyId")

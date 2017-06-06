@@ -7,9 +7,12 @@ import javax.annotation.Nullable;
 
 import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
 /**
- * Created by guankai on 11/04/2017.
+ * Course Service.
+ * 
+ * @author guankai
  */
 public interface CourseService {
 
@@ -23,32 +26,45 @@ public interface CourseService {
 	Course updateCourse(@Nonnull String courseId, @Nonnull Course newCourse);
 
 	/**
-	 * List all courses (of all tenants) for ADMIN
-	 */
-	@Nonnull
-	Page<Course> listCourses(int page, int pageSize);
-
-	/**
-	 * List all courses by pagination.
+	 * List all courses by pagination. (ADMIN)
 	 * 
-	 * @param approved the approved status
+	 * @param reviewStatus the reviewStatus
 	 * @param page the page number
 	 * @param pageSize the pageSize
 	 * @return a page of AirTransports or empty
 	 */
 	@Nonnull
-	Page<Course> listCourses(boolean approved, int page, int pageSize);
+	Page<Course> listAllCourses(@Nullable ReviewStatus reviewStatus, int page, int pageSize);
 
-	long countCourses(boolean approved);
+	long countAllCourses(@Nullable ReviewStatus reviewStatus);
 
 	/**
-	 * List all courses for TENANT
+	 * List tenant courses by pagination. (TENANT)
+	 * 
+	 * @param tenantId the tenantId
+	 * @param reviewStatus the reviewStatus
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of AirTransports or empty
 	 */
 	@Nonnull
-	Page<Course> listCourses(@Nonnull String tenantId, int page, int pageSize);
+	Page<Course> listTenantCourses(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus, int page,
+			int pageSize);
+
+	long countTenantCourses(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus);
 
 	/**
-	 * List hot courses (top10 valid courses) for USER
+	 * List courses by pagination. (USER)
+	 * 
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of AirTransports or empty
+	 */
+	@Nonnull
+	Page<Course> listCourses(int page, int pageSize);
+
+	/**
+	 * List hot courses (top10 valid courses) (USER)
 	 */
 	@Nonnull
 	List<Course> listTop10HotCourses();

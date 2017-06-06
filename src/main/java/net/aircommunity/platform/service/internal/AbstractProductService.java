@@ -3,6 +3,8 @@ package net.aircommunity.platform.service.internal;
 import java.lang.reflect.ParameterizedType;
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
@@ -16,6 +18,7 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PricedProduct;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.ProductFaq;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
@@ -51,10 +54,9 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	// Generic CRUD shared
 	// *********************
 
-	protected Tenant doGetVendor(String tenantId) {
-		return findAccount(tenantId, Tenant.class);
-	}
-
+	/**
+	 * Create
+	 */
 	protected final T doCreateProduct(String tenantId, T product) {
 		Tenant vendor = doGetVendor(tenantId);
 		T newProduct = null;
@@ -72,7 +74,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		newProduct.setDescription(product.getDescription());
 		newProduct.setRank(0);
 		newProduct.setPublished(true);
-		newProduct.setApproved(false);
+		newProduct.setReviewStatus(ReviewStatus.PENDING);
 		// priced
 		if (PricedProduct.class.isAssignableFrom(product.getClass())) {
 			PricedProduct newPricedProduct = PricedProduct.class.cast(newProduct);
@@ -88,6 +90,13 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 				type.getSimpleName(), product, vendor.getId());
 	}
 
+	protected Tenant doGetVendor(String tenantId) {
+		return findAccount(tenantId, Tenant.class);
+	}
+
+	/**
+	 * Find
+	 */
 	protected final T doFindProduct(String productId) {
 		T product = getProductRepository().findOne(productId);
 		if (product == null) {
@@ -97,6 +106,9 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		return product;
 	}
 
+	/**
+	 * Update
+	 */
 	protected final T doUpdateProduct(String productId, T newProduct) {
 		T product = doFindProduct(productId);
 		product.setName(newProduct.getName());
@@ -108,9 +120,17 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 				type.getSimpleName(), productId, newProduct);
 	}
 
+	/**
+	 * Publish/Unpublish
+	 */
 	protected final T doPublishProduct(String productId, boolean published) {
 		T product = doFindProduct(productId);
 		try {
+			// a product cannot publish before it's reviewed and approved
+			if (published && product.getReviewStatus() != ReviewStatus.APPROVED) {
+				LOG.error("Product {} is not approved, cannot publish", product);
+				throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.PRODUCT_NOT_APPROVED));
+			}
 			product.setPublished(published);
 			return getProductRepository().save(product);
 		}
@@ -121,22 +141,28 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		}
 	}
 
-	protected final T doReviewProduct(String productId, boolean approved, String rejectedReason) {
+	/**
+	 * Review (ADMIN)
+	 */
+	protected final T doReviewProduct(String productId, ReviewStatus reviewStatus, String rejectedReason) {
 		T product = doFindProduct(productId);
 		try {
-			product.setApproved(approved);
-			if (!approved) {
+			product.setReviewStatus(reviewStatus);
+			if (reviewStatus == ReviewStatus.APPROVED) {
 				product.setRejectedReason(rejectedReason);
 			}
 			return getProductRepository().save(product);
 		}
 		catch (Exception e) {
-			LOG.error(String.format("Update %s: %s with approved: %b failed, cause: %s", type.getSimpleName(),
-					productId, approved, e.getMessage()), e);
+			LOG.error(String.format("Update %s: %s with approved: %s failed, cause: %s", type.getSimpleName(),
+					productId, reviewStatus, e.getMessage()), e);
 			throw newInternalException();
 		}
 	}
 
+	/**
+	 * Rank (ADMIN)
+	 */
 	protected final T doUpdateProductRank(String productId, int rank) {
 		T product = doFindProduct(productId);
 		if (rank < 0) {
@@ -150,41 +176,83 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	protected void copyProperties(T src, T tgt) {
 	}
 
+	// ************
+	// USER/ANYONE
+	// ************
+
 	/**
-	 * For USER (Exclude Products in DELETED status)
+	 * For all users/anyone (only show approved and published product)
 	 */
-	protected final Page<T> doListTenantProducts(String tenantId, int page, int pageSize) {
-		return Pages.adapt(getProductRepository().findByVendorIdOrderByCreationDateDesc(tenantId,
+	protected final Page<T> doListProductsForUsers(int page, int pageSize) {
+		return Pages.adapt(getProductRepository().findByPublishedOrderByRankAscScoreDesc(true/* published */,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	// ************
+	// TENANT
+	// ************
+
+	/**
+	 * List products for TENANT (list all)
+	 */
+	@Nonnull
+	protected final Page<T> doListTenantProducts(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus,
+			int page, int pageSize) {
+		if (reviewStatus == null) {
+			return Pages.adapt(getProductRepository().findByVendorIdOrderByCreationDateDesc(tenantId,
+					Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(getProductRepository().findByVendorIdAndReviewStatusOrderByCreationDateDesc(tenantId,
+				reviewStatus, Pages.createPageRequest(page, pageSize)));
+	}
+
+	/**
+	 * Count products for TENANT (review count)
+	 */
+	protected final long doCountTenantProducts(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus) {
+		if (reviewStatus == null) {
+			return getProductRepository().countByVendorId(tenantId);
+		}
+		return getProductRepository().countByVendorIdAndReviewStatus(tenantId, reviewStatus);
+	}
+
+	// ************
+	// ADMIN
+	// ************
+
+	/**
+	 * List all products for ADMIN with filter ReviewStatus (products of any tenant with any published state)
+	 */
+	@Nonnull
+	protected final Page<T> doListAllProducts(@Nullable ReviewStatus reviewStatus, int page, int pageSize) {
+		if (reviewStatus == null) {
+			return Pages.adapt(
+					getProductRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(getProductRepository().findByReviewStatusOrderByCreationDateDesc(reviewStatus,
 				Pages.createPageRequest(page, pageSize)));
 	}
 
 	/**
-	 * For ADMIN (Products of any tenant)
+	 * Count all products for ADMIN with filter ReviewStatus (products of any tenant with any published state)
 	 */
-	protected final Page<T> doListAllProducts(int page, int pageSize) {
-		return Pages.adapt(
-				getProductRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+	protected final long doCountAllProducts(@Nullable ReviewStatus reviewStatus) {
+		if (reviewStatus == null) {
+			return getProductRepository().count();
+		}
+		return getProductRepository().countByReviewStatus(reviewStatus);
 	}
 
 	/**
-	 * For ADMIN (Products of any tenant)
+	 * Delete
 	 */
-	protected final Page<T> doListAllProducts(boolean approved, int page, int pageSize) {
-		return Pages.adapt(getProductRepository().findByApprovedOrderByCreationDateDesc(approved,
-				Pages.createPageRequest(page, pageSize)));
-	}
-
-	/**
-	 * For ADMIN (Products of any tenant)
-	 */
-	protected final long doCountAllProducts(boolean approved) {
-		return getProductRepository().countByApproved(approved);
-	}
-
 	protected final void doDeleteProduct(String productId) {
 		safeExecute(() -> getProductRepository().delete(productId), "Delete product %s failed", productId);
 	}
 
+	/**
+	 * Delete all for a tenant
+	 */
 	protected final void doDeleteProducts(String tenantId) {
 		safeExecute(() -> getProductRepository().deleteByVendorId(tenantId), "Delete all products for tenant %s failed",
 				tenantId);

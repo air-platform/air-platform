@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
@@ -19,6 +20,7 @@ import net.aircommunity.platform.model.AirTransport;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFamily;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AirTransportRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
@@ -67,7 +69,7 @@ public class AirTransportServiceImpl extends AircraftAwareProductService<AirTran
 	@Override
 	protected void doCopyProperties(AirTransport src, AirTransport tgt) {
 		ProductFamily family = productFamilyService.findProductFamily(src.getFamily().getId());
-		if (!family.isApproved()) {
+		if (family.getReviewStatus() != ReviewStatus.APPROVED) {
 			LOG.error("ProductFamily {} is not approved yet", family);
 			throw new AirException(Codes.PRODUCT_FAMILY_NOT_APPROVED, M.msg(M.PRODUCT_FAMILY_NOT_APPROVED));
 		}
@@ -78,56 +80,59 @@ public class AirTransportServiceImpl extends AircraftAwareProductService<AirTran
 
 	@Override
 	public List<ProductFamily> listAirTransportFamilies() {
-		return productFamilyService.listProductFamiliesByCategory(Category.AIR_TRANS, 1, Integer.MAX_VALUE)
-				.getContent();
+		return productFamilyService.listProductFamilies(Category.AIR_TRANS, 1, Integer.MAX_VALUE).getContent();
 	}
 
 	@Override
-	public Page<AirTransport> listAirTransports(String tenantId, int page, int pageSize) {
-		return doListTenantProducts(tenantId, page, pageSize);
+	public Page<AirTransport> listAllAirTransports(ReviewStatus reviewStatus, int page, int pageSize) {
+		return doListAllProducts(reviewStatus, page, pageSize);
+	}
+
+	@Override
+	public long countAllAirTransports(ReviewStatus reviewStatus) {
+		return doCountAllProducts(reviewStatus);
+	}
+
+	@Override
+	public Page<AirTransport> listTenantAirTransports(String tenantId, ReviewStatus reviewStatus, int page,
+			int pageSize) {
+		return doListTenantProducts(tenantId, reviewStatus, page, pageSize);
+	}
+
+	@Override
+	public long countTenantAirTransports(String tenantId, ReviewStatus reviewStatus) {
+		return doCountTenantProducts(tenantId, reviewStatus);
 	}
 
 	@Override
 	public Page<AirTransport> listAirTransports(int page, int pageSize) {
-		return doListAllProducts(page, pageSize);
-	}
-
-	@Override
-	public Page<AirTransport> listAirTransports(boolean approved, int page, int pageSize) {
-		return doListAllProducts(approved, page, pageSize);
-	}
-
-	@Override
-	public long countAirTransports(boolean approved) {
-		return doCountAllProducts(approved);
+		return doListProductsForUsers(page, pageSize);
 	}
 
 	@Override
 	public Page<AirTransport> listAirTransportsByFamily(String familyId, int page, int pageSize) {
-		if (familyId == null) {
+		if (Strings.isBlank(familyId)) {
 			return listAirTransports(page, pageSize);
 		}
-		return Pages.adapt(
-				airTransportRepository.findByFamilyIdOrderByRankAsc(familyId, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(airTransportRepository.findByFamilyId(familyId, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<AirTransport> listAirTransportsByDeparture(String departure, int page, int pageSize) {
-		return Pages.adapt(airTransportRepository.findByFlightRouteDepartureOrderByRankAsc(departure,
-				Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(
+				airTransportRepository.listByDepartureForUser(departure, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<AirTransport> listAirTransportsByArrival(String arrival, int page, int pageSize) {
-		return Pages.adapt(airTransportRepository.findByFlightRouteArrivalOrderByRankAsc(arrival,
-				Pages.createPageRequest(page, pageSize)));
+		return Pages
+				.adapt(airTransportRepository.listByArrivalForUser(arrival, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<AirTransport> searchAirTransportsByLocation(String location, int page, int pageSize) {
 		return Pages.adapt(
-				airTransportRepository.findByFlightRouteDepartureContainingOrFlightRouteArrivalContainingOrderByRankAsc(
-						location, Pages.createPageRequest(page, pageSize)));
+				airTransportRepository.searchByLocationForUser(location, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTransportId")

@@ -50,8 +50,8 @@ public abstract class Product extends Reviewable {
 	protected double score;
 
 	// TODO useful?
-	@Column(name = "discount", nullable = true)
-	protected double discount;
+	// @Column(name = "discount", nullable = true)
+	// protected double discount;
 
 	// product rank (low rank will considered as hot, sort by rank ASC)
 	@Column(name = "rank")
@@ -59,6 +59,7 @@ public abstract class Product extends Reviewable {
 
 	// whether it can be published or not
 	// e.g. product put on sale/pull off shelves
+	// XXX NOTE: a product is published, it means it's already reviewed with APPROVED
 	@Column(name = "published", nullable = false)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected boolean published = false;

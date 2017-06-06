@@ -1,11 +1,13 @@
 package net.aircommunity.platform.service;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFamily;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
 /**
  * ProductFamily Service
@@ -48,68 +50,44 @@ public interface ProductFamilyService {
 	 * Review a productFamily to approved or not (by platform ADMIN only).
 	 * 
 	 * @param productFamilyId the productFamilyId
-	 * @param approved the approved or not
+	 * @param reviewStatus the reviewStatus
 	 * @param rejectedReason the rejected reason if it's NOT approved
 	 * @return productFamily updated
 	 */
 	@Nonnull
-	ProductFamily reviewProductFamily(String productFamilyId, boolean approved, String rejectedReason);
+	ProductFamily reviewProductFamily(String productFamilyId, ReviewStatus reviewStatus, String rejectedReason);
 
 	/**
-	 * List all product families filter by tenantId.
+	 * List all product families filter by reviewStatus. (ADMIN)
+	 * 
+	 * @param reviewStatus the reviewStatus
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of product families or empty
+	 */
+	@Nonnull
+	Page<ProductFamily> listAllProductFamilies(@Nullable ReviewStatus reviewStatus, int page, int pageSize);
+
+	long countAllProductFamilies(@Nullable ReviewStatus reviewStatus);
+
+	/**
+	 * List tenant product families filter by reviewStatus. (TENANT)
 	 * 
 	 * @param tenantId the tenantId
+	 * @param reviewStatus the reviewStatus
+	 * @param category the product category
 	 * @param page the page number
 	 * @param pageSize the pageSize
 	 * @return a page of product families or empty
 	 */
 	@Nonnull
-	Page<ProductFamily> listProductFamilies(@Nonnull String tenantId, int page, int pageSize);
+	Page<ProductFamily> listTenantProductFamilies(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus,
+			@Nullable Category category, int page, int pageSize);
 
-	@Nonnull
-	Page<ProductFamily> listProductFamilies(@Nonnull String tenantId, boolean approved, int page, int pageSize);
-
-	/**
-	 * List all product families by type and pagination.
-	 * 
-	 * @param tenantId the tenantId
-	 * @param category the productFamily category
-	 * @param page the page number
-	 * @param pageSize the pageSize
-	 * @return a page of product families or empty
-	 */
-	@Nonnull
-	Page<ProductFamily> listProductFamiliesByCategory(@Nonnull String tenantId, Category category, int page,
-			int pageSize);
-
-	Page<ProductFamily> listProductFamiliesByCategory(String tenantId, Category category, boolean approved, int page,
-			int pageSize);
+	long countTenantProductFamilies(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus);
 
 	/**
-	 * List all product families
-	 * 
-	 * @param page the page number
-	 * @param pageSize the pageSize
-	 * @return a page of product families or empty
-	 */
-	@Nonnull
-	Page<ProductFamily> listProductFamilies(int page, int pageSize);
-
-	/**
-	 * List all product families filter by approved status.
-	 * 
-	 * @param approved the approved status
-	 * @param page the page number
-	 * @param pageSize the pageSize
-	 * @return a page of product families or empty
-	 */
-	@Nonnull
-	Page<ProductFamily> listProductFamilies(boolean approved, int page, int pageSize);
-
-	long countProductFamilies(boolean approved);
-
-	/**
-	 * List all product families by type and pagination.
+	 * List all product families (USER)
 	 * 
 	 * @param category the productFamily category
 	 * @param page the page number
@@ -117,7 +95,7 @@ public interface ProductFamilyService {
 	 * @return a page of product families or empty
 	 */
 	@Nonnull
-	Page<ProductFamily> listProductFamiliesByCategory(Category category, int page, int pageSize);
+	Page<ProductFamily> listProductFamilies(@Nullable Category category, int page, int pageSize);
 
 	/**
 	 * Delete a productFamily.

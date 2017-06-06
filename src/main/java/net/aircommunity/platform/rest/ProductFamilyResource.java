@@ -51,10 +51,7 @@ public class ProductFamilyResource {
 	public Page<ProductFamily> listAll(@QueryParam("category") Category category,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all product families with category: {}, page: {}, pageSize: {}", category, page, pageSize);
-		if (category == null) {
-			return productFamilyService.listProductFamilies(page, pageSize);
-		}
-		return productFamilyService.listProductFamiliesByCategory(category, page, pageSize);
+		return productFamilyService.listProductFamilies(category, page, pageSize);
 	}
 
 	/**

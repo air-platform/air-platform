@@ -13,6 +13,7 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.ProductFaq;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.service.CommonProductService;
 
@@ -49,20 +50,13 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#productId")
 	@Override
-	public Product reviewProduct(String productId, boolean approved, String rejectedReason) {
-		return doReviewProduct(productId, approved, rejectedReason);
+	public Product reviewProduct(String productId, ReviewStatus reviewStatus, String rejectedReason) {
+		return doReviewProduct(productId, reviewStatus, rejectedReason);
 	}
 
 	@Override
-	public Page<Product> listAllProducts(int page, int pageSize) {
-		return Pages
-				.adapt(baseProductRepository.findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
-	}
-
-	@Override
-	public Page<Product> listAllProducts(boolean approved, int page, int pageSize) {
-		return Pages.adapt(baseProductRepository.findByApprovedOrderByCreationDateDesc(approved,
-				Pages.createPageRequest(page, pageSize)));
+	public Page<Product> listAllProducts(ReviewStatus reviewStatus, int page, int pageSize) {
+		return doListAllProducts(reviewStatus, page, pageSize);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#productId")

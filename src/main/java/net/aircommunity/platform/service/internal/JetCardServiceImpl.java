@@ -20,6 +20,8 @@ import net.aircommunity.platform.service.JetCardService;
  * JetCard service implementation.
  * 
  * @author Bin.Zhang
+ * 
+ * @deprecated
  */
 @Service
 @Transactional
@@ -58,12 +60,14 @@ public class JetCardServiceImpl extends AbstractProductService<JetCard> implemen
 
 	@Override
 	public Page<JetCard> listJetCards(String tenantId, int page, int pageSize) {
-		return doListTenantProducts(tenantId, page, pageSize);
+		// return doListTenantProducts(tenantId, page, pageSize);
+		return Page.emptyPage(page, pageSize);
 	}
 
 	@Override
 	public Page<JetCard> listJetCards(int page, int pageSize) {
-		return doListAllProducts(page, pageSize);
+		// return doListAllProducts(page, pageSize);
+		return Page.emptyPage(page, pageSize);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#jetCardId")

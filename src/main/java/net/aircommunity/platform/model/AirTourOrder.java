@@ -16,17 +16,6 @@ import javax.validation.constraints.NotNull;
 public class AirTourOrder extends AircraftAwareOrder {
 	private static final long serialVersionUID = 1L;
 
-	// departure date, e.g. 2017-5-1
-	// @NotNull
-	// @Temporal(value = TemporalType.DATE)
-	// @Column(name = "date", nullable = false)
-	// @XmlJavaTypeAdapter(DateAdapter.class)
-	// private Date date;
-
-	// e.g. 8:00-9:00
-	// @Column(name = "time_slot", nullable = false)
-	// private String timeSlot;
-
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "airtour_id", nullable = false)

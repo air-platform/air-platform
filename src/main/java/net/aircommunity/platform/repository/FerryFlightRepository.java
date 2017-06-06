@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import net.aircommunity.platform.model.FerryFlight;
 
@@ -16,9 +18,19 @@ import net.aircommunity.platform.model.FerryFlight;
  */
 public interface FerryFlightRepository extends BaseProductRepository<FerryFlight> {
 
-	List<FerryFlight> findTop3ByOrderByRankAscPriceAsc();
+	// Top3
+	default List<FerryFlight> findTop3() {
+		return findTop3ByPublishedOrderByRankAscScoreDesc(true);
+	};
 
-	List<FerryFlight> findTop3ByDepartureOrderByRankAscPriceAsc(String departure);
+	List<FerryFlight> findTop3ByPublishedOrderByRankAscScoreDesc(boolean published);
+
+	// Top3 by departure
+	default List<FerryFlight> findTop3ByDeparture(String departure) {
+		return findTop3ByPublishedAndDepartureOrderByRankAscScoreDesc(true, departure);
+	};
+
+	List<FerryFlight> findTop3ByPublishedAndDepartureOrderByRankAscScoreDesc(boolean published, String departure);
 
 	/**
 	 * Find FerryFlight by departure or arrival
@@ -27,7 +39,11 @@ public interface FerryFlightRepository extends BaseProductRepository<FerryFlight
 	 * @param pageable the page request
 	 * @return page of trans
 	 */
-	Page<FerryFlight> findByDepartureContainingOrArrivalContainingOrderByRankAsc(String location, Pageable pageable);
+	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND "
+			+ "( t.departure LIKE CONCAT('%',:location,'%') OR "
+			+ "t.arrival LIKE CONCAT('%',:location,'%') ) ORDER BY t.rank ASC, t.score DESC")
+	Page<FerryFlight> searchByLocationForUser(@Param("location") String location, Pageable pageable);
+	// Page<FerryFlight> findByDepartureContainingOrArrivalContainingOrderByRankAsc(String location, Pageable pageable);
 
 	/**
 	 * Find all by departure.
@@ -36,7 +52,10 @@ public interface FerryFlightRepository extends BaseProductRepository<FerryFlight
 	 * @param pageable the page request
 	 * @return page of FerryFlight
 	 */
-	Page<FerryFlight> findByDepartureOrderByRankAscPriceAsc(String departure, Pageable pageable);
+	@Query("SELECT t FROM #{#entityName} t WHERE t.departure = :departure AND "
+			+ "t.published = TRUE ORDER BY t.rank ASC, t.score DESC")
+	Page<FerryFlight> listByDepartureForUser(@Param("departure") String departure, Pageable pageable);
+	// Page<FerryFlight> findByDepartureOrderByRankAscPriceAsc(String departure, Pageable pageable);
 
 	/**
 	 * Find all by arrival.
@@ -45,6 +64,9 @@ public interface FerryFlightRepository extends BaseProductRepository<FerryFlight
 	 * @param pageable the page request
 	 * @return page of FerryFlight
 	 */
-	Page<FerryFlight> findByArrivalOrderByRankAscPriceAsc(String arrival, Pageable pageable);
+	@Query("SELECT t FROM #{#entityName} t WHERE t.arrival = :arrival AND "
+			+ "t.published = TRUE ORDER BY t.rank ASC, t.score DESC")
+	Page<FerryFlight> listByArrivalForUser(@Param("arrival") String arrival, Pageable pageable);
+	// Page<FerryFlight> findByArrivalOrderByRankAscPriceAsc(String arrival, Pageable pageable);
 
 }

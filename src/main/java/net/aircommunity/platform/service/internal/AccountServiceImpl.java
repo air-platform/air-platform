@@ -160,7 +160,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 		if (account.getStatus() != Status.ENABLED) {
 			LOG.warn("Account {} is not enabled, cannot be authenticated", principal);
-			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED, M.msg(M.ACCOUNT_UNAUTHORIZED_LOCKED));
+			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED, M.msg(M.ACCOUNT_UNAUTHORIZED_DISABLED));
 		}
 		boolean valid = false;
 		// OTP is available for mobile

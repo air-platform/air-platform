@@ -1,10 +1,12 @@
 package net.aircommunity.platform.service;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.ProductFaq;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
 /**
  * Common ProductService
@@ -40,31 +42,23 @@ public interface CommonProductService {
 	 * Review a product to approve or not (by platform ADMIN only)
 	 * 
 	 * @param productId the productId
-	 * @param approved the product is approved or not
+	 * @param reviewStatus the product is reviewStatus
 	 * @param rejectedReason the rejected reason if it's NOT approved
 	 * @return product update
 	 */
 	@Nonnull
-	Product reviewProduct(@Nonnull String productId, boolean approved, String rejectedReason);
+	Product reviewProduct(@Nonnull String productId, @Nonnull ReviewStatus reviewStatus,
+			@Nullable String rejectedReason);
 
 	/**
-	 * List all products.
+	 * List all products by reviewStatus. (ADMIN ONLY)
 	 * 
+	 * @param reviewStatus the reviewStatus
 	 * @param page the page number
 	 * @param pageSize the pageSize
 	 * @return a page of Product to be reviewed
 	 */
-	Page<Product> listAllProducts(int page, int pageSize);
-
-	/**
-	 * List all products approve or not.
-	 * 
-	 * @param approved the approved status
-	 * @param page the page number
-	 * @param pageSize the pageSize
-	 * @return a page of Product to be reviewed
-	 */
-	Page<Product> listAllProducts(boolean approved, int page, int pageSize);
+	Page<Product> listAllProducts(@Nullable ReviewStatus reviewStatus, int page, int pageSize);
 
 	/**
 	 * Delete a product.

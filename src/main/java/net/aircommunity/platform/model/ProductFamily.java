@@ -1,5 +1,7 @@
 package net.aircommunity.platform.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,12 +11,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.Product.Category;
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
@@ -36,6 +41,11 @@ public class ProductFamily extends Reviewable {
 	@Column(name = "category")
 	@Enumerated(EnumType.STRING)
 	private Category category;
+
+	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "creation_date", nullable = false)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	private Date creationDate;
 
 	@Size(max = 255)
 	@Column(name = "image")
@@ -67,6 +77,14 @@ public class ProductFamily extends Reviewable {
 		this.category = category;
 	}
 
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
 	public String getImage() {
 		return image;
 	}
@@ -94,8 +112,10 @@ public class ProductFamily extends Reviewable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ProductFamily [name=").append(name).append(", category=").append(category).append(", image=")
-				.append(image).append(", description=").append(description).append(", approved=").append(approved)
+		builder.append("ProductFamily [name=").append(name).append(", category=").append(category)
+				.append(", creationDate=").append(creationDate).append(", image=").append(image)
+				.append(", description=").append(description).append(", vendor=").append(vendor)
+				.append(", reviewStatus=").append(reviewStatus).append(", rejectedReason=").append(rejectedReason)
 				.append(", id=").append(id).append("]");
 		return builder.toString();
 	}

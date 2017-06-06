@@ -29,6 +29,7 @@ import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.AirTour;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.AirTourService;
@@ -62,14 +63,14 @@ public class TenantAirTourResourse extends TenantProductResourceSupport<AirTour>
 	}
 
 	/**
-	 * List TODO query
+	 * List
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Page<AirTour> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		return airTourService.listAirTours(tenantId, page, pageSize);
+	public Page<AirTour> list(@PathParam("tenantId") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
+			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+		return airTourService.listTenantAirTours(tenantId, reviewStatus, page, pageSize);
 	}
 
 	/**

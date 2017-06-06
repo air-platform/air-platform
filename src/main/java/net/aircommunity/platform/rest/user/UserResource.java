@@ -143,7 +143,7 @@ public class UserResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<Order> listAllPendingOrders(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
-		return buildOrdersResponse(Order.Status.PENDING, page, pageSize, context);
+		return buildOrdersResponse(Order.Status.CREATED, page, pageSize, context);
 	}
 
 	@GET

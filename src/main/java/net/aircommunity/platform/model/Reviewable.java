@@ -19,9 +19,9 @@ public class Reviewable extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// whether a product is approved or not by platform ADMIN
-	@Column(name = "approved", nullable = false)
+	@Column(name = "review_status", nullable = false)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	protected boolean approved = false;
+	protected ReviewStatus reviewStatus = ReviewStatus.PENDING;
 
 	// reason when it's rejected by platform ADMIN
 	@Size(max = 1000)
@@ -29,12 +29,12 @@ public class Reviewable extends Persistable {
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected String rejectedReason;
 
-	public boolean isApproved() {
-		return approved;
+	public ReviewStatus getReviewStatus() {
+		return reviewStatus;
 	}
 
-	public void setApproved(boolean approved) {
-		this.approved = approved;
+	public void setReviewStatus(ReviewStatus reviewStatus) {
+		this.reviewStatus = reviewStatus;
 	}
 
 	public String getRejectedReason() {
@@ -43,6 +43,19 @@ public class Reviewable extends Persistable {
 
 	public void setRejectedReason(String rejectedReason) {
 		this.rejectedReason = rejectedReason;
+	}
+
+	public enum ReviewStatus {
+		PENDING, APPROVED, REJECTED;
+
+		public static ReviewStatus fromString(String value) {
+			for (ReviewStatus e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
 	}
 
 }

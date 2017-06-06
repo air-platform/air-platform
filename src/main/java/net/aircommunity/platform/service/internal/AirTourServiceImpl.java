@@ -14,13 +14,16 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTour;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.repository.AirTourRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.service.AirTourService;
 import net.aircommunity.platform.service.AircraftService;
 
 /**
- * Created by guankai on 14/04/2017.
+ * AirTour Service implementation.
+ * 
+ * @author guankai
  */
 @Service
 @Transactional
@@ -68,28 +71,33 @@ public class AirTourServiceImpl extends AircraftAwareProductService<AirTour> imp
 	}
 
 	@Override
+	public Page<AirTour> listAllAirTours(ReviewStatus reviewStatus, int page, int pageSize) {
+		return doListAllProducts(reviewStatus, page, pageSize);
+	}
+
+	@Override
+	public long countAllAirTours(ReviewStatus reviewStatus) {
+		return doCountAllProducts(reviewStatus);
+	}
+
+	@Override
+	public Page<AirTour> listTenantAirTours(String tenantId, ReviewStatus reviewStatus, int page, int pageSize) {
+		return doListTenantProducts(tenantId, reviewStatus, page, pageSize);
+	}
+
+	public long countTenantAirTours(String tenantId, ReviewStatus reviewStatus) {
+		return doCountTenantProducts(tenantId, reviewStatus);
+	}
+
+	@Override
 	public Page<AirTour> listAirTours(int page, int pageSize) {
-		return doListAllProducts(page, pageSize);
-	}
-
-	@Override
-	public Page<AirTour> listAirTours(boolean approved, int page, int pageSize) {
-		return doListAllProducts(approved, page, pageSize);
-	}
-
-	@Override
-	public long countAirTours(boolean approved) {
-		return doCountAllProducts(approved);
-	}
-
-	@Override
-	public Page<AirTour> listAirTours(String tenantId, int page, int pageSize) {
-		return doListTenantProducts(tenantId, page, pageSize);
+		return doListProductsForUsers(page, pageSize);
 	}
 
 	@Override
 	public Page<AirTour> listAirToursByCity(String city, int page, int pageSize) {
-		return Pages.adapt(airTourRepository.findByCity(city, Pages.createPageRequest(page, pageSize)));
+		return Pages
+				.adapt(airTourRepository.findByCityContainingIgnoreCase(city, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTourId")

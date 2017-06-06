@@ -25,6 +25,7 @@ import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.Course_;
 import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.School;
 import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.repository.BaseProductRepository;
@@ -101,57 +102,59 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 	}
 
 	@Override
+	public Page<Course> listAllCourses(ReviewStatus reviewStatus, int page, int pageSize) {
+		return doListAllProducts(reviewStatus, page, pageSize);
+	}
+
+	@Override
+	public long countAllCourses(ReviewStatus reviewStatus) {
+		return doCountAllProducts(reviewStatus);
+	}
+
+	@Override
+	public Page<Course> listTenantCourses(String tenantId, ReviewStatus reviewStatus, int page, int pageSize) {
+		return doListTenantProducts(tenantId, reviewStatus, page, pageSize);
+	}
+
+	@Override
+	public long countTenantCourses(String tenantId, ReviewStatus reviewStatus) {
+		return doCountTenantProducts(tenantId, reviewStatus);
+	}
+
+	@Override
 	public Page<Course> listCourses(int page, int pageSize) {
-		return Pages.adapt(courseRepository.findAllByOrderByStartDateDesc(Pages.createPageRequest(page, pageSize)));
-	}
-
-	@Override
-	public Page<Course> listCourses(boolean approved, int page, int pageSize) {
-		return doListAllProducts(approved, page, pageSize);
-	}
-
-	@Override
-	public long countCourses(boolean approved) {
-		return doCountAllProducts(approved);
-	}
-
-	@Override
-	public Page<Course> listCourses(String tenantId, int page, int pageSize) {
-		return Pages.adapt(
-				courseRepository.findByVendorIdOrderByStartDateDesc(tenantId, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseRepository.findAllForUser(Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public List<Course> listTop10HotCourses() {
-		return courseRepository.findTop10ByEndDateGreaterThanEqualOrderByEnrollNumDesc(new Date());
+		return courseRepository.findHotTop10(new Date());
 	}
 
 	@Override
 	public Page<Course> listCoursesBySchool(String schoolId, int page, int pageSize) {
-		return Pages.adapt(courseRepository.findBySchoolIdAndEndDateGreaterThanEqualOrderByStartDateDesc(schoolId,
-				new Date()/* now */, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseRepository.findBySchoolId(schoolId, new Date()/* now */,
+				Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<Course> listCoursesByAircraftType(String aircraftType, int page, int pageSize) {
 		Date now = new Date();
 		if (Strings.isBlank(aircraftType)) {
-			return Pages.adapt(courseRepository.findByEndDateGreaterThanEqualOrderByStartDateDesc(now,
-					Pages.createPageRequest(page, pageSize)));
+			return Pages.adapt(courseRepository.findValidCourses(now, Pages.createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(courseRepository.findByEndDateGreaterThanEqualAndAircraftTypeContainingOrderByStartDateDesc(
-				now, aircraftType, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseRepository.findValidCoursesByAircraftType(aircraftType, now,
+				Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<Course> listCoursesByLocation(String location, int page, int pageSize) {
 		Date now = new Date();
 		if (Strings.isBlank(location)) {
-			return Pages.adapt(courseRepository.findByEndDateGreaterThanEqualOrderByStartDateDesc(now,
-					Pages.createPageRequest(page, pageSize)));
+			return Pages.adapt(courseRepository.findValidCourses(now, Pages.createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(courseRepository.findByEndDateGreaterThanEqualAndLocationContainingOrderByStartDateDesc(now,
-				location, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(
+				courseRepository.findValidCoursesByLocation(location, now, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override

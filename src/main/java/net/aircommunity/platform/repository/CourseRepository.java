@@ -5,55 +5,87 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import net.aircommunity.platform.model.Course;
 
 /**
- * Created by guankai on 12/04/2017.
+ * Repository interface for {@link Course} instances. Provides basic CRUD operations due to the extension of
+ * {@link JpaRepository}.
+ * 
+ * @author Bin.Zhang
  */
 public interface CourseRepository extends BaseProductRepository<Course>, JpaSpecificationExecutor<Course> {
 
-	// For ADMIN
-
 	/**
-	 * List all courses
+	 * List all courses (USER)
 	 */
-	Page<Course> findAllByOrderByStartDateDesc(Pageable pageable);
-
-	// For TENANT
-
-	/**
-	 * List courses for tenant
-	 */
-	Page<Course> findByVendorIdOrderByStartDateDesc(String tenantId, Pageable pageable);
-
-	// For USER (always findByEndDateGreaterThan)
+	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE ORDER BY t.rank ASC, t.score DESC, t.startDate DESC")
+	Page<Course> findAllForUser(Pageable pageable);
+	// Page<Course> findAllByOrderByStartDateDesc(Pageable pageable);
 
 	/**
 	 * Hot Top 10
 	 */
-	List<Course> findTop10ByEndDateGreaterThanEqualOrderByEnrollNumDesc(Date endDate);
+	default List<Course> findHotTop10(Date endDate) {
+		return findTop10ByPublishedAndEndDateGreaterThanEqualOrderByRankAscEnrollNumDesc(true, endDate);
+	}
 
-	/**
-	 * List courses for user (only valid courses), filter type airType
-	 */
-	Page<Course> findByEndDateGreaterThanEqualOrderByStartDateDesc(Date endDate, Pageable pageable);
-
-	Page<Course> findByEndDateGreaterThanEqualAndAircraftTypeContainingOrderByStartDateDesc(Date endDate,
-			String aircraftType, Pageable pageable);
-
-	Page<Course> findByEndDateGreaterThanEqualAndLocationContainingOrderByStartDateDesc(Date endDate, String location,
-			Pageable pageable);
+	List<Course> findTop10ByPublishedAndEndDateGreaterThanEqualOrderByRankAscEnrollNumDesc(boolean published,
+			Date endDate);
 
 	/**
 	 * List courses for user (only valid courses) of a school
 	 */
-	Page<Course> findBySchoolIdAndEndDateGreaterThanEqualOrderByStartDateDesc(String schoolId, Date endDate,
+	default Page<Course> findBySchoolId(String schoolId, Date endDate, Pageable pageable) {
+		return findBySchoolIdAndPublishedAndEndDateGreaterThanEqualOrderByRankAscStartDateDesc(schoolId, true, endDate,
+				pageable);
+	}
+
+	Page<Course> findBySchoolIdAndPublishedAndEndDateGreaterThanEqualOrderByRankAscStartDateDesc(String schoolId,
+			boolean published, Date endDate, Pageable pageable);
+
+	/**
+	 * List courses for user (only valid courses)
+	 */
+	default Page<Course> findValidCourses(Date endDate, Pageable pageable) {
+		return findByPublishedAndEndDateGreaterThanEqualOrderByStartDateDesc(true, endDate, pageable);
+	}
+
+	Page<Course> findByPublishedAndEndDateGreaterThanEqualOrderByStartDateDesc(boolean published, Date endDate,
 			Pageable pageable);
+
+	/**
+	 * List courses for user (only valid courses filter by aircraftType)
+	 */
+	default Page<Course> findValidCoursesByAircraftType(String aircraftType, Date endDate, Pageable pageable) {
+		return findByPublishedAndEndDateGreaterThanEqualAndAircraftTypeContainingOrderByStartDateDesc(true, endDate,
+				aircraftType, pageable);
+	}
+
+	Page<Course> findByPublishedAndEndDateGreaterThanEqualAndAircraftTypeContainingOrderByStartDateDesc(
+			boolean published, Date endDate, String aircraftType, Pageable pageable);
+
+	/**
+	 * List courses for user (only valid courses filter by location)
+	 */
+	default Page<Course> findValidCoursesByLocation(String location, Date endDate, Pageable pageable) {
+		return findByPublishedAndEndDateGreaterThanEqualAndLocationContainingOrderByStartDateDesc(true, endDate,
+				location, pageable);
+	}
+
+	Page<Course> findByPublishedAndEndDateGreaterThanEqualAndLocationContainingOrderByStartDateDesc(boolean published,
+			Date endDate, String location, Pageable pageable);
 
 	long deleteBySchoolId(String schoolId);
 
+	/**
+	 * List courses for tenant
+	 */
+	// Page<Course> findByVendorIdOrderByStartDateDesc(String tenantId, Pageable pageable);
+	// For USER (always findByEndDateGreaterThan)
 	// TODO REMOVE
 	// @Query("select t from Course t where t.endDate >= :now and t.school = :sc order by t.startDate desc")
 	// Page<Course> findBySchool2(@Param("sc") School school, @Param("now") Date now, Pageable pageable);

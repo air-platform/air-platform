@@ -31,6 +31,7 @@ import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFamily;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.ProductFamilyService;
@@ -81,19 +82,10 @@ public class TenantProductFamilyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<ProductFamily> listAll(@PathParam("tenantId") String tenantId,
-			@QueryParam("category") Category category, @QueryParam("approved") Boolean approved,
+			@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("category") Category category,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all families with category: {}, page: {}, pageSize: {}", category, page, pageSize);
-		if (category != null) {
-			if (approved == null) {
-				return productFamilyService.listProductFamiliesByCategory(tenantId, category, page, pageSize);
-			}
-			return productFamilyService.listProductFamiliesByCategory(tenantId, category, approved, page, pageSize);
-		}
-		if (approved == null) {
-			return productFamilyService.listProductFamilies(tenantId, page, pageSize);
-		}
-		return productFamilyService.listProductFamilies(tenantId, approved, page, pageSize);
+		return productFamilyService.listTenantProductFamilies(tenantId, reviewStatus, category, page, pageSize);
 	}
 
 	/**

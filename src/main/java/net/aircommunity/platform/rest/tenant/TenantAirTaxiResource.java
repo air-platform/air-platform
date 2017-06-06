@@ -29,6 +29,7 @@ import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.AirTaxiService;
@@ -60,14 +61,14 @@ public class TenantAirTaxiResource extends TenantProductResourceSupport<AirTaxi>
 	}
 
 	/**
-	 * List TODO query
+	 * List
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Page<AirTaxi> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		return airTaxiService.listAirTaxis(tenantId, page, pageSize);
+	public Page<AirTaxi> list(@PathParam("tenantId") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		return airTaxiService.listTenantAirTaxis(tenantId, reviewStatus, page, pageSize);
 	}
 
 	/**

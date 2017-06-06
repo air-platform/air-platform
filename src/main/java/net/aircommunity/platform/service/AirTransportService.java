@@ -3,11 +3,13 @@ package net.aircommunity.platform.service;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.AirTransport;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.ProductFamily;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
 /**
  * AirTransport service.
@@ -55,7 +57,26 @@ public interface AirTransportService {
 	List<ProductFamily> listAirTransportFamilies();
 
 	/**
-	 * List all AirTransports by pagination filter by tenantId.
+	 * List all AirTransports by pagination. (ADMIN)
+	 * 
+	 * @param reviewStatus the reviewStatus
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of AirTransports or empty
+	 */
+	@Nonnull
+	Page<AirTransport> listAllAirTransports(@Nullable ReviewStatus reviewStatus, int page, int pageSize);
+
+	/**
+	 * Count AirTransports by reviewStatus (ADMIN)
+	 * 
+	 * @param reviewStatus the reviewStatus
+	 * @return count
+	 */
+	long countAllAirTransports(@Nullable ReviewStatus reviewStatus);
+
+	/**
+	 * List all AirTransports by pagination filter by tenantId. (TENANT)
 	 * 
 	 * @param tenantId the tenantId
 	 * @param page the page number
@@ -63,10 +84,20 @@ public interface AirTransportService {
 	 * @return a page of AirTransports or empty
 	 */
 	@Nonnull
-	Page<AirTransport> listAirTransports(@Nonnull String tenantId, int page, int pageSize);
+	Page<AirTransport> listTenantAirTransports(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus, int page,
+			int pageSize);
 
 	/**
-	 * List all AirTransports by pagination.
+	 * Count AirTransports by reviewStatus for tenant (TENANT)
+	 * 
+	 * @param tenantId the tenantId
+	 * @param reviewStatus the reviewStatus
+	 * @return count
+	 */
+	long countTenantAirTransports(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus);
+
+	/**
+	 * List all AirTransports by pagination. (USER)
 	 * 
 	 * @param page the page number
 	 * @param pageSize the pageSize
@@ -76,34 +107,15 @@ public interface AirTransportService {
 	Page<AirTransport> listAirTransports(int page, int pageSize);
 
 	/**
-	 * List all AirTransports by pagination.
-	 * 
-	 * @param approved the approved status
-	 * @param page the page number
-	 * @param pageSize the pageSize
-	 * @return a page of AirTransports or empty
-	 */
-	@Nonnull
-	Page<AirTransport> listAirTransports(boolean approved, int page, int pageSize);
-
-	/**
-	 * Count AirTransports by approved status
-	 * 
-	 * @param approved the approved status
-	 * @return count
-	 */
-	long countAirTransports(boolean approved);
-
-	/**
 	 * List all AirTransports by family and pagination.
 	 * 
-	 * @param familyId the familyId
+	 * @param familyId the familyId ignored if null
 	 * @param page the page number
 	 * @param pageSize the pageSize
 	 * @return a page of AirTransports or empty
 	 */
 	@Nonnull
-	Page<AirTransport> listAirTransportsByFamily(@Nonnull String familyId, int page, int pageSize);
+	Page<AirTransport> listAirTransportsByFamily(@Nullable String familyId, int page, int pageSize);
 
 	@Nonnull
 	Page<AirTransport> listAirTransportsByDeparture(@Nonnull String departure, int page, int pageSize);

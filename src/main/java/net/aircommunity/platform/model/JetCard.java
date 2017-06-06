@@ -10,6 +10,7 @@ import io.micro.annotation.constraint.NotEmpty;
  * Jet Card Product
  * 
  * @author Bin.Zhang
+ * @deprecated
  */
 @Entity
 @Table(name = "air_platfrom_jetcard")

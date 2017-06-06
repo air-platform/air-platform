@@ -146,6 +146,11 @@ public class Account extends Persistable {
 		ENABLED,
 
 		/**
+		 * An lock account can login, but cannot place orders.
+		 */
+		LOCKED,
+
+		/**
 		 * A disabled account may not login to applications.
 		 */
 		DISABLED;

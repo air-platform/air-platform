@@ -1,9 +1,11 @@
 package net.aircommunity.platform.service;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
 /**
  * AirTaxi Service
@@ -21,16 +23,27 @@ public interface AirTaxiService {
 	@Nonnull
 	AirTaxi updateAirTaxi(@Nonnull String airTaxiId, @Nonnull AirTaxi airTaxi);
 
+	/**
+	 * ADMIN
+	 */
 	@Nonnull
+	Page<AirTaxi> listAllAirTaxis(@Nullable ReviewStatus reviewStatus, int page, int pageSize);
+
+	long countAllAirTaxis(@Nullable ReviewStatus reviewStatus);
+
+	/**
+	 * TENANT
+	 */
+	@Nonnull
+	Page<AirTaxi> listTenantAirTaxis(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus, int page,
+			int pageSize);
+
+	long countTenantAirTaxis(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus);
+
+	/**
+	 * USER
+	 */
 	Page<AirTaxi> listAirTaxis(int page, int pageSize);
-
-	@Nonnull
-	Page<AirTaxi> listAirTaxis(boolean approved, int page, int pageSize);
-
-	long countAirTaxis(boolean approved);
-
-	@Nonnull
-	Page<AirTaxi> listAirTaxis(String tenantId, int page, int pageSize);
 
 	@Nonnull
 	Page<AirTaxi> listAirTaxisByDeparture(@Nonnull String departure, int page, int pageSize);

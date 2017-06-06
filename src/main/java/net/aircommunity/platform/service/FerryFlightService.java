@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
 /**
  * FerryFlight service.
@@ -47,18 +48,35 @@ public interface FerryFlightService {
 	FerryFlight updateFerryFlight(@Nonnull String ferryFlightId, @Nonnull FerryFlight newFerryFlight);
 
 	/**
-	 * List all FerryFlights by pagination filter by tenantId.
+	 * List all FerryFlights by pagination filter by reviewStatus. (ADMIN)
 	 * 
-	 * @param tenantId the tenantId
+	 * @param reviewStatus the reviewStatus
 	 * @param page the page number
 	 * @param pageSize the pageSize
 	 * @return a page of FerryFlights or empty
 	 */
 	@Nonnull
-	Page<FerryFlight> listFerryFlights(@Nonnull String tenantId, int page, int pageSize);
+	Page<FerryFlight> listAllFerryFlights(@Nullable ReviewStatus reviewStatus, int page, int pageSize);
+
+	long countAllFerryFlights(@Nullable ReviewStatus reviewStatus);
 
 	/**
-	 * List all FerryFlights by pagination.
+	 * List all FerryFlights by pagination filter by tenantId. (TENANT)
+	 * 
+	 * @param tenantId the tenantId
+	 * @param reviewStatus the reviewStatus
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of FerryFlights or empty
+	 */
+	@Nonnull
+	Page<FerryFlight> listTenantFerryFlights(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus, int page,
+			int pageSize);
+
+	long countTenantFerryFlights(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus);
+
+	/**
+	 * List all FerryFlights by pagination. (USER)
 	 * 
 	 * @param page the page number
 	 * @param pageSize the pageSize
@@ -66,19 +84,6 @@ public interface FerryFlightService {
 	 */
 	@Nonnull
 	Page<FerryFlight> listFerryFlights(int page, int pageSize);
-
-	/**
-	 * List all FerryFlights by pagination.
-	 * 
-	 * @param approved the approved status
-	 * @param page the page number
-	 * @param pageSize the pageSize
-	 * @return a page of AirTransports or empty
-	 */
-	@Nonnull
-	Page<FerryFlight> listFerryFlights(boolean approved, int page, int pageSize);
-
-	long countFerryFlights(boolean approved);
 
 	@Nonnull
 	Page<FerryFlight> listFerryFlightsByDeparture(@Nonnull String departure, int page, int pageSize);

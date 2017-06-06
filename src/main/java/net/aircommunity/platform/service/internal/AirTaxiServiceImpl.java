@@ -12,13 +12,16 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.repository.AirTaxiRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.service.AirTaxiService;
 import net.aircommunity.platform.service.AircraftService;
 
 /**
- * Created by guankai on 15/04/2017.
+ * AirTaxiService implementation
+ * 
+ * @author guankai
  */
 @Service
 @Transactional
@@ -56,42 +59,46 @@ public class AirTaxiServiceImpl extends AircraftAwareProductService<AirTaxi> imp
 	}
 
 	@Override
+	public Page<AirTaxi> listAllAirTaxis(ReviewStatus reviewStatus, int page, int pageSize) {
+		return doListAllProducts(reviewStatus, page, pageSize);
+	}
+
+	@Override
+	public long countAllAirTaxis(ReviewStatus reviewStatus) {
+		return doCountAllProducts(reviewStatus);
+	}
+
+	@Override
+	public Page<AirTaxi> listTenantAirTaxis(String tenantId, ReviewStatus reviewStatus, int page, int pageSize) {
+		return doListTenantProducts(tenantId, reviewStatus, page, pageSize);
+	}
+
+	@Override
+	public long countTenantAirTaxis(String tenantId, ReviewStatus reviewStatus) {
+		return doCountTenantProducts(tenantId, reviewStatus);
+	}
+
+	@Override
 	public Page<AirTaxi> listAirTaxis(int page, int pageSize) {
-		return doListAllProducts(page, pageSize);
-	}
-
-	@Override
-	public Page<AirTaxi> listAirTaxis(boolean approved, int page, int pageSize) {
-		return doListAllProducts(approved, page, pageSize);
-	}
-
-	@Override
-	public long countAirTaxis(boolean approved) {
-		return doCountAllProducts(approved);
-	}
-
-	@Override
-	public Page<AirTaxi> listAirTaxis(String tenantId, int page, int pageSize) {
-		return doListTenantProducts(tenantId, page, pageSize);
+		return doListProductsForUsers(page, pageSize);
 	}
 
 	@Override
 	public Page<AirTaxi> listAirTaxisByDeparture(String departure, int page, int pageSize) {
-		return Pages.adapt(airTaxiRepository.findByFlightRouteDepartureOrderByRankAsc(departure,
-				Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(
+				airTaxiRepository.listAirTaxisByDepartureForUser(departure, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<AirTaxi> listAirTaxisByArrival(String arrival, int page, int pageSize) {
-		return Pages.adapt(airTaxiRepository.findByFlightRouteArrivalOrderByRankAsc(arrival,
-				Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(
+				airTaxiRepository.listAirTaxisByArrivalForUser(arrival, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<AirTaxi> searchAirTaxisByLocation(String location, int page, int pageSize) {
-		return Pages.adapt(
-				airTaxiRepository.findByFlightRouteDepartureContainingOrFlightRouteArrivalContainingOrderByRankAsc(
-						location, Pages.createPageRequest(page, pageSize)));
+		return Pages
+				.adapt(airTaxiRepository.searchByLocationForUser(location, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTaxiId")

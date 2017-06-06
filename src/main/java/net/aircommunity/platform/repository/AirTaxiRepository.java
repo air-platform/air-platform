@@ -2,11 +2,17 @@ package net.aircommunity.platform.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import net.aircommunity.platform.model.AirTaxi;
 
 /**
- * @author guankai
+ * Repository interface for {@link AirTaxi} instances. Provides basic CRUD operations due to the extension of
+ * {@link JpaRepository}.
+ * 
+ * @author Bin.Zhang
  */
 public interface AirTaxiRepository extends BaseProductRepository<AirTaxi> {
 
@@ -17,8 +23,12 @@ public interface AirTaxiRepository extends BaseProductRepository<AirTaxi> {
 	 * @param pageable the page request
 	 * @return page of taxi
 	 */
-	Page<AirTaxi> findByFlightRouteDepartureContainingOrFlightRouteArrivalContainingOrderByRankAsc(String location,
-			Pageable pageable);
+	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND "
+			+ "( t.flightRoute.departure LIKE CONCAT('%',:location,'%') OR "
+			+ "t.flightRoute.arrival LIKE CONCAT('%',:location,'%') ) ORDER BY t.rank ASC, t.score DESC")
+	Page<AirTaxi> searchByLocationForUser(@Param("location") String location, Pageable pageable);
+	// Page<AirTaxi> findByFlightRouteDepartureContainingOrFlightRouteArrivalContainingOrderByRankAscScoreDesc(
+	// String location, Pageable pageable);
 
 	/**
 	 * Find air taxi by departure
@@ -27,7 +37,10 @@ public interface AirTaxiRepository extends BaseProductRepository<AirTaxi> {
 	 * @param pageable the page request
 	 * @return page of taxi
 	 */
-	Page<AirTaxi> findByFlightRouteDepartureOrderByRankAsc(String departure, Pageable pageable);
+	@Query("SELECT t FROM #{#entityName} t WHERE t.flightRoute.departure = :departure AND "
+			+ "t.published = TRUE ORDER BY t.rank ASC, t.score DESC")
+	Page<AirTaxi> listAirTaxisByDepartureForUser(@Param("departure") String departure, Pageable pageable);
+	// Page<AirTaxi> findByFlightRouteDepartureOrderByRankAscScoreDesc(String departure, Pageable pageable);
 
 	/**
 	 * Find air taxi by arrival
@@ -36,5 +49,8 @@ public interface AirTaxiRepository extends BaseProductRepository<AirTaxi> {
 	 * @param pageable the page request
 	 * @return page of taxi
 	 */
-	Page<AirTaxi> findByFlightRouteArrivalOrderByRankAsc(String arrival, Pageable pageable);
+	@Query("SELECT t FROM #{#entityName} t WHERE t.flightRoute.arrival = :arrival AND "
+			+ "t.published = TRUE ORDER BY t.rank ASC, t.score DESC")
+	Page<AirTaxi> listAirTaxisByArrivalForUser(@Param("arrival") String arrival, Pageable pageable);
+	// Page<AirTaxi> findByFlightRouteArrivalOrderByRankAscScoreDesc(String arrival, Pageable pageable);
 }

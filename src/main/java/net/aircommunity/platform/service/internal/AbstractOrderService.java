@@ -24,6 +24,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.common.OrderNoGenerator;
+import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AircraftAwareOrder;
 import net.aircommunity.platform.model.CharterableOrder;
 import net.aircommunity.platform.model.Order;
@@ -91,11 +92,16 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	// *********************
 
 	protected T doCreateOrder(String userId, T order) {
-		return doCreateOrder(userId, order, Order.Status.PENDING);
+		return doCreateOrder(userId, order, Order.Status.CREATED);
 	}
 
 	protected T doCreateOrder(String userId, T order, Order.Status status) {
 		User owner = findAccount(userId, User.class);
+		if (owner.getStatus() == Account.Status.LOCKED) {
+			LOG.warn("Account {} is locked, cannot be place orders", owner);
+			throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.ACCOUNT_PERMISSION_DENIED_LOCKED));
+		}
+
 		T newOrder = null;
 		try {
 			newOrder = type.newInstance();
@@ -270,11 +276,11 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		case PUBLISHED:
 			throwInvalidOrderStatus(orderId, status);
 
-		case PENDING:
+		case CREATED:
 			throwInvalidOrderStatus(orderId, status);
 
 		case PAID:
-			if (order.getStatus() != Order.Status.PENDING) {
+			if (order.getStatus() != Order.Status.CREATED) {
 				throwInvalidOrderStatus(orderId, status);
 			}
 			order.setPaymentDate(new Date());
@@ -288,7 +294,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			break;
 
 		case CANCELLED:
-			if (order.getStatus() != Order.Status.PENDING) {
+			if (order.getStatus() == Order.Status.PAID) {
 				throwInvalidOrderStatus(orderId, status);
 			}
 			order.setCancelledDate(new Date());

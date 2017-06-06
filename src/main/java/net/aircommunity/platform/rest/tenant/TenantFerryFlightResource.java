@@ -29,6 +29,7 @@ import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.FerryFlightService;
@@ -68,8 +69,9 @@ public class TenantFerryFlightResource extends TenantProductResourceSupport<Ferr
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<FerryFlight> list(@PathParam("tenantId") String tenantId,
-			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		return ferryFlightService.listFerryFlights(tenantId, page, pageSize);
+			@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		return ferryFlightService.listTenantFerryFlights(tenantId, reviewStatus, page, pageSize);
 	}
 
 	/**
