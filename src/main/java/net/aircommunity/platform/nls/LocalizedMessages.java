@@ -21,6 +21,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String PROMOTION_NOT_FOUND;
 	public static String PRODUCT_FAQ_NOT_FOUND;
 	public static String PRODUCT_FAMILY_NOT_FOUND;
+	public static String PRODUCT_FAMILY_NOT_APPROVED;
 	public static String PRODUCT_INVALID_DEPARTURE_DATE;
 
 	public static String ORDER_OPERATION_SUBMIT;
@@ -55,7 +56,8 @@ public class LocalizedMessages extends NLSResource {
 	public static String ACCOUNT_MOBILE_NOT_FOUND;
 	public static String ACCOUNT_PASSWORD_MISMATCH;
 	public static String ACCOUNT_UNAUTHORIZED;
-	public static String ACCOUNT_UNAUTHORIZED_LOCKED;
+	public static String ACCOUNT_UNAUTHORIZED_DISABLED;
+	public static String ACCOUNT_PERMISSION_DENIED_LOCKED;
 	public static String ACCOUNT_PERMISSION_DENIED;
 	public static String ACCOUNT_NOT_TENANT;
 	public static String ACCOUNT_UPDATE_ADMIN_STATUS_NOT_ALLOWED;
