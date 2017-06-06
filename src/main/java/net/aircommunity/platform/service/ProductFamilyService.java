@@ -66,6 +66,9 @@ public interface ProductFamilyService {
 	@Nonnull
 	Page<ProductFamily> listProductFamilies(@Nonnull String tenantId, int page, int pageSize);
 
+	@Nonnull
+	Page<ProductFamily> listProductFamilies(@Nonnull String tenantId, boolean approved, int page, int pageSize);
+
 	/**
 	 * List all product families by type and pagination.
 	 * 
@@ -77,6 +80,9 @@ public interface ProductFamilyService {
 	 */
 	@Nonnull
 	Page<ProductFamily> listProductFamiliesByCategory(@Nonnull String tenantId, Category category, int page,
+			int pageSize);
+
+	Page<ProductFamily> listProductFamiliesByCategory(String tenantId, Category category, boolean approved, int page,
 			int pageSize);
 
 	/**

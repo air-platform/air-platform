@@ -81,13 +81,19 @@ public class TenantProductFamilyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<ProductFamily> listAll(@PathParam("tenantId") String tenantId,
-			@QueryParam("category") Category category, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+			@QueryParam("category") Category category, @QueryParam("approved") Boolean approved,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all families with category: {}, page: {}, pageSize: {}", category, page, pageSize);
 		if (category != null) {
-			return productFamilyService.listProductFamiliesByCategory(tenantId, category, page, pageSize);
+			if (approved == null) {
+				return productFamilyService.listProductFamiliesByCategory(tenantId, category, page, pageSize);
+			}
+			return productFamilyService.listProductFamiliesByCategory(tenantId, category, approved, page, pageSize);
 		}
-		return productFamilyService.listProductFamilies(tenantId, page, pageSize);
+		if (approved == null) {
+			return productFamilyService.listProductFamilies(tenantId, page, pageSize);
+		}
+		return productFamilyService.listProductFamilies(tenantId, approved, page, pageSize);
 	}
 
 	/**

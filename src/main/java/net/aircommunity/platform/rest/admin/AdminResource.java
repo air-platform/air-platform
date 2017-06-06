@@ -205,12 +205,30 @@ public class AdminResource {
 	}
 
 	/**
+	 * Enable a account
+	 */
+	@POST
+	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/enable")
+	public void enableAccount(@PathParam("accountId") String accountId) {
+		accountService.updateAccountStatus(accountId, Account.Status.ENABLED);
+	}
+
+	/**
+	 * Disable a account
+	 */
+	@POST
+	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/disable")
+	public void disableccount(@PathParam("accountId") String accountId) {
+		accountService.updateAccountStatus(accountId, Account.Status.DISABLED);
+	}
+
+	/**
 	 * Lock a account
 	 */
 	@POST
 	@Path(ACCOUNTS_PATH_PREFIX + "/{accountId}/lock")
 	public void lockAccount(@PathParam("accountId") String accountId) {
-		accountService.updateAccountStatus(accountId, Account.Status.DISABLED);
+		accountService.updateAccountStatus(accountId, Account.Status.LOCKED);
 	}
 
 	/**

@@ -91,9 +91,22 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 	}
 
 	@Override
+	public Page<ProductFamily> listProductFamilies(String tenantId, boolean approved, int page, int pageSize) {
+		return Pages.adapt(productFamilyRepository.findByVendorIdAndApproved(tenantId, approved,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
 	public Page<ProductFamily> listProductFamiliesByCategory(String tenantId, Category category, int page,
 			int pageSize) {
 		return Pages.adapt(productFamilyRepository.findByVendorIdAndCategory(tenantId, category,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<ProductFamily> listProductFamiliesByCategory(String tenantId, Category category, boolean approved,
+			int page, int pageSize) {
+		return Pages.adapt(productFamilyRepository.findByVendorIdAndCategoryAndApproved(tenantId, category, approved,
 				Pages.createPageRequest(page, pageSize)));
 	}
 
