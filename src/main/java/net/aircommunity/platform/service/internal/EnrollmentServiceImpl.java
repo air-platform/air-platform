@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.Enrollment;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Order.Status;
@@ -50,9 +49,9 @@ public class EnrollmentServiceImpl extends AbstractVendorAwareOrderService<Enrol
 		tgt.setLicense(src.getLicense());
 		tgt.setLocation(src.getLocation());
 		tgt.setNote(src.getNote());
-		//
-		Course course = courseService.findCourse(src.getCourse().getId());
-		tgt.setCourse(course);
+		// XXX REMOVE
+		// Course course = courseService.findCourse(src.getCourse().getId());
+		// tgt.setCourse(course);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)

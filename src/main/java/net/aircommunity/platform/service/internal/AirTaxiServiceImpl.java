@@ -1,6 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -61,17 +60,38 @@ public class AirTaxiServiceImpl extends AircraftAwareProductService<AirTaxi> imp
 		return doListAllProducts(page, pageSize);
 	}
 
-	@Nonnull
+	@Override
+	public Page<AirTaxi> listAirTaxis(boolean approved, int page, int pageSize) {
+		return doListAllProducts(approved, page, pageSize);
+	}
+
+	@Override
+	public long countAirTaxis(boolean approved) {
+		return doCountAllProducts(approved);
+	}
+
 	@Override
 	public Page<AirTaxi> listAirTaxis(String tenantId, int page, int pageSize) {
 		return doListTenantProducts(tenantId, page, pageSize);
 	}
 
-	@Nonnull
 	@Override
 	public Page<AirTaxi> listAirTaxisByDeparture(String departure, int page, int pageSize) {
+		return Pages.adapt(airTaxiRepository.findByFlightRouteDepartureOrderByRankAsc(departure,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<AirTaxi> listAirTaxisByArrival(String arrival, int page, int pageSize) {
+		return Pages.adapt(airTaxiRepository.findByFlightRouteArrivalOrderByRankAsc(arrival,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<AirTaxi> searchAirTaxisByLocation(String location, int page, int pageSize) {
 		return Pages.adapt(
-				airTaxiRepository.findByFlightRouteDeparture(departure, Pages.createPageRequest(page, pageSize)));
+				airTaxiRepository.findByFlightRouteDepartureContainingOrFlightRouteArrivalContainingOrderByRankAsc(
+						location, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTaxiId")
@@ -95,5 +115,4 @@ public class AirTaxiServiceImpl extends AircraftAwareProductService<AirTaxi> imp
 	protected BaseProductRepository<AirTaxi> getProductRepository() {
 		return airTaxiRepository;
 	}
-
 }

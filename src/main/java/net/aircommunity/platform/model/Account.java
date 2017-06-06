@@ -14,6 +14,9 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
  * Account profile.
@@ -51,6 +54,7 @@ public class Account extends Persistable {
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	protected Date creationDate;
 
 	@Column(name = "avatar")

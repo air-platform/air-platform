@@ -7,7 +7,7 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.Min;
 
 /**
- * Product of an {@code Tenant} with price.
+ * Product of an {@code Tenant} with single price.
  * 
  * @author Bin.Zhang
  */

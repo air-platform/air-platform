@@ -13,6 +13,7 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.PricedProduct;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.ProductFaq;
 import net.aircommunity.platform.model.Tenant;
@@ -50,14 +51,18 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	// Generic CRUD shared
 	// *********************
 
+	protected Tenant doGetVendor(String tenantId) {
+		return findAccount(tenantId, Tenant.class);
+	}
+
 	protected final T doCreateProduct(String tenantId, T product) {
-		Tenant vendor = findAccount(tenantId, Tenant.class);
+		Tenant vendor = doGetVendor(tenantId);
 		T newProduct = null;
 		try {
 			newProduct = type.newInstance();
 		}
 		catch (Exception unexpected) {
-			LOG.error(String.format("Failed to create instance %s for user %s, cause: %s", type, tenantId,
+			LOG.error(String.format("Failed to create instance %s for user %s, cause: %s", type, vendor.getId(),
 					unexpected.getMessage()), unexpected);
 			throw newInternalException();
 		}
@@ -66,14 +71,21 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		newProduct.setClientManagers(product.getClientManagers());
 		newProduct.setDescription(product.getDescription());
 		newProduct.setRank(0);
-		newProduct.setPublished(false);
+		newProduct.setPublished(true);
+		newProduct.setApproved(false);
+		// priced
+		if (PricedProduct.class.isAssignableFrom(product.getClass())) {
+			PricedProduct newPricedProduct = PricedProduct.class.cast(newProduct);
+			PricedProduct pricedProduct = PricedProduct.class.cast(product);
+			newPricedProduct.setPrice(pricedProduct.getPrice());
+		}
 		copyProperties(product, newProduct);
 		// set props cannot be overridden by subclass
 		newProduct.setCreationDate(new Date());
 		newProduct.setVendor(vendor);
 		final T productToSaved = newProduct;
 		return safeExecute(() -> getProductRepository().save(productToSaved), "Create %s: %s for tenant %s failed",
-				type.getSimpleName(), product, tenantId);
+				type.getSimpleName(), product, vendor.getId());
 	}
 
 	protected final T doFindProduct(String productId) {
@@ -109,6 +121,22 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		}
 	}
 
+	protected final T doReviewProduct(String productId, boolean approved, String rejectedReason) {
+		T product = doFindProduct(productId);
+		try {
+			product.setApproved(approved);
+			if (!approved) {
+				product.setRejectedReason(rejectedReason);
+			}
+			return getProductRepository().save(product);
+		}
+		catch (Exception e) {
+			LOG.error(String.format("Update %s: %s with approved: %b failed, cause: %s", type.getSimpleName(),
+					productId, approved, e.getMessage()), e);
+			throw newInternalException();
+		}
+	}
+
 	protected final T doUpdateProductRank(String productId, int rank) {
 		T product = doFindProduct(productId);
 		if (rank < 0) {
@@ -136,6 +164,21 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	protected final Page<T> doListAllProducts(int page, int pageSize) {
 		return Pages.adapt(
 				getProductRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+	}
+
+	/**
+	 * For ADMIN (Products of any tenant)
+	 */
+	protected final Page<T> doListAllProducts(boolean approved, int page, int pageSize) {
+		return Pages.adapt(getProductRepository().findByApprovedOrderByCreationDateDesc(approved,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	/**
+	 * For ADMIN (Products of any tenant)
+	 */
+	protected final long doCountAllProducts(boolean approved) {
+		return getProductRepository().countByApproved(approved);
 	}
 
 	protected final void doDeleteProduct(String productId) {

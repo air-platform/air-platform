@@ -6,7 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * AirTaxi
+ * AirTaxi.
+ * 
+ * @author guankai
  */
 @Entity
 @Table(name = "air_platfrom_airtaxi")

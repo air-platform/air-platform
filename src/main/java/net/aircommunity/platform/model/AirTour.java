@@ -8,6 +8,8 @@ import javax.persistence.Table;
 
 /**
  * AirTour
+ * 
+ * @author guankai
  */
 @Entity
 @Table(name = "air_platfrom_airtour", indexes = { @Index(name = "idx_city", columnList = "city") })

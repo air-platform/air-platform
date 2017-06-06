@@ -27,7 +27,7 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 
 	protected static final String CACHE_NAME_PRD_FAQ = "cache.product-faq";
 
-	// TODO improve cache per tenant basis
+	// XXX improve cache per tenant basis
 
 	@Resource
 	private BaseProductRepository<Product> baseProductRepository;
@@ -45,6 +45,24 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 	@Override
 	public Product publishProduct(String productId, boolean published) {
 		return doPublishProduct(productId, published);
+	}
+
+	@CachePut(cacheNames = CACHE_NAME, key = "#productId")
+	@Override
+	public Product reviewProduct(String productId, boolean approved, String rejectedReason) {
+		return doReviewProduct(productId, approved, rejectedReason);
+	}
+
+	@Override
+	public Page<Product> listAllProducts(int page, int pageSize) {
+		return Pages
+				.adapt(baseProductRepository.findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<Product> listAllProducts(boolean approved, int page, int pageSize) {
+		return Pages.adapt(baseProductRepository.findByApprovedOrderByCreationDateDesc(approved,
+				Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#productId")
@@ -106,5 +124,4 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 	protected BaseProductRepository<Product> getProductRepository() {
 		return baseProductRepository;
 	}
-
 }

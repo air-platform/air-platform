@@ -14,7 +14,9 @@ import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
- * Created by guankai on 11/04/2017.
+ * School.
+ * 
+ * @author guankai
  */
 @Entity
 @Table(name = "air_platform_school")

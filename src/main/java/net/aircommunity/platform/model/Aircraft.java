@@ -1,11 +1,20 @@
 package net.aircommunity.platform.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.micro.annotation.constraint.NotEmpty;
+import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
  * Aircraft for (Taxi, Transportation, Tour).
@@ -14,7 +23,7 @@ import io.micro.annotation.constraint.NotEmpty;
  */
 @Entity
 @Table(name = "air_platfrom_aircraft")
-public class Aircraft extends Product {
+public class Aircraft extends Persistable { // TODO REMOVE extends Product
 	private static final long serialVersionUID = 1L;
 
 	// Flight NO. global unique, e.g. 353252
@@ -22,11 +31,21 @@ public class Aircraft extends Product {
 	@Column(name = "flight_no", nullable = false, unique = true)
 	private String flightNo;
 
+	// Flight name
+	@NotEmpty
+	@Column(name = "name", nullable = false)
+	private String name;
+
+	@Column(name = "image")
+	private String image;
+
 	// e.g. G550
+	@NotEmpty
 	@Column(name = "type", nullable = false)
 	private String type;
 
 	// e.g. fixed-wing / helicopter / balloon
+	@NotEmpty
 	@Column(name = "category", nullable = false)
 	private String category;
 
@@ -40,11 +59,40 @@ public class Aircraft extends Product {
 	@Column(name = "min_passengers")
 	private int minPassengers;
 
+	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "creation_date", nullable = false)
+	private Date creationDate;
+
+	@Lob
+	@Column(name = "description")
+	private String description;
+
+	@ManyToOne
+	@JoinColumn(name = "tenant_id", nullable = false)
+	@XmlJavaTypeAdapter(TenantAdapter.class)
+	private Tenant vendor;
+
 	public Aircraft() {
 	}
 
 	public Aircraft(String id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public String getFlightNo() {
@@ -85,6 +133,30 @@ public class Aircraft extends Product {
 
 	public void setMinPassengers(int minPassengers) {
 		this.minPassengers = minPassengers;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Tenant getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(Tenant vendor) {
+		this.vendor = vendor;
 	}
 
 	@Override

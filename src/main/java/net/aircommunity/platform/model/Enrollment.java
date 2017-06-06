@@ -1,7 +1,6 @@
 package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -34,10 +33,6 @@ public class Enrollment extends VendorAwareOrder {
 	@NotEmpty
 	@Column(name = "location", nullable = false)
 	private String location;
-
-	// customer contact information for this order
-	@Embedded
-	private Contact contact;
 
 	@NotNull
 	@ManyToOne
@@ -75,31 +70,19 @@ public class Enrollment extends VendorAwareOrder {
 		this.location = location;
 	}
 
-	public Contact getContact() {
-		return contact;
-	}
-
-	public void setContact(Contact contact) {
-		this.contact = contact;
-	}
-
-	public Course getCourse() {
-		return course;
-	}
-
-	public void setCourse(Course course) {
-		this.course = course;
-		this.vendor = course.getVendor();
-	}
-
 	@Override
 	public Type getType() {
 		return Type.COURSE;
 	}
 
 	@Override
-	public Product getProduct() {
+	public Course getProduct() {
 		return course;
+	}
+
+	@Override
+	protected void doSetProduct(Product product) {
+		course = (Course) product;
 	}
 
 	@Override
@@ -112,5 +95,4 @@ public class Enrollment extends VendorAwareOrder {
 				.append(", note=").append(note).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
-
 }

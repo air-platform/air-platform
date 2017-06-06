@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.FerryFlightOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Order.Status;
@@ -57,14 +56,13 @@ public class FerryFlightOrderServiceImpl extends AbstractVendorAwareOrderService
 	@Override
 	protected void copyProperties(FerryFlightOrder src, FerryFlightOrder tgt) {
 		tgt.setContact(src.getContact());
-		tgt.setNote(src.getNote());
 		tgt.setPassengers(src.getPassengers());
-		//
-		FerryFlight ferryFlight = src.getFerryFlight();
-		if (ferryFlight != null) {
-			ferryFlight = ferryFlightService.findFerryFlight(ferryFlight.getId());
-			tgt.setFerryFlight(ferryFlight);
-		}
+		// XXX REMOVE
+		// FerryFlight ferryFlight = src.getFerryFlight();
+		// if (ferryFlight != null) {
+		// ferryFlight = ferryFlightService.findFerryFlight(ferryFlight.getId());
+		// tgt.setFerryFlight(ferryFlight);
+		// }
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")

@@ -2,8 +2,6 @@ package net.aircommunity.platform.model;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -21,11 +19,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.google.common.base.Splitter;
 
 import io.micro.annotation.constraint.NotEmpty;
 import io.micro.common.Strings;
-import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.constraint.ContactList;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
@@ -53,9 +49,19 @@ public abstract class Product extends Reviewable {
 	@Column(name = "score", nullable = false)
 	protected double score;
 
+	// TODO useful?
+	@Column(name = "discount", nullable = true)
+	protected double discount;
+
 	// product rank (low rank will considered as hot, sort by rank ASC)
 	@Column(name = "rank")
 	protected int rank = 0;
+
+	// whether it can be published or not
+	// e.g. product put on sale/pull off shelves
+	@Column(name = "published", nullable = false)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	protected boolean published = false;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
@@ -108,6 +114,14 @@ public abstract class Product extends Reviewable {
 		this.score = score;
 	}
 
+	public boolean isPublished() {
+		return published;
+	}
+
+	public void setPublished(boolean published) {
+		this.published = published;
+	}
+
 	public int getRank() {
 		return rank;
 	}
@@ -129,24 +143,14 @@ public abstract class Product extends Reviewable {
 	}
 
 	public void setClientManagers(String clientManagers) {
-		this.clientManagers = clientManagers;
+		this.clientManagers = Contact.normalizeContacts(clientManagers);
 	}
 
 	public Set<Contact> getClientManagerContacts() {
 		if (Strings.isBlank(clientManagers)) {
 			return Collections.emptySet();
 		}
-		Set<Contact> clientManagerContacts = new HashSet<>();
-		// XXX NOTE: will throw IllegalArgumentException when splitting if the format is not valid
-		Map<String, String> contacts = Splitter.on(Constants.CONTACT_SEPARATOR).trimResults().omitEmptyStrings()
-				.withKeyValueSeparator(Constants.CONTACT_INFO_SEPARATOR).split(clientManagers);
-		contacts.forEach((person, email) -> {
-			Contact contact = new Contact();
-			contact.setEmail(email.trim());
-			contact.setPerson(person.trim());
-			clientManagerContacts.add(contact);
-		});
-		return clientManagerContacts;
+		return Contact.parseContacts(clientManagers);
 	}
 
 	public String getDescription() {

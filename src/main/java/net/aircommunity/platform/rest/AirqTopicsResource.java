@@ -9,13 +9,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.fasterxml.jackson.annotation.JsonView;
-
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.Topic;
-import net.aircommunity.platform.service.TopicService;
+import net.aircommunity.platform.model.AirqTopic;
+import net.aircommunity.platform.service.AirqTopicService;
 
 /**
  * AirQ Topics RESTful API.
@@ -25,16 +22,15 @@ import net.aircommunity.platform.service.TopicService;
 @Api
 @RESTful
 @PermitAll
-@Path("topics")
-public class TopicsResource {
+@Path("topics") // TODO rename to airq/topics?
+public class AirqTopicsResource {
 
 	@Resource
-	private TopicService topicService;
+	private AirqTopicService airqTopicService;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
-	public List<Topic> list() {
-		return topicService.listRecentTopics();
+	public List<AirqTopic> list() {
+		return airqTopicService.listRecentTopics();
 	}
 }

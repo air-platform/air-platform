@@ -34,7 +34,37 @@ public interface CommonProductService {
 	 * @return product update
 	 */
 	@Nonnull
-	Product publishProduct(String productId, boolean published);
+	Product publishProduct(@Nonnull String productId, boolean published);
+
+	/**
+	 * Review a product to approve or not (by platform ADMIN only)
+	 * 
+	 * @param productId the productId
+	 * @param approved the product is approved or not
+	 * @param rejectedReason the rejected reason if it's NOT approved
+	 * @return product update
+	 */
+	@Nonnull
+	Product reviewProduct(@Nonnull String productId, boolean approved, String rejectedReason);
+
+	/**
+	 * List all products.
+	 * 
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of Product to be reviewed
+	 */
+	Page<Product> listAllProducts(int page, int pageSize);
+
+	/**
+	 * List all products approve or not.
+	 * 
+	 * @param approved the approved status
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of Product to be reviewed
+	 */
+	Page<Product> listAllProducts(boolean approved, int page, int pageSize);
 
 	/**
 	 * Delete a product.

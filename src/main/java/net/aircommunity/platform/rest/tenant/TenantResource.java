@@ -39,6 +39,17 @@ public class TenantResource {
 	// Air Jet
 	// ***********************
 	@Resource
+	private TenantProductFamilyResource tenantProductFamilyResource;
+
+	@Path("product/families")
+	public TenantProductFamilyResource productFamilies() {
+		return tenantProductFamilyResource;
+	}
+
+	// ***********************
+	// Air Jet
+	// ***********************
+	@Resource
 	private TenantFleetResource tenantFleetResource;
 
 	@Path("fleets")

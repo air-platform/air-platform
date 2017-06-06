@@ -6,10 +6,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * Created by luocheng on 2017/4/17.
+ * AirQ Topic
+ * 
+ * @author luocheng
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Topic implements Serializable {
+public class AirqTopic implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String category;

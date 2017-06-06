@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,11 +22,13 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
- * Base Order model.
+ * Base Order model. TODO have multiple paymentInfo? 分期支付
  * 
  * @author Bin.Zhang
  */
@@ -35,21 +38,37 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
 public abstract class Order extends Persistable {
 	private static final long serialVersionUID = 1L;
 
+	// TODO add alipay TradeNo?
+	// @XmlElement --> product
+	// @Column(name = "discount", nullable = true)
+	// protected double discount;
+
 	// Order Number
 	@XmlElement
 	@Column(name = "order_no", nullable = false, unique = true)
 	protected String orderNo;
+
+	// points used in this order
+	@XmlElement
+	@Column(name = "points_used")
+	protected int pointsUsed;
+
+	@XmlElement
+	@Column(name = "quantity", nullable = false)
+	protected int quantity = 1;
 
 	// Order total price
 	@XmlElement
 	@Column(name = "total_price", nullable = false)
 	protected double totalPrice;
 
+	// TODO add nextStatus?
 	@XmlElement
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
 	protected Status status;
 
+	// only allow comment once per order
 	@XmlElement
 	@Column(name = "is_commented", nullable = false)
 	protected Boolean commented = Boolean.FALSE;
@@ -57,33 +76,53 @@ public abstract class Order extends Persistable {
 	@XmlElement
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	protected Date creationDate;
 
 	@XmlElement
 	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "last_modified_date", nullable = false)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	protected Date lastModifiedDate;
+
+	@XmlElement
+	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "payment_date")
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	protected Date paymentDate;
 
 	@XmlElement
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "finished_date")
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	protected Date finishedDate;
 
 	@XmlElement
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "cancelled_date")
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	protected Date cancelledDate;
 
 	@XmlElement
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "deleted_date")
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	@JsonView(JsonViews.Admin.class)
 	protected Date deletedDate;
 
-	// information for customer, reject reason?
+	@XmlElement
+	@Embedded
+	protected PaymentInfo paymentInfo;
+
+	// customer contact information for this order
+	@Embedded
+	protected Contact contact;
+
+	// information to customer if the order cannot be accepted, reject reason? TODO
 	@XmlElement
 	@Lob
-	@Column(name = "confirmation")
-	protected String confirmation;
+	@Column(name = "closed_reason")
+	protected String closedReason;
 
 	// customer extra information for an order
 	@XmlElement
@@ -92,9 +131,9 @@ public abstract class Order extends Persistable {
 	protected String note;
 
 	@XmlElement
-	@XmlJavaTypeAdapter(AccountAdapter.class)
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
+	@XmlJavaTypeAdapter(AccountAdapter.class)
 	protected User owner;
 
 	public String getOrderNo() {
@@ -105,12 +144,36 @@ public abstract class Order extends Persistable {
 		this.orderNo = orderNo;
 	}
 
+	public int getPointsUsed() {
+		return pointsUsed;
+	}
+
+	public void setPointsUsed(int pointsUsed) {
+		this.pointsUsed = pointsUsed;
+	}
+
 	public Status getStatus() {
 		return status;
 	}
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 	public Boolean getCommented() {
@@ -127,6 +190,14 @@ public abstract class Order extends Persistable {
 
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
 	}
 
 	public Date getPaymentDate() {
@@ -161,6 +232,30 @@ public abstract class Order extends Persistable {
 		this.deletedDate = deletedDate;
 	}
 
+	public PaymentInfo getPaymentInfo() {
+		return paymentInfo;
+	}
+
+	public void setPaymentInfo(PaymentInfo paymentInfo) {
+		this.paymentInfo = paymentInfo;
+	}
+
+	public String getClosedReason() {
+		return closedReason;
+	}
+
+	public void setClosedReason(String closedReason) {
+		this.closedReason = closedReason;
+	}
+
+	public Contact getContact() {
+		return contact;
+	}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
+	}
+
 	public String getNote() {
 		return note;
 	}
@@ -190,6 +285,8 @@ public abstract class Order extends Persistable {
 	@XmlTransient
 	public abstract Product getProduct();
 
+	public abstract void setProduct(Product product);
+
 	/**
 	 * Order product type
 	 */
@@ -213,37 +310,49 @@ public abstract class Order extends Persistable {
 		PUBLISHED,
 
 		/**
-		 * Pending
-		 * @deprecated
-		 */
-		PENDING,
-
-		/**
 		 * Created
 		 */
 		CREATED,
 
-		// TODO
+		/**
+		 * Confirmation
+		 */
+		PENDING, CONFIRMED,
 
 		/**
-		 * Confirmed by Tenant
+		 * Contract (for airjet)
 		 */
-		CONFIRMED,
+		CONTRACT_PENDING, CONTRACT_SIGNED,
 
 		/**
-		 * Paid
+		 * Payment
 		 */
-		PAID,
+		TO_BE_PAID, PAID,
+
+		/**
+		 * Ticketing
+		 */
+		TICKETING, TICKET_RELEASED,
+
+		/**
+		 * Waiting to travel
+		 */
+		WAITING_TO_TRAVEL,
 
 		/**
 		 * Refund
 		 */
-		REFUND, // TODO
+		REFUNDING, REFUNDED,
 
 		/**
 		 * Finished
 		 */
 		FINISHED,
+
+		/**
+		 * Close due to timeout or close by admin or tenant
+		 */
+		CLOSED,
 
 		/**
 		 * Cancelled

@@ -13,7 +13,7 @@ import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
- * Passenger of an {@code Account}
+ * Passenger of an {@code User}
  * 
  * @author Bin.Zhang
  */

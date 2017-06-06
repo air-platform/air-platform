@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * Airport information.
+ * Airport information managed by ADMIN.
  * 
  * @author Bin.Zhang
  */

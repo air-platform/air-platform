@@ -1,6 +1,10 @@
 package net.aircommunity.platform.service.internal;
 
 import java.lang.reflect.ParameterizedType;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
@@ -14,9 +18,11 @@ import org.springframework.retry.support.RetryTemplate;
 
 import com.google.common.eventbus.EventBus;
 
+import io.micro.common.DateFormats;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.model.AircraftAwareOrder;
 import net.aircommunity.platform.model.CharterableOrder;
@@ -24,22 +30,30 @@ import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.PassengerItem;
+import net.aircommunity.platform.model.PricedProduct;
+import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.SalesPackage;
 import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.repository.SalesPackageRepository;
+import net.aircommunity.platform.service.CommonProductService;
 
 /**
- * Abstract Order service support.
+ * Abstract Order service support. TODO order status transition
  * 
  * @author Bin.Zhang
  */
 abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractOrderService.class);
 
+	private static final SimpleDateFormat DEPARTURE_DATE_FORMATTER = DateFormats.simple("yyyy-MM-dd");
+
 	protected Class<T> type;
+
+	@Resource
+	private Configuration configuration;
 
 	@Resource
 	private EventBus eventBus;
@@ -55,6 +69,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	@Resource
 	private PassengerRepository passengerRepository;
+
+	@Resource
+	private CommonProductService commonProductService;
 
 	@PostConstruct
 	@SuppressWarnings("unchecked")
@@ -88,18 +105,23 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 					unexpected.getMessage()), unexpected);
 			throw newInternalException();
 		}
-		newOrder.setCreationDate(new Date());
-		newOrder.setStatus(status);
-		newOrder.setCommented(false);
-		newOrder.setOrderNo(nextOrderNo());
-		if (CharterableOrder.class.isAssignableFrom(newOrder.getClass())) {
-			CharterableOrder newCharterableOrder = CharterableOrder.class.cast(newOrder);
-			CharterableOrder charterableOrder = CharterableOrder.class.cast(order);
-			newCharterableOrder.setChartered(charterableOrder.isChartered());
-		}
-		copyProperties(order, newOrder);
-		// set vendor
+		// retrieve product related to this order
+		String productId = order.getProduct().getId();
+		Product product = commonProductService.findProduct(productId);
+		newOrder.setProduct(product);
 		newOrder.setOwner(owner);
+
+		// set base properties
+		newOrder.setOrderNo(nextOrderNo());
+		newOrder.setStatus(status);
+		newOrder.setCreationDate(new Date());
+		newOrder.setLastModifiedDate(newOrder.getCreationDate());
+		newOrder.setCommented(false);
+
+		// copy common properties
+		copyCommonProperties(order, newOrder);
+		// copy order specific properties
+		copyProperties(order, newOrder);
 		final T orderToSave = newOrder;
 		return safeExecute(() -> {
 			T orderSaved = getOrderRepository().save(orderToSave);
@@ -114,15 +136,66 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		});
 	}
 
-	protected void copyPropertiesAircraftAware(AircraftAwareOrder src, AircraftAwareOrder tgt) {
-		SalesPackage salesPackage = src.getSalesPackage();
-		SalesPackage found = salesPackageRepository.findOne(salesPackage.getId());
-		if (found == null) {
-			LOG.error("SalesPackage {} is not found", salesPackage);
+	protected void copyProperties(T src, T tgt) {
+	}
+
+	private void copyCommonProperties(Order src, Order tgt) {
+		tgt.setQuantity(src.getQuantity());
+		tgt.setNote(src.getNote());
+		tgt.setContact(src.getContact());
+		// TODO newOrder.setPaymentInfo
+		// TODO newOrder.setConfirmation (reject reason)
+
+		// XXX NOTE: price is not set for CharterOrder (AirJet), only price/per hour
+		// need to set manually after customer service calculated, so total price would be 0 for CharterOrder
+		double unitPrice = 0;
+		// priced
+		if (PricedProduct.class.isAssignableFrom(src.getProduct().getClass())) {
+			PricedProduct pricedProduct = PricedProduct.class.cast(src.getProduct());
+			unitPrice = pricedProduct.getPrice();
+		}
+		// charterable (FerryFlightOrder only ATM)
+		if (CharterableOrder.class.isAssignableFrom(tgt.getClass())) {
+			CharterableOrder newCharterableOrder = CharterableOrder.class.cast(tgt);
+			CharterableOrder charterableOrder = CharterableOrder.class.cast(src);
+			newCharterableOrder.setChartered(charterableOrder.isChartered());
+		}
+		// sales package (AircraftAwareOrder)
+		if (AircraftAwareOrder.class.isAssignableFrom(tgt.getClass())) {
+			AircraftAwareOrder newAircraftAwareOrder = AircraftAwareOrder.class.cast(tgt);
+			AircraftAwareOrder aircraftAwareOrder = AircraftAwareOrder.class.cast(src);
+			copyPropertiesAircraftAware(aircraftAwareOrder, newAircraftAwareOrder);
+			unitPrice = newAircraftAwareOrder.getSalesPackagePrice();
+		}
+		double totalPrice = Math.floor(unitPrice * src.getQuantity());
+		tgt.setTotalPrice(totalPrice);
+	}
+
+	private void copyPropertiesAircraftAware(AircraftAwareOrder src, AircraftAwareOrder tgt) {
+		SalesPackage salesPackage = salesPackageRepository.findOne(src.getSalesPackage().getId());
+		if (salesPackage == null) {
+			LOG.error("SalesPackage ID: {} is not found", src.getSalesPackage().getId());
 			throw new AirException(Codes.SALESPACKAGE_NOT_FOUND, M.msg(M.SALESPACKAGE_NOT_FOUND));
 		}
+
+		// caculate price based on DepartureDate of the order
+		Date date = src.getDepartureDate();
+		LocalDate departureDate = date.toInstant().atZone(ZoneId.of(configuration.getTimeZone())).toLocalDate();
+		int days = (int) ChronoUnit.DAYS.between(LocalDate.now(), departureDate);
+		if (!SalesPackage.DAYS_RANGE.contains(days)) {
+			throw new AirException(Codes.PRODUCT_INVALID_DEPARTURE_DATE,
+					M.msg(M.PRODUCT_INVALID_DEPARTURE_DATE, DEPARTURE_DATE_FORMATTER.format(date)));
+		}
+		double salesPackagePrice = salesPackage.getPrice(days);
+		tgt.setSalesPackagePrice(salesPackagePrice);
 		tgt.setSalesPackage(salesPackage);
-		tgt.setSalesPackageNum(src.getSalesPackageNum());
+		// set properties
+		tgt.setTimeSlot(src.getTimeSlot());
+		tgt.setDepartureDate(src.getDepartureDate());
+		Set<PassengerItem> passengers = src.getPassengers();
+		if (passengers != null) {
+			tgt.setPassengers(applyPassengers(passengers));
+		}
 	}
 
 	/**
@@ -155,7 +228,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	protected T doFindOrder(String orderId) {
 		T order = doFindOrder0(orderId);
 		// XXX CANNOT load all passengers for tour, taxi , trans
-		// T order = getOrderRepository().findOne(orderId);
 		if (order == null || order.getStatus() == Order.Status.DELETED) {
 			LOG.error("{}: {} is not found", type.getSimpleName(), orderId);
 			throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderId));
@@ -174,12 +246,22 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	protected T doUpdateOrder(String orderId, T newOrder) {
 		T order = doFindOrder(orderId); // FIXME findOrder is NOT cached?
+		copyCommonProperties(newOrder, order);
 		copyProperties(newOrder, order);
+		order.setLastModifiedDate(new Date());
 		return safeExecute(() -> getOrderRepository().save(order), "Update %s: %s with %s failed", type.getSimpleName(),
 				orderId, newOrder);
 	}
 
-	protected void copyProperties(T src, T tgt) {
+	/**
+	 * Update total price of an order
+	 */
+	protected T doUpdateOrderPrice(String orderId, double newPrice) {
+		T order = doFindOrder(orderId);
+		order.setLastModifiedDate(new Date());
+		order.setTotalPrice(newPrice);
+		return safeExecute(() -> getOrderRepository().save(order), "Update %s price: %s to %d failed",
+				type.getSimpleName(), orderId, newPrice);
 	}
 
 	protected T doUpdateOrderStatus(String orderId, Order.Status status) {
@@ -222,6 +304,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		default:// noop
 		}
 		order.setStatus(status);
+		order.setLastModifiedDate(new Date());
 		return safeExecute(() -> {
 			T orderUpdated = getOrderRepository().save(order);
 			if (orderUpdated.getStatus() == Order.Status.CANCELLED) {

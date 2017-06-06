@@ -20,6 +20,9 @@ public class Configuration {
 
 	// AIR
 
+	@Value("${air.time-zone}")
+	private String timeZone;
+
 	@Value("${air.name}")
 	private String company;
 
@@ -112,6 +115,10 @@ public class Configuration {
 
 	@Value("${air.idcard.token}")
 	private String idcardToken;
+
+	public String getTimeZone() {
+		return timeZone;
+	}
 
 	public String getCompany() {
 		return company;

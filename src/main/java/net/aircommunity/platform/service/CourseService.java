@@ -29,6 +29,19 @@ public interface CourseService {
 	Page<Course> listCourses(int page, int pageSize);
 
 	/**
+	 * List all courses by pagination.
+	 * 
+	 * @param approved the approved status
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of AirTransports or empty
+	 */
+	@Nonnull
+	Page<Course> listCourses(boolean approved, int page, int pageSize);
+
+	long countCourses(boolean approved);
+
+	/**
 	 * List all courses for TENANT
 	 */
 	@Nonnull
@@ -44,7 +57,10 @@ public interface CourseService {
 	Page<Course> listCoursesBySchool(@Nonnull String schoolId, int page, int pageSize);
 
 	@Nonnull
-	Page<Course> listCoursesByAirType(@Nonnull String airType, int page, int pageSize);
+	Page<Course> listCoursesByAircraftType(@Nonnull String aircraftType, int page, int pageSize);
+
+	@Nonnull
+	Page<Course> listCoursesByLocation(@Nonnull String location, int page, int pageSize);
 
 	@Nonnull
 	Page<Course> listCoursesWithConditions(@Nullable String location, @Nullable String license,

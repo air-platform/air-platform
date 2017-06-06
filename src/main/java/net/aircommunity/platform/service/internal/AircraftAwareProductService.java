@@ -33,6 +33,8 @@ abstract class AircraftAwareProductService<T extends AircraftAwareProduct> exten
 					aircraft = aircraftService.findAircraft(aircraft.getId());
 					salesPackage.setAircraft(aircraft);
 				}
+				// set to normalize
+				salesPackage.setPrices(salesPackage.getPrices());
 			});
 		}
 		return srcSalesPackages;
@@ -40,5 +42,4 @@ abstract class AircraftAwareProductService<T extends AircraftAwareProduct> exten
 
 	protected void doCopyProperties(T src, T tgt) {
 	}
-
 }

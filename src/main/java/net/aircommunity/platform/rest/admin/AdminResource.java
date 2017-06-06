@@ -2,6 +2,7 @@ package net.aircommunity.platform.rest.admin;
 
 import java.net.URI;
 import java.util.Base64;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -13,6 +14,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -25,6 +27,8 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import io.micro.core.security.AccessTokenService;
 import io.swagger.annotations.Api;
@@ -32,8 +36,12 @@ import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.AccessToken;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountRequest;
+import net.aircommunity.platform.model.Contact;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Product.Category;
+import net.aircommunity.platform.model.ProductFamily;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.Tenant.VerificationStatus;
@@ -49,6 +57,7 @@ import net.aircommunity.platform.rest.tenant.TenantCourseResource;
 import net.aircommunity.platform.rest.tenant.TenantFerryFlightResource;
 import net.aircommunity.platform.rest.tenant.TenantFleetResource;
 import net.aircommunity.platform.rest.tenant.TenantJetCardResource;
+import net.aircommunity.platform.rest.tenant.TenantProductFamilyResource;
 import net.aircommunity.platform.rest.tenant.TenantSchoolResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTaxiOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTourOrderResource;
@@ -66,6 +75,8 @@ import net.aircommunity.platform.rest.user.JetcardOrderResource;
 import net.aircommunity.platform.rest.user.UserEnrollmentResource;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CommonOrderService;
+import net.aircommunity.platform.service.PlatformService;
+import net.aircommunity.platform.service.ProductFamilyService;
 
 /**
  * Admin RESTful API.
@@ -84,6 +95,9 @@ public class AdminResource {
 	private static final String USERS_PATH_PREFIX = "users";
 
 	@Resource
+	private PlatformService platformService;
+
+	@Resource
 	private AccountService accountService;
 
 	@Resource
@@ -97,6 +111,30 @@ public class AdminResource {
 	@PermitAll
 	public void ping() {
 		LOG.info("Got ping");
+	}
+
+	// **************************************
+	// Platform generic settings
+	// **************************************
+
+	/**
+	 * set platform client managers
+	 */
+	@PUT
+	@Path("settings")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void setPlatformClientManagers(@NotNull @Valid Set<Contact> clientManagers) {
+		platformService.setPlatformClientManagers(clientManagers);
+	}
+
+	/**
+	 * set platform client managers
+	 */
+	@GET
+	@Path("settings")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Set<Contact> getPlatformClientManagers() {
+		return platformService.getPlatformClientManagers();
 	}
 
 	// **************************************
@@ -214,6 +252,19 @@ public class AdminResource {
 	// *************
 	// Common
 	// *************
+
+	// ***********************
+	// Product review
+	// ***********************
+
+	@Resource
+	private AdminProductResource adminProductResource;
+
+	@Path("products")
+	public AdminProductResource products() {
+		return adminProductResource;
+	}
+
 	// ***********************
 	// Promotion
 	// ***********************
@@ -362,6 +413,37 @@ public class AdminResource {
 	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/aircrafts")
 	public TenantAircraftResource aircrafts(@PathParam("tenantId") String tenantId) {
 		return tenantAircraftResource;
+	}
+
+	// ***********************
+	// ProductFamily
+	// ***********************
+
+	@Resource
+	private ProductFamilyService productFamilyService;
+
+	/**
+	 * List all
+	 */
+	@GET
+	@Path("product/families")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
+	public Page<ProductFamily> listAllProductFamilies(@QueryParam("category") Category category,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		LOG.debug("List all families with category: {}, page: {}, pageSize: {}", category, page, pageSize);
+		if (category != null) {
+			return productFamilyService.listProductFamiliesByCategory(category, page, pageSize);
+		}
+		return productFamilyService.listProductFamilies(page, pageSize);
+	}
+
+	@Resource
+	private TenantProductFamilyResource tenantProductFamilyResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/product/families")
+	public TenantProductFamilyResource productFamilies(@PathParam("tenantId") String tenantId) {
+		return tenantProductFamilyResource;
 	}
 
 	// ***********************

@@ -1,10 +1,9 @@
 package net.aircommunity.platform.service;
 
-import java.util.List;
-
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFamily;
 
@@ -40,10 +39,21 @@ public interface ProductFamilyService {
 	 * 
 	 * @param productFamilyId the productFamilyId
 	 * @param newProductFamily the productFamily to be updated
-	 * @return productFamily created
+	 * @return productFamily updated
 	 */
 	@Nonnull
 	ProductFamily updateProductFamily(@Nonnull String productFamilyId, @Nonnull ProductFamily newProductFamily);
+
+	/**
+	 * Review a productFamily to approved or not (by platform ADMIN only).
+	 * 
+	 * @param productFamilyId the productFamilyId
+	 * @param approved the approved or not
+	 * @param rejectedReason the rejected reason if it's NOT approved
+	 * @return productFamily updated
+	 */
+	@Nonnull
+	ProductFamily reviewProductFamily(String productFamilyId, boolean approved, String rejectedReason);
 
 	/**
 	 * List all product families filter by tenantId.
@@ -54,7 +64,7 @@ public interface ProductFamilyService {
 	 * @return a page of product families or empty
 	 */
 	@Nonnull
-	List<ProductFamily> listProductFamilies(@Nonnull String tenantId);
+	Page<ProductFamily> listProductFamilies(@Nonnull String tenantId, int page, int pageSize);
 
 	/**
 	 * List all product families by type and pagination.
@@ -66,7 +76,8 @@ public interface ProductFamilyService {
 	 * @return a page of product families or empty
 	 */
 	@Nonnull
-	List<ProductFamily> listProductFamiliesByCategory(@Nonnull String tenantId, Category category);
+	Page<ProductFamily> listProductFamiliesByCategory(@Nonnull String tenantId, Category category, int page,
+			int pageSize);
 
 	/**
 	 * List all product families
@@ -76,7 +87,20 @@ public interface ProductFamilyService {
 	 * @return a page of product families or empty
 	 */
 	@Nonnull
-	List<ProductFamily> listAllProductFamilies();
+	Page<ProductFamily> listProductFamilies(int page, int pageSize);
+
+	/**
+	 * List all product families filter by approved status.
+	 * 
+	 * @param approved the approved status
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of product families or empty
+	 */
+	@Nonnull
+	Page<ProductFamily> listProductFamilies(boolean approved, int page, int pageSize);
+
+	long countProductFamilies(boolean approved);
 
 	/**
 	 * List all product families by type and pagination.
@@ -87,7 +111,7 @@ public interface ProductFamilyService {
 	 * @return a page of product families or empty
 	 */
 	@Nonnull
-	List<ProductFamily> listAllProductFamiliesByCategory(Category category);
+	Page<ProductFamily> listProductFamiliesByCategory(Category category, int page, int pageSize);
 
 	/**
 	 * Delete a productFamily.
@@ -101,5 +125,5 @@ public interface ProductFamilyService {
 	 * 
 	 * @param tenantId the tenantId
 	 */
-	void deleteProductFamilys(@Nonnull String tenantId);
+	void deleteProductFamilies(@Nonnull String tenantId);
 }

@@ -14,12 +14,14 @@ public class LocalizedMessages extends NLSResource {
 	private static final String RESOURCE_BUNDLE_BASENAME = LocalizedMessages.class.getPackage().getName() + ".message";
 
 	public static String USERNAME_ANONYMOUS;
+	public static String FLEET_NOT_SELECTED;
 
 	//
 	public static String PRODUCT_NOT_FOUND;
 	public static String PROMOTION_NOT_FOUND;
 	public static String PRODUCT_FAQ_NOT_FOUND;
 	public static String PRODUCT_FAMILY_NOT_FOUND;
+	public static String PRODUCT_INVALID_DEPARTURE_DATE;
 
 	public static String ORDER_OPERATION_SUBMIT;
 	public static String ORDER_OPERATION_CANCEL;
@@ -46,6 +48,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String AIRJET_TYPE_NOT_FOUND;
 	public static String AIRJET_NOT_FOUND;
 	public static String AIRCRAFT_ALREADY_EXISTS;
+	public static String AIRCRAFT_NOT_FOUND;
 	public static String SALESPACKAGE_NOT_FOUND;
 
 	public static String ACCOUNT_EMAIL_NOT_BIND;

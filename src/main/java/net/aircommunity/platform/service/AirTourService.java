@@ -34,6 +34,11 @@ public interface AirTourService {
 	Page<AirTour> listAirTours(int page, int pageSize);
 
 	@Nonnull
+	Page<AirTour> listAirTours(boolean approved, int page, int pageSize);
+
+	long countAirTours(boolean approved);
+
+	@Nonnull
 	Page<AirTour> listAirTours(@Nonnull String tenantId, int page, int pageSize);
 
 	@Nonnull

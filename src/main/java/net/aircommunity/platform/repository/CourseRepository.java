@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import net.aircommunity.platform.model.Course;
@@ -13,7 +12,7 @@ import net.aircommunity.platform.model.Course;
 /**
  * Created by guankai on 12/04/2017.
  */
-public interface CourseRepository extends JpaRepository<Course, String>, JpaSpecificationExecutor<Course> {
+public interface CourseRepository extends BaseProductRepository<Course>, JpaSpecificationExecutor<Course> {
 
 	// For ADMIN
 
@@ -43,6 +42,9 @@ public interface CourseRepository extends JpaRepository<Course, String>, JpaSpec
 
 	Page<Course> findByEndDateGreaterThanEqualAndAircraftTypeContainingOrderByStartDateDesc(Date endDate,
 			String aircraftType, Pageable pageable);
+
+	Page<Course> findByEndDateGreaterThanEqualAndLocationContainingOrderByStartDateDesc(Date endDate, String location,
+			Pageable pageable);
 
 	/**
 	 * List courses for user (only valid courses) of a school

@@ -25,6 +25,7 @@
 		<!-- 3rd party API -->
 		<micro.version>0.1.0</micro.version>
 		<alidayu.version>1.0</alidayu.version>
+		<alipay.version>20170511115337</alipay.version>
 		<qiniu.sdk.version>7.2.6</qiniu.sdk.version>
 		<jinjava.version>2.1.14</jinjava.version>
 	</properties>
@@ -78,6 +79,13 @@
 			<version>${alidayu.version}</version>
 			<scope>system</scope>
 			<systemPath>${lib-path}/com/alidayu/${alidayu.version}/taobao-sdk-java-auto_1455552377940-20160607.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.alipay</groupId>
+			<artifactId>alipay</artifactId>
+			<version>${alipay.version}</version>
+			<scope>system</scope>
+			<systemPath>${lib-path}/com/alipay/${alipay.version}/alipay-sdk-java20170511115337.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>io.micro</groupId>

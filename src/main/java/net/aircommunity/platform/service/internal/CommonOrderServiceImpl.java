@@ -39,6 +39,12 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 		return doUpdateOrderStatus(orderId, status);
 	}
 
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	@Override
+	public Order updateOrderPrice(String orderId, double newPrice) {
+		return doUpdateOrderPrice(orderId, newPrice);
+	}
+
 	@Override
 	public Order saveOrder(Order order) {
 		return safeExecute(() -> baseOrderRepository.save(order), "Save order %s failed", order);

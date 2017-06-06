@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -26,10 +25,6 @@ import io.micro.annotation.constraint.NotEmpty;
 public class CharterOrder extends Order {
 	private static final long serialVersionUID = 1L;
 
-	// customer contact information for this order
-	@Embedded
-	protected Contact contact;
-
 	// multiple flight legs
 	@NotEmpty
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -38,23 +33,15 @@ public class CharterOrder extends Order {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<FleetCandidate> fleetCandidates = new HashSet<>();
 
-	public Contact getContact() {
-		return contact;
-	}
-
-	public void setContact(Contact contact) {
-		this.contact = contact;
-	}
-
 	public Set<FlightLeg> getFlightLegs() {
 		return flightLegs;
 	}
 
-	public void setFlightLegs(Set<FlightLeg> flightLegs) {
-		if (flightLegs != null) {
-			flightLegs.stream().forEach(flightLeg -> flightLeg.setOrder(this));
-			this.flightLegs.clear();
-			this.flightLegs.addAll(flightLegs);
+	public void setFlightLegs(Set<FlightLeg> legs) {
+		if (legs != null) {
+			legs.stream().forEach(flightLeg -> flightLeg.setOrder(this));
+			flightLegs.clear();
+			flightLegs.addAll(legs);
 		}
 	}
 
@@ -62,11 +49,11 @@ public class CharterOrder extends Order {
 		return fleetCandidates;
 	}
 
-	public void setFleetCandidates(Set<FleetCandidate> fleetCandidates) {
-		if (fleetCandidates != null) {
-			fleetCandidates.stream().forEach(fleetCandidate -> fleetCandidate.setOrder(this));
-			this.fleetCandidates.clear();
-			this.fleetCandidates.addAll(fleetCandidates);
+	public void setFleetCandidates(Set<FleetCandidate> candidates) {
+		if (candidates != null) {
+			candidates.stream().forEach(fleetCandidate -> fleetCandidate.setOrder(this));
+			fleetCandidates.clear();
+			fleetCandidates.addAll(candidates);
 		}
 	}
 
@@ -88,7 +75,8 @@ public class CharterOrder extends Order {
 	}
 
 	@Override
-	public Product getProduct() {
+	public Fleet getProduct() {
+		// quick charter order that selects no fleet
 		if (fleetCandidates == null || fleetCandidates.isEmpty()) {
 			return null;
 		}
@@ -97,7 +85,13 @@ public class CharterOrder extends Order {
 		if (candidate.isPresent()) {
 			return candidate.get().getFleet();
 		}
+		// Multiple candidates, and none is selected yet
 		return null;
+	}
+
+	@Override
+	public void setProduct(Product product) {
+		// XXX noops, use FleetCandidate only
 	}
 
 	@Override
@@ -110,5 +104,4 @@ public class CharterOrder extends Order {
 				.append(id).append("]");
 		return builder.toString();
 	}
-
 }

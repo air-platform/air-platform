@@ -1,7 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.Set;
-
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -12,11 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.AirTaxiOrder;
 import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.PassengerItem;
 import net.aircommunity.platform.repository.AirTaxiOrderRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.AirTaxiOrderService;
@@ -61,21 +57,12 @@ public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 		return doUpdateOrder(orderId, newOrder);
 	}
 
-	@Override
-	protected void copyProperties(AirTaxiOrder src, AirTaxiOrder tgt) {
-		tgt.setNote(src.getNote());
-		tgt.setDate(src.getDate());
-		tgt.setContact(src.getContact());
-		tgt.setTimeSlot(src.getTimeSlot());
-		//
-		AirTaxi airTaxi = airTaxiService.findAirTaxi(src.getAirTaxi().getId());
-		tgt.setAirTaxi(airTaxi);
-		Set<PassengerItem> passengers = src.getPassengers();
-		if (passengers != null) {
-			tgt.setPassengers(applyPassengers(passengers));
-		}
-		copyPropertiesAircraftAware(src, tgt);
-	}
+	// XXX
+	// @Override
+	// protected void copyProperties(AirTaxiOrder src, AirTaxiOrder tgt) {
+	// AirTaxi airTaxi = airTaxiService.findAirTaxi(src.getAirTaxi().getId());
+	// tgt.setAirTaxi(airTaxi);
+	// }
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override

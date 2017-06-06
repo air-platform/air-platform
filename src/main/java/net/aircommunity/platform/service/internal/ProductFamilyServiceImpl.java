@@ -1,7 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -12,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFamily;
 import net.aircommunity.platform.model.Tenant;
@@ -36,11 +35,8 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 	public ProductFamily createProductFamily(String tenantId, ProductFamily productFamily) {
 		Tenant tenant = findAccount(tenantId, Tenant.class);
 		ProductFamily newProductFamily = new ProductFamily();
-		newProductFamily.setCategory(productFamily.getCategory());
-		newProductFamily.setDescription(productFamily.getDescription());
-		newProductFamily.setImage(productFamily.getImage());
-		newProductFamily.setName(productFamily.getName());
-		newProductFamily.setPublished(false);
+		copyProperties(productFamily, newProductFamily);
+		newProductFamily.setApproved(false);
 		newProductFamily.setVendor(tenant);
 		return safeExecute(() -> productFamilyRepository.save(newProductFamily), "Create %s for tenant %s failed",
 				productFamily, tenantId);
@@ -60,32 +56,60 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 	@Override
 	public ProductFamily updateProductFamily(String productFamilyId, ProductFamily newProductFamily) {
 		ProductFamily productFamily = findProductFamily(productFamilyId);
-		productFamily.setCategory(newProductFamily.getCategory());
-		productFamily.setDescription(newProductFamily.getDescription());
-		productFamily.setImage(newProductFamily.getImage());
-		productFamily.setName(newProductFamily.getName());
+		copyProperties(newProductFamily, productFamily);
 		return safeExecute(() -> productFamilyRepository.save(productFamily), "Update product family %s to %s failed",
 				productFamilyId, productFamily);
 	}
 
+	@CachePut(cacheNames = CACHE_NAME, key = "#productFamilyId")
 	@Override
-	public List<ProductFamily> listProductFamilies(String tenantId) {
-		return productFamilyRepository.findByVendorId(tenantId);
+	public ProductFamily reviewProductFamily(String productFamilyId, boolean approved, String rejectedReason) {
+		ProductFamily productFamily = findProductFamily(productFamilyId);
+		productFamily.setApproved(approved);
+		if (!approved) {
+			productFamily.setRejectedReason(rejectedReason);
+		}
+		return safeExecute(() -> productFamilyRepository.save(productFamily), "Review product family %s to %b failed",
+				productFamilyId, approved);
 	}
 
 	@Override
-	public List<ProductFamily> listProductFamiliesByCategory(String tenantId, Category category) {
-		return productFamilyRepository.findByVendorIdAndCategory(tenantId, category);
+	public long countProductFamilies(boolean approved) {
+		return productFamilyRepository.countByApproved(approved);
+	}
+
+	private void copyProperties(ProductFamily src, ProductFamily tgt) {
+		tgt.setCategory(src.getCategory());
+		tgt.setDescription(src.getDescription());
+		tgt.setImage(src.getImage());
+		tgt.setName(src.getName());
 	}
 
 	@Override
-	public List<ProductFamily> listAllProductFamilies() {
-		return productFamilyRepository.findAll();
+	public Page<ProductFamily> listProductFamilies(String tenantId, int page, int pageSize) {
+		return Pages.adapt(productFamilyRepository.findByVendorId(tenantId, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
-	public List<ProductFamily> listAllProductFamiliesByCategory(Category category) {
-		return productFamilyRepository.findByCategory(category);
+	public Page<ProductFamily> listProductFamiliesByCategory(String tenantId, Category category, int page,
+			int pageSize) {
+		return Pages.adapt(productFamilyRepository.findByVendorIdAndCategory(tenantId, category,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<ProductFamily> listProductFamilies(int page, int pageSize) {
+		return Pages.adapt(productFamilyRepository.findAll(Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<ProductFamily> listProductFamilies(boolean approved, int page, int pageSize) {
+		return Pages.adapt(productFamilyRepository.findByApproved(approved, Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<ProductFamily> listProductFamiliesByCategory(Category category, int page, int pageSize) {
+		return Pages.adapt(productFamilyRepository.findByCategory(category, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#productFamilyId")
@@ -97,7 +121,7 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
-	public void deleteProductFamilys(String tenantId) {
+	public void deleteProductFamilies(String tenantId) {
 		safeExecute(() -> productFamilyRepository.deleteByVendorId(tenantId),
 				"Delete all product families for tenant %s failed", tenantId);
 	}

@@ -35,11 +35,8 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 	@Override
 	public Promotion createPromotion(Promotion promotion) {
 		Promotion newPromotion = new Promotion();
-		newPromotion.setCategory(promotion.getCategory());
-		newPromotion.setName(promotion.getName());
-		newPromotion.setDescription(promotion.getDescription());
 		newPromotion.setCreationDate(new Date());
-		newPromotion.setItems(promotion.getItems());
+		copyProperties(promotion, newPromotion);
 		return safeExecute(() -> promotionRepository.save(newPromotion), "Create promotion %s failed", promotion);
 	}
 
@@ -57,12 +54,16 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 	@Override
 	public Promotion updatePromotion(String promotionId, Promotion newPromotion) {
 		Promotion promotion = findPromotion(promotionId);
-		promotion.setCategory(newPromotion.getCategory());
-		promotion.setName(newPromotion.getName());
-		promotion.setDescription(newPromotion.getDescription());
-		promotion.setItems(newPromotion.getItems());
+		copyProperties(newPromotion, promotion);
 		return safeExecute(() -> promotionRepository.save(promotion), "Update promotion %s to %s failed", promotionId,
 				newPromotion);
+	}
+
+	private void copyProperties(Promotion src, Promotion tgt) {
+		tgt.setCategory(src.getCategory());
+		tgt.setName(src.getName());
+		tgt.setDescription(src.getDescription());
+		tgt.setItems(src.getItems());
 	}
 
 	@Override

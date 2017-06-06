@@ -69,6 +69,19 @@ public interface FleetService {
 	@Nonnull
 	Page<Fleet> listFleets(int page, int pageSize);
 
+	/**
+	 * List all Fleets by pagination.
+	 * 
+	 * @param approved the approved status
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of AirTransports or empty
+	 */
+	@Nonnull
+	Page<Fleet> listFleets(boolean approved, int page, int pageSize);
+
+	long countFleets(boolean approved);
+
 	@Nonnull
 	default List<Fleet> listFleets() {
 		return listFleets(1, Integer.MAX_VALUE).getContent();

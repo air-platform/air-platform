@@ -54,7 +54,6 @@ public class JetCardServiceImpl extends AbstractProductService<JetCard> implemen
 		tgt.setType(src.getType());
 		tgt.setCurrencyUnit(src.getCurrencyUnit());
 		tgt.setSummary(src.getSummary());
-		tgt.setPrice(src.getPrice());
 	}
 
 	@Override

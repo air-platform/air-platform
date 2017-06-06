@@ -24,6 +24,23 @@ public interface BaseProductRepository<T extends Product> extends JpaRepository<
 	Page<T> findAllByOrderByCreationDateDesc(Pageable pageable);
 
 	/**
+	 * Find all products by approved status.
+	 * 
+	 * @param approved the approved status
+	 * @param pageable the page request
+	 * @return page of products
+	 */
+	Page<T> findByApprovedOrderByCreationDateDesc(boolean approved, Pageable pageable);
+
+	/**
+	 * Count all products by approved status.
+	 * 
+	 * @param approved the approved status
+	 * @return count of products
+	 */
+	long countByApproved(boolean approved);
+
+	/**
 	 * Find by products by vendor.
 	 * 
 	 * @param vendor the vendor
@@ -50,7 +67,7 @@ public interface BaseProductRepository<T extends Product> extends JpaRepository<
 	long deleteByVendor(Tenant vendor);
 
 	/**
-	 * Delete all the orders of a vendor.
+	 * Delete all the products of a vendor.
 	 * 
 	 * @param tenantId the tenantId
 	 * @return the records deleted

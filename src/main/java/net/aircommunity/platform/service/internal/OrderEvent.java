@@ -18,12 +18,10 @@ public class OrderEvent implements Serializable {
 
 	private final EventType type;
 	private final Order order;
-	// private final Product product;
 
 	public OrderEvent(EventType type, Order order) {
-		this.type = type;
+		this.type = Objects.requireNonNull(type, "type cannot null");
 		this.order = Objects.requireNonNull(order, "order cannot null");
-		// this.product = product;
 	}
 
 	public EventType getType() {
@@ -33,10 +31,6 @@ public class OrderEvent implements Serializable {
 	public Order getOrder() {
 		return order;
 	}
-
-	// public Product getProduct() {
-	// return product;
-	// }
 
 	public enum EventType {
 		CREATION, UPDATE, CANCELLATION, DELETION;

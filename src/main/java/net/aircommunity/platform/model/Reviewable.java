@@ -2,6 +2,7 @@ package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -17,17 +18,31 @@ import com.fasterxml.jackson.annotation.JsonView;
 public class Reviewable extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-	// whether it can be published or not
-	// e.g. product put on sale/pull off shelves
-	@Column(name = "published", nullable = false)
+	// whether a product is approved or not by platform ADMIN
+	@Column(name = "approved", nullable = false)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	protected boolean published = false;
+	protected boolean approved = false;
 
-	public boolean isPublished() {
-		return published;
+	// reason when it's rejected by platform ADMIN
+	@Size(max = 1000)
+	@Column(name = "rejected_reason", nullable = false, length = 1000)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	protected String rejectedReason;
+
+	public boolean isApproved() {
+		return approved;
 	}
 
-	public void setPublished(boolean published) {
-		this.published = published;
+	public void setApproved(boolean approved) {
+		this.approved = approved;
 	}
+
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+
 }

@@ -24,7 +24,7 @@ import net.aircommunity.platform.service.AirTaxiService;
 /**
  * AirTaxi RESTful API allows list/find/query for ANYONE.
  * 
- * Created by guankai on 15/04/2017.
+ * @author guankai
  */
 @Api
 @RESTful

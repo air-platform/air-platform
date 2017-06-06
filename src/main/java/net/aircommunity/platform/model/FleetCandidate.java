@@ -80,6 +80,9 @@ public class FleetCandidate extends Persistable {
 		this.vendor = fleet.getVendor();
 	}
 
+	/**
+	 * FleetCandidate status
+	 */
 	public enum Status {
 		CANDIDATE, SELECTED, DELETED;
 	}

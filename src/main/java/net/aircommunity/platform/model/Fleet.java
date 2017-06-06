@@ -24,13 +24,7 @@ import io.micro.annotation.constraint.NotEmpty;
 public class Fleet extends PricedProduct {
 	private static final long serialVersionUID = 1L;
 
-	// properties inherited:
-	// name: e.g. G450 in Chinese
-	// price
-	// desc
-
-	// Flight NO.
-	// this is global unique for all air company
+	// Flight NO. is global unique for all air company
 	@NotEmpty
 	@Column(name = "flight_no", nullable = false, unique = true)
 	private String flightNo;
@@ -49,7 +43,7 @@ public class Fleet extends PricedProduct {
 	@Column(name = "status")
 	private Status status = Status.AVAILABLE;
 
-	// TODO should be int for a specific fleet with same aircaftType, e.g. G550 ?
+	// XXX should be int for a specific fleet with same aircaftType, e.g. G550 ?
 	// e.g. 11 - 14 guests
 	@Column(name = "capacity")
 	private String capacity;

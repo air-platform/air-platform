@@ -26,10 +26,6 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
 public class FerryFlight extends PricedProduct {
 	private static final long serialVersionUID = 1L;
 
-	// properties inherited:
-	// name:
-	// price: whole price (full load)
-
 	// Flight NO. cannot be unique, because it can be different date
 	@NotEmpty
 	@Column(name = "flight_no", nullable = false)
@@ -56,7 +52,7 @@ public class FerryFlight extends PricedProduct {
 	@Column(name = "seats")
 	private int seats;
 
-	// min passengers required
+	// min passengers required (XXX useful?)
 	@Min(0)
 	@Column(name = "min_passengers")
 	private int minPassengers;
@@ -64,9 +60,9 @@ public class FerryFlight extends PricedProduct {
 	// departure date, e.g. 2017-5-1
 	@NotNull
 	@Temporal(value = TemporalType.DATE)
-	@Column(name = "date", nullable = false)
+	@Column(name = "departure_date", nullable = false)
 	@XmlJavaTypeAdapter(DateAdapter.class)
-	private Date date;
+	private Date departureDate;
 
 	// departure timeSlot, e.g. 8:00-9:00
 	@Column(name = "time_slot", nullable = false)
@@ -140,12 +136,12 @@ public class FerryFlight extends PricedProduct {
 		this.minPassengers = minPassengers;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getDepartureDate() {
+		return departureDate;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDepartureDate(Date departureDate) {
+		this.departureDate = departureDate;
 	}
 
 	public String getTimeSlot() {
@@ -170,11 +166,11 @@ public class FerryFlight extends PricedProduct {
 		builder.append("FerryFlight [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)
 				.append(", departure=").append(departure).append(", arrival=").append(arrival).append(", seatPrice=")
 				.append(seatPrice).append(", seats=").append(seats).append(", minPassengers=").append(minPassengers)
-				.append(", date=").append(date).append(", timeSlot=").append(timeSlot).append(", appearances=")
-				.append(appearances).append(", price=").append(price).append(", currencyUnit=").append(currencyUnit)
-				.append(", name=").append(name).append(", image=").append(image).append(", score=").append(score)
-				.append(", creationDate=").append(creationDate).append(", description=").append(description)
-				.append(", id=").append(id).append("]");
+				.append(", departureDate=").append(departureDate).append(", timeSlot=").append(timeSlot)
+				.append(", appearances=").append(appearances).append(", price=").append(price).append(", currencyUnit=")
+				.append(currencyUnit).append(", name=").append(name).append(", image=").append(image).append(", score=")
+				.append(score).append(", creationDate=").append(creationDate).append(", description=")
+				.append(description).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

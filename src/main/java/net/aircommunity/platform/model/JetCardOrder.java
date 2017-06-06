@@ -1,6 +1,5 @@
 package net.aircommunity.platform.model;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,31 +16,10 @@ import javax.validation.constraints.NotNull;
 public class JetCardOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
-	// customer contact information for this order
-	@Embedded
-	private Contact contact;
-
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "jetcard_id", nullable = false)
 	private JetCard jetCard;
-
-	public Contact getContact() {
-		return contact;
-	}
-
-	public void setContact(Contact contact) {
-		this.contact = contact;
-	}
-
-	public JetCard getJetCard() {
-		return jetCard;
-	}
-
-	public void setJetCard(JetCard jetCard) {
-		this.jetCard = jetCard;
-		this.vendor = jetCard.getVendor();
-	}
 
 	@Override
 	public Type getType() {
@@ -49,8 +27,13 @@ public class JetCardOrder extends VendorAwareOrder {
 	}
 
 	@Override
-	public Product getProduct() {
+	public JetCard getProduct() {
 		return jetCard;
+	}
+
+	@Override
+	protected void doSetProduct(Product product) {
+		jetCard = (JetCard) product;
 	}
 
 	@Override
@@ -62,5 +45,4 @@ public class JetCardOrder extends VendorAwareOrder {
 				.append(id).append("]");
 		return builder.toString();
 	}
-
 }

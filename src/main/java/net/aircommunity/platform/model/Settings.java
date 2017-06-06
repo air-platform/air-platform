@@ -65,4 +65,10 @@ public class Settings extends Persistable {
 				.append(value).append("]");
 		return builder.toString();
 	}
+
+	public static Settings newSystemSettings() {
+		Settings settings = new Settings();
+		settings.category = CATEGORY_SYSTEM;
+		return settings;
+	}
 }

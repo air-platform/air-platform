@@ -42,6 +42,16 @@ public interface CommonOrderService {
 	Order updateOrderStatus(@Nonnull String orderId, @Nonnull Order.Status status);
 
 	/**
+	 * Update order total price
+	 * 
+	 * @param orderId the orderId
+	 * @param price the order price
+	 * @return order updated
+	 */
+	@Nonnull
+	Order updateOrderPrice(String orderId, double newPrice);
+
+	/**
 	 * Hard delete from DB
 	 * 
 	 * @param orderId the orderId

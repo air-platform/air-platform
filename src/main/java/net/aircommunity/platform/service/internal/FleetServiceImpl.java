@@ -33,7 +33,6 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 
 	@Override
 	public Fleet createFleet(String tenantId, Fleet fleet) {
-		// TODO shared
 		Fleet existing = fleetRepository.findByFlightNo(fleet.getFlightNo());
 		if (existing != null) {
 			throw new AirException(Codes.FLEET_ALREADY_EXISTS, M.msg(M.FLEET_ALREADY_EXISTS, fleet.getFlightNo()));
@@ -59,6 +58,11 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 	@CachePut(cacheNames = CACHE_NAME, key = "#fleetId")
 	@Override
 	public Fleet updateFleet(String fleetId, Fleet newFleet) {
+		Fleet fleet = findFleet(fleetId);
+		Fleet fleetExisting = fleetRepository.findByFlightNo(newFleet.getFlightNo());
+		if (fleetExisting != null && !fleetExisting.getId().equals(fleetId)) {
+			throw new AirException(Codes.FLEET_ALREADY_EXISTS, M.msg(M.FLEET_ALREADY_EXISTS, fleet.getFlightNo()));
+		}
 		return doUpdateProduct(fleetId, newFleet);
 	}
 
@@ -90,6 +94,16 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 	@Override
 	public Page<Fleet> listFleets(int page, int pageSize) {
 		return doListAllProducts(page, pageSize);
+	}
+
+	@Override
+	public Page<Fleet> listFleets(boolean approved, int page, int pageSize) {
+		return doListAllProducts(approved, page, pageSize);
+	}
+
+	@Override
+	public long countFleets(boolean approved) {
+		return doCountAllProducts(approved);
 	}
 
 	@Override

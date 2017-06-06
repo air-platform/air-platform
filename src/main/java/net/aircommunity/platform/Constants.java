@@ -41,6 +41,7 @@ public final class Constants {
 	// MUST IN FORMAT OF: person1:email1, person2:email2, ..., personN:emailN
 	public static final String CONTACT_INFO_SEPARATOR = ":";
 	public static final String CONTACT_SEPARATOR = ",";
+	public static final String PRICE_SEPARATOR = ",";
 
 	//
 	public static final String HEADER_X_FORWARDED_FOR = "X-Forwarded-For";

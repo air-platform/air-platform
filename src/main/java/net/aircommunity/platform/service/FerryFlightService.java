@@ -67,8 +67,35 @@ public interface FerryFlightService {
 	@Nonnull
 	Page<FerryFlight> listFerryFlights(int page, int pageSize);
 
+	/**
+	 * List all FerryFlights by pagination.
+	 * 
+	 * @param approved the approved status
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of AirTransports or empty
+	 */
+	@Nonnull
+	Page<FerryFlight> listFerryFlights(boolean approved, int page, int pageSize);
+
+	long countFerryFlights(boolean approved);
+
 	@Nonnull
 	Page<FerryFlight> listFerryFlightsByDeparture(@Nonnull String departure, int page, int pageSize);
+
+	@Nonnull
+	Page<FerryFlight> listFerryFlightsByArrival(@Nonnull String arrival, int page, int pageSize);
+
+	/**
+	 * Search FerryFlights.
+	 * 
+	 * @param location departure or arrival
+	 * @param page the page start
+	 * @param pageSize the page size
+	 * @return a page of result
+	 */
+	@Nonnull
+	Page<FerryFlight> searchFerryFlightsByLocation(@Nonnull String location, int page, int pageSize);
 
 	@Nonnull
 	List<FerryFlight> listTop3FerryFlights(@Nullable String departure);

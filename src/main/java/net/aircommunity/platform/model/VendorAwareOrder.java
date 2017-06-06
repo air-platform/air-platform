@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * Vendor Aware Order model.
+ * Vendor ({@code Tenant}) Aware Order model.
  * 
  * @author Bin.Zhang
  */
@@ -20,13 +20,21 @@ import javax.xml.bind.annotation.XmlTransient;
 public abstract class VendorAwareOrder extends Order {
 	private static final long serialVersionUID = 1L;
 
-	// NOTE: TODO (create a new VendorAwareOrder extends Order, e.g. coz CharterOrder will have multi-vendors)?
-	// extra info (the vendor of this card, it's already available in jetCard, just add extra id to avoid join)
+	// NOTE: XXX (create a new VendorAwareOrder extends Order, e.g. coz CharterOrder will have multi-vendors)?
+	// extra info (e.g. the vendor of this card, it's already available in jetCard, just add extra id to avoid join)
 	// should be set via Product.vendor
 	@XmlTransient
 	@ManyToOne
 	@JoinColumn(name = "tenant_id", nullable = false)
 	protected Tenant vendor;
+
+	@Override
+	public final void setProduct(Product product) {
+		vendor = product.getVendor();
+		doSetProduct(product);
+	}
+
+	protected abstract void doSetProduct(Product product);
 
 	// TODO
 	// related to product

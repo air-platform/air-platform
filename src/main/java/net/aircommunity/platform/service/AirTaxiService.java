@@ -6,7 +6,9 @@ import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.Page;
 
 /**
- * Created by guankai on 14/04/2017.
+ * AirTaxi Service
+ * 
+ * @author guankai
  */
 public interface AirTaxiService {
 
@@ -23,10 +25,29 @@ public interface AirTaxiService {
 	Page<AirTaxi> listAirTaxis(int page, int pageSize);
 
 	@Nonnull
+	Page<AirTaxi> listAirTaxis(boolean approved, int page, int pageSize);
+
+	long countAirTaxis(boolean approved);
+
+	@Nonnull
 	Page<AirTaxi> listAirTaxis(String tenantId, int page, int pageSize);
 
 	@Nonnull
-	Page<AirTaxi> listAirTaxisByDeparture(String departure, int page, int pageSize);
+	Page<AirTaxi> listAirTaxisByDeparture(@Nonnull String departure, int page, int pageSize);
+
+	@Nonnull
+	Page<AirTaxi> listAirTaxisByArrival(@Nonnull String arrival, int page, int pageSize);
+
+	/**
+	 * Search AirTaxis.
+	 * 
+	 * @param location departure or arrival
+	 * @param page the page start
+	 * @param pageSize the page size
+	 * @return a page of result
+	 */
+	@Nonnull
+	Page<AirTaxi> searchAirTaxisByLocation(@Nonnull String location, int page, int pageSize);
 
 	/**
 	 * Delete a AirTaxi.

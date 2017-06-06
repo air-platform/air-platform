@@ -1,21 +1,15 @@
 package net.aircommunity.platform.model;
 
-import java.util.Date;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
- * Created by guankai on 15/04/2017.
+ * AirTaxi Order.
+ * 
+ * @author guankai
  */
 @Entity
 @Table(name = "air_platfrom_airtaxi_order")
@@ -23,45 +17,20 @@ public class AirTaxiOrder extends AircraftAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	// departure date, e.g. 2017-5-1
-	@NotNull
-	@Temporal(value = TemporalType.DATE)
-	@Column(name = "date", nullable = false)
-	@XmlJavaTypeAdapter(DateAdapter.class)
-	private Date date;
+	// @NotNull
+	// @Temporal(value = TemporalType.DATE)
+	// @Column(name = "date", nullable = false)
+	// @XmlJavaTypeAdapter(DateAdapter.class)
+	// private Date date;
 
 	// e.g. 8:00-9:00
-	@Column(name = "time_slot", nullable = false)
-	private String timeSlot;
+	// @Column(name = "time_slot", nullable = false)
+	// private String timeSlot;
 
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "airtaxi_id", nullable = false)
 	private AirTaxi airTaxi;
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public String getTimeSlot() {
-		return timeSlot;
-	}
-
-	public void setTimeSlot(String timeSlot) {
-		this.timeSlot = timeSlot;
-	}
-
-	public AirTaxi getAirTaxi() {
-		return airTaxi;
-	}
-
-	public void setAirTaxi(AirTaxi airTaxi) {
-		this.airTaxi = airTaxi;
-		this.vendor = airTaxi.getVendor();
-	}
 
 	@Override
 	public Type getType() {
@@ -69,20 +38,25 @@ public class AirTaxiOrder extends AircraftAwareOrder {
 	}
 
 	@Override
-	public Product getProduct() {
+	public AirTaxi getProduct() {
 		return airTaxi;
+	}
+
+	@Override
+	protected void doSetProduct(Product product) {
+		airTaxi = (AirTaxi) product;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AirTaxiOrder [date=").append(date).append(", timeSlot=").append(timeSlot)
-				.append(", salesPackageNum=").append(salesPackageNum).append(", contact=").append(contact)
-				.append(", orderNo=").append(orderNo).append(", status=").append(status).append(", commented=")
-				.append(commented).append(", creationDate=").append(creationDate).append(", paymentDate=")
-				.append(paymentDate).append(", finishedDate=").append(finishedDate).append(", cancelledDate=")
-				.append(cancelledDate).append(", deletedDate=").append(deletedDate).append(", confirmation=")
-				.append(confirmation).append(", note=").append(note).append(", id=").append(id).append("]");
+		builder.append("AirTaxiOrder [departureDate=").append(departureDate).append(", timeSlot=").append(timeSlot)
+				.append(", contact=").append(contact).append(", orderNo=").append(orderNo).append(", status=")
+				.append(status).append(", commented=").append(commented).append(", creationDate=").append(creationDate)
+				.append(", paymentDate=").append(paymentDate).append(", finishedDate=").append(finishedDate)
+				.append(", cancelledDate=").append(cancelledDate).append(", deletedDate=").append(deletedDate)
+				.append(", note=").append(note).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
+
 }

@@ -5,13 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import io.micro.annotation.constraint.NotEmpty;
 
 /**
- * The information of {@code Fleet}.
+ * The information of {@code Fleet} managed by ADMIN.
  * 
  * @author Bin.Zhang
  */
@@ -42,10 +43,12 @@ public class AirJet extends Persistable {
 	private String capacity;
 
 	// e.g. 430 kilograms of baggage
+	@Min(0)
 	@Column(name = "weight", nullable = false)
 	private int weight;
 
 	// e.g. Full-load range of about 8061 kilometers, amount to the distance from Beijing to Kuala Lumpur.
+	@Min(0)
 	@Column(name = "fullload_range", nullable = false)
 	private int fullloadRange;
 

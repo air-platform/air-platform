@@ -73,6 +73,16 @@ public class AirTourServiceImpl extends AircraftAwareProductService<AirTour> imp
 	}
 
 	@Override
+	public Page<AirTour> listAirTours(boolean approved, int page, int pageSize) {
+		return doListAllProducts(approved, page, pageSize);
+	}
+
+	@Override
+	public long countAirTours(boolean approved) {
+		return doCountAllProducts(approved);
+	}
+
+	@Override
 	public Page<AirTour> listAirTours(String tenantId, int page, int pageSize) {
 		return doListTenantProducts(tenantId, page, pageSize);
 	}
@@ -103,5 +113,4 @@ public class AirTourServiceImpl extends AircraftAwareProductService<AirTour> imp
 	protected BaseProductRepository<AirTour> getProductRepository() {
 		return airTourRepository;
 	}
-
 }

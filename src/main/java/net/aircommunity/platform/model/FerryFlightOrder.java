@@ -1,7 +1,6 @@
 package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,10 +23,6 @@ public class FerryFlightOrder extends CharterableOrder {
 	@Column(name = "passengers")
 	private int passengers;
 
-	// customer contact information for this order
-	@Embedded
-	private Contact contact;
-
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "ferryflight_id", nullable = false)
@@ -41,31 +36,19 @@ public class FerryFlightOrder extends CharterableOrder {
 		this.passengers = passengers;
 	}
 
-	public Contact getContact() {
-		return contact;
-	}
-
-	public void setContact(Contact contact) {
-		this.contact = contact;
-	}
-
-	public FerryFlight getFerryFlight() {
-		return ferryFlight;
-	}
-
-	public void setFerryFlight(FerryFlight ferryFlight) {
-		this.ferryFlight = ferryFlight;
-		this.vendor = ferryFlight.getVendor();
-	}
-
 	@Override
 	public Type getType() {
 		return Type.FERRYFLIGHT;
 	}
 
 	@Override
-	public Product getProduct() {
+	public FerryFlight getProduct() {
 		return ferryFlight;
+	}
+
+	@Override
+	protected void doSetProduct(Product product) {
+		ferryFlight = (FerryFlight) product;
 	}
 
 	@Override

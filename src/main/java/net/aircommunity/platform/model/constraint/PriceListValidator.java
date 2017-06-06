@@ -26,7 +26,7 @@ public class PriceListValidator implements ConstraintValidator<PriceList, CharSe
 		// XXX NOTE: will throw IllegalArgumentException when splitting if the format is not valid
 		try {
 			// <person, email>
-			List<String> list = Splitter.on(Constants.CONTACT_SEPARATOR).trimResults().omitEmptyStrings()
+			List<String> list = Splitter.on(Constants.PRICE_SEPARATOR).trimResults().omitEmptyStrings()
 					.splitToList(value);
 			return list.stream().allMatch(this::isValid);
 		}

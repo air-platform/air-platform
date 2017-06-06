@@ -76,6 +76,25 @@ public interface AirTransportService {
 	Page<AirTransport> listAirTransports(int page, int pageSize);
 
 	/**
+	 * List all AirTransports by pagination.
+	 * 
+	 * @param approved the approved status
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of AirTransports or empty
+	 */
+	@Nonnull
+	Page<AirTransport> listAirTransports(boolean approved, int page, int pageSize);
+
+	/**
+	 * Count AirTransports by approved status
+	 * 
+	 * @param approved the approved status
+	 * @return count
+	 */
+	long countAirTransports(boolean approved);
+
+	/**
 	 * List all AirTransports by family and pagination.
 	 * 
 	 * @param familyId the familyId
@@ -85,6 +104,23 @@ public interface AirTransportService {
 	 */
 	@Nonnull
 	Page<AirTransport> listAirTransportsByFamily(@Nonnull String familyId, int page, int pageSize);
+
+	@Nonnull
+	Page<AirTransport> listAirTransportsByDeparture(@Nonnull String departure, int page, int pageSize);
+
+	@Nonnull
+	Page<AirTransport> listAirTransportsByArrival(@Nonnull String arrival, int page, int pageSize);
+
+	/**
+	 * Search AirTransports.
+	 * 
+	 * @param location departure or arrival
+	 * @param page the page start
+	 * @param pageSize the page size
+	 * @return a page of result
+	 */
+	@Nonnull
+	Page<AirTransport> searchAirTransportsByLocation(@Nonnull String location, int page, int pageSize);
 
 	/**
 	 * Delete a AirTransport.

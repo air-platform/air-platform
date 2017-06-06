@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
- * AircraftAware Product of an {@code Tenant}.
+ * AircraftAware Product of an {@code Tenant} with multiple-prices (sales packages).
  * 
  * @author Bin.Zhang
  */
@@ -29,7 +29,7 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 public abstract class AircraftAwareProduct extends Product {
 	private static final long serialVersionUID = 1L;
 
-	// TODO a better place?
+	// provide the server time to the client, TODO a better place?
 	@Transient
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	protected Date currentTime;

@@ -95,7 +95,7 @@ public class ProductFamily extends Reviewable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("ProductFamily [name=").append(name).append(", category=").append(category).append(", image=")
-				.append(image).append(", description=").append(description).append(", published=").append(published)
+				.append(image).append(", description=").append(description).append(", approved=").append(approved)
 				.append(", id=").append(id).append("]");
 		return builder.toString();
 	}

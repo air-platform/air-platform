@@ -57,7 +57,7 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 		tgt.setAircraftType(src.getAircraftType());
 		tgt.setArrival(src.getArrival());
 		tgt.setTimeSlot(src.getTimeSlot());
-		tgt.setDate(src.getDate());
+		tgt.setDepartureDate(src.getDepartureDate());
 		tgt.setDeparture(src.getDeparture());
 		tgt.setMinPassengers(src.getMinPassengers());
 		tgt.setCurrencyUnit(src.getCurrencyUnit());
@@ -78,20 +78,39 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 	}
 
 	@Override
+	public Page<FerryFlight> listFerryFlights(boolean approved, int page, int pageSize) {
+		return doListAllProducts(approved, page, pageSize);
+	}
+
+	@Override
+	public long countFerryFlights(boolean approved) {
+		return doCountAllProducts(approved);
+	}
+
+	@Override
 	public Page<FerryFlight> listFerryFlightsByDeparture(String departure, int page, int pageSize) {
-		if (departure == null) {
-			return listFerryFlights(page, pageSize);
-		}
-		return Pages.adapt(ferryFlightRepository.findByDepartureOrderByCreationDateDesc(departure,
+		return Pages.adapt(ferryFlightRepository.findByDepartureOrderByRankAscPriceAsc(departure,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<FerryFlight> listFerryFlightsByArrival(String arrival, int page, int pageSize) {
+		return Pages.adapt(ferryFlightRepository.findByArrivalOrderByRankAscPriceAsc(arrival,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<FerryFlight> searchFerryFlightsByLocation(String location, int page, int pageSize) {
+		return Pages.adapt(ferryFlightRepository.findByDepartureContainingOrArrivalContainingOrderByRankAsc(location,
 				Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public List<FerryFlight> listTop3FerryFlights(String departure) {
 		if (departure == null) {
-			return ferryFlightRepository.findTop3ByOrderByCreationDateDesc();
+			return ferryFlightRepository.findTop3ByOrderByRankAscPriceAsc();
 		}
-		return ferryFlightRepository.findTop3ByDepartureOrderByCreationDateDesc(departure);
+		return ferryFlightRepository.findTop3ByDepartureOrderByRankAscPriceAsc(departure);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#ferryFlightId")
@@ -115,5 +134,4 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 	protected BaseProductRepository<FerryFlight> getProductRepository() {
 		return ferryFlightRepository;
 	}
-
 }

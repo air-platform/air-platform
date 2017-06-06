@@ -25,7 +25,7 @@ public abstract class BaseOrderResource<T extends Order> {
 	private CommonOrderService commonOrderService;
 
 	/**
-	 * Find
+	 * Find order
 	 */
 	@GET
 	@Path("{orderId}")
@@ -35,6 +35,10 @@ public abstract class BaseOrderResource<T extends Order> {
 		return (T) commonOrderService.findOrder(orderId);
 	}
 
+	// *****************
+	// ADMIN & USER
+	// *****************
+
 	/**
 	 * Cancel order
 	 */
@@ -43,6 +47,30 @@ public abstract class BaseOrderResource<T extends Order> {
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
 	public void cancel(@PathParam("orderId") String orderId) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.CANCELLED);
+	}
+
+	/**
+	 * Delete (mark order as DELETED)
+	 */
+	@DELETE
+	@Path("{orderId}")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
+	public void delete(@PathParam("orderId") String orderId) {
+		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
+	}
+
+	// *****************
+	// ADMIN & TENANT
+	// *****************
+
+	/**
+	 * Mark order as Paid
+	 */
+	@POST
+	@Path("{orderId}/price")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	public void updateOrderPrice(@PathParam("orderId") String orderId, double newPrice) {
+		commonOrderService.updateOrderPrice(orderId, newPrice);
 	}
 
 	/**
@@ -63,16 +91,6 @@ public abstract class BaseOrderResource<T extends Order> {
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
 	public void finishOrder(@PathParam("orderId") String orderId) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.FINISHED);
-	}
-
-	/**
-	 * Delete (mark order as DELETED)
-	 */
-	@DELETE
-	@Path("{orderId}")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
-	public void delete(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
 	}
 
 	// **************

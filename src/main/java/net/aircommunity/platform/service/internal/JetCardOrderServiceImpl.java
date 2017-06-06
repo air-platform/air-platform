@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.JetCard;
 import net.aircommunity.platform.model.JetCardOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Order.Status;
@@ -57,13 +56,12 @@ public class JetCardOrderServiceImpl extends AbstractVendorAwareOrderService<Jet
 	@Override
 	protected void copyProperties(JetCardOrder src, JetCardOrder tgt) {
 		tgt.setContact(src.getContact());
-		tgt.setNote(src.getNote());
-		//
-		JetCard jetCard = src.getJetCard();
-		if (jetCard != null) {
-			jetCard = jetCardService.findJetCard(jetCard.getId());
-			tgt.setJetCard(jetCard);
-		}
+		// XXX REMOVE
+		// JetCard jetCard = src.getJetCard();
+		// if (jetCard != null) {
+		// jetCard = jetCardService.findJetCard(jetCard.getId());
+		// tgt.setJetCard(jetCard);
+		// }
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")

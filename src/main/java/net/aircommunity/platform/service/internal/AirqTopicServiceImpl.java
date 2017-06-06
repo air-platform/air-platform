@@ -19,19 +19,21 @@ import org.springframework.stereotype.Service;
 import com.google.common.collect.ImmutableList;
 
 import net.aircommunity.platform.Configuration;
-import net.aircommunity.platform.model.Topic;
-import net.aircommunity.platform.service.TopicService;
+import net.aircommunity.platform.model.AirqTopic;
+import net.aircommunity.platform.service.AirqTopicService;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Created by luocheng on 2017/4/17.
+ * AirQ Topic Service implementation
+ * 
+ * @author luocheng
  */
 @Service
-public class TopicServiceImpl implements TopicService {
-	private static final Logger LOG = LoggerFactory.getLogger(TopicServiceImpl.class);
+public class AirqTopicServiceImpl implements AirqTopicService {
+	private static final Logger LOG = LoggerFactory.getLogger(AirqTopicServiceImpl.class);
 
 	private static final String APPLICATION_JSON = "application/json";
 	private static final String API_URL_FORMAT = "%s/api/recent";
@@ -50,7 +52,7 @@ public class TopicServiceImpl implements TopicService {
 	}
 
 	@Override
-	public List<Topic> listRecentTopics() {
+	public List<AirqTopic> listRecentTopics() {
 		LOG.debug("List recet topics url: {}", apiUrl);
 		try {
 			Request request = new Request.Builder().url(apiUrl).headers(buildHeaders()).get().build();
@@ -60,7 +62,7 @@ public class TopicServiceImpl implements TopicService {
 				try (JsonReader jsonReader = Json.createReader(new StringReader(body))) {
 					JsonObject jsonObj = jsonReader.readObject();
 					JsonArray topicsArray = jsonObj.getJsonArray("topics");
-					ImmutableList.Builder<Topic> builder = ImmutableList.builder();
+					ImmutableList.Builder<AirqTopic> builder = ImmutableList.builder();
 					int size = topicsArray.size();
 					for (int i = 0; i < size; i++) {
 						JsonObject t = topicsArray.getJsonObject(i);
@@ -68,7 +70,7 @@ public class TopicServiceImpl implements TopicService {
 						String category = t.getJsonObject("category").getString("name");
 						String title = t.getString("title");
 						int tid = t.getInt("tid");
-						Topic topic = new Topic();
+						AirqTopic topic = new AirqTopic();
 						topic.setCategory(category);
 						topic.setTitle(title);
 						topic.setUrl(String.format(TOPIC_URL_FORMAT, configuration.getAirqUrl(), tid));

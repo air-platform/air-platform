@@ -1,5 +1,9 @@
 package net.aircommunity.platform.model;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,13 +11,23 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Range;
+
 import io.micro.annotation.constraint.NotEmpty;
+import io.micro.common.Strings;
+import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.constraint.PriceList;
 import net.aircommunity.platform.model.jaxb.ProductAdapter;
 
@@ -27,6 +41,9 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SalesPackage extends Persistable {
 	private static final long serialVersionUID = 1L;
+
+	public static final int NUM_OF_PRICES = 30;
+	public static final Range<Integer> DAYS_RANGE = Range.closedOpen(0, NUM_OF_PRICES);
 
 	// price package name
 	@NotEmpty
@@ -42,6 +59,10 @@ public class SalesPackage extends Persistable {
 	@PriceList
 	@Column(name = "prices")
 	private String prices;
+
+	@XmlTransient
+	@Transient
+	private List<Double> priceList;
 
 	// in presalesDays before
 	@Column(name = "presales_days")
@@ -69,6 +90,11 @@ public class SalesPackage extends Persistable {
 	@XmlJavaTypeAdapter(ProductAdapter.class)
 	private Product product;
 
+	@PostLoad
+	private void onLoad() {
+		normalizeAndApplyPrices(prices);
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -89,8 +115,36 @@ public class SalesPackage extends Persistable {
 		return prices;
 	}
 
+	public double getPrice(int offset) {
+		if (offset < 0 || offset >= priceList.size()) {
+			return 0;
+		}
+		return priceList.get(offset);
+	}
+
 	public void setPrices(String prices) {
-		this.prices = prices;
+		// normalize prices (pad to max prices size)
+		normalizeAndApplyPrices(prices);
+	}
+
+	private void normalizeAndApplyPrices(String rawPrices) {
+		if (Strings.isBlank(rawPrices)) {
+			priceList = Collections.emptyList();
+		}
+		else {
+			ImmutableList.Builder<Double> builder = ImmutableList.builder();
+			List<String> list = Splitter.on(Constants.PRICE_SEPARATOR).trimResults().omitEmptyStrings()
+					.splitToList(rawPrices);
+			Double[] normalizedPrices = new Double[SalesPackage.NUM_OF_PRICES];
+			Arrays.fill(normalizedPrices, 0);
+			int size = Math.min(SalesPackage.NUM_OF_PRICES, list.size());
+			for (int i = 0; i < size; i++) {
+				normalizedPrices[i] = Double.valueOf(list.get(i));
+				builder.add(normalizedPrices[i]);
+			}
+			priceList = builder.build();
+			prices = Joiner.on(Constants.PRICE_SEPARATOR).join(normalizedPrices);
+		}
 	}
 
 	public CurrencyUnit getCurrencyUnit() {

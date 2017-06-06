@@ -29,5 +29,34 @@ public interface AirTransportRepository extends BaseProductRepository<AirTranspo
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<AirTransport> findByFamilyIdOrderByCreationDateDesc(String familyId, Pageable pageable);
+	// Page<AirTransport> findByFamilyIdOrderByCreationDateDesc(String familyId, Pageable pageable);
+	Page<AirTransport> findByFamilyIdOrderByRankAsc(String familyId, Pageable pageable);
+
+	/**
+	 * Find air trans by departure or arrival
+	 * 
+	 * @param location departure or arrival
+	 * @param pageable the page request
+	 * @return page of trans
+	 */
+	Page<AirTransport> findByFlightRouteDepartureContainingOrFlightRouteArrivalContainingOrderByRankAsc(String location,
+			Pageable pageable);
+
+	/**
+	 * Find air trans by departure
+	 * 
+	 * @param departure
+	 * @param pageable the page request
+	 * @return page of trans
+	 */
+	Page<AirTransport> findByFlightRouteDepartureOrderByRankAsc(String departure, Pageable pageable);
+
+	/**
+	 * Find air trans by arrival
+	 * 
+	 * @param arrival
+	 * @param pageable the page request
+	 * @return page of trans
+	 */
+	Page<AirTransport> findByFlightRouteArrivalOrderByRankAsc(String arrival, Pageable pageable);
 }

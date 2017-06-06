@@ -81,12 +81,41 @@ public class AirTransportServiceImpl extends AircraftAwareProductService<AirTran
 	}
 
 	@Override
+	public Page<AirTransport> listAirTransports(boolean approved, int page, int pageSize) {
+		return doListAllProducts(approved, page, pageSize);
+	}
+
+	@Override
+	public long countAirTransports(boolean approved) {
+		return doCountAllProducts(approved);
+	}
+
+	@Override
 	public Page<AirTransport> listAirTransportsByFamily(String familyId, int page, int pageSize) {
 		if (familyId == null) {
 			return listAirTransports(page, pageSize);
 		}
-		return Pages.adapt(airTransportRepository.findByFamilyIdOrderByCreationDateDesc(familyId,
+		return Pages.adapt(
+				airTransportRepository.findByFamilyIdOrderByRankAsc(familyId, Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<AirTransport> listAirTransportsByDeparture(String departure, int page, int pageSize) {
+		return Pages.adapt(airTransportRepository.findByFlightRouteDepartureOrderByRankAsc(departure,
 				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<AirTransport> listAirTransportsByArrival(String arrival, int page, int pageSize) {
+		return Pages.adapt(airTransportRepository.findByFlightRouteArrivalOrderByRankAsc(arrival,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<AirTransport> searchAirTransportsByLocation(String location, int page, int pageSize) {
+		return Pages.adapt(
+				airTransportRepository.findByFlightRouteDepartureContainingOrFlightRouteArrivalContainingOrderByRankAsc(
+						location, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTransportId")
@@ -110,4 +139,5 @@ public class AirTransportServiceImpl extends AircraftAwareProductService<AirTran
 	protected BaseProductRepository<AirTransport> getProductRepository() {
 		return airTransportRepository;
 	}
+
 }

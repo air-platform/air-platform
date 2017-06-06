@@ -16,16 +16,35 @@ import net.aircommunity.platform.model.FerryFlight;
  */
 public interface FerryFlightRepository extends BaseProductRepository<FerryFlight> {
 
-	List<FerryFlight> findTop3ByOrderByCreationDateDesc();
+	List<FerryFlight> findTop3ByOrderByRankAscPriceAsc();
 
-	List<FerryFlight> findTop3ByDepartureOrderByCreationDateDesc(String departure);
+	List<FerryFlight> findTop3ByDepartureOrderByRankAscPriceAsc(String departure);
+
+	/**
+	 * Find FerryFlight by departure or arrival
+	 * 
+	 * @param location departure or arrival
+	 * @param pageable the page request
+	 * @return page of trans
+	 */
+	Page<FerryFlight> findByDepartureContainingOrArrivalContainingOrderByRankAsc(String location, Pageable pageable);
 
 	/**
 	 * Find all by departure.
 	 * 
+	 * @param departure the departure
 	 * @param pageable the page request
 	 * @return page of FerryFlight
 	 */
-	Page<FerryFlight> findByDepartureOrderByCreationDateDesc(String departure, Pageable pageable);
+	Page<FerryFlight> findByDepartureOrderByRankAscPriceAsc(String departure, Pageable pageable);
+
+	/**
+	 * Find all by arrival.
+	 * 
+	 * @param arrival the arrival
+	 * @param pageable the page request
+	 * @return page of FerryFlight
+	 */
+	Page<FerryFlight> findByArrivalOrderByRankAscPriceAsc(String arrival, Pageable pageable);
 
 }
