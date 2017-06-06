@@ -25,7 +25,7 @@ public class Reviewable extends Persistable {
 
 	// reason when it's rejected by platform ADMIN
 	@Size(max = 1000)
-	@Column(name = "rejected_reason", nullable = false, length = 1000)
+	@Column(name = "rejected_reason", length = 1000)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected String rejectedReason;
 
