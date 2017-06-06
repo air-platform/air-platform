@@ -4,23 +4,27 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTransport;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFamily;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AirTransportRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
-import net.aircommunity.platform.repository.ProductFamilyRepository;
 import net.aircommunity.platform.service.AirTransportService;
 import net.aircommunity.platform.service.AircraftService;
+import net.aircommunity.platform.service.ProductFamilyService;
 
 /**
  * AirTransport service implementation.
@@ -30,16 +34,18 @@ import net.aircommunity.platform.service.AircraftService;
 @Service
 @Transactional
 public class AirTransportServiceImpl extends AircraftAwareProductService<AirTransport> implements AirTransportService {
+	private static final Logger LOG = LoggerFactory.getLogger(AirTransportServiceImpl.class);
+
 	private static final String CACHE_NAME = "cache.airtransport";
 
 	@Resource
 	private AircraftService aircraftService;
 
 	@Resource
-	private AirTransportRepository airTransportRepository;
+	private ProductFamilyService productFamilyService;
 
 	@Resource
-	private ProductFamilyRepository productFamilyRepository;
+	private AirTransportRepository airTransportRepository;
 
 	@Override
 	public AirTransport createAirTransport(String tenantId, AirTransport airTransport) {
@@ -60,14 +66,20 @@ public class AirTransportServiceImpl extends AircraftAwareProductService<AirTran
 
 	@Override
 	protected void doCopyProperties(AirTransport src, AirTransport tgt) {
-		tgt.setFamily(src.getFamily());
+		ProductFamily family = productFamilyService.findProductFamily(src.getFamily().getId());
+		if (!family.isApproved()) {
+			LOG.error("ProductFamily {} is not approved yet", family);
+			throw new AirException(Codes.PRODUCT_FAMILY_NOT_APPROVED, M.msg(M.PRODUCT_FAMILY_NOT_APPROVED));
+		}
+		tgt.setFamily(family);
 		tgt.setTimeEstimation(src.getTimeEstimation());
 		tgt.setFlightRoute(src.getFlightRoute());
 	}
 
 	@Override
 	public List<ProductFamily> listAirTransportFamilies() {
-		return productFamilyRepository.findByCategory(Category.AIR_TRANS);
+		return productFamilyService.listProductFamiliesByCategory(Category.AIR_TRANS, 1, Integer.MAX_VALUE)
+				.getContent();
 	}
 
 	@Override

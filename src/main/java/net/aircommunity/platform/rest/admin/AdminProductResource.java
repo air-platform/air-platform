@@ -70,7 +70,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	/**
 	 * List all families
 	 */
-	@POST
+	@GET
 	@Path("families")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<ProductFamily> listProductFamilies(@QueryParam("approved") Boolean approved,
@@ -94,7 +94,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	/**
 	 * List all taxis
 	 */
-	@POST
+	@GET
 	@Path("taxis")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<AirTaxi> listTaxis(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
@@ -118,7 +118,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	/**
 	 * List all Trans
 	 */
-	@POST
+	@GET
 	@Path("transports")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<AirTransport> listTrans(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
@@ -142,7 +142,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	/**
 	 * List all Tours
 	 */
-	@POST
+	@GET
 	@Path("tours")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<AirTour> listTours(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
@@ -166,7 +166,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	/**
 	 * List all ferryflights
 	 */
-	@POST
+	@GET
 	@Path("ferryflights")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<FerryFlight> listFerryFlights(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
@@ -190,7 +190,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	/**
 	 * List all fleets
 	 */
-	@POST
+	@GET
 	@Path("fleets")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<Fleet> listFleets(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
@@ -214,7 +214,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	/**
 	 * List all courses
 	 */
-	@POST
+	@GET
 	@Path("courses")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<Course> listCourses(@QueryParam("approved") Boolean approved, @QueryParam("page") int page,
