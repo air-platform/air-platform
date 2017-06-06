@@ -260,8 +260,8 @@ public class AdminResource {
 	@Resource
 	private AdminProductResource adminProductResource;
 
-	@Path("products")
-	public AdminProductResource products() {
+	@Path("product")
+	public AdminProductResource product() {
 		return adminProductResource;
 	}
 
