@@ -4,6 +4,8 @@ import java.net.URI;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -86,6 +88,21 @@ public class TenantProductFamilyResource {
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all families with category: {}, page: {}, pageSize: {}", category, page, pageSize);
 		return productFamilyService.listTenantProductFamilies(tenantId, reviewStatus, category, page, pageSize);
+	}
+
+	/**
+	 * List product families count to be reviewed
+	 */
+	@GET
+	@Path("review/count")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JsonObject listProductFamiliesToBeApproved(@PathParam("tenantId") String tenantId,
+			@QueryParam("status") ReviewStatus reviewStatus) {
+		return buildCountResponse(productFamilyService.countTenantProductFamilies(tenantId, reviewStatus));
+	}
+
+	private JsonObject buildCountResponse(long count) {
+		return Json.createObjectBuilder().add("count", count).build();
 	}
 
 	/**

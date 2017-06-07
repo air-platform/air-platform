@@ -13,6 +13,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.AirTour;
@@ -20,6 +22,7 @@ import net.aircommunity.platform.model.AirTransport;
 import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.Fleet;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.ProductFamily;
@@ -74,9 +77,21 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("families")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
 	public Page<ProductFamily> listProductFamilies(@QueryParam("status") ReviewStatus reviewStatus,
 			@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
 		return productFamilyService.listAllProductFamilies(reviewStatus, page, pageSize);
+	}
+
+	/**
+	 * List all families
+	 */
+	@GET
+	@Path("families/{productFamilyId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
+	public ProductFamily findProductFamily(@PathParam("productFamilyId") String productFamilyId) {
+		return productFamilyService.findProductFamily(productFamilyId);
 	}
 
 	/**
@@ -99,6 +114,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("taxis")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
 	public Page<AirTaxi> listTaxis(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
 		return airTaxiService.listAllAirTaxis(reviewStatus, page, pageSize);
@@ -124,6 +140,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("transports")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
 	public Page<AirTransport> listTrans(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
 		return airTransportService.listAllAirTransports(reviewStatus, page, pageSize);
@@ -148,6 +165,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("tours")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
 	public Page<AirTour> listTours(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
 		return airTourService.listAllAirTours(reviewStatus, page, pageSize);
@@ -172,6 +190,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("ferryflights")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
 	public Page<FerryFlight> listFerryFlights(@QueryParam("status") ReviewStatus reviewStatus,
 			@QueryParam("page") int page, @QueryParam("pageSize") int pageSize) {
 		return ferryFlightService.listAllFerryFlights(reviewStatus, page, pageSize);
@@ -196,6 +215,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("fleets")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
 	public Page<Fleet> listFleets(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
 		return fleetService.listAllFleets(reviewStatus, page, pageSize);
@@ -220,6 +240,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@GET
 	@Path("courses")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
 	public Page<Course> listCourses(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize) {
 		return courseService.listAllCourses(reviewStatus, page, pageSize);
