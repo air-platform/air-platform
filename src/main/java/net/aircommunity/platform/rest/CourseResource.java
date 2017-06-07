@@ -1,6 +1,7 @@
 package net.aircommunity.platform.rest;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -53,6 +54,36 @@ public class CourseResource extends ProductResourceSupport<Course> {
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		LOG.debug("list all courses with location: {}, license: {}, aircraftType: {}", location, license, aircraftType);
 		return courseService.listCoursesWithConditions(location, license, aircraftType, page, pageSize);
+	}
+
+	/**
+	 * Aircraft types
+	 */
+	@GET
+	@Path("aircraft-types")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Set<String> listAircraftTypes() {
+		return courseService.listAircraftTypes();
+	}
+
+	/**
+	 * Aircraft licenses
+	 */
+	@GET
+	@Path("aircraft-licenses")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Set<String> listAircraftLicenses() {
+		return courseService.listAircraftLicenses();
+	}
+
+	/**
+	 * Locations
+	 */
+	@GET
+	@Path("locations")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Set<String> listCourseLocations() {
+		return courseService.listCourseLocations();
 	}
 
 	/**

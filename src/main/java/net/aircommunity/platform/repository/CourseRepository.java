@@ -2,6 +2,7 @@ package net.aircommunity.platform.repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,15 @@ import net.aircommunity.platform.model.Course;
  * @author Bin.Zhang
  */
 public interface CourseRepository extends BaseProductRepository<Course>, JpaSpecificationExecutor<Course> {
+
+	@Query("SELECT DISTINCT t.aircraftType FROM #{#entityName} t")
+	Set<String> listAircraftTypes();
+
+	@Query("SELECT DISTINCT t.license FROM #{#entityName} t")
+	Set<String> listAircraftLicenses();
+
+	@Query("SELECT DISTINCT t.location FROM #{#entityName} t")
+	Set<String> listCourseLocations();
 
 	/**
 	 * List all courses (USER)

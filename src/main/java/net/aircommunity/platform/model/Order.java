@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model;
 
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.Locale;
 
 import javax.persistence.Column;
@@ -38,6 +39,13 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 public abstract class Order extends Persistable {
 	private static final long serialVersionUID = 1L;
 
+	private static final EnumSet<Status> CANCELLABLE_STATUS = EnumSet.of(Status.PUBLISHED, Status.CREATED,
+			Status.CONFIRMED, Status.CONTRACT_SIGNED);
+
+	// finished, closed, cancelled or refunded
+	private static final EnumSet<Status> COMPLETED_STATUS = EnumSet.of(Status.FINISHED, Status.CANCELLED,
+			Status.REFUNDED, Status.CLOSED);
+
 	// TODO add alipay TradeNo?
 	// @XmlElement --> product
 	// @Column(name = "discount", nullable = true)
@@ -62,7 +70,7 @@ public abstract class Order extends Persistable {
 	@Column(name = "total_price", nullable = false)
 	protected double totalPrice;
 
-	// TODO add tradeStatus? FINISHED, processing/IN_PROGRESS/pending, CLOSED?
+	// TODO add tradeStatus? PENDING/IN_PROGRESS/FINISHED/CLOSED?
 	@XmlElement
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -93,9 +101,22 @@ public abstract class Order extends Persistable {
 
 	@XmlElement
 	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "refunded_date")
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	protected Date refundedDate;
+
+	@XmlElement
+	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "finished_date")
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	protected Date finishedDate;
+
+	@XmlElement
+	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "closed_date")
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	@JsonView(JsonViews.Admin.class)
+	protected Date closedDate;
 
 	@XmlElement
 	@Temporal(value = TemporalType.TIMESTAMP)
@@ -208,12 +229,28 @@ public abstract class Order extends Persistable {
 		this.paymentDate = paymentDate;
 	}
 
+	public Date getRefundedDate() {
+		return refundedDate;
+	}
+
+	public void setRefundedDate(Date refundedDate) {
+		this.refundedDate = refundedDate;
+	}
+
 	public Date getFinishedDate() {
 		return finishedDate;
 	}
 
 	public void setFinishedDate(Date finishedDate) {
 		this.finishedDate = finishedDate;
+	}
+
+	public Date getClosedDate() {
+		return closedDate;
+	}
+
+	public void setClosedDate(Date closedDate) {
+		this.closedDate = closedDate;
 	}
 
 	public Date getCancelledDate() {
@@ -281,6 +318,37 @@ public abstract class Order extends Persistable {
 	// Not sure why this enum cannot be serialized to JSON (event with @XmlElement), so just use getTypeString instead
 	@XmlTransient
 	public abstract Type getType();
+
+	public boolean signContractRequired() {
+		return getType() != Type.FLEET || getType() != Type.COURSE;
+	}
+
+	@XmlTransient
+	public boolean isCancellable() {
+		return CANCELLABLE_STATUS.contains(status);
+	}
+
+	@XmlTransient
+	public boolean isCloseable() {
+		// same as isCancellable
+		return isCancellable();
+	}
+
+	/**
+	 * Finished, closed, cancelled or refunded.
+	 */
+	@XmlTransient
+	public boolean isCompleted() {
+		return COMPLETED_STATUS.contains(status);
+	}
+
+	/**
+	 * Order is completed successfully
+	 */
+	@XmlTransient
+	public boolean isFinished() {
+		return status == Status.FINISHED;
+	}
 
 	@XmlTransient
 	public abstract Product getProduct();

@@ -40,11 +40,22 @@ public abstract class BaseOrderResource<T extends Order> {
 	// *****************
 
 	/**
+	 * Mark order as refund
+	 */
+	@POST
+	@Path("{orderId}/refund")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_USER })
+	public void refundOrder(@PathParam("orderId") String orderId) {
+		// and update to Order.Status.REFUNDED once trade completed
+		commonOrderService.updateOrderStatus(orderId, Order.Status.REFUNDING);
+	}
+
+	/**
 	 * Cancel order
 	 */
 	@POST
 	@Path("{orderId}/cancel")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_USER })
 	public void cancel(@PathParam("orderId") String orderId) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.CANCELLED);
 	}
@@ -54,7 +65,7 @@ public abstract class BaseOrderResource<T extends Order> {
 	 */
 	@DELETE
 	@Path("{orderId}")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_USER })
 	public void delete(@PathParam("orderId") String orderId) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
 	}
@@ -64,23 +75,53 @@ public abstract class BaseOrderResource<T extends Order> {
 	// *****************
 
 	/**
-	 * Mark order as Paid
+	 * Update order price
 	 */
 	@POST
 	@Path("{orderId}/price")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void updateOrderPrice(@PathParam("orderId") String orderId, double newPrice) {
 		commonOrderService.updateOrderPrice(orderId, newPrice);
 	}
 
 	/**
-	 * Mark order as Paid
+	 * Mark order as confirmed
+	 */
+	@POST
+	@Path("{orderId}/confirm")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+	public void confirmOrder(@PathParam("orderId") String orderId) {
+		commonOrderService.updateOrderStatus(orderId, Order.Status.CONFIRMED);
+	}
+
+	/**
+	 * Make order as contract signed
+	 */
+	@POST
+	@Path("{orderId}/sign-contract")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+	public void signContractOrder(@PathParam("orderId") String orderId) {
+		commonOrderService.updateOrderStatus(orderId, Order.Status.CONTRACT_SIGNED);
+	}
+
+	/**
+	 * Mark order as paid (manually update pay status)
 	 */
 	@POST
 	@Path("{orderId}/pay")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void payOrder(@PathParam("orderId") String orderId) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.PAID);
+	}
+
+	/**
+	 * Mark order as release-ticket
+	 */
+	@POST
+	@Path("{orderId}/release-ticket")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+	public void releaseTicketOrder(@PathParam("orderId") String orderId) {
+		commonOrderService.updateOrderStatus(orderId, Order.Status.TICKET_RELEASED);
 	}
 
 	/**
@@ -88,7 +129,7 @@ public abstract class BaseOrderResource<T extends Order> {
 	 */
 	@POST
 	@Path("{orderId}/finish")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void finishOrder(@PathParam("orderId") String orderId) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.FINISHED);
 	}
@@ -101,7 +142,7 @@ public abstract class BaseOrderResource<T extends Order> {
 	 * Delete
 	 */
 	@DELETE
-	@Path("{orderId}")
+	@Path("{orderId}/force")
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	public void forceDelete(@PathParam("orderId") String orderId) {
 		commonOrderService.deleteOrder(orderId);

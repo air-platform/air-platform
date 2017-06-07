@@ -2,6 +2,7 @@ package net.aircommunity.platform.service.internal;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,6 +15,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +44,9 @@ import net.aircommunity.platform.service.SchoolService;
 @Transactional
 public class CourseServiceImpl extends AbstractProductService<Course> implements CourseService {
 	private static final String CACHE_NAME = "cache.course";
+	private static final String CACHE_NAME_AIRCRAFT_TYPES = "cache.course.aircraft-types";
+	private static final String CACHE_NAME_AIRCRAFT_LICENSES = "cache.course.aircraft-licenses";
+	private static final String CACHE_NAME_AIRCRAFT_LOCATIONS = "cache.course.aircraft-locations";
 
 	@Resource
 	private CourseRepository courseRepository;
@@ -49,10 +54,22 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 	@Resource
 	private SchoolService schoolService;
 
+	@Cacheable(cacheNames = CACHE_NAME_AIRCRAFT_TYPES)
 	@Override
-	protected Tenant doGetVendor(String schoolId) {
-		School school = schoolService.findSchool(schoolId);
-		return school.getVendor();
+	public Set<String> listAircraftTypes() {
+		return courseRepository.listAircraftTypes();
+	}
+
+	@Cacheable(cacheNames = CACHE_NAME_AIRCRAFT_LICENSES)
+	@Override
+	public Set<String> listAircraftLicenses() {
+		return courseRepository.listAircraftLicenses();
+	}
+
+	@Cacheable(cacheNames = CACHE_NAME_AIRCRAFT_LOCATIONS)
+	@Override
+	public Set<String> listCourseLocations() {
+		return courseRepository.listCourseLocations();
 	}
 
 	@Override
@@ -60,6 +77,7 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 		return doCreateProduct(schoolId, course);
 	}
 
+	@Override
 	protected void copyProperties(Course src, Course tgt) {
 		tgt.setName(src.getName());
 		tgt.setImage(src.getImage());
@@ -91,7 +109,8 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 		// return course;
 	}
 
-	@CachePut(cacheNames = CACHE_NAME, key = "#courseId")
+	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#courseId"), evict = @CacheEvict(cacheNames = {
+			CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES }, allEntries = true))
 	@Override
 	public Course updateCourse(String courseId, Course newCourse) {
 		Course course = findCourse(courseId);
@@ -188,13 +207,15 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 		return Pages.adapt(courseRepository.findAll(spec, Pages.createPageRequest(page, pageSize)));
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME, key = "#courseId")
+	@Caching(evict = { @CacheEvict(cacheNames = CACHE_NAME, key = "#courseId"),
+			@CacheEvict(cacheNames = { CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES }, allEntries = true) })
 	@Override
 	public void deleteCourse(String courseId) {
 		safeExecute(() -> courseRepository.delete(courseId), "Delete course %s failed", courseId);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES,
+			CACHE_NAME_AIRCRAFT_LOCATIONS }, allEntries = true)
 	@Override
 	public void deleteCourses(String schoolId) {
 		safeExecute(() -> courseRepository.deleteBySchoolId(schoolId), "Delete all courses for school %s", schoolId);
@@ -209,4 +230,11 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 	protected BaseProductRepository<Course> getProductRepository() {
 		return courseRepository;
 	}
+
+	@Override
+	protected Tenant doGetVendor(String schoolId) {
+		School school = schoolService.findSchool(schoolId);
+		return school.getVendor();
+	}
+
 }

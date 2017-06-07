@@ -28,6 +28,7 @@ import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AircraftAwareOrder;
 import net.aircommunity.platform.model.CharterableOrder;
 import net.aircommunity.platform.model.Order;
+import net.aircommunity.platform.model.Order.Type;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.PassengerItem;
@@ -270,46 +271,120 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				type.getSimpleName(), orderId, newPrice);
 	}
 
-	protected T doUpdateOrderStatus(String orderId, Order.Status status) {
+	// TODO REMOVE or refactor ?
+	// BiConsumer<Order, Order.Status> fleetOrderStatusHanlder = (order, newStatus) -> {
+	// switch (newStatus) {
+	// case PUBLISHED:
+	// case CREATED:
+	// throw invalidOrderStatus(orderId, newStatus);
+	//
+	// // AIRJET ONLY
+	// case CONFIRMED:
+	// if (order.getType() != Type.FLEET) {
+	// throw invalidOrderStatus(orderId, newStatus);
+	// }
+	// break;
+	//
+	// // AIRJET ONLY
+	// case CONTRACT_SIGNED:
+	// if (order.getType() != Type.FLEET) {
+	// throw invalidOrderStatus(orderId, newStatus);
+	// }
+	// break;
+	// }
+	// };
+
+	/**
+	 * Update order status to new status (TODO update )
+	 */
+	protected T doUpdateOrderStatus(String orderId, Order.Status newStatus) {
 		T order = doFindOrder(orderId);
-		switch (status) {
+		switch (newStatus) {
 		case PUBLISHED:
-			throwInvalidOrderStatus(orderId, status);
-
 		case CREATED:
-			throwInvalidOrderStatus(orderId, status);
+			throw invalidOrderStatus(orderId, newStatus);
 
+			// airjet ONLY
+		case CONFIRMED:
+			if (order.getType() != Type.FLEET) {
+				throw invalidOrderStatus(orderId, newStatus);
+			}
+			break;
+
+		// airjet & course ONLY
+		case CONTRACT_SIGNED:
+			// should be already confirmed
+			if (!(order.getStatus() == Order.Status.CONTRACT_SIGNED && order.signContractRequired())) {
+				throw invalidOrderStatus(orderId, newStatus);
+			}
+			break;
+
+		//
 		case PAID:
+			// should be already contract signed
+			if (!(order.getStatus() == Order.Status.CONTRACT_SIGNED && order.signContractRequired())) {
+				throw invalidOrderStatus(orderId, newStatus);
+			}
 			if (order.getStatus() != Order.Status.CREATED) {
-				throwInvalidOrderStatus(orderId, status);
+				throw invalidOrderStatus(orderId, newStatus);
 			}
 			order.setPaymentDate(new Date());
 			break;
 
-		case FINISHED:
+		//
+		case REFUNDING:
+			// should be already paid
 			if (order.getStatus() != Order.Status.PAID) {
-				throwInvalidOrderStatus(orderId, status);
+				throw invalidOrderStatus(orderId, newStatus);
+			}
+			break;
+
+		//
+		case REFUNDED:
+			// should be already contract signed
+			if (order.getStatus() != Order.Status.REFUNDING) {
+				throw invalidOrderStatus(orderId, newStatus);
+			}
+			order.setRefundedDate(new Date());
+			break;
+
+		case TICKET_RELEASED:
+			if (order.getStatus() != Order.Status.PAID) {
+				throw invalidOrderStatus(orderId, newStatus);
+			}
+			break;
+
+		case FINISHED:
+			if (order.getStatus() != Order.Status.PAID || order.getStatus() != Order.Status.TICKET_RELEASED) {
+				throw invalidOrderStatus(orderId, newStatus);
 			}
 			order.setFinishedDate(new Date());
 			break;
 
 		case CANCELLED:
-			if (order.getStatus() == Order.Status.PAID) {
-				throwInvalidOrderStatus(orderId, status);
+			if (!order.isCancellable()) {
+				throw invalidOrderStatus(orderId, newStatus);
 			}
 			order.setCancelledDate(new Date());
 			break;
 
+		case CLOSED:
+			if (!order.isCancellable()) {
+				throw invalidOrderStatus(orderId, newStatus);
+			}
+			order.setClosedDate(new Date());
+			break;
+
 		case DELETED:
-			if (order.getStatus() == Order.Status.PAID) {
-				throwInvalidOrderStatus(orderId, status);
+			if (!order.isCompleted()) {
+				throw invalidOrderStatus(orderId, newStatus);
 			}
 			order.setDeletedDate(new Date());
 			break;
 
 		default:// noop
 		}
-		order.setStatus(status);
+		order.setStatus(newStatus);
 		order.setLastModifiedDate(new Date());
 		return safeExecute(() -> {
 			T orderUpdated = getOrderRepository().save(order);
@@ -318,12 +393,12 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				LOG.info("Notify client managers on order cancellation: {}", orderUpdated);
 			}
 			return orderUpdated;
-		}, "Update %s: %s to status %s failed", type.getSimpleName(), orderId, status);
+		}, "Update %s: %s to status %s failed", type.getSimpleName(), orderId, newStatus);
 	}
 
-	private void throwInvalidOrderStatus(String orderId, Order.Status status) {
+	private AirException invalidOrderStatus(String orderId, Order.Status status) {
 		LOG.error("{} ({}) order cannot be update to status {}", type.getSimpleName(), orderId, status);
-		throw new AirException(Codes.ORDER_ILLEGAL_STATUS, M.msg(M.ORDER_ILLEGAL_STATUS));
+		return new AirException(Codes.ORDER_ILLEGAL_STATUS, M.msg(M.ORDER_ILLEGAL_STATUS));
 		// throw new AirException(Codes.ORDER_ILLEGAL_STATUS,
 		// String.format("%s (%s) order cannot be update to status %s", type.getSimpleName(), orderId, status));
 	}

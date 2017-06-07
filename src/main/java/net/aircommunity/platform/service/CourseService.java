@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,6 +16,15 @@ import net.aircommunity.platform.model.Reviewable.ReviewStatus;
  * @author guankai
  */
 public interface CourseService {
+
+	@Nonnull
+	Set<String> listAircraftTypes();
+
+	@Nonnull
+	Set<String> listAircraftLicenses();
+
+	@Nonnull
+	Set<String> listCourseLocations();
 
 	@Nonnull
 	Course createCourse(@Nonnull String schoolId, @Nonnull Course course);
