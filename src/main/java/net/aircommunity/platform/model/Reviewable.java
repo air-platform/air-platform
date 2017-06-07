@@ -1,6 +1,8 @@
 package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -20,6 +22,7 @@ public class Reviewable extends Persistable {
 
 	// whether a product is approved or not by platform ADMIN
 	@Column(name = "review_status", nullable = false)
+	@Enumerated(EnumType.STRING)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected ReviewStatus reviewStatus = ReviewStatus.PENDING;
 
