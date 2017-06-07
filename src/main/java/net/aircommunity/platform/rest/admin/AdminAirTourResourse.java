@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest.tenant;
+package net.aircommunity.platform.rest.admin;
 
 import java.net.URI;
 
@@ -27,24 +27,24 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import net.aircommunity.platform.model.AirTour;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
+import net.aircommunity.platform.rest.tenant.TenantProductResourceSupport;
 import net.aircommunity.platform.service.AirTourService;
 
 /**
- * AirTour RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
+ * AirTour RESTful API for ADMIN ONLY
  * 
- * Created by guankai on 15/04/2017.
+ * @author Bin.Zhang
  */
 @RESTful
-@AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantAirTourResourse extends TenantProductResourceSupport<AirTour> {
-	private static final Logger LOG = LoggerFactory.getLogger(TenantAirTourResourse.class);
+@RolesAllowed(Roles.ROLE_ADMIN)
+public class AdminAirTourResourse extends TenantProductResourceSupport<AirTour> {
+	private static final Logger LOG = LoggerFactory.getLogger(AdminAirTourResourse.class);
 
 	@Resource
 	private AirTourService airTourService;
@@ -54,8 +54,8 @@ public class TenantAirTourResourse extends TenantProductResourceSupport<AirTour>
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid AirTour airTour,
+	@JsonView(JsonViews.Admin.class)
+	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid AirTour airTour,
 			@Context UriInfo uriInfo) {
 		AirTour created = airTourService.createAirTour(tenantId, airTour);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
@@ -68,9 +68,12 @@ public class TenantAirTourResourse extends TenantProductResourceSupport<AirTour>
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Page<AirTour> list(@PathParam("tenantId") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
+	@JsonView(JsonViews.Admin.class)
+	public Page<AirTour> list(@QueryParam("tenant") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
 			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+		if (Strings.isBlank(tenantId)) {
+			return airTourService.listAllAirTours(reviewStatus, page, pageSize);
+		}
 		return airTourService.listTenantAirTours(tenantId, reviewStatus, page, pageSize);
 	}
 
@@ -80,8 +83,11 @@ public class TenantAirTourResourse extends TenantProductResourceSupport<AirTour>
 	@GET
 	@Path("review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listToBeApproved(@PathParam("tenantId") String tenantId,
+	public JsonObject listToBeApproved(@QueryParam("tenant") String tenantId,
 			@QueryParam("status") ReviewStatus reviewStatus) {
+		if (Strings.isBlank(tenantId)) {
+			return buildCountResponse(airTourService.countAllAirTours(reviewStatus));
+		}
 		return buildCountResponse(airTourService.countTenantAirTours(tenantId, reviewStatus));
 	}
 
@@ -92,7 +98,7 @@ public class TenantAirTourResourse extends TenantProductResourceSupport<AirTour>
 	@Path("{airTourId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView(JsonViews.Admin.class)
 	public AirTour update(@PathParam("airTourId") String airTourId, @NotNull @Valid AirTour newAirTour) {
 		return airTourService.updateAirTour(airTourId, newAirTour);
 	}

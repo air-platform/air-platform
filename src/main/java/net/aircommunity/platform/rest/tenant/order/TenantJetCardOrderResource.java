@@ -25,6 +25,7 @@ import net.aircommunity.platform.service.JetCardOrderService;
  * Tenant JetCardOrder RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
  * 
  * @author Bin.Zhang
+ * @deprecated
  */
 @RESTful
 @AllowResourceOwner

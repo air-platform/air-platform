@@ -68,6 +68,10 @@ public interface ProductFamilyService {
 	@Nonnull
 	Page<ProductFamily> listAllProductFamilies(@Nullable ReviewStatus reviewStatus, int page, int pageSize);
 
+	// TODO ?
+	// Page<ProductFamily> listAllProductFamilies(@Nullable ReviewStatus reviewStatus, @Nullable Category category,
+	// int page, int pageSize);
+
 	long countAllProductFamilies(@Nullable ReviewStatus reviewStatus);
 
 	/**

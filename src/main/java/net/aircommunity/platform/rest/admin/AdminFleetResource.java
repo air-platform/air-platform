@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest.tenant;
+package net.aircommunity.platform.rest.admin;
 
 import java.net.URI;
 
@@ -27,49 +27,54 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.model.AirTaxi;
+import io.micro.common.Strings;
+import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.AirTaxiService;
+import net.aircommunity.platform.rest.tenant.TenantProductResourceSupport;
+import net.aircommunity.platform.service.FleetService;
 
 /**
- * AirTour RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
+ * Fleet RESTful API for ADMIN
+ * 
+ * @author Bin.Zhang
  */
 @RESTful
-@AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantAirTaxiResource extends TenantProductResourceSupport<AirTaxi> {
-	private static final Logger LOG = LoggerFactory.getLogger(TenantAirTaxiResource.class);
+@RolesAllowed(Roles.ROLE_ADMIN)
+public class AdminFleetResource extends TenantProductResourceSupport<Fleet> {
+	private static final Logger LOG = LoggerFactory.getLogger(AdminFleetResource.class);
 
 	@Resource
-	private AirTaxiService airTaxiService;
+	private FleetService fleetService;
 
 	/**
 	 * Create
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid AirTaxi airTaxi,
+	@JsonView(JsonViews.Admin.class)
+	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid Fleet fleet,
 			@Context UriInfo uriInfo) {
-		AirTaxi created = airTaxiService.createAirTaxi(tenantId, airTaxi);
+		Fleet created = fleetService.createFleet(tenantId, fleet);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
-		LOG.debug("Created: {}", uri);
+		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
 	}
 
 	/**
-	 * List
+	 * List TODO query by flightNo, status etc.
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Page<AirTaxi> list(@PathParam("tenantId") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
+	@JsonView(JsonViews.Admin.class)
+	public Page<Fleet> list(@QueryParam("tenant") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		return airTaxiService.listTenantAirTaxis(tenantId, reviewStatus, page, pageSize);
+		if (Strings.isBlank(tenantId)) {
+			return fleetService.listAllFleets(reviewStatus, page, pageSize);
+		}
+		return fleetService.listTenantFleets(tenantId, reviewStatus, page, pageSize);
 	}
 
 	/**
@@ -78,21 +83,23 @@ public class TenantAirTaxiResource extends TenantProductResourceSupport<AirTaxi>
 	@GET
 	@Path("review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listToBeApproved(@PathParam("tenantId") String tenantId,
+	public JsonObject listToBeApproved(@QueryParam("tenant") String tenantId,
 			@QueryParam("status") ReviewStatus reviewStatus) {
-		return buildCountResponse(airTaxiService.countTenantAirTaxis(tenantId, reviewStatus));
+		if (Strings.isBlank(tenantId)) {
+			return buildCountResponse(fleetService.countAllFleets(reviewStatus));
+		}
+		return buildCountResponse(fleetService.countTenantFleets(tenantId, reviewStatus));
 	}
 
 	/**
 	 * Update
 	 */
 	@PUT
-	@Path("{airTaxiId}")
+	@Path("{fleetId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public AirTaxi update(@PathParam("airTaxiId") String airTaxiId, @NotNull AirTaxi newAirTaxi) {
-		return airTaxiService.updateAirTaxi(airTaxiId, newAirTaxi);
+	@JsonView(JsonViews.Admin.class)
+	public Fleet update(@PathParam("fleetId") String fleetId, @NotNull @Valid Fleet newFleet) {
+		return fleetService.updateFleet(fleetId, newFleet);
 	}
-
 }

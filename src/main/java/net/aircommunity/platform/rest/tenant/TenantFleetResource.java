@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -71,6 +72,17 @@ public class TenantFleetResource extends TenantProductResourceSupport<Fleet> {
 	public Page<Fleet> list(@PathParam("tenantId") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return fleetService.listTenantFleets(tenantId, reviewStatus, page, pageSize);
+	}
+
+	/**
+	 * Count to be reviewed
+	 */
+	@GET
+	@Path("review/count")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JsonObject listToBeApproved(@PathParam("tenantId") String tenantId,
+			@QueryParam("status") ReviewStatus reviewStatus) {
+		return buildCountResponse(fleetService.countTenantFleets(tenantId, reviewStatus));
 	}
 
 	/**

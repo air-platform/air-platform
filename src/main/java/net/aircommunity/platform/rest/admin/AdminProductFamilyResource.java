@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest.tenant;
+package net.aircommunity.platform.rest.admin;
 
 import java.net.URI;
 
@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product.Category;
@@ -35,19 +36,17 @@ import net.aircommunity.platform.model.ProductFamily;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.BaseResourceSupport;
-import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.ProductFamilyService;
 
 /**
- * ProductFamily RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
+ * ProductFamily RESTful API for ADMIN
  * 
  * @author Bin.Zhang
  */
 @RESTful
-@AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantProductFamilyResource extends BaseResourceSupport {
-	private static final Logger LOG = LoggerFactory.getLogger(TenantProductFamilyResource.class);
+@RolesAllowed(Roles.ROLE_ADMIN)
+public class AdminProductFamilyResource extends BaseResourceSupport {
+	private static final Logger LOG = LoggerFactory.getLogger(AdminProductFamilyResource.class);
 
 	@Resource
 	private ProductFamilyService productFamilyService;
@@ -57,8 +56,8 @@ public class TenantProductFamilyResource extends BaseResourceSupport {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid ProductFamily productFamily,
+	@JsonView(JsonViews.Admin.class)
+	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid ProductFamily productFamily,
 			@Context UriInfo uriInfo) {
 		ProductFamily created = productFamilyService.createProductFamily(tenantId, productFamily);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
@@ -72,7 +71,7 @@ public class TenantProductFamilyResource extends BaseResourceSupport {
 	@GET
 	@Path("{productFamilyId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView(JsonViews.Admin.class)
 	public ProductFamily find(@PathParam("productFamilyId") String productFamilyId) {
 		return productFamilyService.findProductFamily(productFamilyId);
 	}
@@ -82,11 +81,16 @@ public class TenantProductFamilyResource extends BaseResourceSupport {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Page<ProductFamily> listAll(@PathParam("tenantId") String tenantId,
+	@JsonView(JsonViews.Admin.class)
+	public Page<ProductFamily> listAll(@QueryParam("tenant") String tenantId,
 			@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("category") Category category,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all families with category: {}, page: {}, pageSize: {}", category, page, pageSize);
+		if (Strings.isBlank(tenantId)) {
+			return productFamilyService.listAllProductFamilies(reviewStatus, page, pageSize);
+			// TODO?
+			// return productFamilyService.listAllProductFamilies(reviewStatus,category, page, pageSize);
+		}
 		return productFamilyService.listTenantProductFamilies(tenantId, reviewStatus, category, page, pageSize);
 	}
 
@@ -96,9 +100,36 @@ public class TenantProductFamilyResource extends BaseResourceSupport {
 	@GET
 	@Path("review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listToBeApproved(@PathParam("tenantId") String tenantId,
+	public JsonObject listToBeApproved(@QueryParam("tenant") String tenantId,
 			@QueryParam("status") ReviewStatus reviewStatus) {
+		if (Strings.isBlank(tenantId)) {
+			return buildCountResponse(productFamilyService.countAllProductFamilies(reviewStatus));
+		}
 		return buildCountResponse(productFamilyService.countTenantProductFamilies(tenantId, reviewStatus));
+	}
+
+	/**
+	 * Approve
+	 */
+	@POST
+	@Path("{productFamilyId}/approve")
+	public void approveProductFamily(@PathParam("productFamilyId") String productFamilyId) {
+		productFamilyService.reviewProductFamily(productFamilyId, ReviewStatus.APPROVED, null);
+	}
+
+	/**
+	 * Disapprove
+	 */
+	@POST
+	@Path("{productFamilyId}/disapprove")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void disapproveProductFamily(@PathParam("productFamilyId") String productFamilyId,
+			JsonObject rejectedReason) {
+		String reason = null;
+		if (rejectedReason != null) {
+			reason = rejectedReason.getString("reason");
+		}
+		productFamilyService.reviewProductFamily(productFamilyId, ReviewStatus.REJECTED, reason);
 	}
 
 	/**
@@ -108,7 +139,7 @@ public class TenantProductFamilyResource extends BaseResourceSupport {
 	@Path("{productFamilyId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView(JsonViews.Admin.class)
 	public ProductFamily update(@PathParam("productFamilyId") String productFamilyId,
 			@NotNull @Valid ProductFamily newProductFamily) {
 		return productFamilyService.updateProductFamily(productFamilyId, newProductFamily);
@@ -127,7 +158,7 @@ public class TenantProductFamilyResource extends BaseResourceSupport {
 	 * Delete all
 	 */
 	@DELETE
-	public void deleteAll(@PathParam("tenantId") String tenantId) {
+	public void deleteAll(@QueryParam("tenant") String tenantId) {
 		productFamilyService.deleteProductFamilies(tenantId);
 	}
 

@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest.tenant;
+package net.aircommunity.platform.rest.admin;
 
 import java.net.URI;
 
@@ -27,24 +27,24 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
+import net.aircommunity.platform.rest.tenant.TenantProductResourceSupport;
 import net.aircommunity.platform.service.CourseService;
 
 /**
- * Course RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
+ * Course RESTful API for ADMIN
  * 
- * Created by guankai on 13/04/2017.
+ * @author Bin.Zhang
  */
 @RESTful
-@AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantCourseResource extends TenantProductResourceSupport<Course> {
-	private static final Logger LOG = LoggerFactory.getLogger(TenantCourseResource.class);
+@RolesAllowed(Roles.ROLE_ADMIN)
+public class AdminCourseResource extends TenantProductResourceSupport<Course> {
+	private static final Logger LOG = LoggerFactory.getLogger(AdminCourseResource.class);
 
 	@Resource
 	private CourseService courseService;
@@ -54,7 +54,7 @@ public class TenantCourseResource extends TenantProductResourceSupport<Course> {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView(JsonViews.Admin.class)
 	public Response create(@NotNull @Valid Course request, @Context UriInfo uriInfo) {
 		Course created = courseService.createCourse(request.getSchool().getId(), request);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
@@ -67,9 +67,12 @@ public class TenantCourseResource extends TenantProductResourceSupport<Course> {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Page<Course> list(@PathParam("tenantId") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
+	@JsonView(JsonViews.Admin.class)
+	public Page<Course> list(@QueryParam("tenant") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
 			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+		if (Strings.isBlank(tenantId)) {
+			return courseService.listAllCourses(reviewStatus, page, pageSize);
+		}
 		return courseService.listTenantCourses(tenantId, reviewStatus, page, pageSize);
 	}
 
@@ -79,8 +82,11 @@ public class TenantCourseResource extends TenantProductResourceSupport<Course> {
 	@GET
 	@Path("review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listToBeApproved(@PathParam("tenantId") String tenantId,
+	public JsonObject listToBeApproved(@QueryParam("tenant") String tenantId,
 			@QueryParam("status") ReviewStatus reviewStatus) {
+		if (Strings.isBlank(tenantId)) {
+			return buildCountResponse(courseService.countAllCourses(reviewStatus));
+		}
 		return buildCountResponse(courseService.countTenantCourses(tenantId, reviewStatus));
 	}
 
@@ -90,7 +96,7 @@ public class TenantCourseResource extends TenantProductResourceSupport<Course> {
 	@PUT
 	@Path("{courseId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView(JsonViews.Admin.class)
 	public Course update(@PathParam("courseId") String courseId, @NotNull @Valid Course request) {
 		return courseService.updateCourse(courseId, request);
 	}

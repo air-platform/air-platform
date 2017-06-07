@@ -2,6 +2,8 @@ package net.aircommunity.platform.rest;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.json.JsonObject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -80,7 +82,8 @@ public abstract class BaseOrderResource<T extends Order> {
 	@POST
 	@Path("{orderId}/price")
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
-	public void updateOrderPrice(@PathParam("orderId") String orderId, double newPrice) {
+	public void updateOrderPrice(@PathParam("orderId") String orderId, @NotNull JsonObject price) {
+		double newPrice = price.getJsonNumber("price").doubleValue();
 		commonOrderService.updateOrderPrice(orderId, newPrice);
 	}
 
@@ -132,6 +135,16 @@ public abstract class BaseOrderResource<T extends Order> {
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void finishOrder(@PathParam("orderId") String orderId) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.FINISHED);
+	}
+
+	/**
+	 * Finish close
+	 */
+	@POST
+	@Path("{orderId}/close")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+	public void closeOrder(@PathParam("orderId") String orderId) {
+		commonOrderService.updateOrderStatus(orderId, Order.Status.CLOSED);
 	}
 
 	// **************

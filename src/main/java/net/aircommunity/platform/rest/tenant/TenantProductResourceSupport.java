@@ -31,6 +31,7 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.ProductFaq;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.CommonProductService;
 
 /**
@@ -38,7 +39,7 @@ import net.aircommunity.platform.service.CommonProductService;
  * 
  * @author Bin.Zhang
  */
-public abstract class TenantProductResourceSupport<T extends Product> {
+public abstract class TenantProductResourceSupport<T extends Product> extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantProductResourceSupport.class);
 
 	@Resource
