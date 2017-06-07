@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
  * JetCard Order on a {@code JetCard}.
  * 
  * @author Bin.Zhang
+ * @deprecated
  */
 @Entity
 @Table(name = "air_platfrom_jetcard_order")

@@ -12,17 +12,17 @@ import io.micro.common.DateFormats;
  * 
  * @author Bin Zhang
  */
-public class DateAdapter extends XmlAdapter<Date, String> {
+public class DateAdapter extends XmlAdapter<String, Date> {
 	private static final SimpleDateFormat SAFE_FORMATTER = DateFormats.simple("yyyy-MM-dd");
 
 	@Override
-	public Date marshal(String date) throws Exception {
-		return SAFE_FORMATTER.parse(date);
+	public String marshal(Date date) throws Exception {
+		return SAFE_FORMATTER.format(date);
 	}
 
 	@Override
-	public String unmarshal(Date date) throws Exception {
-		return SAFE_FORMATTER.format(date);
+	public Date unmarshal(String date) throws Exception {
+		return SAFE_FORMATTER.parse(date);
 	}
 
 }
