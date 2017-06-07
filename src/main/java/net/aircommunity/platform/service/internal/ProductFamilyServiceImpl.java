@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -36,6 +38,7 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 	public ProductFamily createProductFamily(String tenantId, ProductFamily productFamily) {
 		Tenant tenant = findAccount(tenantId, Tenant.class);
 		ProductFamily newProductFamily = new ProductFamily();
+		newProductFamily.setCreationDate(new Date());
 		copyProperties(productFamily, newProductFamily);
 		newProductFamily.setReviewStatus(ReviewStatus.PENDING);
 		newProductFamily.setVendor(tenant);
