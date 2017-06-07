@@ -104,6 +104,30 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 		return buildCountResponse(productFamilyService.countAllProductFamilies(reviewStatus));
 	}
 
+	/**
+	 * Approve a tenant product
+	 */
+	@POST
+	@Path("product/families/{productFamilyId}/approve")
+	public void approveProductFamily(@PathParam("productFamilyId") String productFamilyId) {
+		productFamilyService.reviewProductFamily(productFamilyId, ReviewStatus.APPROVED, null);
+	}
+
+	/**
+	 * Disapprove a tenant product
+	 */
+	@POST
+	@Path("product/families/{productFamilyId}/disapprove")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void disapproveProductFamily(@PathParam("productFamilyId") String productFamilyId,
+			JsonObject rejectedReason) {
+		String reason = null;
+		if (rejectedReason != null) {
+			reason = rejectedReason.getString("reason");
+		}
+		productFamilyService.reviewProductFamily(productFamilyId, ReviewStatus.REJECTED, reason);
+	}
+
 	// *********
 	// TAXI
 	// *********
