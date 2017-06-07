@@ -75,7 +75,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List all families
 	 */
 	@GET
-	@Path("families")
+	@Path("product/families")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
 	public Page<ProductFamily> listProductFamilies(@QueryParam("status") ReviewStatus reviewStatus,
@@ -87,7 +87,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List all families
 	 */
 	@GET
-	@Path("families/{productFamilyId}")
+	@Path("product/families/{productFamilyId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
 	public ProductFamily findProductFamily(@PathParam("productFamilyId") String productFamilyId) {
@@ -98,7 +98,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List product families count to be reviewed
 	 */
 	@GET
-	@Path("families/review/count")
+	@Path("product/families/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject listProductFamiliesToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
 		return buildCountResponse(productFamilyService.countAllProductFamilies(reviewStatus));
@@ -112,7 +112,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List all taxis
 	 */
 	@GET
-	@Path("taxis")
+	@Path("product/taxis")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
 	public Page<AirTaxi> listTaxis(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
@@ -124,7 +124,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List taxis count to be reviewed
 	 */
 	@GET
-	@Path("taxis/review/count")
+	@Path("product/taxis/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject listTaxisToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
 		return buildCountResponse(airTaxiService.countAllAirTaxis(reviewStatus));
@@ -138,7 +138,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List all Trans
 	 */
 	@GET
-	@Path("transports")
+	@Path("product/transports")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
 	public Page<AirTransport> listTrans(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
@@ -150,7 +150,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List transports count to be reviewed
 	 */
 	@GET
-	@Path("transports/review/count")
+	@Path("product/transports/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject listTransportsToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
 		return buildCountResponse(airTransportService.countAllAirTransports(reviewStatus));
@@ -163,7 +163,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List all Tours
 	 */
 	@GET
-	@Path("tours")
+	@Path("product/tours")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
 	public Page<AirTour> listTours(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
@@ -175,7 +175,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List tours count to be reviewed
 	 */
 	@GET
-	@Path("tours/review/count")
+	@Path("product/tours/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject listToursToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
 		return buildCountResponse(airTourService.countAllAirTours(reviewStatus));
@@ -188,7 +188,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List all ferryflights
 	 */
 	@GET
-	@Path("ferryflights")
+	@Path("product/ferryflights")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
 	public Page<FerryFlight> listFerryFlights(@QueryParam("status") ReviewStatus reviewStatus,
@@ -200,7 +200,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List ferryflights count to be reviewed
 	 */
 	@GET
-	@Path("ferryflights/review/count")
+	@Path("product/ferryflights/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject listFerryFlightsToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
 		return buildCountResponse(ferryFlightService.countAllFerryFlights(reviewStatus));
@@ -213,7 +213,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List all fleets
 	 */
 	@GET
-	@Path("fleets")
+	@Path("product/fleets")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
 	public Page<Fleet> listFleets(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
@@ -225,7 +225,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List fleets count to be reviewed
 	 */
 	@GET
-	@Path("fleets/review/count")
+	@Path("product/fleets/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject listFleetsToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
 		return buildCountResponse(fleetService.countAllFleets(reviewStatus));
@@ -238,7 +238,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List all courses
 	 */
 	@GET
-	@Path("courses")
+	@Path("product/courses")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
 	public Page<Course> listCourses(@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") int page,
@@ -250,20 +250,34 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * List fleets count to be reviewed
 	 */
 	@GET
-	@Path("courses/review/count")
+	@Path("product/courses/review/count")
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject listCoursesToBeApproved(@QueryParam("status") ReviewStatus reviewStatus) {
 		return buildCountResponse(courseService.countAllCourses(reviewStatus));
 	}
 
 	// *********
-	// approve
+	// Products
 	// *********
+
+	/**
+	 * Get
+	 */
+	@POST
+	@Path("products/{productId}")
+	public Product findProduct(@PathParam("productId") String productId) {
+		return commonProductService.findProduct(productId);
+	}
+
+	// *********
+	// Review
+	// *********
+
 	/**
 	 * Approve a tenant product
 	 */
 	@POST
-	@Path("{productId}/approve")
+	@Path("products/{productId}/approve")
 	public void approveProduct(@PathParam("productId") String productId) {
 		commonProductService.reviewProduct(productId, ReviewStatus.APPROVED, null);
 	}
@@ -272,7 +286,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	 * Disapprove a tenant product
 	 */
 	@POST
-	@Path("{productId}/disapprove")
+	@Path("products/{productId}/disapprove")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void disapproveProduct(@PathParam("productId") String productId, JsonObject rejectedReason) {
 		String reason = null;

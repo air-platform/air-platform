@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.micro.annotation.constraint.NotEmpty;
@@ -23,7 +25,8 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
  */
 @Entity
 @Table(name = "air_platfrom_aircraft")
-public class Aircraft extends Persistable { // TODO REMOVE extends Product
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Aircraft extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// Flight NO. global unique, e.g. 353252
