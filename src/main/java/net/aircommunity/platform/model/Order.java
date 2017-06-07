@@ -359,7 +359,7 @@ public abstract class Order extends Persistable {
 	 * Order product type
 	 */
 	public enum Type {
-		FLEET, FERRYFLIGHT, JETCARD, AIRTAXI, AIRTOUR, AIRTRANSPORT, COURSE;
+		FLEET, FERRYFLIGHT, JETTRAVEL, AIRTAXI, AIRTOUR, AIRTRANSPORT, COURSE;
 
 		@JsonValue
 		public String toString() {
@@ -412,7 +412,8 @@ public abstract class Order extends Persistable {
 		/**
 		 * Refund
 		 */
-		REFUNDING, REFUNDED,
+		// user request refund -> tenant accept request -> success
+		REFUND_REQUESTED, REFUNDING, REFUNDED,
 
 		/**
 		 * Finished

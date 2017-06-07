@@ -7,40 +7,39 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
- * JetCard Order on a {@code JetCard}.
+ * JetTravel Order on a {@code JetTravel}.
  * 
  * @author Bin.Zhang
- * @deprecated
  */
 @Entity
-@Table(name = "air_platfrom_jetcard_order")
-public class JetCardOrder extends VendorAwareOrder {
+@Table(name = "air_platfrom_jettravel_order")
+public class JetTravelOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "jetcard_id", nullable = false)
-	private JetCard jetCard;
+	@JoinColumn(name = "jettravel_id", nullable = false)
+	private JetTravel jetTravel;
 
 	@Override
 	public Type getType() {
-		return Type.JETCARD;
+		return Type.JETTRAVEL;
 	}
 
 	@Override
-	public JetCard getProduct() {
-		return jetCard;
+	public JetTravel getProduct() {
+		return jetTravel;
 	}
 
 	@Override
 	protected void doSetProduct(Product product) {
-		jetCard = (JetCard) product;
+		jetTravel = (JetTravel) product;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("JetCardOrder [contact=").append(contact).append(", orderNo=").append(orderNo)
+		builder.append("jetTravelOrder [contact=").append(contact).append(", orderNo=").append(orderNo)
 				.append(", creationDate=").append(creationDate).append(", paymentDate=").append(paymentDate)
 				.append(", finishedDate=").append(finishedDate).append(", note=").append(note).append(", id=")
 				.append(id).append("]");

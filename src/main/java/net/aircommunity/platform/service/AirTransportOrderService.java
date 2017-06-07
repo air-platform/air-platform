@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.AirTransportOrder;
@@ -65,7 +66,7 @@ public interface AirTransportOrderService {
 	 * @return a page of AirTransportOrders or empty
 	 */
 	@Nonnull
-	Page<AirTransportOrder> listUserAirTransportOrders(@Nonnull String userId, Order.Status status, int page,
+	Page<AirTransportOrder> listUserAirTransportOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
 			int pageSize);
 
 	/**
@@ -90,8 +91,8 @@ public interface AirTransportOrderService {
 	 * @param pageSize the pageSize
 	 * @return a page of AirTransportOrders or empty
 	 */
-	Page<AirTransportOrder> listTenantAirTransportOrders(@Nonnull String tenantId, Order.Status status, int page,
-			int pageSize);
+	Page<AirTransportOrder> listTenantAirTransportOrders(@Nonnull String tenantId, @Nullable Order.Status status,
+			int page, int pageSize);
 
 	/**
 	 * List all the AirTransportOrders placed on this tenant.
@@ -114,7 +115,7 @@ public interface AirTransportOrderService {
 	 * @return a page of AirTransportOrders or empty
 	 */
 	@Nonnull
-	Page<AirTransportOrder> listAirTransportOrders(Order.Status status, int page, int pageSize);
+	Page<AirTransportOrder> listAirTransportOrders(@Nullable Order.Status status, int page, int pageSize);
 
 	/**
 	 * List all AirTransportOrders by pagination.

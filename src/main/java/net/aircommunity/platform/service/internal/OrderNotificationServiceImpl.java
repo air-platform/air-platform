@@ -29,7 +29,7 @@ import net.aircommunity.platform.model.Enrollment;
 import net.aircommunity.platform.model.FerryFlightOrder;
 import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.FleetCandidate;
-import net.aircommunity.platform.model.JetCardOrder;
+import net.aircommunity.platform.model.JetTravelOrder;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.Product.Category;
@@ -82,7 +82,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 		String airtraining = normalizeProductCategory(Category.AIR_TRAINING);
 		orderTypeMapping.put(Order.Type.FLEET, airjet);
 		orderTypeMapping.put(Order.Type.FERRYFLIGHT, airjet);
-		orderTypeMapping.put(Order.Type.JETCARD, airjet);
+		orderTypeMapping.put(Order.Type.JETTRAVEL, airjet);
 		orderTypeMapping.put(Order.Type.AIRTAXI, airtaxi);
 		orderTypeMapping.put(Order.Type.AIRTOUR, airtaxi);
 		orderTypeMapping.put(Order.Type.AIRTRANSPORT, airtrans);
@@ -192,9 +192,9 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 				context.put("passengers", ferryFlightOrder.getPassengers());
 				break;
 
-			case JETCARD:
-				JetCardOrder jetCardOrder = JetCardOrder.class.cast(order);
-				context.put("jetCard", jetCardOrder.getProduct());
+			case JETTRAVEL:
+				JetTravelOrder jetTravelOrder = JetTravelOrder.class.cast(order);
+				context.put("jetTravel", jetTravelOrder.getProduct());
 				break;
 
 			case AIRTAXI:

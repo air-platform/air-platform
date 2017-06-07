@@ -128,7 +128,7 @@ public class UserResource {
 	// *******//
 
 	/**
-	 * List TODO more query?
+	 * List All
 	 */
 	@GET
 	@Path("orders")
@@ -138,6 +138,9 @@ public class UserResource {
 		return buildOrdersResponse(null, page, pageSize, context);
 	}
 
+	/**
+	 * created + paid
+	 */
 	@GET
 	@Path("orders/pending")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -146,14 +149,17 @@ public class UserResource {
 		return buildOrdersResponse(Order.Status.CREATED, page, pageSize, context);
 	}
 
-	@GET
-	@Path("orders/paid")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Page<Order> listAllPaidOrders(@QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
-		return buildOrdersResponse(Order.Status.PAID, page, pageSize, context);
-	}
+	// @GET
+	// @Path("orders/paid")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public Page<Order> listAllPaidOrders(@QueryParam("page") @DefaultValue("1") int page,
+	// @QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
+	// return buildOrdersResponse(Order.Status.PAID, page, pageSize, context);
+	// }
 
+	/**
+	 * Orders Finished (success + closed + refunded)
+	 */
 	@GET
 	@Path("orders/finished")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -162,6 +168,9 @@ public class UserResource {
 		return buildOrdersResponse(Order.Status.FINISHED, page, pageSize, context);
 	}
 
+	/**
+	 * Orders Cancelled
+	 */
 	@GET
 	@Path("orders/cancelled")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -175,6 +184,9 @@ public class UserResource {
 		return commonOrderService.listUserOrders(accountId, status, page, pageSize);
 	}
 
+	/**
+	 * Find
+	 */
 	@GET
 	@Path("orders/{orderId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -182,17 +194,32 @@ public class UserResource {
 		return commonOrderService.findOrder(orderId);
 	}
 
+	// ***********************************
+	// Order Actions
+	// - pay (via Alipay etc.)
+	// - refund
+	// - cancel
+	// ***********************************
+
 	@POST
 	@Path("orders/{orderId}/pay")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void payOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.PAID);
+	public void payOrder(@PathParam("orderId") String orderId) {
+		// TODO call payment gateway?
+		// commonOrderService.updateOrderStatus(orderId, Order.Status.PAID);
+	}
+
+	@POST
+	@Path("orders/{orderId}/refund")
+	@Produces(MediaType.APPLICATION_JSON)
+	public void refundOrder(@PathParam("orderId") String orderId) {
+		commonOrderService.updateOrderStatus(orderId, Order.Status.REFUND_REQUESTED);
 	}
 
 	@POST
 	@Path("orders/{orderId}/cancel")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void cancelOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
+	public void cancelOrder(@PathParam("orderId") String orderId) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.CANCELLED);
 	}
 
@@ -202,6 +229,11 @@ public class UserResource {
 	public void deleteOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
 	}
+
+	// ****************************
+	// XXX NOTE: NOT USED FOR NOW
+	// Detailed Order APIs
+	// ****************************
 
 	// ***********************
 	// Air Jet
@@ -223,11 +255,11 @@ public class UserResource {
 	}
 
 	@Resource
-	private JetcardOrderResource jetcardOrderResource;
+	private JetTravelOrderResource jetTravelOrderResource;
 
-	@Path("jetcard/orders")
-	public JetcardOrderResource jetcardOrders() {
-		return jetcardOrderResource;
+	@Path("jettravel/orders")
+	public JetTravelOrderResource jetTravelOrders() {
+		return jetTravelOrderResource;
 	}
 
 	// ***********************

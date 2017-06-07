@@ -25,7 +25,7 @@ import net.aircommunity.platform.service.SchoolService;
 /**
  * School RESTful API allows list/find/query for ANYONE
  * 
- * Created by guankai on 12/04/2017.
+ * @author guankai
  */
 @Api
 @RESTful
@@ -50,7 +50,7 @@ public class SchoolResource {
 	public Page<School> listAll(@QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		LOG.debug("List all schools");
-		return schoolService.listSchools(page, pageSize);
+		return schoolService.listAllSchools(page, pageSize);
 	}
 
 	/**

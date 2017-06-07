@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest;
+package net.aircommunity.platform.rest.tenant.order;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -12,6 +12,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.service.CommonOrderService;
@@ -21,10 +24,15 @@ import net.aircommunity.platform.service.CommonOrderService;
  * 
  * @author Bin.Zhang
  */
-public abstract class BaseOrderResource<T extends Order> {
+@SuppressWarnings("unchecked")
+public abstract class TenantBaseOrderResource<T extends Order> {
 
 	@Resource
 	private CommonOrderService commonOrderService;
+
+	// *****************
+	// ADMIN & TENANT
+	// *****************
 
 	/**
 	 * Find order
@@ -32,49 +40,11 @@ public abstract class BaseOrderResource<T extends Order> {
 	@GET
 	@Path("{orderId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@SuppressWarnings("unchecked")
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public T find(@PathParam("orderId") String orderId) {
 		return (T) commonOrderService.findOrder(orderId);
 	}
-
-	// *****************
-	// ADMIN & USER
-	// *****************
-
-	/**
-	 * Mark order as refund
-	 */
-	@POST
-	@Path("{orderId}/refund")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_USER })
-	public void refundOrder(@PathParam("orderId") String orderId) {
-		// and update to Order.Status.REFUNDED once trade completed
-		commonOrderService.updateOrderStatus(orderId, Order.Status.REFUNDING);
-	}
-
-	/**
-	 * Cancel order
-	 */
-	@POST
-	@Path("{orderId}/cancel")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_USER })
-	public void cancel(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.CANCELLED);
-	}
-
-	/**
-	 * Delete (mark order as DELETED)
-	 */
-	@DELETE
-	@Path("{orderId}")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_USER })
-	public void delete(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
-	}
-
-	// *****************
-	// ADMIN & TENANT
-	// *****************
 
 	/**
 	 * Update order price
@@ -98,7 +68,7 @@ public abstract class BaseOrderResource<T extends Order> {
 	}
 
 	/**
-	 * Make order as contract signed
+	 * Make order as contract signed (for offline)
 	 */
 	@POST
 	@Path("{orderId}/sign-contract")
@@ -108,7 +78,7 @@ public abstract class BaseOrderResource<T extends Order> {
 	}
 
 	/**
-	 * Mark order as paid (manually update pay status)
+	 * Mark order as paid (manually update pay status -> for offline payment)
 	 */
 	@POST
 	@Path("{orderId}/pay")
@@ -118,7 +88,18 @@ public abstract class BaseOrderResource<T extends Order> {
 	}
 
 	/**
-	 * Mark order as release-ticket
+	 * Mark order as refunding (accepted user refund request)
+	 */
+	@POST
+	@Path("{orderId}/refund")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+	public void refundOrder(@PathParam("orderId") String orderId) {
+		// XXX and update to Order.Status.REFUNDED once trade completed
+		commonOrderService.updateOrderStatus(orderId, Order.Status.REFUNDING);
+	}
+
+	/**
+	 * Mark order as release-ticket (once payment is done)
 	 */
 	@POST
 	@Path("{orderId}/release-ticket")
@@ -128,7 +109,7 @@ public abstract class BaseOrderResource<T extends Order> {
 	}
 
 	/**
-	 * Finish order
+	 * Mark order as finished
 	 */
 	@POST
 	@Path("{orderId}/finish")
@@ -138,7 +119,27 @@ public abstract class BaseOrderResource<T extends Order> {
 	}
 
 	/**
-	 * Finish close
+	 * Cancel order
+	 */
+	@POST
+	@Path("{orderId}/cancel")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+	public void cancel(@PathParam("orderId") String orderId) {
+		commonOrderService.updateOrderStatus(orderId, Order.Status.CANCELLED);
+	}
+
+	/**
+	 * Delete (mark order as DELETED)
+	 */
+	@DELETE
+	@Path("{orderId}")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+	public void delete(@PathParam("orderId") String orderId) {
+		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
+	}
+
+	/**
+	 * Mark order as closed
 	 */
 	@POST
 	@Path("{orderId}/close")

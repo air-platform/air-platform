@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest.admin;
+package net.aircommunity.platform.rest.admin.product;
 
 import java.net.URI;
 

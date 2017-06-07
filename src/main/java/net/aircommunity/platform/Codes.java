@@ -77,9 +77,9 @@ public final class Codes {
 	public static final Code FERRYFLIGHT_NOT_FOUND = Code.notFound(11_005_0001);
 	public static final Code FERRYFLIGHT_ORDER_NOT_FOUND = Code.notFound(11_005_0003);
 
-	// jet card
-	public static final Code JETCARD_NOT_FOUND = Code.notFound(11_006_0001);
-	public static final Code JETCARD_ORDER_NOT_FOUND = Code.notFound(11_006_0002);
+	// jet travel
+	public static final Code JETTRAVEL_NOT_FOUND = Code.notFound(11_006_0001);
+	public static final Code JETTRAVEL_ORDER_NOT_FOUND = Code.notFound(11_006_0002);
 
 	// transport
 	public static final Code AIRTRANSPORT_NOT_FOUND = Code.notFound(11_007_0001);

@@ -23,12 +23,14 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.CharterOrder;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseOrderResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.CharterOrderService;
 
@@ -40,7 +42,7 @@ import net.aircommunity.platform.service.CharterOrderService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
-public class ChaterOrderResource extends BaseOrderResource<CharterOrder> {
+public class ChaterOrderResource extends UserBaseOrderResource<CharterOrder> {
 	private static final Logger LOG = LoggerFactory.getLogger(ChaterOrderResource.class);
 
 	@Resource
@@ -51,6 +53,7 @@ public class ChaterOrderResource extends BaseOrderResource<CharterOrder> {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
 	public Response create(@PathParam("userId") String userId, @NotNull @Valid CharterOrder order,
 			@Context UriInfo uriInfo) {
 		CharterOrder created = charterOrderService.createCharterOrder(userId, order);
@@ -64,6 +67,7 @@ public class ChaterOrderResource extends BaseOrderResource<CharterOrder> {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
 	public Page<CharterOrder> list(@PathParam("userId") String userId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return charterOrderService.listUserCharterOrders(userId, status, page, pageSize);
@@ -76,6 +80,7 @@ public class ChaterOrderResource extends BaseOrderResource<CharterOrder> {
 	@Path("{orderId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
 	public CharterOrder update(@PathParam("orderId") String orderId, @NotNull @Valid CharterOrder newOrder) {
 		return charterOrderService.updateCharterOrder(orderId, newOrder);
 	}

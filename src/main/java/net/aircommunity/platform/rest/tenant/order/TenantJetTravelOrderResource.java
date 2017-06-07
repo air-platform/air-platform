@@ -12,39 +12,41 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.model.JetCardOrder;
+import net.aircommunity.platform.model.JetTravelOrder;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseOrderResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.JetCardOrderService;
+import net.aircommunity.platform.service.JetTravelOrderService;
 
 /**
- * Tenant JetCardOrder RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
+ * Tenant JetTravelOrder RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
  * 
  * @author Bin.Zhang
- * @deprecated
  */
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantJetCardOrderResource extends BaseOrderResource<JetCardOrder> {
-	private static final Logger LOG = LoggerFactory.getLogger(TenantJetCardOrderResource.class);
+public class TenantJetTravelOrderResource extends TenantBaseOrderResource<JetTravelOrder> {
+	private static final Logger LOG = LoggerFactory.getLogger(TenantJetTravelOrderResource.class);
 
 	@Resource
-	private JetCardOrderService JetCardOrderService;
+	private JetTravelOrderService jetTravelOrderService;
 
 	/**
 	 * List
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<JetCardOrder> list(@PathParam("tenantId") String tenantId, @QueryParam("status") Order.Status status,
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	public Page<JetTravelOrder> list(@PathParam("tenantId") String tenantId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all orders with  status: {} for tenant: {} ", status, tenantId);
-		return JetCardOrderService.listTenantJetCardOrders(tenantId, status, page, pageSize);
+		return jetTravelOrderService.listTenantJetTravelOrders(tenantId, status, page, pageSize);
 	}
 
 }

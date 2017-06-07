@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest.admin;
+package net.aircommunity.platform.rest.admin.product;
 
 import java.net.URI;
 
@@ -28,26 +28,26 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
-import net.aircommunity.platform.model.FerryFlight;
+import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.tenant.TenantProductResourceSupport;
-import net.aircommunity.platform.service.FerryFlightService;
+import net.aircommunity.platform.service.FleetService;
 
 /**
- * FerryFlight RESTful API for ADMIN
+ * Fleet RESTful API for ADMIN
  * 
  * @author Bin.Zhang
  */
 @RESTful
 @RolesAllowed(Roles.ROLE_ADMIN)
-public class AdminFerryFlightResource extends TenantProductResourceSupport<FerryFlight> {
-	private static final Logger LOG = LoggerFactory.getLogger(AdminFerryFlightResource.class);
+public class AdminFleetResource extends TenantProductResourceSupport<Fleet> {
+	private static final Logger LOG = LoggerFactory.getLogger(AdminFleetResource.class);
 
 	@Resource
-	private FerryFlightService ferryFlightService;
+	private FleetService fleetService;
 
 	/**
 	 * Create
@@ -55,27 +55,26 @@ public class AdminFerryFlightResource extends TenantProductResourceSupport<Ferry
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid FerryFlight ferryFlight,
+	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid Fleet fleet,
 			@Context UriInfo uriInfo) {
-		FerryFlight created = ferryFlightService.createFerryFlight(tenantId, ferryFlight);
+		Fleet created = fleetService.createFleet(tenantId, fleet);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
 	}
 
 	/**
-	 * List TODO query by departure/arrival/date/timeSlot
+	 * List TODO query by flightNo, status etc.
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Page<FerryFlight> list(@QueryParam("tenant") String tenantId,
-			@QueryParam("status") ReviewStatus reviewStatus, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+	public Page<Fleet> list(@QueryParam("tenant") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		if (Strings.isBlank(tenantId)) {
-			return ferryFlightService.listAllFerryFlights(reviewStatus, page, pageSize);
+			return fleetService.listAllFleets(reviewStatus, page, pageSize);
 		}
-		return ferryFlightService.listTenantFerryFlights(tenantId, reviewStatus, page, pageSize);
+		return fleetService.listTenantFleets(tenantId, reviewStatus, page, pageSize);
 	}
 
 	/**
@@ -87,21 +86,20 @@ public class AdminFerryFlightResource extends TenantProductResourceSupport<Ferry
 	public JsonObject listToBeApproved(@QueryParam("tenant") String tenantId,
 			@QueryParam("status") ReviewStatus reviewStatus) {
 		if (Strings.isBlank(tenantId)) {
-			return buildCountResponse(ferryFlightService.countAllFerryFlights(reviewStatus));
+			return buildCountResponse(fleetService.countAllFleets(reviewStatus));
 		}
-		return buildCountResponse(ferryFlightService.countTenantFerryFlights(tenantId, reviewStatus));
+		return buildCountResponse(fleetService.countTenantFleets(tenantId, reviewStatus));
 	}
 
 	/**
 	 * Update
 	 */
 	@PUT
-	@Path("{ferryFlightId}")
+	@Path("{fleetId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public FerryFlight update(@PathParam("ferryFlightId") String ferryFlightId,
-			@NotNull @Valid FerryFlight newFerryFlight) {
-		return ferryFlightService.updateFerryFlight(ferryFlightId, newFerryFlight);
+	public Fleet update(@PathParam("fleetId") String fleetId, @NotNull @Valid Fleet newFleet) {
+		return fleetService.updateFleet(fleetId, newFleet);
 	}
 }

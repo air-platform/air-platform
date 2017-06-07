@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest.admin;
+package net.aircommunity.platform.rest.admin.product;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -40,6 +40,17 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	}
 
 	// *********
+	// SCHOOL
+	// *********
+	@Resource
+	private AdminSchoolResource adminSchoolResource;
+
+	@Path("schools")
+	public AdminSchoolResource schools() {
+		return adminSchoolResource;
+	}
+
+	// *********
 	// FAMILY
 	// *********
 	@Resource
@@ -51,12 +62,23 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	}
 
 	// *********
+	// JETTRAVEL
+	// *********
+	@Resource
+	private AdminJetTravelResource adminJetTravelResource;
+
+	@Path("product/jettravels")
+	public AdminJetTravelResource jettravels() {
+		return adminJetTravelResource;
+	}
+
+	// *********
 	// TAXI
 	// *********
 	@Resource
 	private AdminAirTaxiResource adminAirTaxiResource;
 
-	@Path("product/taxis")
+	@Path("product/airtaxis")
 	public AdminAirTaxiResource taxis() {
 		return adminAirTaxiResource;
 	}
@@ -67,7 +89,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@Resource
 	private AdminAirTourResourse adminAirTourResourse;
 
-	@Path("product/tours")
+	@Path("product/airtours")
 	public AdminAirTourResourse tours() {
 		return adminAirTourResourse;
 	}
@@ -78,7 +100,7 @@ public class AdminProductResource extends ProductResourceSupport<Product> {
 	@Resource
 	private AdminAirTransportResource adminAirTransportResource;
 
-	@Path("product/tranports")
+	@Path("product/airtranports")
 	public AdminAirTransportResource tranports() {
 		return adminAirTransportResource;
 	}

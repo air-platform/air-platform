@@ -12,12 +12,14 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.AirTransportOrder;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseOrderResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.AirTransportOrderService;
 
@@ -29,7 +31,7 @@ import net.aircommunity.platform.service.AirTransportOrderService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantAirTransportOrderResource extends BaseOrderResource<AirTransportOrder> {
+public class TenantAirTransportOrderResource extends TenantBaseOrderResource<AirTransportOrder> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantAirTransportOrderResource.class);
 
 	@Resource
@@ -40,6 +42,7 @@ public class TenantAirTransportOrderResource extends BaseOrderResource<AirTransp
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<AirTransportOrder> list(@PathParam("tenantId") String tenantId,
 			@QueryParam("status") Order.Status status, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {

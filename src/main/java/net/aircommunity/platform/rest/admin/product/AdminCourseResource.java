@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest.admin;
+package net.aircommunity.platform.rest.admin.product;
 
 import java.net.URI;
 
@@ -28,26 +28,26 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
-import net.aircommunity.platform.model.Fleet;
+import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.tenant.TenantProductResourceSupport;
-import net.aircommunity.platform.service.FleetService;
+import net.aircommunity.platform.service.CourseService;
 
 /**
- * Fleet RESTful API for ADMIN
+ * Course RESTful API for ADMIN
  * 
  * @author Bin.Zhang
  */
 @RESTful
 @RolesAllowed(Roles.ROLE_ADMIN)
-public class AdminFleetResource extends TenantProductResourceSupport<Fleet> {
-	private static final Logger LOG = LoggerFactory.getLogger(AdminFleetResource.class);
+public class AdminCourseResource extends TenantProductResourceSupport<Course> {
+	private static final Logger LOG = LoggerFactory.getLogger(AdminCourseResource.class);
 
 	@Resource
-	private FleetService fleetService;
+	private CourseService courseService;
 
 	/**
 	 * Create
@@ -55,26 +55,25 @@ public class AdminFleetResource extends TenantProductResourceSupport<Fleet> {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid Fleet fleet,
-			@Context UriInfo uriInfo) {
-		Fleet created = fleetService.createFleet(tenantId, fleet);
+	public Response create(@NotNull @Valid Course request, @Context UriInfo uriInfo) {
+		Course created = courseService.createCourse(request.getSchool().getId(), request);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
-		LOG.debug("Created {}", uri);
+		LOG.debug("Created: {}", uri);
 		return Response.created(uri).build();
 	}
 
 	/**
-	 * List TODO query by flightNo, status etc.
+	 * List
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Page<Fleet> list(@QueryParam("tenant") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
-			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+	public Page<Course> list(@QueryParam("tenant") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
+			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		if (Strings.isBlank(tenantId)) {
-			return fleetService.listAllFleets(reviewStatus, page, pageSize);
+			return courseService.listAllCourses(reviewStatus, page, pageSize);
 		}
-		return fleetService.listTenantFleets(tenantId, reviewStatus, page, pageSize);
+		return courseService.listTenantCourses(tenantId, reviewStatus, page, pageSize);
 	}
 
 	/**
@@ -86,20 +85,20 @@ public class AdminFleetResource extends TenantProductResourceSupport<Fleet> {
 	public JsonObject listToBeApproved(@QueryParam("tenant") String tenantId,
 			@QueryParam("status") ReviewStatus reviewStatus) {
 		if (Strings.isBlank(tenantId)) {
-			return buildCountResponse(fleetService.countAllFleets(reviewStatus));
+			return buildCountResponse(courseService.countAllCourses(reviewStatus));
 		}
-		return buildCountResponse(fleetService.countTenantFleets(tenantId, reviewStatus));
+		return buildCountResponse(courseService.countTenantCourses(tenantId, reviewStatus));
 	}
 
 	/**
 	 * Update
 	 */
 	@PUT
-	@Path("{fleetId}")
+	@Path("{courseId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Fleet update(@PathParam("fleetId") String fleetId, @NotNull @Valid Fleet newFleet) {
-		return fleetService.updateFleet(fleetId, newFleet);
+	public Course update(@PathParam("courseId") String courseId, @NotNull @Valid Course request) {
+		return courseService.updateCourse(courseId, request);
 	}
+
 }

@@ -2,15 +2,10 @@ package net.aircommunity.platform.rest.tenant;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.SecurityContext;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.CommentResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
@@ -20,8 +15,7 @@ import net.aircommunity.platform.rest.tenant.order.TenantAirTransportOrderResour
 import net.aircommunity.platform.rest.tenant.order.TenantEnrollmentResource;
 import net.aircommunity.platform.rest.tenant.order.TenantFerryFlightOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantFleetOrderResource;
-import net.aircommunity.platform.rest.tenant.order.TenantJetCardOrderResource;
-import net.aircommunity.platform.service.CommonOrderService;
+import net.aircommunity.platform.rest.tenant.order.TenantJetTravelOrderResource;
 
 /**
  * Tenant resource.
@@ -66,11 +60,11 @@ public class TenantResource {
 	}
 
 	@Resource
-	private TenantJetCardResource tenantJetCardResource;
+	private TenantJetTravelResource tenantJetTravelResource;
 
-	@Path("jetcards")
-	public TenantJetCardResource jetcards() {
-		return tenantJetCardResource;
+	@Path("jettravels")
+	public TenantJetTravelResource jettravels() {
+		return tenantJetTravelResource;
 	}
 
 	// ***********************
@@ -118,7 +112,7 @@ public class TenantResource {
 	}
 
 	// ***********************
-	// School TODO
+	// School
 	// ***********************
 
 	@Resource
@@ -144,7 +138,7 @@ public class TenantResource {
 	@Resource
 	private CommentResource commentResource;
 
-	@Path("comments")
+	@Path("comments") // TODO --> @Path("") path already in resource ?
 	public CommentResource comments() {
 		return commentResource;
 	}
@@ -152,14 +146,6 @@ public class TenantResource {
 	// *******//
 	// Orders //
 	// *******//
-	@Resource
-	private CommonOrderService commonOrderService;
-
-	@POST
-	@Path("orders/{orderId}/finish")
-	public void finishOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.FINISHED);
-	}
 
 	// ***********************
 	// Air Jet
@@ -181,11 +167,11 @@ public class TenantResource {
 	}
 
 	@Resource
-	private TenantJetCardOrderResource tenantJetCardOrderResource;
+	private TenantJetTravelOrderResource tenantJetTravelOrderResource;
 
-	@Path("jetcard/orders")
-	public TenantJetCardOrderResource jetCardOrders() {
-		return tenantJetCardOrderResource;
+	@Path("jettravel/orders")
+	public TenantJetTravelOrderResource jetTravelOrders() {
+		return tenantJetTravelOrderResource;
 	}
 
 	// ***********************
@@ -232,5 +218,15 @@ public class TenantResource {
 	public TenantEnrollmentResource enrollments() {
 		return tenantEnrollmentResource;
 	}
+
+	// TODO REMOVE
+	// @Resource
+	// private CommonOrderService commonOrderService;
+	//
+	// @POST
+	// @Path("orders/{orderId}/finish")
+	// public void finishOrder(@PathParam("orderId") String orderId) {
+	// commonOrderService.updateOrderStatus(orderId, Order.Status.FINISHED);
+	// }
 
 }

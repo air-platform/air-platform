@@ -6,6 +6,7 @@ import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * AirTourOrder service.
@@ -42,8 +43,7 @@ public interface AirTourOrderService {
 	 * @return AirTourOrder created
 	 */
 	@Nonnull
-	AirTourOrder updateAirTourOrder(@Nonnull String airTourOrderId,
-                                    @Nonnull AirTourOrder newAirTourOrder);
+	AirTourOrder updateAirTourOrder(@Nonnull String airTourOrderId, @Nonnull AirTourOrder newAirTourOrder);
 
 	/**
 	 * Update AirTourOrder status
@@ -65,8 +65,8 @@ public interface AirTourOrderService {
 	 * @return a page of AirTourOrders or empty
 	 */
 	@Nonnull
-	Page<AirTourOrder> listUserAirTourOrders(@Nonnull String userId, Order.Status status, int page,
-                                             int pageSize);
+	Page<AirTourOrder> listUserAirTourOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
+			int pageSize);
 
 	/**
 	 * List all AirTourOrders by pagination filtered by userId.
@@ -90,8 +90,8 @@ public interface AirTourOrderService {
 	 * @param pageSize the pageSize
 	 * @return a page of AirTourOrders or empty
 	 */
-	Page<AirTourOrder> listTenantAirTourOrders(@Nonnull String tenantId, Order.Status status, int page,
-                                               int pageSize);
+	Page<AirTourOrder> listTenantAirTourOrders(@Nonnull String tenantId, @Nullable Order.Status status, int page,
+			int pageSize);
 
 	/**
 	 * List all the AirTourOrders placed on this tenant.
@@ -114,7 +114,7 @@ public interface AirTourOrderService {
 	 * @return a page of AirTourOrders or empty
 	 */
 	@Nonnull
-	Page<AirTourOrder> listAirTourOrders(Order.Status status, int page, int pageSize);
+	Page<AirTourOrder> listAirTourOrders(@Nullable Order.Status status, int page, int pageSize);
 
 	/**
 	 * List all AirTourOrders by pagination.

@@ -38,7 +38,7 @@ import net.aircommunity.platform.service.CourseService;
 /**
  * Course RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
  * 
- * Created by guankai on 13/04/2017.
+ * @author guankai
  */
 @RESTful
 @AllowResourceOwner

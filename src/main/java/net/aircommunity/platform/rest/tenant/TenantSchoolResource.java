@@ -37,7 +37,7 @@ import net.aircommunity.platform.service.SchoolService;
 /**
  * School RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
  * 
- * Created by guankai on 12/04/2017.
+ * @author guankai
  */
 @RESTful
 @AllowResourceOwner

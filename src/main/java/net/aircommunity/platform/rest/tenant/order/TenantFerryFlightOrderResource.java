@@ -12,12 +12,14 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.FerryFlightOrder;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseOrderResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.FerryFlightOrderService;
 
@@ -29,7 +31,7 @@ import net.aircommunity.platform.service.FerryFlightOrderService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantFerryFlightOrderResource extends BaseOrderResource<FerryFlightOrder> {
+public class TenantFerryFlightOrderResource extends TenantBaseOrderResource<FerryFlightOrder> {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantFerryFlightOrderResource.class);
 
 	@Resource
@@ -40,6 +42,7 @@ public class TenantFerryFlightOrderResource extends BaseOrderResource<FerryFligh
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<FerryFlightOrder> list(@PathParam("tenantId") String tenantId,
 			@QueryParam("status") Order.Status status, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {

@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest.admin;
+package net.aircommunity.platform.rest.admin.product;
 
 import java.net.URI;
 
@@ -28,24 +28,24 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
-import net.aircommunity.platform.model.Aircraft;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.service.AircraftService;
+import net.aircommunity.platform.model.School;
+import net.aircommunity.platform.service.SchoolService;
 
 /**
- * Aircraft RESTful API for ADMIN ONLY
+ * School RESTful API for ADMIN
  * 
  * @author Bin.Zhang
  */
 @RESTful
-@RolesAllowed({ Roles.ROLE_ADMIN })
-public class AdminAircraftResource {
-	private static final Logger LOG = LoggerFactory.getLogger(AdminAircraftResource.class);
+@RolesAllowed(Roles.ROLE_ADMIN)
+public class AdminSchoolResource {
+	private static final Logger LOG = LoggerFactory.getLogger(AdminSchoolResource.class);
 
 	@Resource
-	private AircraftService aircraftService;
+	private SchoolService schoolService;
 
 	/**
 	 * Create
@@ -53,11 +53,11 @@ public class AdminAircraftResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid Aircraft aircraft,
+	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid School request,
 			@Context UriInfo uriInfo) {
-		Aircraft created = aircraftService.createAircraft(tenantId, aircraft);
+		School created = schoolService.createSchool(tenantId, request);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
-		LOG.debug("Created {}", uri);
+		LOG.debug("Created: {}", uri);
 		return Response.created(uri).build();
 	}
 
@@ -65,11 +65,11 @@ public class AdminAircraftResource {
 	 * Find
 	 */
 	@GET
-	@Path("{aircraftId}")
+	@Path("{schoolId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Aircraft find(@PathParam("aircraftId") String aircraftId) {
-		return aircraftService.findAircraft(aircraftId);
+	public School find(@PathParam("schoolId") String schoolId) {
+		return schoolService.findSchool(schoolId);
 	}
 
 	/**
@@ -78,33 +78,33 @@ public class AdminAircraftResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Page<Aircraft> list(@QueryParam("tenant") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+	public Page<School> list(@QueryParam("tenant") String tenantId, @QueryParam("page") @DefaultValue("1") int page,
+			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		if (Strings.isBlank(tenantId)) {
-			return aircraftService.listAircrafts(page, pageSize);
+			return schoolService.listAllSchools(page, pageSize);
 		}
-		return aircraftService.listAircrafts(tenantId, page, pageSize);
+		return schoolService.listSchools(tenantId, page, pageSize);
 	}
 
 	/**
 	 * Update
 	 */
 	@PUT
-	@Path("{aircraftId}")
+	@Path("{schoolId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Aircraft update(@PathParam("aircraftId") String aircraftId, @NotNull @Valid Aircraft newAircraft) {
-		return aircraftService.updateAircraft(aircraftId, newAircraft);
+	public School update(@PathParam("schoolId") String schoolId, @NotNull @Valid School school) {
+		return schoolService.updateSchool(schoolId, school);
 	}
 
 	/**
 	 * Delete
 	 */
 	@DELETE
-	@Path("{aircraftId}")
-	public void delete(@PathParam("aircraftId") String aircraftId) {
-		aircraftService.deleteAircraft(aircraftId);
+	@Path("{schoolId}")
+	public void delete(@PathParam("schoolId") String schoolId) {
+		schoolService.deleteSchool(schoolId);
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class AdminAircraftResource {
 	 */
 	@DELETE
 	public void deleteAll(@QueryParam("tenant") String tenantId) {
-		aircraftService.deleteAircrafts(tenantId);
+		schoolService.deleteSchools(tenantId);
 	}
 
 }

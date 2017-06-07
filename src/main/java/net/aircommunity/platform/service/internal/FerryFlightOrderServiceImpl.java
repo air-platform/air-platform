@@ -57,12 +57,6 @@ public class FerryFlightOrderServiceImpl extends AbstractVendorAwareOrderService
 	protected void copyProperties(FerryFlightOrder src, FerryFlightOrder tgt) {
 		tgt.setContact(src.getContact());
 		tgt.setPassengers(src.getPassengers());
-		// XXX REMOVE
-		// FerryFlight ferryFlight = src.getFerryFlight();
-		// if (ferryFlight != null) {
-		// ferryFlight = ferryFlightService.findFerryFlight(ferryFlight.getId());
-		// tgt.setFerryFlight(ferryFlight);
-		// }
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")

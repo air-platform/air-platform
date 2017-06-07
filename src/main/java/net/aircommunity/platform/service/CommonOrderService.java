@@ -23,7 +23,7 @@ public interface CommonOrderService {
 	Order findOrder(@Nonnull String orderId);
 
 	/**
-	 * Save/Update order
+	 * Save/Update order (NOTE: userId MUST BE already set in the order), XXX use this API with caution.
 	 * 
 	 * @param order the order to be saved
 	 * @return order updated
@@ -49,7 +49,7 @@ public interface CommonOrderService {
 	 * @return order updated
 	 */
 	@Nonnull
-	Order updateOrderPrice(String orderId, double newPrice);
+	Order updateOrderPrice(@Nonnull String orderId, double newPrice);
 
 	/**
 	 * Hard delete from DB
@@ -73,7 +73,8 @@ public interface CommonOrderService {
 	 * @param pageSize the page size
 	 * @return a page of orders
 	 */
-	Page<Order> listAllOrders(Order.Status status, int page, int pageSize);
+	@Nonnull
+	Page<Order> listAllOrders(@Nullable Order.Status status, int page, int pageSize);
 
 	/**
 	 * List all orders of a user with all status. (for ADMIN)
@@ -84,7 +85,8 @@ public interface CommonOrderService {
 	 * @param pageSize the page size
 	 * @return a page of orders
 	 */
-	Page<Order> listAllUserOrders(String userId, Order.Status status, int page, int pageSize);
+	@Nonnull
+	Page<Order> listAllUserOrders(@Nonnull String userId, @Nullable Order.Status status, int page, int pageSize);
 
 	/**
 	 * List all orders of a user without status in DELETED. (for USER)

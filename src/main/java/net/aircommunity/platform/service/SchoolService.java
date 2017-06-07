@@ -42,7 +42,7 @@ public interface SchoolService {
 	 * @return
 	 */
 	@Nonnull
-	Page<School> listSchools(int page, int pageSize);
+	Page<School> listAllSchools(int page, int pageSize);
 
 	/**
 	 * get all school list by tenant

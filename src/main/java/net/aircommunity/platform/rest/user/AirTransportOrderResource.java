@@ -23,12 +23,14 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.AirTransportOrder;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseOrderResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.AirTransportOrderService;
 
@@ -40,7 +42,7 @@ import net.aircommunity.platform.service.AirTransportOrderService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
-public class AirTransportOrderResource extends BaseOrderResource<AirTransportOrder> {
+public class AirTransportOrderResource extends UserBaseOrderResource<AirTransportOrder> {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTransportOrderResource.class);
 
 	@Resource
@@ -51,6 +53,7 @@ public class AirTransportOrderResource extends BaseOrderResource<AirTransportOrd
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
 	public Response create(@PathParam("userId") String userId, @NotNull @Valid AirTransportOrder order,
 			@Context UriInfo uriInfo) {
 		AirTransportOrder created = airTransportOrderService.createAirTransportOrder(userId, order);
@@ -64,6 +67,7 @@ public class AirTransportOrderResource extends BaseOrderResource<AirTransportOrd
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
 	public Page<AirTransportOrder> list(@PathParam("userId") String userId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return airTransportOrderService.listUserAirTransportOrders(userId, status, page, pageSize);
@@ -76,6 +80,7 @@ public class AirTransportOrderResource extends BaseOrderResource<AirTransportOrd
 	@Path("{orderId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
 	public AirTransportOrder update(@PathParam("orderId") String orderId, @NotNull @Valid AirTransportOrder newOrder) {
 		return airTransportOrderService.updateAirTransportOrder(orderId, newOrder);
 	}

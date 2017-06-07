@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.CharterOrder;
@@ -85,7 +86,8 @@ public interface CharterOrderService {
 	 * @return a page of CharterOrders or empty
 	 */
 	@Nonnull
-	Page<CharterOrder> listUserCharterOrders(@Nonnull String userId, Order.Status status, int page, int pageSize);
+	Page<CharterOrder> listUserCharterOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
+			int pageSize);
 
 	/**
 	 * List all CharterOrders by pagination filtered by userId.
@@ -109,7 +111,8 @@ public interface CharterOrderService {
 	 * @return a page of CharterOrders or empty
 	 */
 	@Nonnull
-	Page<CharterOrder> listTenantCharterOrders(@Nonnull String tenantId, Order.Status status, int page, int pageSize);
+	Page<CharterOrder> listTenantCharterOrders(@Nonnull String tenantId, @Nullable Order.Status status, int page,
+			int pageSize);
 
 	/**
 	 * List all the CharterOrder placed on this tenant
@@ -133,7 +136,7 @@ public interface CharterOrderService {
 	 * @return a page of CharterOrders or empty
 	 */
 	@Nonnull
-	Page<CharterOrder> listCharterOrders(Order.Status status, int page, int pageSize);
+	Page<CharterOrder> listCharterOrders(@Nullable Order.Status status, int page, int pageSize);
 
 	/**
 	 * List all CharterOrders by pagination (all users).

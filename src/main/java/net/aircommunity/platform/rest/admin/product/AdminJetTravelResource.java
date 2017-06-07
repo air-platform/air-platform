@@ -1,4 +1,4 @@
-package net.aircommunity.platform.rest.admin;
+package net.aircommunity.platform.rest.admin.product;
 
 import java.net.URI;
 
@@ -28,26 +28,26 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
-import net.aircommunity.platform.model.AirTour;
+import net.aircommunity.platform.model.JetTravel;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.tenant.TenantProductResourceSupport;
-import net.aircommunity.platform.service.AirTourService;
+import net.aircommunity.platform.service.JetTravelService;
 
 /**
- * AirTour RESTful API for ADMIN ONLY
+ * Jet Travel RESTful API for ADMIN
  * 
  * @author Bin.Zhang
  */
 @RESTful
 @RolesAllowed(Roles.ROLE_ADMIN)
-public class AdminAirTourResourse extends TenantProductResourceSupport<AirTour> {
-	private static final Logger LOG = LoggerFactory.getLogger(AdminAirTourResourse.class);
+public class AdminJetTravelResource extends TenantProductResourceSupport<JetTravel> {
+	private static final Logger LOG = LoggerFactory.getLogger(AdminJetTravelResource.class);
 
 	@Resource
-	private AirTourService airTourService;
+	private JetTravelService jetTravelService;
 
 	/**
 	 * Create
@@ -55,11 +55,11 @@ public class AdminAirTourResourse extends TenantProductResourceSupport<AirTour> 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid AirTour airTour,
+	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid JetTravel jetTravel,
 			@Context UriInfo uriInfo) {
-		AirTour created = airTourService.createAirTour(tenantId, airTour);
+		JetTravel created = jetTravelService.createJetTravel(tenantId, jetTravel);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
-		LOG.debug("Created: {}", uri);
+		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
 	}
 
@@ -69,12 +69,12 @@ public class AdminAirTourResourse extends TenantProductResourceSupport<AirTour> 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Page<AirTour> list(@QueryParam("tenant") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
-			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+	public Page<JetTravel> list(@QueryParam("tenant") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		if (Strings.isBlank(tenantId)) {
-			return airTourService.listAllAirTours(reviewStatus, page, pageSize);
+			return jetTravelService.listAllJetTravels(reviewStatus, page, pageSize);
 		}
-		return airTourService.listTenantAirTours(tenantId, reviewStatus, page, pageSize);
+		return jetTravelService.listTenantJetTravels(tenantId, reviewStatus, page, pageSize);
 	}
 
 	/**
@@ -86,21 +86,21 @@ public class AdminAirTourResourse extends TenantProductResourceSupport<AirTour> 
 	public JsonObject listToBeApproved(@QueryParam("tenant") String tenantId,
 			@QueryParam("status") ReviewStatus reviewStatus) {
 		if (Strings.isBlank(tenantId)) {
-			return buildCountResponse(airTourService.countAllAirTours(reviewStatus));
+			return buildCountResponse(jetTravelService.countAllJetTravels(reviewStatus));
 		}
-		return buildCountResponse(airTourService.countTenantAirTours(tenantId, reviewStatus));
+		return buildCountResponse(jetTravelService.countTenantJetTravels(tenantId, reviewStatus));
 	}
 
 	/**
 	 * Update
 	 */
 	@PUT
-	@Path("{airTourId}")
+	@Path("{jetTravelId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public AirTour update(@PathParam("airTourId") String airTourId, @NotNull @Valid AirTour newAirTour) {
-		return airTourService.updateAirTour(airTourId, newAirTour);
+	public JetTravel update(@PathParam("jetTravelId") String jetTravelId, @NotNull @Valid JetTravel newJetTravel) {
+		return jetTravelService.updateJetTravel(jetTravelId, newJetTravel);
 	}
 
 }

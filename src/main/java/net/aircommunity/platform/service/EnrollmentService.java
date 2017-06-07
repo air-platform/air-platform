@@ -1,13 +1,16 @@
 package net.aircommunity.platform.service;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.model.Enrollment;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 
 /**
- * Created by guankai on 13/04/2017.
+ * Enrollment Service
+ * 
+ * @author guankai
  */
 public interface EnrollmentService {
 
@@ -30,15 +33,16 @@ public interface EnrollmentService {
 
 	// USER
 	@Nonnull
-	Page<Enrollment> listUserEnrollments(@Nonnull String userId, Order.Status status, int page, int pageSize);
+	Page<Enrollment> listUserEnrollments(@Nonnull String userId, @Nullable Order.Status status, int page, int pageSize);
 
 	// TENANT
 	@Nonnull
-	Page<Enrollment> listEnrollmentsForTenant(@Nonnull String tenantId, Order.Status status, int page, int pageSize);
+	Page<Enrollment> listEnrollmentsForTenant(@Nonnull String tenantId, @Nullable Order.Status status, int page,
+			int pageSize);
 
 	// TENANT
-	Page<Enrollment> listEnrollmentsForTenantByCourse(String tenantId, String courseId, Order.Status status, int page,
-			int pageSize);
+	Page<Enrollment> listEnrollmentsForTenantByCourse(@Nonnull String tenantId, @Nonnull String courseId,
+			@Nullable Order.Status status, int page, int pageSize);
 
 	// ADMIN
 	void deleteEnrollment(@Nonnull String enrollmentId);

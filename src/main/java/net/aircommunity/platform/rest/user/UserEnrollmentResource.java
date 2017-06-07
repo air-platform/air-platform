@@ -21,24 +21,26 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.Enrollment;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.rest.BaseOrderResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.EnrollmentService;
 
 /**
  * User {@code Course} Enrollment of a {@code School}
  * 
- * Created by guankai on 13/04/2017.
+ * @author guankai
  */
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
-public class UserEnrollmentResource extends BaseOrderResource<Enrollment> {
+public class UserEnrollmentResource extends UserBaseOrderResource<Enrollment> {
 	private static final Logger LOG = LoggerFactory.getLogger(UserEnrollmentResource.class);
 
 	@Resource
@@ -49,6 +51,7 @@ public class UserEnrollmentResource extends BaseOrderResource<Enrollment> {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
 	public Response create(@PathParam("userId") String userId, @NotNull @Valid Enrollment request,
 			@Context UriInfo uriInfo) {
 		LOG.debug("create enrollment {}", request);
@@ -63,6 +66,7 @@ public class UserEnrollmentResource extends BaseOrderResource<Enrollment> {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
 	public Page<Enrollment> list(@PathParam("userId") String userId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		return enrollmentService.listUserEnrollments(userId, status, page, pageSize);

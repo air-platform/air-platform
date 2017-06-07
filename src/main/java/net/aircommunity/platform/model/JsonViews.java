@@ -10,6 +10,9 @@ public interface JsonViews {
 	interface Public {
 	}
 
+	interface User extends Public {
+	}
+
 	interface Tenant extends Public {
 	}
 

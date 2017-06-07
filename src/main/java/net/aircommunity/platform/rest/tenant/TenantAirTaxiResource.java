@@ -37,6 +37,8 @@ import net.aircommunity.platform.service.AirTaxiService;
 
 /**
  * AirTour RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
+ * 
+ * @author Bin.Zhang
  */
 @RESTful
 @AllowResourceOwner

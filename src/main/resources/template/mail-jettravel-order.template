@@ -3,11 +3,11 @@
 <tr>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		<b>卡产品:</b>
+		<b>高端旅行:</b>
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{{jetCard.name}}</td>
+		{{jetTravel.name}}</td>
 </tr>
 <tr>
 	<td align="left"
