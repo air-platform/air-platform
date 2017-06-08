@@ -2,6 +2,7 @@ package net.aircommunity.platform.service.internal;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -13,7 +14,11 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.micro.common.Strings;
+import io.micro.common.io.MoreFiles;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Airport;
@@ -36,8 +41,52 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 	private static final String CACHE_NAME_ICAO4 = "cache.airport-icao4";
 	private static final String CACHE_NAME_IATA3 = "cache.airport-iata3";
 
+	private static final String AIRPORTS_INFO = "data/airports.json";
+
 	@Resource
 	private AirportRepository airportRepository;
+
+	@Resource
+	private ObjectMapper objectMapper;
+
+	@PostConstruct
+	private void init() {
+		try {
+			String json = MoreFiles.toString(AIRPORTS_INFO);
+			if (json == null) {
+				LOG.warn("Not airport information provided, skip importing airports info to DB");
+				return;
+			}
+			List<Airport> airports = objectMapper.readValue(json, new TypeReference<List<Airport>>() {
+			});
+			int imported = 0;
+			for (Airport airport : airports) {
+				try {
+					Airport found = airportRepository.findByIcao4IgnoreCase(airport.getIcao4());
+					if (found == null) {
+						Airport iata3 = airportRepository.findByIata3IgnoreCase(airport.getIata3());
+						if (iata3 == null) {
+							createAirport(airport);
+							imported++;
+						}
+						else {
+							LOG.warn("Icao4 available, but iata3 already exists, airport {} ignored", airport);
+						}
+					}
+					else {
+						updateAirport(found.getId(), airport);
+					}
+				}
+				catch (Exception e) {
+					LOG.warn("Failed to import airport: " + airport, e);
+				}
+			}
+			LOG.info("Imported {}/{} airports information. ", imported, airports.size());
+		}
+		catch (Exception e) {
+			LOG.warn("Failed to initialize airport information, casue: " + e.getMessage(), e);
+		}
+	}
 
 	@Override
 	public Airport createAirport(Airport airport) {

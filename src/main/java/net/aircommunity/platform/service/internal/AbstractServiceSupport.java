@@ -37,8 +37,9 @@ abstract class AbstractServiceSupport {
 			return type.cast(account);
 		}
 		catch (Exception e) {
-			LOG.error("Internal error:" + e.getMessage(), e);
-			throw newInternalException();
+			LOG.error(String.format("Account type mismatch, expected %s, but was %s, cause:", type, account.getClass(),
+					e.getMessage()), e);
+			throw new AirException(Codes.ACCOUNT_TYPE_MISMATCH, M.msg(M.ACCOUNT_TYPE_MISMATCH));
 		}
 	}
 

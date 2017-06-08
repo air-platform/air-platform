@@ -2,8 +2,11 @@ package net.aircommunity.platform.rest.tenant.order;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -52,4 +55,13 @@ public class TenantFleetOrderResource extends TenantBaseOrderResource<CharterOrd
 		return charterOrderService.listTenantCharterOrders(tenantId, status, page, pageSize);
 	}
 
+	/**
+	 * Offer a fleet (only allow one to be offered)
+	 */
+	@POST
+	@Path("{orderId}/offer")
+	public void offerFleet(@PathParam("orderId") String orderId,
+			@NotNull @QueryParam("candidate") String fleetCandidateId) {
+		charterOrderService.selectFleetCandidate(orderId, fleetCandidateId);
+	}
 }

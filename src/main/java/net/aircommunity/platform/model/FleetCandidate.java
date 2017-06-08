@@ -31,8 +31,6 @@ public class FleetCandidate extends Persistable {
 	@Enumerated(EnumType.STRING)
 	private Status status = Status.CANDIDATE;
 
-	// TODO add nullable = false?
-
 	@ManyToOne
 	@JoinColumn(name = "order_id", nullable = false)
 	@XmlJavaTypeAdapter(OrderAdapter.class)
@@ -84,7 +82,26 @@ public class FleetCandidate extends Persistable {
 	 * FleetCandidate status
 	 */
 	public enum Status {
-		CANDIDATE, SELECTED, DELETED;
+
+		/**
+		 * Candidates chosen by user (Initial state)
+		 */
+		CANDIDATE,
+
+		/**
+		 * Vendor mark current candidate as offered according to user chosen candidates
+		 */
+		OFFERED,
+
+		/**
+		 * This FleetCandidate is selected by user
+		 */
+		SELECTED,
+
+		/**
+		 * Soft deletion
+		 */
+		DELETED;
 	}
 
 }

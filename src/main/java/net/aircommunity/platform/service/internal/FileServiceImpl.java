@@ -19,6 +19,7 @@ import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
 import com.qiniu.util.UrlSafeBase64;
 
+import io.micro.common.Strings;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.FileUploadResult;
 import net.aircommunity.platform.model.ImageCropResult;
@@ -83,11 +84,18 @@ public class FileServiceImpl implements FileService {
 
 	@Override
 	public ImageCropResult cropImage(String imageFilename, InputStream stream, String cropOptions) {
-		FileUploadResult result = upload(imageFilename, stream);
+		String thumbnailImage = String.format(AVATAR_FILE_NAME_FORMAT, imageFilename);
+		String uploadFilename = Strings.isBlank(cropOptions) ? thumbnailImage : imageFilename;
+		FileUploadResult result = upload(uploadFilename, stream);
 		if (!result.isSuccess()) {
 			return ImageCropResult.failure(result.getMessage());
 		}
-		String thumbnailImage = String.format(AVATAR_FILE_NAME_FORMAT, imageFilename);
+		// upload only if no crop
+		if (Strings.isBlank(cropOptions)) {
+			return ImageCropResult.success(result.getUrl());
+		}
+
+		// crop image
 		String urlbase64 = UrlSafeBase64
 				.encodeToString(String.format("%s:%s", configuration.getFileUploadBucket(), thumbnailImage));
 		String pfops = String.format(FOPS_FORMAT, cropOptions, urlbase64);

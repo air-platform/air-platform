@@ -217,6 +217,16 @@ public interface AccountService {
 	 * Change the username for a account.
 	 * 
 	 * @param accountId the accountId
+	 * @param deltaPoints add delta point (+-)
+	 * @return account updated
+	 */
+	@Nonnull
+	Account updateUserPoints(@Nonnull String accountId, long deltaPoints);
+
+	/**
+	 * Change the username for a account.
+	 * 
+	 * @param accountId the accountId
 	 * @param username the account username
 	 */
 	void updateUsername(@Nonnull String accountId, @Nonnull String username);

@@ -129,16 +129,6 @@ public abstract class TenantBaseOrderResource<T extends Order> {
 	}
 
 	/**
-	 * Delete (mark order as DELETED)
-	 */
-	@DELETE
-	@Path("{orderId}")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
-	public void delete(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
-	}
-
-	/**
 	 * Mark order as closed
 	 */
 	@POST
@@ -146,6 +136,16 @@ public abstract class TenantBaseOrderResource<T extends Order> {
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void closeOrder(@PathParam("orderId") String orderId) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.CLOSED);
+	}
+
+	/**
+	 * Delete (mark order as DELETED)
+	 */
+	@DELETE
+	@Path("{orderId}")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+	public void delete(@PathParam("orderId") String orderId) {
+		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
 	}
 
 	// **************

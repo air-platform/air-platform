@@ -58,6 +58,10 @@ public final class Constants {
 	public static final String DEFAULT_ADMIN_EMAIL = "ac_eb@hnair.com";
 	public static final String DEFAULT_PASSWORD = "Air@pwd123";
 
+	// user points rules
+	public static final String POINTS_RULE_ACCOUNT_REGISTRATION = "account_registration";
+	public static final String POINTS_RULE_ORDER_FINISHED = "percent_order_finished";
+
 	// any constants put here
 
 	private Constants() {

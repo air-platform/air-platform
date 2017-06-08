@@ -131,6 +131,7 @@ public class UserResource {
 	private static final String ORDER_FILTER_STATUS_PENDING = "pending";
 	private static final String ORDER_FILTER_STATUS_FINISHED = "finished";
 	private static final String ORDER_FILTER_STATUS_CANCELLED = "cancelled";
+	private static final String ORDER_FILTER_STATUS_REFUND = "refund";
 
 	/**
 	 * List All
@@ -151,6 +152,10 @@ public class UserResource {
 		case ORDER_FILTER_STATUS_FINISHED:
 			// REFUNDED FINISHED CLOSED
 			return commonOrderService.listUserFinishedOrders(userId, page, pageSize);
+
+		case ORDER_FILTER_STATUS_REFUND:
+			// REFUND_REQUESTED, REFUNDING
+			return commonOrderService.listUserRefundOrders(userId, page, pageSize);
 
 		case ORDER_FILTER_STATUS_CANCELLED:
 			// CANCELLED

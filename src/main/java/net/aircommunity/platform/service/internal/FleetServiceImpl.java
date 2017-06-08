@@ -1,5 +1,8 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -11,12 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Fleet;
+import net.aircommunity.platform.model.FleetProvider;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.FleetRepository;
+import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.FleetService;
 
 /**
@@ -28,6 +35,9 @@ import net.aircommunity.platform.service.FleetService;
 @Transactional
 public class FleetServiceImpl extends AbstractProductService<Fleet> implements FleetService {
 	private static final String CACHE_NAME = "cache.fleet";
+
+	@Resource
+	private AccountService accountService;
 
 	@Resource
 	private FleetRepository fleetRepository;
@@ -113,6 +123,26 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 	public Page<Fleet> listFleetsByType(String aircraftType, int page, int pageSize) {
 		return Pages.adapt(
 				fleetRepository.findByAircraftTypeForUser(aircraftType, Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<Fleet> listFleetsByProvider(String provider, int page, int pageSize) {
+		return Pages.adapt(
+				fleetRepository.findByAircraftProviderForUser(provider, Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<Fleet> listFleets(String aircraftType, String provider, int page, int pageSize) {
+		return Pages.adapt(fleetRepository.findByAircraftTypeAndProviderForUser(aircraftType, provider,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public List<FleetProvider> listFleetProviders() {
+		List<Account> tenants = accountService.listAccounts(Role.TENANT, 1, Integer.MAX_VALUE).getContent();
+		return tenants.stream().filter(account -> countTenantFleets(account.getId(), ReviewStatus.APPROVED) > 0)
+				.map(account -> new FleetProvider(account.getId(), account.getNickName(), account.getAvatar()))
+				.collect(Collectors.toList());
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#fleetId")

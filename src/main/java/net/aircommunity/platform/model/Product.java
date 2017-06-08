@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.constraint.NotEmpty;
 import io.micro.common.Strings;
 import net.aircommunity.platform.model.constraint.ContactList;
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
@@ -66,6 +67,7 @@ public abstract class Product extends Reviewable {
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	protected Date creationDate;
 
 	// client managers for this product

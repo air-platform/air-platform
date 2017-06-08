@@ -20,6 +20,7 @@ public class Settings extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	public static final String CATEGORY_SYSTEM = "system";
+	public static final String CATEGORY_USER = "user";
 
 	// configuration name
 	@Column(name = "name", nullable = false, unique = true)
@@ -69,6 +70,12 @@ public class Settings extends Persistable {
 	public static Settings newSystemSettings() {
 		Settings settings = new Settings();
 		settings.category = CATEGORY_SYSTEM;
+		return settings;
+	}
+
+	public static Settings newUserSettings() {
+		Settings settings = new Settings();
+		settings.category = CATEGORY_USER;
 		return settings;
 	}
 }

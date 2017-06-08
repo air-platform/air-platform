@@ -37,7 +37,7 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 	private static final Logger LOG = LoggerFactory.getLogger(AirJetServiceImpl.class);
 
 	private static final String CACHE_NAME = "cache.airjet";
-	private static final String AIRJETS_INFO = "data/airjet.json";
+	private static final String AIRJETS_INFO = "data/airjets.json";
 	// FORMAT: http://host:port/airjet/image/xxx.jpeg
 	// private static final String BASE_URL_FORMAT = "http://%s:%d/%s";
 

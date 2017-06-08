@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import net.aircommunity.platform.Constants;
@@ -21,6 +23,7 @@ import net.aircommunity.platform.service.PlatformService;
  */
 @Service
 public class PlatformServiceImpl implements PlatformService {
+	private static final Logger LOG = LoggerFactory.getLogger(PlatformServiceImpl.class);
 
 	private static final String PLATFORM_CLIENT_MANAGERS = "platform.client_managers";
 
@@ -41,6 +44,7 @@ public class PlatformServiceImpl implements PlatformService {
 			settings.setName(PLATFORM_CLIENT_MANAGERS);
 		}
 		settings.setValue(contacts);
+		LOG.debug("Set setting with name: {}, value: {}", PLATFORM_CLIENT_MANAGERS, contacts);
 		settingsRepository.save(settings);
 	}
 

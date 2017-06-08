@@ -29,7 +29,7 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
- * Base Order model. TODO have multiple paymentInfo? 分期支付
+ * Base Order model.
  * 
  * @author Bin.Zhang
  */
@@ -39,23 +39,25 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 public abstract class Order extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-	public static final EnumSet<Status> CANCELLABLE_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
+	// finished, closed, cancelled or refunded
+	public static final EnumSet<Status> PENDING_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
+			Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.TICKET_RELEASED);
+
+	public static final EnumSet<Status> REFUND_STATUSES = EnumSet.of(Status.REFUND_REQUESTED, Status.REFUNDING,
+			Status.REFUNDED);
+
+	// finished or closed
+	public static final EnumSet<Status> COMPLETED_STATUSES = EnumSet.of(Status.FINISHED, Status.CLOSED);
+
+	// allow cancel
+	private static final EnumSet<Status> CANCELLABLE_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
 			Status.CONFIRMED, Status.CONTRACT_SIGNED);
 
 	// finished, closed, cancelled or refunded
-	public static final EnumSet<Status> PENDING_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
-			Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.TICKET_RELEASED, Status.REFUND_REQUESTED,
-			Status.REFUNDING);
-
-	// finished, closed, refunded
-	public static final EnumSet<Status> COMPLETED_STATUSES = EnumSet.of(Status.FINISHED, Status.REFUNDED,
-			Status.CLOSED);
-
-	// finished, closed, cancelled or refunded
-	public static final EnumSet<Status> TERMINATION_STATUSES = EnumSet.of(Status.FINISHED, Status.CANCELLED,
+	private static final EnumSet<Status> TERMINATION_STATUSES = EnumSet.of(Status.FINISHED, Status.CANCELLED,
 			Status.REFUNDED, Status.CLOSED);
 
-	// TODO add alipay TradeNo?
+	// TODO add ALIPAY TradeNo?
 	// @XmlElement --> product
 	// @Column(name = "discount", nullable = true)
 	// protected double discount;
@@ -68,7 +70,7 @@ public abstract class Order extends Persistable {
 	// points used in this order
 	@XmlElement
 	@Column(name = "points_used")
-	protected int pointsUsed;
+	protected long pointsUsed;
 
 	@XmlElement
 	@Column(name = "quantity", nullable = false)
@@ -174,11 +176,11 @@ public abstract class Order extends Persistable {
 		this.orderNo = orderNo;
 	}
 
-	public int getPointsUsed() {
+	public long getPointsUsed() {
 		return pointsUsed;
 	}
 
-	public void setPointsUsed(int pointsUsed) {
+	public void setPointsUsed(long pointsUsed) {
 		this.pointsUsed = pointsUsed;
 	}
 
@@ -328,8 +330,13 @@ public abstract class Order extends Persistable {
 	@XmlTransient
 	public abstract Type getType();
 
+	public boolean confirmationRequired() {
+		return getType() != Type.FLEET || getType() != Type.JETTRAVEL;
+	}
+
 	public boolean signContractRequired() {
-		return getType() != Type.FLEET || getType() != Type.COURSE;
+		return getType() != Type.FLEET || getType() != Type.COURSE || getType() != Type.FERRYFLIGHT
+				|| getType() != Type.JETTRAVEL;
 	}
 
 	@XmlTransient
@@ -389,17 +396,19 @@ public abstract class Order extends Persistable {
 		PUBLISHED,
 
 		/**
-		 * Created
+		 * Initial state (Creation)
 		 */
 		CREATED,
 
 		/**
 		 * Confirmation
 		 */
+		// XXX CONFIRM_PENDING status: for airjet user need to select a flightCandidate, if allow user to select/cancel
+		// flightCandidate. We only allow select once, don't allow cancel, so only one state is needed.
 		CONFIRMED,
 
 		/**
-		 * Contract (for airjet & training)
+		 * Contract (for AIRJET & TRAINING )
 		 */
 		CONTRACT_SIGNED,
 
@@ -414,33 +423,28 @@ public abstract class Order extends Persistable {
 		TICKET_RELEASED,
 
 		/**
-		 * Waiting to travel
-		 */
-		// WAITING_TO_TRAVEL,
-
-		/**
 		 * Refund
 		 */
 		// user request refund -> tenant accept request -> success
 		REFUND_REQUESTED, REFUNDING, REFUNDED,
 
 		/**
-		 * Finished
+		 * Finished with success
 		 */
 		FINISHED,
 
 		/**
-		 * Close due to timeout or close by admin or tenant
+		 * Closed due to timeout or close by ADMIN or TENANT
 		 */
 		CLOSED,
 
 		/**
-		 * Cancelled
+		 * Cancelled by USER, ADMIN or TENANT
 		 */
 		CANCELLED,
 
 		/**
-		 * Not visible to user or tenant, only available to platform admin
+		 * Not visible to USER and TENANT, only available to platform ADMIN
 		 */
 		DELETED;
 

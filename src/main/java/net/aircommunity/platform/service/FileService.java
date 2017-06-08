@@ -29,7 +29,7 @@ public interface FileService {
 	 * 
 	 * @param imageFilename the image file name
 	 * @param stream file inputStream
-	 * @param cropOptions image cropOptions
+	 * @param cropOptions image cropOptions, ignored if null
 	 * @return result
 	 */
 	@Nonnull

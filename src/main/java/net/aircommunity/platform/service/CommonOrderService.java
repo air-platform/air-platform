@@ -122,6 +122,14 @@ public interface CommonOrderService {
 		return listUserOrdersInStatuses(userId, Order.COMPLETED_STATUSES, page, pageSize);
 	}
 
+	/**
+	 * Orders Refund (REFUND_REQUESTED, REFUNDING)
+	 */
+	@Nonnull
+	default Page<Order> listUserRefundOrders(@Nonnull String userId, int page, int pageSize) {
+		return listUserOrdersInStatuses(userId, Order.REFUND_STATUSES, page, pageSize);
+	}
+
 	@Nonnull
 	Page<Order> listUserOrdersNotInStatuses(@Nonnull String userId, @Nonnull Set<Order.Status> statuses, int page,
 			int pageSize);

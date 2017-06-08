@@ -22,4 +22,11 @@ public interface FleetRepository extends BaseProductRepository<Fleet> {
 	Page<Fleet> findByAircraftTypeForUser(@Param("aircraftType") String aircraftType, Pageable pageable);
 	// Page<Fleet> findByAircraftTypeOrderByCreationDateDesc(String aircraftType, Pageable pageable);
 
+	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND t.vendor.id = :provider ORDER BY t.rank ASC, t.score DESC")
+	Page<Fleet> findByAircraftProviderForUser(@Param("provider") String tenantId, Pageable pageable);
+
+	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND  t.aircraftType = :aircraftType AND t.vendor.id = :provider ORDER BY t.rank ASC, t.score DESC")
+	Page<Fleet> findByAircraftTypeAndProviderForUser(@Param("aircraftType") String aircraftType,
+			@Param("provider") String tenantId, Pageable pageable);
+
 }

@@ -80,7 +80,9 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 			fleetCandidates.stream().forEach(fleetCandidate -> {
 				fleetCandidate.setStatus(FleetCandidate.Status.DELETED);
 			});
-			fleetCandidateRepository.save(fleetCandidates);
+			safeExecute(() -> {
+				fleetCandidateRepository.save(fleetCandidates);
+			}, "updateCharterOrder %s status to %s failed", orderId, status);
 		}
 		return doUpdateOrderStatus(orderId, status);
 	}
@@ -120,17 +122,19 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 	public CharterOrder selectFleetCandidate(String orderId, String fleetCandidateId) {
 		CharterOrder charterOrder = findCharterOrder(orderId);
 		charterOrder.selectFleetCandidate(fleetCandidateId);
-		return charterOrderRepository.save(charterOrder);
+		return safeExecute(() -> {
+			return charterOrderRepository.save(charterOrder);
+		}, "Select FleetCandidate %s for order %s failed", fleetCandidateId, orderId);
+	}
 
-		// FleetCandidate fleetCandidate = fleetCandidateRepository.findOne(fleetCandidateId);
-		// boolean selected = fleetCandidateRepository.isFleetCandidateSelected(orderId);
-		// if (selected) {
-		// return;
-		// }
-		// if (fleetCandidate != null) {
-		// fleetCandidate.setStatus(FleetCandidate.Status.SELECTED);
-		// fleetCandidateRepository.save(fleetCandidate);
-		// }
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	@Override
+	public CharterOrder offerFleetCandidate(String orderId, String fleetCandidateId) {
+		CharterOrder charterOrder = findCharterOrder(orderId);
+		charterOrder.offerFleetCandidate(fleetCandidateId);
+		return safeExecute(() -> {
+			return charterOrderRepository.save(charterOrder);
+		}, "Offer FleetCandidate %s for order %s failed", fleetCandidateId, orderId);
 	}
 
 	@Override

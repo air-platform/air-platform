@@ -51,6 +51,7 @@ import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.IdentityCardService;
 import net.aircommunity.platform.service.MailService;
+import net.aircommunity.platform.service.MemberPointsService;
 import net.aircommunity.platform.service.TemplateService;
 import net.aircommunity.platform.service.VerificationService;
 
@@ -109,6 +110,9 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	@Resource
 	private AirqAccountService airqAccountService;
+
+	@Resource
+	private MemberPointsService memberPointsService;
 
 	private String emailConfirmationLink;
 
@@ -251,6 +255,8 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 		case USER:
 			newAccount = new User();
+			User u = (User) newAccount;
+			u.setPoints(memberPointsService.getPointsEarnedFromRule(Constants.POINTS_RULE_ACCOUNT_REGISTRATION));
 			break;
 
 		default: // noop
@@ -574,6 +580,14 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	}
 
 	// TODO list all/cleanup unconfirmed/expired accounts, need to resend email if confirm link expired
+
+	@Override
+	public Account updateUserPoints(String accountId, long deltaPoints) {
+		User user = findAccount(accountId, User.class);
+		user.setPoints(user.getPoints() + deltaPoints);
+		return safeExecute(() -> accountRepository.save(user), "Update user %s points with delta %s failed", accountId,
+				deltaPoints);
+	}
 
 	@Override
 	public void updateUsername(String accountId, String username) {

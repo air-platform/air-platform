@@ -24,15 +24,16 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
+import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AircraftAwareOrder;
 import net.aircommunity.platform.model.CharterableOrder;
 import net.aircommunity.platform.model.Order;
-import net.aircommunity.platform.model.Order.Type;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.PassengerItem;
+import net.aircommunity.platform.model.PointsExchange;
 import net.aircommunity.platform.model.PricedProduct;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.SalesPackage;
@@ -41,7 +42,9 @@ import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.repository.SalesPackageRepository;
+import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CommonProductService;
+import net.aircommunity.platform.service.MemberPointsService;
 
 /**
  * Abstract Order service support. TODO order status transition
@@ -75,6 +78,12 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	@Resource
 	private CommonProductService commonProductService;
+
+	@Resource
+	private MemberPointsService memberPointsService;
+
+	@Resource
+	private AccountService accountService;
 
 	@PostConstruct
 	@SuppressWarnings("unchecked")
@@ -125,11 +134,25 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		newOrder.setCreationDate(new Date());
 		newOrder.setLastModifiedDate(newOrder.getCreationDate());
 		newOrder.setCommented(false);
-
 		// copy common properties
 		copyCommonProperties(order, newOrder);
 		// copy order specific properties
 		copyProperties(order, newOrder);
+
+		// Calculate points to exchange
+		long pointToExchange = order.getPointsUsed();
+		if (pointToExchange > 0 && pointToExchange > owner.getPoints()) {
+			pointToExchange = owner.getPoints();
+		}
+		if (pointToExchange > 0) {
+			PointsExchange pointsUsed = memberPointsService.exchangePoints(pointToExchange);
+			newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
+			// update total price
+			newOrder.setTotalPrice(newOrder.getTotalPrice() - pointsUsed.getMoney());
+			LOG.info("User[{}] {} used points {} for order {}", owner.getId(), owner.getNickName(), pointsUsed,
+					newOrder);
+		}
+		LOG.info("Order {} created for user[{}] {}", newOrder, owner.getId(), owner.getNickName());
 		final T orderToSave = newOrder;
 		return safeExecute(() -> {
 			T orderSaved = getOrderRepository().save(orderToSave);
@@ -272,70 +295,59 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				type.getSimpleName(), orderId, newPrice);
 	}
 
-	// TODO REMOVE or refactor ?
-	// BiConsumer<Order, Order.Status> fleetOrderStatusHanlder = (order, newStatus) -> {
-	// switch (newStatus) {
-	// case PUBLISHED:
-	// case CREATED:
-	// throw invalidOrderStatus(orderId, newStatus);
-	//
-	// // AIRJET ONLY
-	// case CONFIRMED:
-	// if (order.getType() != Type.FLEET) {
-	// throw invalidOrderStatus(orderId, newStatus);
-	// }
-	// break;
-	//
-	// // AIRJET ONLY
-	// case CONTRACT_SIGNED:
-	// if (order.getType() != Type.FLEET) {
-	// throw invalidOrderStatus(orderId, newStatus);
-	// }
-	// break;
-	// }
-	// };
-
 	/**
-	 * Update order status to new status (TODO update )
+	 * Update order status to new status
 	 */
 	protected T doUpdateOrderStatus(String orderId, Order.Status newStatus) {
 		T order = doFindOrder(orderId);
 		switch (newStatus) {
 		case PUBLISHED:
 		case CREATED:
+			// order initial status
 			throw invalidOrderStatus(orderId, newStatus);
 
-			// airjet ONLY
+			// AirJet, AirTravel
 		case CONFIRMED:
-			if (order.getType() != Type.FLEET) {
+			if (!order.confirmationRequired()) {
 				throw invalidOrderStatus(orderId, newStatus);
 			}
 			break;
 
-		// airjet & course ONLY
+		// AirJet, Course
 		case CONTRACT_SIGNED:
 			// should be already confirmed
-			if (!(order.getStatus() == Order.Status.CONTRACT_SIGNED && order.signContractRequired())) {
+			if (!(order.getStatus() == Order.Status.CONFIRMED && order.signContractRequired())) {
 				throw invalidOrderStatus(orderId, newStatus);
 			}
 			break;
 
 		//
 		case PAID:
-			// should be already contract signed
-			if (!(order.getStatus() == Order.Status.CONTRACT_SIGNED && order.signContractRequired())) {
+			// should be already contract signed (if contract sign is required)
+			if (order.signContractRequired() && order.getStatus() != Order.Status.CONTRACT_SIGNED) {
 				throw invalidOrderStatus(orderId, newStatus);
 			}
-			if (order.getStatus() != Order.Status.CREATED) {
+
+			// otherwise, should be in created | published
+			if (!order.signContractRequired()
+					&& (order.getStatus() != Order.Status.CREATED || order.getStatus() != Order.Status.PUBLISHED)) {
 				throw invalidOrderStatus(orderId, newStatus);
 			}
 			order.setPaymentDate(new Date());
 			break;
 
 		//
-		case REFUNDING:
+		case REFUND_REQUESTED:
 			// should be already paid
 			if (order.getStatus() != Order.Status.PAID) {
+				throw invalidOrderStatus(orderId, newStatus);
+			}
+			break;
+
+		//
+		case REFUNDING:
+			// should be already paid (directly by TENANT) or refund requested (by USER)
+			if (order.getStatus() != Order.Status.REFUND_REQUESTED || order.getStatus() != Order.Status.PAID) {
 				throw invalidOrderStatus(orderId, newStatus);
 			}
 			break;
@@ -360,6 +372,15 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				throw invalidOrderStatus(orderId, newStatus);
 			}
 			order.setFinishedDate(new Date());
+
+			// update points earned
+			long pointsEarnedPercent = memberPointsService
+					.getPointsEarnedFromRule(Constants.POINTS_RULE_ORDER_FINISHED);
+			long pointsEarned = Math.round(order.getTotalPrice() * (pointsEarnedPercent / 100d));
+			LOG.info("User earned points {}({}%)", pointsEarned, pointsEarnedPercent);
+			if (pointsEarned > 0) {
+				accountService.updateUserPoints(order.getOwner().getId(), pointsEarned);
+			}
 			break;
 
 		case CANCELLED:
@@ -370,7 +391,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			break;
 
 		case CLOSED:
-			if (!order.isCancellable()) {
+			if (!order.isCloseable()) {
 				throw invalidOrderStatus(orderId, newStatus);
 			}
 			order.setClosedDate(new Date());
@@ -400,8 +421,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	private AirException invalidOrderStatus(String orderId, Order.Status status) {
 		LOG.error("{} ({}) order cannot be update to status {}", type.getSimpleName(), orderId, status);
 		return new AirException(Codes.ORDER_ILLEGAL_STATUS, M.msg(M.ORDER_ILLEGAL_STATUS));
-		// throw new AirException(Codes.ORDER_ILLEGAL_STATUS,
-		// String.format("%s (%s) order cannot be update to status %s", type.getSimpleName(), orderId, status));
 	}
 
 	/**

@@ -1,5 +1,7 @@
 package net.aircommunity.platform.rest;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
@@ -16,8 +18,10 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Fleet;
+import net.aircommunity.platform.model.FleetProvider;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.FleetService;
@@ -47,13 +51,27 @@ public class FleetResource extends ProductResourceSupport<Fleet> {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
-	public Page<Fleet> listAll(@QueryParam("type") String type, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		LOG.debug("List all fleets");
-		if (type != null) {
-			return fleetService.listFleetsByType(type, page, pageSize);
+	public Page<Fleet> listAll(@QueryParam("type") String aircraftType, @QueryParam("provider") String provider,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		LOG.debug("List all fleets aircraftType: {}, provider: {}", aircraftType, provider);
+		if (!Strings.isBlank(aircraftType)) {
+			if (!Strings.isBlank(provider)) {
+				return fleetService.listFleets(aircraftType, provider, page, pageSize);
+			}
+			return fleetService.listFleetsByType(aircraftType, page, pageSize);
 		}
+		if (!Strings.isBlank(provider)) {
+			return fleetService.listFleetsByProvider(provider, page, pageSize);
+		}
+		// both null
 		return fleetService.listFleets(page, pageSize);
+	}
+
+	@GET
+	@Path("providers")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<FleetProvider> listFleetProviders() {
+		return fleetService.listFleetProviders();
 	}
 
 	/**

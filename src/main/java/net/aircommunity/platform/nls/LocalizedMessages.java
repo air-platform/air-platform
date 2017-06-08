@@ -53,6 +53,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String AIRCRAFT_NOT_FOUND;
 	public static String SALESPACKAGE_NOT_FOUND;
 
+	public static String ACCOUNT_TYPE_MISMATCH;
 	public static String ACCOUNT_EMAIL_NOT_BIND;
 	public static String ACCOUNT_MOBILE_NOT_FOUND;
 	public static String ACCOUNT_PASSWORD_MISMATCH;

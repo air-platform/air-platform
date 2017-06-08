@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Fleet;
+import net.aircommunity.platform.model.FleetProvider;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
@@ -102,6 +103,14 @@ public interface FleetService {
 	 */
 	@Nonnull
 	Page<Fleet> listFleetsByType(@Nonnull String aircraftType, int page, int pageSize);
+
+	@Nonnull
+	Page<Fleet> listFleetsByProvider(@Nonnull String provider, int page, int pageSize);
+
+	@Nonnull
+	Page<Fleet> listFleets(@Nonnull String aircraftType, @Nonnull String provider, int page, int pageSize);
+
+	List<FleetProvider> listFleetProviders();
 
 	/**
 	 * Delete a fleet.

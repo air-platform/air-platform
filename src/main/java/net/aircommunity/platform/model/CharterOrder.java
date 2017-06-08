@@ -63,9 +63,20 @@ public class CharterOrder extends Order {
 					.filter(candidate -> candidate.getId().equals(fleetCandidateId)).findFirst();
 			if (optional.isPresent()) {
 				// clear all status and make the input fleetCandidateId as selected
-				fleetCandidates.stream().forEach(candidate -> candidate.setStatus(FleetCandidate.Status.CANDIDATE));
+				fleetCandidates.stream().forEach(candidate -> {
+					if (candidate.getStatus() == FleetCandidate.Status.SELECTED) {
+						candidate.setStatus(FleetCandidate.Status.CANDIDATE);
+					}
+				});
 				optional.get().setStatus(FleetCandidate.Status.SELECTED);
 			}
+		}
+	}
+
+	public void offerFleetCandidate(String fleetCandidateId) {
+		if (fleetCandidateId != null) {
+			fleetCandidates.stream().filter(candidate -> candidate.getId().equals(fleetCandidateId)).findFirst()
+					.ifPresent(candidate -> candidate.setStatus(FleetCandidate.Status.OFFERED));
 		}
 	}
 

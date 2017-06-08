@@ -73,7 +73,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		newProduct.setClientManagers(product.getClientManagers());
 		newProduct.setDescription(product.getDescription());
 		newProduct.setRank(0);
-		newProduct.setPublished(true);
+		newProduct.setPublished(false);
 		newProduct.setReviewStatus(ReviewStatus.PENDING);
 		// priced
 		if (PricedProduct.class.isAssignableFrom(product.getClass())) {
