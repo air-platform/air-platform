@@ -39,11 +39,20 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 public abstract class Order extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-	private static final EnumSet<Status> CANCELLABLE_STATUS = EnumSet.of(Status.PUBLISHED, Status.CREATED,
+	public static final EnumSet<Status> CANCELLABLE_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
 			Status.CONFIRMED, Status.CONTRACT_SIGNED);
 
 	// finished, closed, cancelled or refunded
-	private static final EnumSet<Status> COMPLETED_STATUS = EnumSet.of(Status.FINISHED, Status.CANCELLED,
+	public static final EnumSet<Status> PENDING_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
+			Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.TICKET_RELEASED, Status.REFUND_REQUESTED,
+			Status.REFUNDING);
+
+	// finished, closed, refunded
+	public static final EnumSet<Status> COMPLETED_STATUSES = EnumSet.of(Status.FINISHED, Status.REFUNDED,
+			Status.CLOSED);
+
+	// finished, closed, cancelled or refunded
+	public static final EnumSet<Status> TERMINATION_STATUSES = EnumSet.of(Status.FINISHED, Status.CANCELLED,
 			Status.REFUNDED, Status.CLOSED);
 
 	// TODO add alipay TradeNo?
@@ -325,7 +334,7 @@ public abstract class Order extends Persistable {
 
 	@XmlTransient
 	public boolean isCancellable() {
-		return CANCELLABLE_STATUS.contains(status);
+		return CANCELLABLE_STATUSES.contains(status);
 	}
 
 	@XmlTransient
@@ -339,7 +348,7 @@ public abstract class Order extends Persistable {
 	 */
 	@XmlTransient
 	public boolean isCompleted() {
-		return COMPLETED_STATUS.contains(status);
+		return TERMINATION_STATUSES.contains(status);
 	}
 
 	/**

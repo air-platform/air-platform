@@ -136,7 +136,7 @@ public class SalesPackage extends Persistable {
 			List<String> list = Splitter.on(Constants.PRICE_SEPARATOR).trimResults().omitEmptyStrings()
 					.splitToList(rawPrices);
 			Double[] normalizedPrices = new Double[SalesPackage.NUM_OF_PRICES];
-			Arrays.fill(normalizedPrices, 0);
+			Arrays.fill(normalizedPrices, 0d);
 			int size = Math.min(SalesPackage.NUM_OF_PRICES, list.size());
 			for (int i = 0; i < size; i++) {
 				normalizedPrices[i] = Double.valueOf(list.get(i));

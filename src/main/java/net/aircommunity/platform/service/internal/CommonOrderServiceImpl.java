@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.Set;
+
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -63,6 +65,16 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	@Override
 	public Page<Order> listUserOrders(String userId, Order.Status status, int page, int pageSize) {
 		return doListUserOrders(userId, status, page, pageSize);
+	}
+
+	@Override
+	public Page<Order> listUserOrdersInStatuses(String userId, Set<Order.Status> statuses, int page, int pageSize) {
+		return doListUserOrdersInStatuses(userId, statuses, page, pageSize);
+	}
+
+	@Override
+	public Page<Order> listUserOrdersNotInStatuses(String userId, Set<Order.Status> statuses, int page, int pageSize) {
+		return doListUserOrdersNotInStatuses(userId, statuses, page, pageSize);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#orderId")

@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -416,6 +417,26 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
 				Pages.createPageRequest(page, pageSize)));
+	}
+
+	/**
+	 * For USER (Exclude orders in DELETED status), IN statuses.
+	 */
+	protected Page<T> doListUserOrdersInStatuses(String userId, Set<Order.Status> statuses, int page, int pageSize) {
+		Set<Order.Status> incudedStatuses = new HashSet<>(statuses);
+		incudedStatuses.remove(Order.Status.DELETED);
+		return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusInOrderByCreationDateDesc(userId, incudedStatuses,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	/**
+	 * For USER (Exclude orders in DELETED status), NOT IN statuses.
+	 */
+	protected Page<T> doListUserOrdersNotInStatuses(String userId, Set<Order.Status> statuses, int page, int pageSize) {
+		Set<Order.Status> excludedStatuses = new HashSet<>(statuses);
+		excludedStatuses.add(Order.Status.DELETED);
+		return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusNotInOrderByCreationDateDesc(userId,
+				excludedStatuses, Pages.createPageRequest(page, pageSize)));
 	}
 
 	/**

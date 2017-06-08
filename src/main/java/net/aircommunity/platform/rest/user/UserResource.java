@@ -21,6 +21,7 @@ import javax.ws.rs.core.SecurityContext;
 
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Address;
 import net.aircommunity.platform.model.Order;
@@ -127,61 +128,40 @@ public class UserResource {
 	// Orders //
 	// *******//
 
+	private static final String ORDER_FILTER_STATUS_PENDING = "pending";
+	private static final String ORDER_FILTER_STATUS_FINISHED = "finished";
+	private static final String ORDER_FILTER_STATUS_CANCELLED = "cancelled";
+
 	/**
 	 * List All
 	 */
 	@GET
 	@Path("orders")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<Order> listAllOrders(@QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
-		return buildOrdersResponse(null, page, pageSize, context);
-	}
+	public Page<Order> listAllOrders(@QueryParam("status") String status,
+			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize,
+			@Context SecurityContext context) {
+		String userId = context.getUserPrincipal().getName();
+		switch (status) {
+		case ORDER_FILTER_STATUS_PENDING:
+			// PUBLISHED + CREATED + PAID + CONFIRMED + CONTRACT_SIGNED + TICKET_RELEASED + REFUND_REQUESTED + REFUNDING
+			// etc.
+			return commonOrderService.listUserPendingOrders(userId, page, pageSize);
 
-	/**
-	 * created + paid
-	 */
-	@GET
-	@Path("orders/pending")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Page<Order> listAllPendingOrders(@QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
-		return buildOrdersResponse(Order.Status.CREATED, page, pageSize, context);
-	}
+		case ORDER_FILTER_STATUS_FINISHED:
+			// REFUNDED FINISHED CLOSED
+			return commonOrderService.listUserFinishedOrders(userId, page, pageSize);
 
-	// @GET
-	// @Path("orders/paid")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public Page<Order> listAllPaidOrders(@QueryParam("page") @DefaultValue("1") int page,
-	// @QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
-	// return buildOrdersResponse(Order.Status.PAID, page, pageSize, context);
-	// }
+		case ORDER_FILTER_STATUS_CANCELLED:
+			// CANCELLED
+			return commonOrderService.listUserOrders(userId, Order.Status.CANCELLED, page, pageSize);
 
-	/**
-	 * Orders Finished (success + closed + refunded)
-	 */
-	@GET
-	@Path("orders/finished")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Page<Order> listAllFinishedOrders(@QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
-		return buildOrdersResponse(Order.Status.FINISHED, page, pageSize, context);
-	}
-
-	/**
-	 * Orders Cancelled
-	 */
-	@GET
-	@Path("orders/cancelled")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Page<Order> listAllCancelledOrders(@QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
-		return buildOrdersResponse(Order.Status.CANCELLED, page, pageSize, context);
-	}
-
-	private Page<Order> buildOrdersResponse(Order.Status status, int page, int pageSize, SecurityContext context) {
-		String accountId = context.getUserPrincipal().getName();
-		return commonOrderService.listUserOrders(accountId, status, page, pageSize);
+		default: // noops
+		}
+		if (Strings.isBlank(status)) {
+			return commonOrderService.listUserOrders(userId, null, page, pageSize);
+		}
+		return Page.emptyPage(page, pageSize);
 	}
 
 	/**

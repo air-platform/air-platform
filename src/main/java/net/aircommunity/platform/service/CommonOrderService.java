@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -99,5 +101,29 @@ public interface CommonOrderService {
 	 */
 	@Nonnull
 	Page<Order> listUserOrders(@Nonnull String userId, @Nullable Order.Status status, int page, int pageSize);
+
+	@Nonnull
+	Page<Order> listUserOrdersInStatuses(@Nonnull String userId, @Nonnull Set<Order.Status> statuses, int page,
+			int pageSize);
+
+	/**
+	 * Orders Pending NOT IN (REFUNDED, FINISHED, CLOSED, CANCELLED)
+	 */
+	@Nonnull
+	default Page<Order> listUserPendingOrders(@Nonnull String userId, int page, int pageSize) {
+		return listUserOrdersInStatuses(userId, Order.PENDING_STATUSES, page, pageSize);
+	}
+
+	/**
+	 * Orders Finished (REFUNDED, FINISHED, CLOSED, CANCELLED)
+	 */
+	@Nonnull
+	default Page<Order> listUserFinishedOrders(@Nonnull String userId, int page, int pageSize) {
+		return listUserOrdersInStatuses(userId, Order.COMPLETED_STATUSES, page, pageSize);
+	}
+
+	@Nonnull
+	Page<Order> listUserOrdersNotInStatuses(@Nonnull String userId, @Nonnull Set<Order.Status> statuses, int page,
+			int pageSize);
 
 }

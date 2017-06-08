@@ -28,6 +28,8 @@ public class PaymentInfo implements Serializable {
 	// trade No. of payment
 	@Column(name = "payment_trade_no")
 	private String tradeNo;
+	
+	//TODO payment status : success | failure ?
 
 	public double getAmount() {
 		return amount;

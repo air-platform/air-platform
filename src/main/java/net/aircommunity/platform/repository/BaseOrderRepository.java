@@ -1,5 +1,7 @@
 package net.aircommunity.platform.repository;
 
+import java.util.Collection;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,6 +34,28 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	 * @return a page of orders or empty if none
 	 */
 	Page<T> findByOwnerIdAndStatusNotOrderByCreationDateDesc(String userId, Status ignoredStatus, Pageable pageable);
+
+	/**
+	 * Find all user orders in status
+	 * 
+	 * @param userId the userId
+	 * @param statuses the expected statuses
+	 * @param pageable page request
+	 * @return a page of orders or empty if none
+	 */
+	Page<T> findByOwnerIdAndStatusInOrderByCreationDateDesc(String userId, Collection<Status> statuses,
+			Pageable pageable);
+
+	/**
+	 * Find all user orders not in status
+	 * 
+	 * @param userId the userId
+	 * @param statuses the expected statuses
+	 * @param pageable page request
+	 * @return a page of orders or empty if none
+	 */
+	Page<T> findByOwnerIdAndStatusNotInOrderByCreationDateDesc(String userId, Collection<Status> statuses,
+			Pageable pageable);
 
 	/**
 	 * Find all user orders
