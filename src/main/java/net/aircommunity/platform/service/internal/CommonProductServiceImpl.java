@@ -44,6 +44,12 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#productId")
 	@Override
+	public Product increaseProductSales(String productId) {
+		return doUpdateProductSales(productId, 1);
+	}
+
+	@CachePut(cacheNames = CACHE_NAME, key = "#productId")
+	@Override
 	public Product publishProduct(String productId, boolean published) {
 		return doPublishProduct(productId, published);
 	}

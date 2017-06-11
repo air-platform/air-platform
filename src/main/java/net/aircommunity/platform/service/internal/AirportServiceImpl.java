@@ -60,6 +60,7 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 			List<Airport> airports = objectMapper.readValue(json, new TypeReference<List<Airport>>() {
 			});
 			int imported = 0;
+			int updated = 0;
 			for (Airport airport : airports) {
 				try {
 					Airport found = airportRepository.findByIcao4IgnoreCase(airport.getIcao4());
@@ -75,13 +76,15 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 					}
 					else {
 						updateAirport(found.getId(), airport);
+						updated++;
 					}
 				}
 				catch (Exception e) {
 					LOG.warn("Failed to import airport: " + airport, e);
 				}
 			}
-			LOG.info("Imported {}/{} airports information. ", imported, airports.size());
+			LOG.info("Imported {}(new)/{}(updated)/{}(total) airports information. ", imported, updated,
+					airports.size());
 		}
 		catch (Exception e) {
 			LOG.warn("Failed to initialize airport information, casue: " + e.getMessage(), e);

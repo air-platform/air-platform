@@ -73,6 +73,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		newProduct.setClientManagers(product.getClientManagers());
 		newProduct.setDescription(product.getDescription());
 		newProduct.setRank(0);
+		newProduct.setTotalSales(0);
 		newProduct.setPublished(false);
 		newProduct.setReviewStatus(ReviewStatus.PENDING);
 		// priced
@@ -116,8 +117,21 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		product.setClientManagers(newProduct.getClientManagers());
 		product.setDescription(newProduct.getDescription());
 		copyProperties(newProduct, product);
-		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s with %s failed",
+		T updated = safeExecute(() -> getProductRepository().save(product), "Update %s: %s with %s failed",
 				type.getSimpleName(), productId, newProduct);
+		LOG.debug("Product updated: {}", updated);
+		return updated;
+	}
+
+	/**
+	 * Update total sales
+	 */
+	protected final T doUpdateProductSales(String productId, int deltaSales) {
+		T product = doFindProduct(productId);
+		int totalSales = product.getTotalSales() + deltaSales;
+		product.setTotalSales(totalSales);
+		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s with new total sales %d failed",
+				type.getSimpleName(), productId, totalSales);
 	}
 
 	/**

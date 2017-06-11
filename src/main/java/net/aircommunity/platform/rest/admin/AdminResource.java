@@ -16,6 +16,7 @@ import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.AirJetResource;
 import net.aircommunity.platform.rest.AirportResource;
+import net.aircommunity.platform.rest.BannerResource;
 import net.aircommunity.platform.rest.CommentResource;
 import net.aircommunity.platform.rest.PromotionResource;
 import net.aircommunity.platform.rest.admin.order.AdminOrderResource;
@@ -103,6 +104,14 @@ public class AdminResource {
 	@Path("") // path already in the resource
 	public PromotionResource promotions() {
 		return promotionResource;
+	}
+
+	@Resource
+	private BannerResource bannerResource;
+
+	@Path("") // path already in the resource
+	public BannerResource banners() {
+		return bannerResource;
 	}
 
 	// ***********************

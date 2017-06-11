@@ -31,6 +31,7 @@ import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.FleetCandidate;
 import net.aircommunity.platform.model.JetTravelOrder;
 import net.aircommunity.platform.model.Order;
+import net.aircommunity.platform.model.OrderEvent;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.User;
@@ -39,6 +40,7 @@ import net.aircommunity.platform.service.FleetService;
 import net.aircommunity.platform.service.MailService;
 import net.aircommunity.platform.service.OrderNotificationService;
 import net.aircommunity.platform.service.PlatformService;
+import net.aircommunity.platform.service.SmsService;
 import net.aircommunity.platform.service.TemplateService;
 
 /**
@@ -61,6 +63,9 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 
 	@Resource
 	private MailService mailService;
+
+	@Resource
+	private SmsService smsService;
 
 	@Resource
 	private FleetService fleetService;
@@ -98,38 +103,21 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 	@Subscribe
 	private void onOrderEvent(OrderEvent event) {
 		LOG.debug("Received order event: {}", event);
-		if (!configuration.isOrderEmailNotificationEnabled()) {
-			LOG.warn("Order email notification is not enabled, cannot notify client manager for order {}.", event);
-			return;
-		}
 		switch (event.getType()) {
 		case CREATION:
 		case CANCELLATION:
-			Order order = event.getOrder();
-			Product product = order.getProduct();
-			ImmutableSet.Builder<Contact> contactsBuilder = ImmutableSet.builder();
-			if (CharterOrder.class.isAssignableFrom(order.getClass())) {
-				CharterOrder charterOrder = CharterOrder.class.cast(order);
-				Set<FleetCandidate> candidates = charterOrder.getFleetCandidates();
-				if (candidates.isEmpty()) {
-					Set<Contact> contacts = fleetService.listFleets().stream()
-							.flatMap(fleet -> fleet.getClientManagerContacts().stream()).collect(Collectors.toSet());
-					contactsBuilder.addAll(contacts);
-				}
-				else {
-					Set<Contact> contacts = candidates.stream()
-							.flatMap(candidate -> candidate.getFleet().getClientManagerContacts().stream())
-							.collect(Collectors.toSet());
-					contactsBuilder.addAll(contacts);
-				}
-			}
-			else {
-				contactsBuilder.addAll(product.getClientManagerContacts());
-			}
-			Set<Contact> platfromContacts = platformService.getPlatformClientManagers();
-			LOG.debug("Platfrom clientManagers: {}", platfromContacts);
-			contactsBuilder.addAll(platfromContacts);
-			notifyClientManager(contactsBuilder.build(), order);
+			Set<Contact> clientManagers = getClientManagerContacts(event);
+			doNotifyClientManager(clientManagers, event.getOrder());
+			break;
+
+		// fleet is offer by a tenant
+		case FLEET_OFFERED:
+			Contact contactPerson = event.getOrder().getContact();
+			notifyCustomer(ImmutableSet.of(contactPerson), event);
+			break;
+
+		case PAYMENT:
+			// TODO send SMS to notify customer and tenant customer manager ?
 			break;
 
 		case UPDATE:
@@ -142,15 +130,95 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 		}
 	}
 
+	private Set<Contact> getClientManagerContacts(OrderEvent event) {
+		Order order = event.getOrder();
+		Product product = order.getProduct();
+		ImmutableSet.Builder<Contact> contactsBuilder = ImmutableSet.builder();
+		if (CharterOrder.class.isAssignableFrom(order.getClass())) {
+			CharterOrder charterOrder = CharterOrder.class.cast(order);
+			Set<FleetCandidate> candidates = charterOrder.getFleetCandidates();
+			if (candidates.isEmpty()) {
+				Set<Contact> contacts = fleetService.listFleets().stream()
+						.flatMap(fleet -> fleet.getClientManagerContacts().stream()).collect(Collectors.toSet());
+				contactsBuilder.addAll(contacts);
+			}
+			else {
+				Set<Contact> contacts = candidates.stream()
+						.flatMap(candidate -> candidate.getFleet().getClientManagerContacts().stream())
+						.collect(Collectors.toSet());
+				contactsBuilder.addAll(contacts);
+			}
+		}
+		else {
+			contactsBuilder.addAll(product.getClientManagerContacts());
+		}
+		Set<Contact> platfromContacts = platformService.getPlatformClientManagers();
+		LOG.debug("Platfrom clientManagers: {}", platfromContacts);
+		contactsBuilder.addAll(platfromContacts);
+		return contactsBuilder.build();
+	}
+
 	@Override
-	public void notifyClientManager(Set<Contact> clientManagers, Order order) {
+	public void notifyCustomer(Set<Contact> customerContacts, OrderEvent event) {
+		LOG.debug("Notifying... customers {} for order evnet {}", customerContacts, event);
+		Map<String, Object> context = new HashMap<>();
+		customerContacts.stream().forEach(contact -> {
+			String customer = contact.getPerson();
+			if (Strings.isBlank(customer)) {
+				customer = contact.getMobile();
+			}
+			// TODO make constants
+			context.put("customer", customer);
+			context.put("order", event.getOrder());
+			context.put("action", getActionForOrderEvent(event));
+			String message = templateService.renderFile(String.format(Constants.TEMPLATE_SMS_ORDER_EVENT_NOTIFICATION,
+					event.getType().name().replace("_", "-").toLowerCase(Locale.ENGLISH)), context);
+			LOG.debug("SMS message: {}", message);
+			smsService.sendSms(contact.getMobile(), message);
+		});
+
+	}
+
+	private String getActionForOrderEvent(OrderEvent event) {
+		String action = "";
+		switch (event.getType()) {
+		case FLEET_OFFERED:
+			// TODO convert Currency
+			// http://www.infoq.com/cn/articles/JSR-354-Java-Money-Currency-API
+			// https://github.com/JavaMoney/jsr354-api
+			action = M.msg(M.FLEET_OFFERED, event.getOrder().getTotalPrice());
+			break;
+		default:
+		}
+		return action;
+	}
+
+	@Override
+	public void notifyClientManager(Set<Contact> clientManagers, OrderEvent event) {
+		switch (event.getType()) {
+		case CREATION:
+		case CANCELLATION:
+			doNotifyClientManager(clientManagers, event.getOrder());
+			break;
+
+		case UPDATE:
+			break;
+
+		case DELETION:
+			break;
+
+		default:// noop
+		}
+	}
+
+	private void doNotifyClientManager(Set<Contact> clientManagers, Order order) {
 		if (!configuration.isOrderEmailNotificationEnabled()) {
 			LOG.warn(
 					"Order email notification is not enabled, cannot notify client managers {}, order notification ignored.",
 					clientManagers);
 			return;
 		}
-		LOG.debug("Notifying... clientManagers: {}", clientManagers);
+		LOG.debug("Notifying... clientManagers {} for order {}", clientManagers, order);
 		// TODO make constants
 		for (Contact clientManager : clientManagers) {
 			Map<String, Object> context = new HashMap<>();

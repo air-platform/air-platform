@@ -35,7 +35,7 @@ public class Passenger extends Persistable {
 
 	// e.g. ID Card number
 	@NotEmpty
-	@Column(name = "identity")
+	@Column(name = "identity", unique = true)
 	private String identity;
 
 	@ManyToOne

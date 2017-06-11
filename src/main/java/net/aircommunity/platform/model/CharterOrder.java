@@ -22,7 +22,7 @@ import io.micro.annotation.constraint.NotEmpty;
 @Entity
 @Table(name = "air_platfrom_charter_order")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CharterOrder extends Order {
+public class CharterOrder extends StandardOrder {
 	private static final long serialVersionUID = 1L;
 
 	// multiple flight legs

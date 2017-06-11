@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Locale;
@@ -76,10 +77,10 @@ public abstract class Order extends Persistable {
 	@Column(name = "quantity", nullable = false)
 	protected int quantity = 1;
 
-	// Order total price
+	// Order total price --> total amount
 	@XmlElement
 	@Column(name = "total_price", nullable = false)
-	protected double totalPrice;
+	protected BigDecimal totalPrice = BigDecimal.ZERO;
 
 	// TODO add tradeStatus? PENDING/IN_PROGRESS/FINISHED/CLOSED?
 	@XmlElement
@@ -142,10 +143,6 @@ public abstract class Order extends Persistable {
 	@JsonView(JsonViews.Admin.class)
 	protected Date deletedDate;
 
-	@XmlElement
-	@Embedded
-	protected PaymentInfo paymentInfo;
-
 	// customer contact information for this order
 	@Embedded
 	protected Contact contact;
@@ -200,11 +197,11 @@ public abstract class Order extends Persistable {
 		this.quantity = quantity;
 	}
 
-	public double getTotalPrice() {
+	public BigDecimal getTotalPrice() {
 		return totalPrice;
 	}
 
-	public void setTotalPrice(double totalPrice) {
+	public void setTotalPrice(BigDecimal totalPrice) {
 		this.totalPrice = totalPrice;
 	}
 
@@ -280,14 +277,6 @@ public abstract class Order extends Persistable {
 		this.deletedDate = deletedDate;
 	}
 
-	public PaymentInfo getPaymentInfo() {
-		return paymentInfo;
-	}
-
-	public void setPaymentInfo(PaymentInfo paymentInfo) {
-		this.paymentInfo = paymentInfo;
-	}
-
 	public String getClosedReason() {
 		return closedReason;
 	}
@@ -340,6 +329,11 @@ public abstract class Order extends Persistable {
 	}
 
 	@XmlTransient
+	public boolean isPayable() {
+		return getProduct() != null && status.ordinal() < Status.PAID.ordinal();
+	}
+
+	@XmlTransient
 	public boolean isCancellable() {
 		return CANCELLABLE_STATUSES.contains(status);
 	}
@@ -356,6 +350,18 @@ public abstract class Order extends Persistable {
 	@XmlTransient
 	public boolean isCompleted() {
 		return TERMINATION_STATUSES.contains(status);
+	}
+
+	/**
+	 * Returns the sync order status to client without waiting for the final status, it probably paid because of async
+	 * notification from payment system that will update the order status to PAID if succeeded, but it still a chance it
+	 * may fail. So it is a guess of the current order status for client.
+	 * 
+	 * @return the true if it's probably paid, otherwise, false for sure if it's NOT paid
+	 */
+	@XmlTransient
+	public boolean isProbablyPaid() {
+		return status.ordinal() <= Status.PAID.ordinal();
 	}
 
 	/**
@@ -384,7 +390,7 @@ public abstract class Order extends Persistable {
 	}
 
 	/**
-	 * Order status
+	 * Order status, (NOTE: the status order matters before status PAID)
 	 */
 	public enum Status {
 
@@ -415,7 +421,7 @@ public abstract class Order extends Persistable {
 		/**
 		 * Payment
 		 */
-		PAID,
+		PARTIAL_PAID, PAID,
 
 		/**
 		 * Ticketing

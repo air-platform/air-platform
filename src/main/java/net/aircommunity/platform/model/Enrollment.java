@@ -14,7 +14,7 @@ import io.micro.annotation.constraint.NotEmpty;
 /**
  * {@code Course} Enrollment of a {@code School}
  * 
- * Created by guankai on 12/04/2017.
+ * @author guankai
  */
 @Entity
 @XmlAccessorType(XmlAccessType.FIELD)

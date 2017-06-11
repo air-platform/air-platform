@@ -1,9 +1,11 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -13,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Payment;
 import net.aircommunity.platform.repository.BaseOrderRepository;
+import net.aircommunity.platform.repository.PaymentRepository;
 import net.aircommunity.platform.service.CommonOrderService;
 
 /**
@@ -29,6 +33,25 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	@Resource
 	private BaseOrderRepository<Order> baseOrderRepository;
 
+	@Resource
+	private PaymentRepository paymentRepository;
+
+	@Override
+	public Optional<Payment> findPaymentByTradeNo(Payment.Method paymentMethod, String tradeNo) {
+		return paymentRepository.findByMethodAndTradeNo(paymentMethod, tradeNo);
+	}
+
+	@Cacheable(cacheNames = CACHE_NAME)
+	@Override
+	public Order findByOrderNo(String orderNo) {
+		return doFindOrderByOrderNo(orderNo);
+	}
+
+	@Override
+	public Optional<Order> lookupByOrderNo(String orderNo) {
+		return doLookupOrderByOrderNo(orderNo);
+	}
+
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public Order findOrder(String orderId) {
@@ -39,6 +62,21 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	@Override
 	public Order updateOrderStatus(String orderId, Status status) {
 		return doUpdateOrderStatus(orderId, status);
+	}
+
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	@Override
+	public Order payOrder(String orderId, Payment payment) {
+		return doPayOrder(orderId, payment);
+	}
+
+	@Override
+	public Order updateOrderStatusByOrderNo(String orderNo, Status status) {
+		// TODO a better way to update cache?
+		Cache cache = cacheManager.getCache(CACHE_NAME);
+		Order order = doUpdateOrderStatusByOrderNo(orderNo, status);
+		cache.put(order.getId(), order);
+		return order;
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
@@ -92,5 +130,4 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	protected BaseOrderRepository<Order> getOrderRepository() {
 		return baseOrderRepository;
 	}
-
 }

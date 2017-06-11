@@ -1,5 +1,6 @@
 package net.aircommunity.platform.service.internal;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -129,12 +130,16 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public CharterOrder offerFleetCandidate(String orderId, String fleetCandidateId) {
+	public CharterOrder offerFleetCandidate(String orderId, String fleetCandidateId, double totalPrice) {
 		CharterOrder charterOrder = findCharterOrder(orderId);
 		charterOrder.offerFleetCandidate(fleetCandidateId);
-		return safeExecute(() -> {
+		charterOrder.setTotalPrice(BigDecimal.valueOf(totalPrice));
+		CharterOrder charterOrderSaved = safeExecute(() -> {
 			return charterOrderRepository.save(charterOrder);
 		}, "Offer FleetCandidate %s for order %s failed", fleetCandidateId, orderId);
+
+		// TODO SMS notification to customer
+		return charterOrderSaved;
 	}
 
 	@Override

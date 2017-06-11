@@ -48,6 +48,13 @@ public class ProductFaq extends Persistable {
 	@XmlJavaTypeAdapter(ProductAdapter.class)
 	private Product product;
 
+	public ProductFaq() {
+	}
+
+	public ProductFaq(String id) {
+		this.id = id;
+	}
+
 	public String getTitle() {
 		return title;
 	}

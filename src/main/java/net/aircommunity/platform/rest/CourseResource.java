@@ -27,7 +27,9 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.CourseService;
 
 /**
- * Created by guankai on 13/04/2017.
+ * Course RESTful API for anybody.
+ * 
+ * @author guankai
  */
 @Api
 @RESTful

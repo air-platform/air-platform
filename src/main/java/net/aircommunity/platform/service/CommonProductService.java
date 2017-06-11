@@ -29,6 +29,15 @@ public interface CommonProductService {
 	Product findProduct(@Nonnull String productId);
 
 	/**
+	 * Increase product sale by 1
+	 * 
+	 * @param productId the productId
+	 * @return product found
+	 */
+	@Nonnull
+	Product increaseProductSales(@Nonnull String productId);
+
+	/**
 	 * Put product on sale of pull product off sale
 	 * 
 	 * @param productId the productId

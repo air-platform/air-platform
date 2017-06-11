@@ -48,14 +48,20 @@ public abstract class Product extends Reviewable {
 
 	// product score
 	@Column(name = "score", nullable = false)
-	protected double score;
+	protected double score = 0.0;
 
 	// TODO useful?
 	// @Column(name = "discount", nullable = true)
 	// protected double discount;
 
+	// total sales count
+	@Column(name = "total_sales")
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	protected int totalSales = 0;
+
 	// product rank (low rank will considered as hot, sort by rank ASC)
 	@Column(name = "rank")
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected int rank = 0;
 
 	// whether it can be published or not
@@ -117,6 +123,14 @@ public abstract class Product extends Reviewable {
 		this.score = score;
 	}
 
+	public int getTotalSales() {
+		return totalSales;
+	}
+
+	public void setTotalSales(int totalSales) {
+		this.totalSales = totalSales;
+	}
+
 	public boolean isPublished() {
 		return published;
 	}
@@ -176,7 +190,7 @@ public abstract class Product extends Reviewable {
 	 * Product Category
 	 */
 	public enum Category {
-		AIR_JET, AIR_TAXI, AIR_TRANS, AIR_TRAINING;
+		NONE, AIR_JET, AIR_TAXI, AIR_TRANS, AIR_TRAINING;
 
 		public static Category fromString(String value) {
 			for (Category e : values()) {

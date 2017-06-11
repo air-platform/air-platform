@@ -20,6 +20,7 @@ public final class Constants {
 	public static final String TEMPLATE_MAIL_VERIFICATION_FAILURE = TEMPLATE_DIR + "/mail-verification-failure.template";
 	public static final String TEMPLATE_MAIL_RESET_PASSOWRD = TEMPLATE_DIR + "/mail-reset-password.template";
 	public static final String TEMPLATE_MAIL_ORDER_NOTIFICATION = TEMPLATE_DIR + "/mail-%s-order.template";
+	public static final String TEMPLATE_SMS_ORDER_EVENT_NOTIFICATION = TEMPLATE_DIR + "/sms-%s-event.template";
 	// @formatter:on
 
 	// randomString.extension, e.g. jki45hkfh945k3j5.jpg

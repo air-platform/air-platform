@@ -22,10 +22,13 @@
 
 		<jsr353.version>1.0.4</jsr353.version>
 
+		<!-- payment -->
+		<wechat.pay.version>2.6.0</wechat.pay.version>
+		<alipay.version>20170511115337</alipay.version>
+
 		<!-- 3rd party API -->
 		<micro.version>0.1.0</micro.version>
 		<alidayu.version>1.0</alidayu.version>
-		<alipay.version>20170511115337</alipay.version>
 		<qiniu.sdk.version>7.2.6</qiniu.sdk.version>
 		<jinjava.version>2.1.14</jinjava.version>
 	</properties>
@@ -60,7 +63,8 @@
 			<groupId>org.springframework.retry</groupId>
 			<artifactId>spring-retry</artifactId>
 		</dependency>
-		
+
+
 		<dependency>
 			<groupId>com.hubspot.jinjava</groupId>
 			<artifactId>jinjava</artifactId>
@@ -80,6 +84,8 @@
 			<scope>system</scope>
 			<systemPath>${lib-path}/com/alidayu/${alidayu.version}/taobao-sdk-java-auto_1455552377940-20160607.jar</systemPath>
 		</dependency>
+
+		<!-- payment -->
 		<dependency>
 			<groupId>com.alipay</groupId>
 			<artifactId>alipay</artifactId>
@@ -87,6 +93,13 @@
 			<scope>system</scope>
 			<systemPath>${lib-path}/com/alipay/${alipay.version}/alipay-sdk-java20170511115337.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>weixin-java-pay</artifactId>
+			<version>${wechat.pay.version}</version>
+		</dependency>
+
+		<!-- fwk -->
 		<dependency>
 			<groupId>io.micro</groupId>
 			<artifactId>micro</artifactId>

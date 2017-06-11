@@ -61,7 +61,8 @@ public class TenantFleetOrderResource extends TenantBaseOrderResource<CharterOrd
 	@POST
 	@Path("{orderId}/offer")
 	public void offerFleet(@PathParam("orderId") String orderId,
-			@NotNull @QueryParam("candidate") String fleetCandidateId) {
-		charterOrderService.selectFleetCandidate(orderId, fleetCandidateId);
+			@NotNull @QueryParam("candidate") String fleetCandidateId,
+			@NotNull @QueryParam("totalPrice") double totalPrice) {
+		charterOrderService.offerFleetCandidate(orderId, fleetCandidateId, totalPrice);
 	}
 }

@@ -1,11 +1,9 @@
-package net.aircommunity.platform.service.internal;
+package net.aircommunity.platform.model;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 import javax.annotation.concurrent.Immutable;
-
-import net.aircommunity.platform.model.Order;
 
 /**
  * Order CURD Event.
@@ -32,15 +30,15 @@ public class OrderEvent implements Serializable {
 		return order;
 	}
 
-	public enum EventType {
-		CREATION, UPDATE, CANCELLATION, DELETION;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("OrderEvent [type=").append(type).append(", order=").append(order).append("]");
 		return builder.toString();
+	}
+
+	public enum EventType {
+		CREATION, FLEET_OFFERED, UPDATE, PAYMENT, CANCELLATION, DELETION;
 	}
 
 }

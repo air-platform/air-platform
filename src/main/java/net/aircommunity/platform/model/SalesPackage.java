@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -95,6 +96,14 @@ public class SalesPackage extends Persistable {
 		normalizeAndApplyPrices(prices);
 	}
 
+	public SalesPackage() {
+
+	}
+
+	public SalesPackage(String id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -115,11 +124,11 @@ public class SalesPackage extends Persistable {
 		return prices;
 	}
 
-	public double getPrice(int offset) {
+	public BigDecimal getPrice(int offset) {
 		if (offset < 0 || offset >= priceList.size()) {
-			return 0;
+			return BigDecimal.ZERO;
 		}
-		return priceList.get(offset);
+		return BigDecimal.valueOf(priceList.get(offset));
 	}
 
 	public void setPrices(String prices) {

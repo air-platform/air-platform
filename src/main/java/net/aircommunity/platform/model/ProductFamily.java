@@ -61,6 +61,14 @@ public class ProductFamily extends Reviewable {
 	@XmlJavaTypeAdapter(TenantAdapter.class)
 	private Tenant vendor;
 
+	public ProductFamily() {
+
+	}
+
+	public ProductFamily(String id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}

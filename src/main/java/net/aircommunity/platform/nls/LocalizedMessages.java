@@ -14,6 +14,7 @@ public class LocalizedMessages extends NLSResource {
 	private static final String RESOURCE_BUNDLE_BASENAME = LocalizedMessages.class.getPackage().getName() + ".message";
 
 	public static String USERNAME_ANONYMOUS;
+	public static String FLEET_OFFERED;
 	public static String FLEET_NOT_SELECTED;
 
 	//
@@ -28,7 +29,9 @@ public class LocalizedMessages extends NLSResource {
 	public static String ORDER_OPERATION_SUBMIT;
 	public static String ORDER_OPERATION_CANCEL;
 	public static String ORDER_NOT_FOUND;
+	public static String ORDER_INSTALMENT_NOT_FOUND;
 	public static String ORDER_ILLEGAL_STATUS;
+	public static String ORDER_NOT_PAYABLE;
 
 	public static String COMMENT_NOT_ALLOWED;
 	public static String COMMENT_NOT_FOUND;
@@ -46,6 +49,8 @@ public class LocalizedMessages extends NLSResource {
 	public static String AIRPORT_INVALID_CODE;
 	public static String AIRPORT_NOT_FOUND;
 
+	public static String BANNER_NOT_FOUND;
+	
 	public static String AIRJET_ALREADY_EXISTS;
 	public static String AIRJET_TYPE_NOT_FOUND;
 	public static String AIRJET_NOT_FOUND;
@@ -77,6 +82,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String ACCOUNT_INVALID_VERIFICATION_CODE;
 	public static String ACCOUNT_EMAIL_ALREADY_VERIFIED;
 	public static String PASSENGER_NOT_FOUND;
+	public static String PASSENGER_ALREADY_EXISTS;
 	public static String PASSENGER_INFO_REQUIRED;
 
 	public static String SMS_TOO_MANY_VERIFICATION_REQUEST;

@@ -42,7 +42,8 @@ public final class Codes {
 	public static final Code ACCOUNT_EMAIL_ALREADY_VERIFIED = Code.illegalAccess(11_001_0015);
 	public static final Code ACCOUNT_ADDRESS_NOT_ALLOWED = Code.illegalAccess(11_001_0016);
 	public static final Code ACCOUNT_PASSENGER_NOT_ALLOWED = Code.illegalAccess(11_001_0017);
-	public static final Code ACCOUNT_ADD_PASSENGER_FAILURE = Code.invalidArgument(11_001_0018);
+	public static final Code ACCOUNT_PASSENGER_ALREADY_EXISTS = Code.alreadyExists(11_001_0018);
+	public static final Code ACCOUNT_ADD_PASSENGER_FAILURE = Code.invalidArgument(11_001_0019);
 
 	// apikey
 	public static final Code APIKEY_NOT_FOUND = Code.notFound(11_002_0001);
@@ -56,10 +57,14 @@ public final class Codes {
 	public static final Code PRODUCT_FAMILY_NOT_APPROVED = Code.notFound(11_003_0005);
 	public static final Code PRODUCT_INVALID_DEPARTURE_DATE = Code.notFound(11_003_0006);
 
+	public static final Code ORDER_NOT_PAYABLE = Code.illegalAccess(11_003_0002); // TODO add illeableState?
 	public static final Code ORDER_NOT_FOUND = Code.notFound(11_003_0002);
 	public static final Code ORDER_ILLEGAL_STATUS = Code.illegalAccess(11_003_0003);
+	public static final Code ORDER_INSTALMENT_NOT_FOUND = Code.illegalAccess(11_003_0003); // TODO re-org-code
+
 	public static final Code AIRJET_ALREADY_EXISTS = Code.alreadyExists(11_003_0004);
 	public static final Code AIRJET_NOT_FOUND = Code.notFound(11_003_0005);
+	public static final Code BANNER_NOT_FOUND = Code.notFound(11_003_0005);  //XXX
 	public static final Code AIRCRAFT_ALREADY_EXISTS = Code.alreadyExists(11_003_0006);
 	public static final Code AIRCRAFT_NOT_FOUND = Code.notFound(11_003_0007);
 	public static final Code SALESPACKAGE_NOT_FOUND = Code.notFound(11_003_0008);

@@ -81,10 +81,12 @@ public interface CharterOrderService {
 	 * 
 	 * @param charterOrderId the charterOrderId
 	 * @param fleetCandidateId the fleetCandidateId to be selected
+	 * @param totalPrice the tenant offered totalPrice for the charter order
 	 * @return updated CharterOrder
 	 */
 	@Nonnull
-	CharterOrder offerFleetCandidate(@Nonnull String charterOrderId, @Nonnull String fleetCandidateId);
+	CharterOrder offerFleetCandidate(@Nonnull String charterOrderId, @Nonnull String fleetCandidateId,
+			double totalPrice);
 
 	/**
 	 * List all CharterOrders by pagination filtered by userId and order status.

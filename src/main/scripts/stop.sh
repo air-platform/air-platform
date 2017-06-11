@@ -43,5 +43,5 @@ then
    exit 1
 fi
 
-kill `cat ${PIDFILE}`
+kill -s TERM `cat ${PIDFILE}`
 echo "AIR Platform stopped."

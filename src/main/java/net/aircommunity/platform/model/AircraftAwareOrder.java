@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,7 +43,7 @@ public abstract class AircraftAwareOrder extends VendorAwareOrder {
 
 	// calculated on order creation
 	@Column(name = "salespackage_price", nullable = false)
-	protected double salesPackagePrice;
+	protected BigDecimal salesPackagePrice = BigDecimal.ZERO;
 
 	@NotNull
 	@ManyToOne
@@ -66,11 +67,11 @@ public abstract class AircraftAwareOrder extends VendorAwareOrder {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	protected Set<PassengerItem> passengers = new HashSet<>();
 
-	public double getSalesPackagePrice() {
+	public BigDecimal getSalesPackagePrice() {
 		return salesPackagePrice;
 	}
 
-	public void setSalesPackagePrice(double salesPackagePrice) {
+	public void setSalesPackagePrice(BigDecimal salesPackagePrice) {
 		this.salesPackagePrice = salesPackagePrice;
 	}
 

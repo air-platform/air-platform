@@ -5,7 +5,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.model.Contact;
-import net.aircommunity.platform.model.Order;
+import net.aircommunity.platform.model.OrderEvent;
 
 /**
  * Order notification service.
@@ -15,12 +15,19 @@ import net.aircommunity.platform.model.Order;
 public interface OrderNotificationService {
 
 	/**
-	 * Notify clientManagers when order is placed on a product. The client managers MUST IN FORMAT OF: person1:email1,
-	 * person2:email2, ..., personN:emailN.
+	 * Notify customer about the order event.
 	 * 
-	 * @param clientManagers the client managers
-	 * @param order the order
+	 * @param customerContacts the customer contacts
+	 * @param event the order event
 	 */
-	void notifyClientManager(@Nonnull Set<Contact> clientManagers, @Nonnull Order order);
+	void notifyCustomer(@Nonnull Set<Contact> customerContacts, @Nonnull OrderEvent event);
+
+	/**
+	 * Notify clientManagers whenever an order event happens on a product.
+	 * 
+	 * @param clientManagers the client managers of tenant or platform
+	 * @param event the order event
+	 */
+	void notifyClientManager(@Nonnull Set<Contact> clientManagers, @Nonnull OrderEvent event);
 
 }

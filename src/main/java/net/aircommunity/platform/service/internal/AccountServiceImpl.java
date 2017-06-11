@@ -529,6 +529,11 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			throw new AirException(Codes.ACCOUNT_PASSENGER_NOT_ALLOWED,
 					M.msg(M.ACCOUNT_PASSENGER_NOT_ALLOWED, account.getNickName()));
 		}
+		Passenger passengerFound = passengerRepository.findByOwnerIdAndIdentity(accountId, passenger.getIdentity());
+		if (passengerFound != null) {
+			throw new AirException(Codes.ACCOUNT_PASSENGER_ALREADY_EXISTS,
+					M.msg(M.PASSENGER_ALREADY_EXISTS, passenger.getIdentity()));
+		}
 		// verify ID Card
 		boolean valid = identityCardService.verifyIdentityCard(passenger.getIdentity(), passenger.getName());
 		if (!valid) {
@@ -536,7 +541,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 		User user = User.class.cast(account);
 		user.addPassenger(passenger);
-
 		return safeExecute(() -> {
 			User userSaved = accountRepository.save(user);
 			Optional<Passenger> passengerAdded = userSaved.getPassengers().stream()

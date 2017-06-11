@@ -6,6 +6,7 @@ import javax.persistence.Column;
  * Payment Method (Alipay, Wechat, NewPay etc.) of platform. TODO
  * 
  * @author Bin.Zhang
+ * @deprecated
  */
 public class PaymentMethod extends Persistable {
 	private static final long serialVersionUID = 1L;

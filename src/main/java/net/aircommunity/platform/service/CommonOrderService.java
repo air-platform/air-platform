@@ -1,5 +1,6 @@
 package net.aircommunity.platform.service;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -7,6 +8,7 @@ import javax.annotation.Nullable;
 
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Payment;
 
 /**
  * Common order service list/query all {@code Order}s for a {@code User}.
@@ -14,6 +16,34 @@ import net.aircommunity.platform.model.Page;
  * @author Bin.Zhang
  */
 public interface CommonOrderService {
+
+	/**
+	 * Find the order payment info by tradeNo.
+	 * 
+	 * @param paymentMethod the payment method
+	 * @param tradeNo the tradeNo of a payment system
+	 * @return payment
+	 */
+	@Nonnull
+	Optional<Payment> findPaymentByTradeNo(@Nonnull Payment.Method paymentMethod, @Nonnull String tradeNo);
+
+	/**
+	 * Find order (DELETED status considered as NOT FOUND)
+	 * 
+	 * @param orderNo the orderNo
+	 * @return order found
+	 */
+	@Nonnull
+	Order findByOrderNo(String orderNo);
+
+	/**
+	 * Find order (DELETED status considered as NOT FOUND) will not throw exception if not found.
+	 * 
+	 * @param orderNo the orderNo
+	 * @return order present or absent
+	 */
+	@Nonnull
+	Optional<Order> lookupByOrderNo(String orderNo);
 
 	/**
 	 * Find order (DELETED status considered as NOT FOUND)
@@ -42,6 +72,19 @@ public interface CommonOrderService {
 	 */
 	@Nonnull
 	Order updateOrderStatus(@Nonnull String orderId, @Nonnull Order.Status status);
+
+	@Nonnull
+	Order payOrder(@Nonnull String orderId, @Nonnull Payment payment);
+
+	/**
+	 * Update order status
+	 * 
+	 * @param orderNo the orderNo
+	 * @param status the order status
+	 * @return order updated
+	 */
+	@Nonnull
+	Order updateOrderStatusByOrderNo(@Nonnull String orderNo, @Nonnull Order.Status status);
 
 	/**
 	 * Update order total price

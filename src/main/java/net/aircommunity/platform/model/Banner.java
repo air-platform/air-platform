@@ -4,29 +4,28 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
-import net.aircommunity.platform.model.jaxb.PromotionAdapter;
 
 /**
- * Promotion of an product.
+ * Banner model for Ad.
  * 
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_promotion_item")
+@Table(name = "air_platfrom_banner")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PromotionItem extends Persistable {
+public class Banner extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	@Size(max = 255)
@@ -42,23 +41,14 @@ public class PromotionItem extends Persistable {
 	@Column(name = "link", length = 1024)
 	private String link;
 
+	@Column(name = "category", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Category category = Category.NONE;
+
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private Date creationDate;
-
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "promotion_id", nullable = false)
-	@XmlJavaTypeAdapter(PromotionAdapter.class)
-	private Promotion promotion;
-
-	public PromotionItem() {
-	}
-
-	public PromotionItem(String id) {
-		this.id = id;
-	}
 
 	public String getTitle() {
 		return title;
@@ -84,6 +74,14 @@ public class PromotionItem extends Persistable {
 		this.link = link;
 	}
 
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -92,19 +90,12 @@ public class PromotionItem extends Persistable {
 		this.creationDate = creationDate;
 	}
 
-	public Promotion getPromotion() {
-		return promotion;
-	}
-
-	public void setPromotion(Promotion promotion) {
-		this.promotion = promotion;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("PromotionItem [title=").append(title).append(", image=").append(image).append(", link=")
-				.append(link).append(", creationDate=").append(creationDate).append(", id=").append(id).append("]");
+		builder.append("Banner [title=").append(title).append(", image=").append(image).append(", link=").append(link)
+				.append(", category=").append(category).append(", creationDate=").append(creationDate).append(", id=")
+				.append(id).append("]");
 		return builder.toString();
 	}
 

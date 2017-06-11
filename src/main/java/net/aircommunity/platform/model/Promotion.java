@@ -61,6 +61,13 @@ public class Promotion extends Persistable {
 	@OneToMany(mappedBy = "promotion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<PromotionItem> items = new ArrayList<>();
 
+	public Promotion() {
+	}
+
+	public Promotion(String id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}

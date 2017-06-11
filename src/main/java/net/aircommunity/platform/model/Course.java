@@ -19,7 +19,12 @@ import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
- * Created by guankai on 12/04/2017.
+ * Course Model. <br>
+ * 
+ * TODO define instalments stage number, e.g. stage=3, and we will create 3 {@code Instalment} for {@code Enrollment}
+ * (it need to extends {@code InstalmentOrder} )
+ * 
+ * @author Bin.Zhang
  */
 @Entity
 //@formatter:off
@@ -32,6 +37,10 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Course extends PricedProduct {
 	private static final long serialVersionUID = 1L;
+
+	// TODO 分期付款 instalment stage number?
+	// @Column(name = "instalments")
+	// private int instalments;
 
 	// aircraft type
 	@NotEmpty

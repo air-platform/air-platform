@@ -76,9 +76,6 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 				aircraft);
 	}
 
-	/**
-	 * Copy properties from src to tgt without ID
-	 */
 	private void copyProperties(Aircraft src, Aircraft tgt) {
 		tgt.setName(src.getName());
 		tgt.setImage(src.getImage());

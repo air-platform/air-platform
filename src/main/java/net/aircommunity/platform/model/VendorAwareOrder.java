@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class VendorAwareOrder extends Order {
+public abstract class VendorAwareOrder extends StandardOrder {
 	private static final long serialVersionUID = 1L;
 
 	// NOTE: XXX (create a new VendorAwareOrder extends Order, e.g. coz CharterOrder will have multi-vendors)?
