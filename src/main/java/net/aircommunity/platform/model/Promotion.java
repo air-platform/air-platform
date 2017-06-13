@@ -133,9 +133,9 @@ public class Promotion extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Promotion [name=").append(name).append(", category=").append(category).append(", creationDate=")
-				.append(creationDate).append(", description=").append(description).append(", items=").append(items)
-				.append(", id=").append(id).append("]");
+		builder.append("Promotion [category=").append(category).append(", name=").append(name).append(", creationDate=")
+				.append(creationDate).append(", description=").append(description).append(", id=").append(id)
+				.append("]");
 		return builder.toString();
 	}
 }

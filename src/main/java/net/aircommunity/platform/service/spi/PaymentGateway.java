@@ -8,6 +8,7 @@ import net.aircommunity.platform.model.PaymentNotification;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PaymentResponse;
 import net.aircommunity.platform.model.PaymentVerification;
+import net.aircommunity.platform.model.RefundResponse;
 
 /**
  * SPI for payment gateway (e.g. alipay, wechat, newpay etc.).
@@ -27,5 +28,8 @@ public interface PaymentGateway {
 
 	@Nonnull
 	PaymentResponse processServerPaymentNotification(@Nonnull PaymentNotification notification);
+
+	@Nonnull
+	RefundResponse refundPayment(@Nonnull Order order);
 
 }

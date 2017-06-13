@@ -3,9 +3,13 @@ package net.aircommunity.platform.rest.admin;
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.json.JsonObject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import io.micro.annotation.RESTful;
 import io.micro.core.security.AccessTokenService;
 import io.swagger.annotations.Api;
+import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.AirJetResource;
 import net.aircommunity.platform.rest.AirportResource;
@@ -20,7 +26,16 @@ import net.aircommunity.platform.rest.BannerResource;
 import net.aircommunity.platform.rest.CommentResource;
 import net.aircommunity.platform.rest.PromotionResource;
 import net.aircommunity.platform.rest.admin.order.AdminOrderResource;
-import net.aircommunity.platform.rest.admin.product.AdminProductResource;
+import net.aircommunity.platform.rest.admin.product.AdminAirTaxiResource;
+import net.aircommunity.platform.rest.admin.product.AdminAirTourResourse;
+import net.aircommunity.platform.rest.admin.product.AdminAirTransportResource;
+import net.aircommunity.platform.rest.admin.product.AdminAircraftResource;
+import net.aircommunity.platform.rest.admin.product.AdminCourseResource;
+import net.aircommunity.platform.rest.admin.product.AdminFerryFlightResource;
+import net.aircommunity.platform.rest.admin.product.AdminFleetResource;
+import net.aircommunity.platform.rest.admin.product.AdminJetTravelResource;
+import net.aircommunity.platform.rest.admin.product.AdminProductFamilyResource;
+import net.aircommunity.platform.rest.admin.product.AdminSchoolResource;
 import net.aircommunity.platform.rest.tenant.TenantAirTaxiResource;
 import net.aircommunity.platform.rest.tenant.TenantAirTourResourse;
 import net.aircommunity.platform.rest.tenant.TenantAirTransportResource;
@@ -45,6 +60,7 @@ import net.aircommunity.platform.rest.user.ChaterOrderResource;
 import net.aircommunity.platform.rest.user.FerryFlightOrderResource;
 import net.aircommunity.platform.rest.user.JetTravelOrderResource;
 import net.aircommunity.platform.rest.user.UserEnrollmentResource;
+import net.aircommunity.platform.service.CommonProductService;
 
 /**
  * Admin RESTful API.
@@ -134,12 +150,161 @@ public class AdminResource {
 		return airportResource;
 	}
 
-	@Resource
-	private AdminProductResource adminProductResource;
+	// @Resource
+	// private AdminProductResource adminProductResource;
+	//
+	// @Path("") // path already in the resource
+	// public AdminProductResource products() {
+	// return adminProductResource;
+	// }
 
-	@Path("") // path already in the resource
-	public AdminProductResource products() {
-		return adminProductResource;
+	// ***********************
+	// Product Management
+	// ***********************
+	@Resource
+	private CommonProductService commonProductService;
+
+	// *********
+	// AIRCRAFT
+	// *********
+	@Resource
+	private AdminAircraftResource adminAircraftResource;
+
+	@Path("aircrafts")
+	public AdminAircraftResource aircrafts() {
+		return adminAircraftResource;
+	}
+
+	// *********
+	// SCHOOL
+	// *********
+	@Resource
+	private AdminSchoolResource adminSchoolResource;
+
+	@Path("schools")
+	public AdminSchoolResource schools() {
+		return adminSchoolResource;
+	}
+
+	// *********
+	// FAMILY
+	// *********
+	@Resource
+	private AdminProductFamilyResource adminProductFamilyResource;
+
+	@Path("product/families")
+	public AdminProductFamilyResource families() {
+		return adminProductFamilyResource;
+	}
+
+	// *********
+	// JETTRAVEL
+	// *********
+	@Resource
+	private AdminJetTravelResource adminJetTravelResource;
+
+	@Path("product/jettravels")
+	public AdminJetTravelResource jettravels() {
+		return adminJetTravelResource;
+	}
+
+	// *********
+	// TAXI
+	// *********
+	@Resource
+	private AdminAirTaxiResource adminAirTaxiResource;
+
+	@Path("product/airtaxis")
+	public AdminAirTaxiResource taxis() {
+		return adminAirTaxiResource;
+	}
+
+	// *********
+	// TOUR
+	// *********
+	@Resource
+	private AdminAirTourResourse adminAirTourResourse;
+
+	@Path("product/airtours")
+	public AdminAirTourResourse tours() {
+		return adminAirTourResourse;
+	}
+
+	// *********
+	// TRANPORT
+	// *********
+	@Resource
+	private AdminAirTransportResource adminAirTransportResource;
+
+	@Path("product/airtranports")
+	public AdminAirTransportResource tranports() {
+		return adminAirTransportResource;
+	}
+
+	// *********
+	// FERRYFLIGHT
+	// *********
+	@Resource
+	private AdminFerryFlightResource adminFerryFlightResource;
+
+	@Path("product/ferryflights")
+	public AdminFerryFlightResource ferryflights() {
+		return adminFerryFlightResource;
+	}
+
+	// *********
+	// FLEET
+	// *********
+	@Resource
+	private AdminFleetResource adminFleetResource;
+
+	@Path("product/fleets")
+	public AdminFleetResource fleets() {
+		return adminFleetResource;
+	}
+
+	// *********
+	// COURSE
+	// *********
+	@Resource
+	private AdminCourseResource adminCourseResource;
+
+	@Path("product/courses")
+	public AdminCourseResource courses() {
+		return adminCourseResource;
+	}
+
+	// **************
+	// Review Product
+	// **************
+
+	@POST
+	@Path("products/{productId}")
+	public Product findProduct(@PathParam("productId") String productId) {
+		return commonProductService.findProduct(productId);
+	}
+
+	/**
+	 * Approve a tenant product
+	 */
+	@POST
+	@Path("products/{productId}/approve")
+	public void approveProduct(@PathParam("productId") String productId) {
+		commonProductService.reviewProduct(productId, ReviewStatus.APPROVED, null);
+	}
+
+	/**
+	 * Disapprove a tenant product
+	 */
+	@POST
+	@Path("products/{productId}/disapprove")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void disapproveProduct(@PathParam("productId") String productId, JsonObject rejectedReason) {
+		String reason = null;
+		if (rejectedReason != null) {
+			reason = rejectedReason.getString("reason");
+		}
+		commonProductService.reviewProduct(productId, ReviewStatus.REJECTED, reason);
 	}
 
 	// ***********************

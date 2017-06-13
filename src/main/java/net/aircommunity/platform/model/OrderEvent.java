@@ -38,7 +38,7 @@ public class OrderEvent implements Serializable {
 	}
 
 	public enum EventType {
-		CREATION, FLEET_OFFERED, UPDATE, PAYMENT, CANCELLATION, DELETION;
+		CREATION, FLEET_OFFERED, UPDATE, PAYMENT, REFUND, CANCELLATION, DELETION;
 	}
 
 }

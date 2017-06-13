@@ -16,6 +16,8 @@ import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Payment;
+import net.aircommunity.platform.model.PaymentRequest;
+import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.PaymentRepository;
 import net.aircommunity.platform.service.CommonOrderService;
@@ -64,10 +66,32 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 		return doUpdateOrderStatus(orderId, status);
 	}
 
+	@Override
+	public PaymentRequest requestOrderPayment(String orderId, Payment.Method paymentMethod) {
+		return doRequestOrderPayment(orderId, paymentMethod);
+	}
+
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public Order payOrder(String orderId, Payment payment) {
 		return doPayOrder(orderId, payment);
+	}
+
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	@Override
+	public Order requestOrderRefund(String orderId, RefundRequest request) {
+		return doRequestOrderRefund(orderId, request);
+	}
+
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	@Override
+	public Order acceptOrderRefund(String orderId) {
+		return doAcceptOrderRefund(orderId);
+	}
+
+	@Override
+	public Order handleOrderRefundFailure(String orderId, String refundFailureCause) {
+		return doHandleOrderRefundFailure(orderId, refundFailureCause);
 	}
 
 	@Override

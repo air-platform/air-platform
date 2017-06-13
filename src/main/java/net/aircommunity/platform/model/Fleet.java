@@ -176,9 +176,13 @@ public class Fleet extends PricedProduct {
 				.append(", location=").append(location).append(", status=").append(status).append(", capacity=")
 				.append(capacity).append(", beds=").append(beds).append(", weight=").append(weight)
 				.append(", fullloadRange=").append(fullloadRange).append(", facilities=").append(facilities)
-				.append(", appearances=").append(appearances).append(", interior=").append(interior).append(", name=")
-				.append(name).append(", price=").append(price).append(", currencyUnit=").append(currencyUnit)
-				.append(", description=").append(description).append(", id=").append(id).append("]");
+				.append(", appearances=").append(appearances).append(", interior=").append(interior).append(", price=")
+				.append(price).append(", currencyUnit=").append(currencyUnit).append(", name=").append(name)
+				.append(", image=").append(image).append(", score=").append(score).append(", totalSales=")
+				.append(totalSales).append(", rank=").append(rank).append(", published=").append(published)
+				.append(", creationDate=").append(creationDate).append(", clientManagers=").append(clientManagers)
+				.append(", description=").append(description).append(", reviewStatus=").append(reviewStatus)
+				.append(", rejectedReason=").append(rejectedReason).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 
@@ -186,6 +190,16 @@ public class Fleet extends PricedProduct {
 	 * Flight status
 	 */
 	public enum Status {
-		UNAVAILABLE, AVAILABLE
+		UNAVAILABLE, AVAILABLE;
+
+		// According to JSR 311 spec, if used in @QueryParam, fromString is a naming conversion
+		public static Status fromString(String source) {
+			for (Status e : values()) {
+				if (e.name().equalsIgnoreCase(source)) {
+					return e;
+				}
+			}
+			return null;
+		}
 	}
 }

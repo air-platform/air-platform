@@ -154,7 +154,7 @@ public class Comment extends Persistable {
 
 		// According to JSR 311 spec, if used in @QueryParam, fromString is a naming conversion
 		public static Source fromString(String source) {
-			for (Source e : Source.values()) {
+			for (Source e : values()) {
 				if (e.name().equalsIgnoreCase(source)) {
 					return e;
 				}

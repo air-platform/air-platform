@@ -3,7 +3,6 @@ package net.aircommunity.platform.rest.admin.order;
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -18,6 +17,7 @@ import io.micro.common.Strings;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.rest.tenant.order.TenantBaseOrderResource;
 import net.aircommunity.platform.service.CommonOrderService;
 
 /**
@@ -27,7 +27,7 @@ import net.aircommunity.platform.service.CommonOrderService;
  */
 @RESTful
 @RolesAllowed(Roles.ROLE_ADMIN)
-public class AdminOrderResource {
+public class AdminOrderResource extends TenantBaseOrderResource<Order> {
 
 	@Resource
 	private CommonOrderService commonOrderService;
@@ -46,17 +46,7 @@ public class AdminOrderResource {
 	}
 
 	/**
-	 * Find
-	 */
-	@GET
-	@Path("{orderId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Order findOrder(@PathParam("orderId") String orderId) {
-		return commonOrderService.findOrder(orderId);
-	}
-
-	/**
-	 * Update order status
+	 * Update order status (use it with caution)
 	 */
 	@POST
 	@Path("{orderId}/status")
@@ -64,16 +54,6 @@ public class AdminOrderResource {
 	public void updateOrderStatus(@PathParam("orderId") String orderId,
 			@NotNull @QueryParam("status") Order.Status status) {
 		commonOrderService.updateOrderStatus(orderId, status);
-	}
-
-	/**
-	 * Hard deletion from DB
-	 */
-	@DELETE
-	@Path("{orderId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public void deleteOrder(@PathParam("orderId") String orderId) {
-		commonOrderService.deleteOrder(orderId);
 	}
 
 }

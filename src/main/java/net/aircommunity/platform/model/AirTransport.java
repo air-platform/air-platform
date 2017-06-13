@@ -65,8 +65,12 @@ public class AirTransport extends AircraftAwareProduct {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTransport [family=").append(family).append(", timeEstimation=").append(timeEstimation)
-				.append(", flightRoute=").append(flightRoute).append(", name=").append(name).append(", description=")
-				.append(description).append(", id=").append(id).append("]");
+				.append(", flightRoute=").append(flightRoute).append(", name=").append(name).append(", image=")
+				.append(image).append(", score=").append(score).append(", totalSales=").append(totalSales)
+				.append(", rank=").append(rank).append(", published=").append(published).append(", creationDate=")
+				.append(creationDate).append(", clientManagers=").append(clientManagers).append(", description=")
+				.append(description).append(", reviewStatus=").append(reviewStatus).append(", rejectedReason=")
+				.append(rejectedReason).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

@@ -111,4 +111,21 @@ public abstract class AircraftAwareOrder extends VendorAwareOrder {
 		}
 	}
 
+	protected String toBaseString(Class<?> type) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(type.getSimpleName()).append(" [salesPackagePrice=").append(salesPackagePrice)
+				.append(", departureDate=").append(departureDate).append(", timeSlot=").append(timeSlot)
+				.append(", orderNo=").append(orderNo).append(", pointsUsed=").append(pointsUsed).append(", quantity=")
+				.append(quantity).append(", totalPrice=").append(totalPrice).append(", status=").append(status)
+				.append(", commented=").append(commented).append(", creationDate=").append(creationDate)
+				.append(", lastModifiedDate=").append(lastModifiedDate).append(", paymentDate=").append(paymentDate)
+				.append(", refundedDate=").append(refundedDate).append(", finishedDate=").append(finishedDate)
+				.append(", closedDate=").append(closedDate).append(", cancelledDate=").append(cancelledDate)
+				.append(", deletedDate=").append(deletedDate).append(", contact=").append(contact)
+				.append(", refundReason=").append(refundReason).append(", refundFailureCause=")
+				.append(refundFailureCause).append(", closedReason=").append(closedReason).append(", note=")
+				.append(note).append(", id=").append(id).append("]");
+		return builder.toString();
+	}
+
 }

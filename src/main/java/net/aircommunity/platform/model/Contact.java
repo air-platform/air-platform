@@ -24,13 +24,13 @@ import net.aircommunity.platform.Constants;
 public class Contact implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "person")
+	@Column(name = "contact_person")
 	private String person;
 
-	@Column(name = "mobile")
+	@Column(name = "contact_mobile")
 	private String mobile;
 
-	@Column(name = "email")
+	@Column(name = "contact_email")
 	private String email;
 
 	public String getPerson() {

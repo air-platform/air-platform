@@ -48,9 +48,6 @@ public class PassengerItem extends Persistable {
 	@XmlJavaTypeAdapter(OrderAdapter.class)
 	private Order order;
 
-	// TODO REMOVE
-	// @ManyToOne
-	// @JoinColumn(name = "passenger_id")
 	@NotNull
 	@XmlElement
 	@Transient

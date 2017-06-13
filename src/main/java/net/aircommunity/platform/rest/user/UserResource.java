@@ -27,6 +27,9 @@ import net.aircommunity.platform.model.Address;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
+import net.aircommunity.platform.model.Payment;
+import net.aircommunity.platform.model.PaymentRequest;
+import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CommonOrderService;
@@ -104,9 +107,10 @@ public class UserResource {
 	 * Add User passenger
 	 */
 	@POST
-	@Path("passengers")
 	@Authenticated
+	@Path("passengers")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Passenger addPassenger(@NotNull @Valid Passenger passenger, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		return accountService.addUserPassenger(accountId, passenger);
@@ -116,9 +120,8 @@ public class UserResource {
 	 * Delete User passenger
 	 */
 	@DELETE
-	@Path("passengers/{passengerId}")
 	@Authenticated
-	@Produces(MediaType.APPLICATION_JSON)
+	@Path("passengers/{passengerId}")
 	public void removeUserPassenger(@PathParam("passengerId") String passengerId, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.removeUserPassenger(accountId, passengerId);
@@ -187,30 +190,28 @@ public class UserResource {
 	// ***********************************
 
 	@POST
-	@Path("orders/{orderId}/pay")
+	@Path("orders/{orderId}/pay/{paymentMethod}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void payOrder(@PathParam("orderId") String orderId) {
-		// TODO call payment gateway?
-		// commonOrderService.updateOrderStatus(orderId, Order.Status.PAID);
+	public PaymentRequest payOrder(@PathParam("orderId") String orderId,
+			@PathParam("paymentMethod") Payment.Method paymentMethod) {
+		return commonOrderService.requestOrderPayment(orderId, paymentMethod);
 	}
 
 	@POST
 	@Path("orders/{orderId}/refund")
-	@Produces(MediaType.APPLICATION_JSON)
-	public void refundOrder(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.REFUND_REQUESTED);
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void refundOrder(@PathParam("orderId") String orderId, @NotNull @Valid RefundRequest request) {
+		commonOrderService.requestOrderRefund(orderId, request);
 	}
 
 	@POST
 	@Path("orders/{orderId}/cancel")
-	@Produces(MediaType.APPLICATION_JSON)
 	public void cancelOrder(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.CANCELLED);
+		commonOrderService.cancelOrder(orderId);
 	}
 
 	@DELETE
 	@Path("orders/{orderId}")
-	@Produces(MediaType.APPLICATION_JSON)
 	public void deleteOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
 		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
 	}

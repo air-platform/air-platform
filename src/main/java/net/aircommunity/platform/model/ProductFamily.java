@@ -62,7 +62,6 @@ public class ProductFamily extends Reviewable {
 	private Tenant vendor;
 
 	public ProductFamily() {
-
 	}
 
 	public ProductFamily(String id) {

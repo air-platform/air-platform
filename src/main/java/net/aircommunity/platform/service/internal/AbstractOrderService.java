@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -41,20 +42,23 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.PassengerItem;
 import net.aircommunity.platform.model.Payment;
+import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PointsExchange;
 import net.aircommunity.platform.model.PricedProduct;
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.RefundRequest;
+import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.model.SalesPackage;
 import net.aircommunity.platform.model.StandardOrder;
 import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseOrderRepository;
-import net.aircommunity.platform.repository.InstalmentRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.repository.SalesPackageRepository;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CommonProductService;
 import net.aircommunity.platform.service.MemberPointsService;
+import net.aircommunity.platform.service.PaymentService;
 
 /**
  * Abstract Order service support.
@@ -87,13 +91,13 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	private PassengerRepository passengerRepository;
 
 	@Resource
-	private InstalmentRepository instalmentRepository;
-
-	@Resource
 	private CommonProductService commonProductService;
 
 	@Resource
 	private MemberPointsService memberPointsService;
+
+	@Resource
+	private PaymentService paymentService;
 
 	@Resource
 	private AccountService accountService;
@@ -195,8 +199,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		tgt.setQuantity(src.getQuantity());
 		tgt.setNote(src.getNote());
 		tgt.setContact(src.getContact());
-		// TODO newOrder.setPaymentInfo
-		// TODO newOrder.setConfirmation (reject reason)
 
 		// XXX NOTE: price is not set for CharterOrder (AirJet), only price/per hour
 		// need to set manually after customer service calculated, so total price would be 0 for CharterOrder
@@ -327,6 +329,14 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
+	 * Payment request
+	 */
+	protected PaymentRequest doRequestOrderPayment(String orderId, Payment.Method paymentMethod) {
+		T order = doFindOrder(orderId);
+		return paymentService.createPaymentRequest(paymentMethod, order);
+	}
+
+	/**
 	 * Pay order
 	 */
 	protected T doPayOrder(String orderId, Payment payment) {
@@ -355,7 +365,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			orderPaid = doUpdateOrderStatus(order, Order.Status.PAID);
 		}
 
-		// TODO CHECK if works
+		// TODO CHECK if works (NOT USED ATM)
 		// installment order
 		if (InstalmentOrder.class.isAssignableFrom(order.getClass())) {
 			InstalmentOrder instalmentOrder = InstalmentOrder.class.cast(order);
@@ -377,6 +387,65 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		eventBus.post(new OrderEvent(OrderEvent.EventType.PAYMENT, orderPaid));
 		return orderPaid;
+	}
+
+	/**
+	 * Request refund
+	 */
+	protected T doRequestOrderRefund(String orderId, RefundRequest request) {
+		T order = doFindOrder(orderId);
+		order.setRefundReason(request.getRefundReason());
+		return doUpdateOrderStatus(order, Order.Status.REFUND_REQUESTED);
+	}
+
+	/**
+	 * Accept refund
+	 */
+	protected T doAcceptOrderRefund(String orderId) {
+		// update to Order.Status.REFUNDING now
+		T order = doUpdateOrderStatus(orderId, Order.Status.REFUNDING);
+		T orderRefund = order;
+		// standard order
+		if (StandardOrder.class.isAssignableFrom(order.getClass())) {
+			StandardOrder standardOrder = StandardOrder.class.cast(order);
+			Payment payment = standardOrder.getPayment();
+			RefundResponse refundResponse = paymentService.refundPayment(payment.getMethod(), order);
+			if (refundResponse.isSuccess()) {
+				standardOrder.setRefund(refundResponse.getRefund());
+				orderRefund = doUpdateOrderStatus(order, Order.Status.REFUNDED);
+				eventBus.post(new OrderEvent(OrderEvent.EventType.REFUND, orderRefund));
+			}
+			else {
+				order.setRefundFailureCause(refundResponse.getFailureCause());
+				orderRefund = doUpdateOrderStatus(order, Order.Status.REFUND_FAILED);
+			}
+		}
+		// TODO NOT IMPLED
+		// installment order
+		// if (InstalmentOrder.class.isAssignableFrom(order.getClass())) {
+		// InstalmentOrder instalmentOrder = InstalmentOrder.class.cast(order);
+		// }
+		return orderRefund;
+	}
+
+	/**
+	 * Refund failure
+	 */
+	protected T doHandleOrderRefundFailure(String orderId, String refundFailureCause) {
+		// NOTE: not from cache, in case it's updated
+		T order = doFindOrder(orderId);
+		order.setRefundFailureCause(refundFailureCause);
+		return doUpdateOrderStatus(order, Order.Status.REFUND_FAILED);
+	}
+
+	/**
+	 * Close
+	 */
+	protected T doCloseOrder(String orderId, String closedReason) {
+		// NOTE: not from cache, in case it's updated
+		T order = doFindOrder(orderId);
+		order.setClosedReason(closedReason);
+		return doUpdateOrderStatus(order, Order.Status.CLOSED);
 	}
 
 	/**
@@ -403,38 +472,38 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		case PUBLISHED:
 		case CREATED:
 			// order initial status
+			LOG.debug("It's order initial status, cannot update status to {}", newStatus);
 			throw invalidOrderStatus(order, newStatus);
 
 			// AirJet, AirTravel
 		case CONFIRMED:
-			if (!order.confirmationRequired()) {
-				throw invalidOrderStatus(order, newStatus);
-			}
+			LOG.debug("Expect order confirmationRequired");
+			expectOrderStatusCondition(order.confirmationRequired());
 			break;
 
 		// AirJet, Course
 		case CONTRACT_SIGNED:
 			// should be already confirmed
-			if (!(order.getStatus() == Order.Status.CONFIRMED && order.signContractRequired())) {
-				throw invalidOrderStatus(order, newStatus);
-			}
+			LOG.debug("Expect order signContractRequired");
+			expectOrderStatusCondition(order.signContractRequired());
+			expectOrderStatus(order, newStatus, Order.Status.CONFIRMED);
 			break;
 
 		//
 		case PARTIAL_PAID:
 			// TODO CHECK
+			LOG.debug("TODO CHECK for {}", newStatus);
 			break;
 
 		case PAID:
 			// should be already contract signed (if contract sign is required)
-			if (order.signContractRequired() && order.getStatus() != Order.Status.CONTRACT_SIGNED) {
-				throw invalidOrderStatus(order, newStatus);
+			if (order.signContractRequired()) {
+				LOG.debug("Order signContractRequired, expect contract signed before paid");
+				expectOrderStatus(order, newStatus, Order.Status.CONTRACT_SIGNED);
 			}
-
-			// otherwise, should be in created | published
-			if (!order.signContractRequired()
-					&& (order.getStatus() != Order.Status.CREATED || order.getStatus() != Order.Status.PUBLISHED)) {
-				throw invalidOrderStatus(order, newStatus);
+			// otherwise, should be in CREATED | PUBLISHED (XXX require confirmation? or just paid and then confirm)
+			else {
+				expectOrderStatusCondition(order.isInitialStatus());
 			}
 			order.setPaymentDate(new Date());
 			break;
@@ -442,41 +511,40 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		//
 		case REFUND_REQUESTED:
 			// should be already paid
-			if (order.getStatus() != Order.Status.PAID) {
-				throw invalidOrderStatus(order, newStatus);
-			}
+			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.PAID));
 			break;
 
 		//
 		case REFUNDING:
 			// should be already paid (directly by TENANT) or refund requested (by USER)
-			if (order.getStatus() != Order.Status.REFUND_REQUESTED || order.getStatus() != Order.Status.PAID) {
-				throw invalidOrderStatus(order, newStatus);
-			}
+			expectOrderStatus(order, newStatus,
+					EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.REFUND_REQUESTED, Order.Status.PAID));
 			break;
 
 		//
 		case REFUNDED:
-			// should be already contract signed
-			if (order.getStatus() != Order.Status.REFUNDING) {
-				throw invalidOrderStatus(order, newStatus);
-			}
+			// should be already refunding in progress
+			expectOrderStatus(order, newStatus, Order.Status.REFUNDING);
 			order.setRefundedDate(new Date());
-			// TODO accountService.updateUserPoints(order.getOwner().getId(), pointsEarned);
+			// add points back to the account
+			accountService.updateUserPoints(order.getOwner().getId(), order.getPointsUsed());
+			LOG.info("Refund success, add used points: {} back to account: {}", order.getPointsUsed(),
+					order.getOwner());
+			break;
+
+		//
+		case REFUND_FAILED:
+			expectOrderStatus(order, newStatus, Order.Status.REFUNDING);
 			break;
 
 		case TICKET_RELEASED:
-			if (order.getStatus() != Order.Status.PAID) {
-				throw invalidOrderStatus(order, newStatus);
-			}
+			expectOrderStatus(order, newStatus, Order.Status.PAID);
 			break;
 
 		case FINISHED:
-			if (order.getStatus() != Order.Status.PAID || order.getStatus() != Order.Status.TICKET_RELEASED) {
-				throw invalidOrderStatus(order, newStatus);
-			}
+			// expect paid (TICKET_RELEASED also indicates already paid)
+			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.PAID, Order.Status.TICKET_RELEASED));
 			order.setFinishedDate(new Date());
-
 			// update points earned
 			long pointsEarnedPercent = memberPointsService
 					.getPointsEarnedFromRule(Constants.POINTS_RULE_ORDER_FINISHED);
@@ -490,27 +558,24 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			break;
 
 		case CANCELLED:
-			if (!order.isCancellable()) {
-				throw invalidOrderStatus(order, newStatus);
-			}
+			LOG.debug("Expect order isCancellable");
+			expectOrderStatusCondition(order.isCancellable());
 			order.setCancelledDate(new Date());
 			break;
 
 		case CLOSED:
-			if (!order.isCloseable()) {
-				throw invalidOrderStatus(order, newStatus);
-			}
+			LOG.debug("Expect order isCloseable");
 			order.setClosedDate(new Date());
 			break;
 
 		case DELETED:
-			if (!order.isCompleted()) {
-				throw invalidOrderStatus(order, newStatus);
-			}
+			LOG.debug("Expect order isCompleted");
+			expectOrderStatusCondition(order.isCompleted());
 			order.setDeletedDate(new Date());
 			break;
 
 		default:// noop
+			LOG.warn("Unhandled order status: {}", newStatus);
 		}
 		order.setStatus(newStatus);
 		order.setLastModifiedDate(new Date());
@@ -522,6 +587,24 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			}
 			return orderUpdated;
 		}, "Update %s: %s to status %s failed", type.getSimpleName(), order.getId(), newStatus);
+	}
+
+	private void expectOrderStatusCondition(boolean expectCondition) {
+		if (!expectCondition) {
+			throw new AirException(Codes.ORDER_ILLEGAL_STATUS, M.msg(M.ORDER_ILLEGAL_STATUS));
+		}
+	}
+
+	private void expectOrderStatus(T order, Order.Status newStatus, Order.Status expect) {
+		if (order.getStatus() != expect) {
+			throw invalidOrderStatus(order, newStatus);
+		}
+	}
+
+	private void expectOrderStatus(T order, Order.Status newStatus, EnumSet<Order.Status> expects) {
+		if (!expects.contains(order.getStatus())) {
+			throw invalidOrderStatus(order, newStatus);
+		}
 	}
 
 	private AirException invalidOrderStatus(T order, Order.Status status) {

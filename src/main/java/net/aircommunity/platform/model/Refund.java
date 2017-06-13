@@ -17,22 +17,23 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import net.aircommunity.platform.model.Payment.Method;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
- * Payment result info of an order.
+ * Refund result info of an order.
  * 
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_order_payment", indexes = {
+@Table(name = "air_platfrom_order_refund", indexes = {
 		@Index(name = "idx_method_trade_no", columnList = "method,trade_no", unique = true),
 		@Index(name = "idx_method_order_no", columnList = "method,order_no", unique = true),
 		@Index(name = "idx_user_order", columnList = "user_id,order_no"),
 		@Index(name = "idx_tenant_order", columnList = "tenant_id,order_no") })
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Payment extends Persistable {
+public class Refund extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// trade No. of payment system
@@ -43,6 +44,13 @@ public class Payment extends Persistable {
 	@Column(name = "order_no", nullable = false)
 	private String orderNo;
 
+	@Column(name = "refund_reason", nullable = false)
+	private String refundReason;
+
+	// refund result note
+	@Column(name = "refund_result", nullable = false)
+	private String refundResult;
+
 	// amount of payment
 	@Column(name = "amount", nullable = false)
 	private BigDecimal amount = BigDecimal.ZERO;
@@ -52,13 +60,7 @@ public class Payment extends Persistable {
 	@Enumerated(EnumType.STRING)
 	private Method method;
 
-	// XXX NOTE: we only saved success payment ATM, also history for failures?
-	// the status of this payment
-	// @Column(name = "status", nullable = false)
-	// @Enumerated(EnumType.STRING)
-	// private Status status;
-
-	@Column(name = "timestamp", nullable = false)
+	@Column(name = "refund_timestamp", nullable = false)
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private Date timestamp;
@@ -89,6 +91,22 @@ public class Payment extends Persistable {
 
 	public void setOrderNo(String orderNo) {
 		this.orderNo = orderNo;
+	}
+
+	public String getRefundReason() {
+		return refundReason;
+	}
+
+	public void setRefundReason(String refundReason) {
+		this.refundReason = refundReason;
+	}
+
+	public String getRefundResult() {
+		return refundResult;
+	}
+
+	public void setRefundResult(String refundResult) {
+		this.refundResult = refundResult;
 	}
 
 	public BigDecimal getAmount() {
@@ -131,45 +149,13 @@ public class Payment extends Persistable {
 		this.vendor = vendor;
 	}
 
-	/**
-	 * Payment method
-	 */
-	public enum Method {
-		ALIPAY, WECHAT, NEWPAY;
-
-		public static Method fromString(String value) {
-			for (Method e : values()) {
-				if (e.name().equalsIgnoreCase(value)) {
-					return e;
-				}
-			}
-			return null;
-		}
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Payment [tradeNo=").append(tradeNo).append(", orderNo=").append(orderNo).append(", amount=")
-				.append(amount).append(", method=").append(method).append(", timestamp=").append(timestamp)
-				.append(", id=").append(id).append("]");
+		builder.append("Refund [tradeNo=").append(tradeNo).append(", orderNo=").append(orderNo)
+				.append(", refundReason=").append(refundReason).append(", refundResult=").append(refundResult)
+				.append(", amount=").append(amount).append(", method=").append(method).append(", timestamp=")
+				.append(timestamp).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
-
-	/**
-	 * Payment status (useful?), we only save SUCCESS payment
-	 */
-	// public enum Status {
-	// SUCCESS, FAILURE;
-	//
-	// public static Status fromString(String value) {
-	// for (Status e : values()) {
-	// if (e.name().equalsIgnoreCase(value)) {
-	// return e;
-	// }
-	// }
-	// return null;
-	// }
-	// }
-
 }

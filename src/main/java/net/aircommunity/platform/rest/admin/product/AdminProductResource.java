@@ -20,8 +20,9 @@ import net.aircommunity.platform.service.CommonProductService;
  * Product administrative RESTful API. NOTE: <b>all permission</b> for ADMIN
  * 
  * @author Bin.Zhang
+ * @deprecated
  */
-@RESTful
+// @RESTful
 @RolesAllowed(Roles.ROLE_ADMIN)
 public class AdminProductResource extends ProductResourceSupport<Product> {
 

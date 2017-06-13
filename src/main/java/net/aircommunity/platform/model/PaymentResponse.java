@@ -1,10 +1,16 @@
 package net.aircommunity.platform.model;
 
+import javax.annotation.concurrent.Immutable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 /**
  * Payment response of an order to the payment system.
  * 
  * @author Bin.Zhang
  */
+@Immutable
+@XmlAccessorType(XmlAccessType.FIELD)
 public final class PaymentResponse {
 
 	private final String body;

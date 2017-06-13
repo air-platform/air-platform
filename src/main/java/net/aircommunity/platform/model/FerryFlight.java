@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -46,7 +47,7 @@ public class FerryFlight extends PricedProduct {
 
 	// single seat price
 	@Column(name = "seat_price")
-	private int seatPrice;
+	private BigDecimal seatPrice = BigDecimal.ZERO;
 
 	// Number of seats
 	@Column(name = "seats")
@@ -112,11 +113,11 @@ public class FerryFlight extends PricedProduct {
 		this.arrival = arrival;
 	}
 
-	public int getSeatPrice() {
+	public BigDecimal getSeatPrice() {
 		return seatPrice;
 	}
 
-	public void setSeatPrice(int seatPrice) {
+	public void setSeatPrice(BigDecimal seatPrice) {
 		this.seatPrice = seatPrice;
 	}
 

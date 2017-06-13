@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
@@ -15,11 +14,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import io.micro.common.Strings;
 
 /**
- * Instalment order model allow payment by instalments.
+ * Instalment order model allow payment by instalments. (NOT USED FOR ATM)
  * 
  * @author Bin.Zhang
  */
-@Entity
+// @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class InstalmentOrder extends Order {

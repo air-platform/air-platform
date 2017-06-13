@@ -2,6 +2,7 @@ package net.aircommunity.platform.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -18,14 +19,15 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_user_passenger")
+@Table(name = "air_platfrom_user_passenger", indexes = {
+		@Index(name = "idx_user_identity", columnList = "user_id, identity", unique = true) })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Passenger extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// Passenger name
 	@NotEmpty
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
 	// Passenger mobile
@@ -35,7 +37,7 @@ public class Passenger extends Persistable {
 
 	// e.g. ID Card number
 	@NotEmpty
-	@Column(name = "identity", unique = true)
+	@Column(name = "identity", nullable = false)
 	private String identity;
 
 	@ManyToOne

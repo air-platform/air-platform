@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -16,11 +15,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.aircommunity.platform.model.jaxb.OrderAdapter;
 
 /**
- * Instalment info of an {@code InstalmentOrder}.
+ * Instalment info of an {@code InstalmentOrder}. (NOT USED ATM) TODO, Course need instalments.
  * 
  * @author Bin.Zhang
  */
-@Entity
+// @Entity
 @Table(name = "air_platfrom_order_instalment")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Instalment extends Persistable {

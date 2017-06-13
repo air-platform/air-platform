@@ -70,11 +70,8 @@ public class AirqTopicServiceImpl implements AirqTopicService {
 						String category = t.getJsonObject("category").getString("name");
 						String title = t.getString("title");
 						int tid = t.getInt("tid");
-						AirqTopic topic = new AirqTopic();
-						topic.setCategory(category);
-						topic.setTitle(title);
-						topic.setUrl(String.format(TOPIC_URL_FORMAT, configuration.getAirqUrl(), tid));
-						builder.add(topic);
+						String url = String.format(TOPIC_URL_FORMAT, configuration.getAirqUrl(), tid);
+						builder.add(new AirqTopic(category, title, url));
 					}
 					return builder.build();
 				}

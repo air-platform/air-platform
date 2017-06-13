@@ -1,8 +1,6 @@
 package net.aircommunity.platform.service.internal.payment;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -19,17 +17,20 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
+import com.alipay.api.domain.AlipayTradeRefundModel;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
+import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
 
 import io.micro.common.DateFormats;
 import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.common.OrderPrices;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Payment;
@@ -39,7 +40,10 @@ import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PaymentResponse;
 import net.aircommunity.platform.model.PaymentVerification;
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.Refund;
+import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.nls.M;
+import net.aircommunity.platform.repository.RefundRepository;
 import net.aircommunity.platform.service.CommonOrderService;
 import net.aircommunity.platform.service.spi.PaymentGateway;
 
@@ -54,25 +58,21 @@ public class AlipayPaymentGateway implements PaymentGateway {
 
 	private static final String APP_ID = "2017060907455116";
 	private static final String APP_PRIVATE_KEY = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCmD0tN9FnXpnbA7KbdxTKHOm1k+HKveD5skZQ/r2ZV43rQFHOtQQEY2sdvNgBeUKAnv15PDf6uFyD9VpqtDzhSR9uFDLF7Gz6BVNByEKno5on1FDT1loUHz0/yXMxfapYpk5SLgXowI0cmn2vIzhxeHF4zLK9oU39c4bpmtvIDA7NHS2LuQmuCoLVuwtsuMaqFuJ3pMG9oZywC8Z5EVd3ogjyyxDbKgY897jO0hhv71/SfZ9GOAgrFNBpGMZO3nUtrpk7H7Yx1E3EuzKryplf8EdUs/WgfmSfhRw6yIKMaW0hM9/GdG670SkwEwuvrpDdReiYROUDtbCihioi5y+2/AgMBAAECggEACvTPXyFUHCpbg3cZu2AbaVithw/tYS5pz/f69Ai6k8gifkAbMb8sN1uX9Pp3I8HmDzlNG6Isv4e/IXfpVKnAaY1cKncf7qNpiFb0OdJno3oyd/0RUXLQ7Cb9e1wsD8+UgMG/90Rfr3VkaGP0VJdkv8DXZkD4gcWgjZxHFCfV5+TnScLQqgWmByu5pJKPuQX4XnWajexM1nJQm2Go1OTC8zEChBc3whSZyYqnBAQU4rS7Pz83seTUDFmPAG7xWKnBLT/jy9TpwOyHpMsHFismLJXCZHF+aGq7Wyx+Xemv4r5a6UEBfHSY3eACl2mElYESyi6CQkoNH2PaGdtNSLOcQQKBgQDhpQ2wXl+q3w5G4UV6eSBX4frG3bSxiI5HM+xMsE+kQhu99wf3Ri8P8MhUBmtKnKl4j4KgEZt0kmxzlFlT8dQ7Tj7bO5x4auCZi2YmKq/37x0iFrUQiXfyego1FZxUeNTcKWiHHi5db3OCc+fwI8YnzdOJ2KKRDXdi6zhw7kuhWQKBgQC8ZjObionxX/mi3y4GvbrNSSkO9jzSUJ9nMeBcy1hpBC695gXoSoR5QQtRMdQxWtK4c6+8MgJMPdCwSUsAF4pvI0LrZPaFIUWEb9pUZkLY1+mhMf87xAFAa78CM5p2J25n5jq1t6PTn0+JbCRlsjgIsM5emecAx/rXX1NT8klM1wKBgC8OP5uPIr48g/quEdInnmIVYznDlGINizY4EsgvYHxtuOFVudiMT1YwrWYwbIGDyCe3LdN5uISH4Iv93N8PqGWxvJP1i3zlNO9wTZ4Z+tZmjBnGyH2pXVU4tBY76n0HMcSz8fNzjNG5Y0pKJ41BuJomZz3w6n37Y/FCAmQynZ0JAoGBALPkms6ggIr8a6/7j0VckSxH+W6R7Q2dcjflRikU+bx9A+zL4UQnM0tcsmO7QrRF1wPNYzY+QjdupwBNW9IgqEzqzJFcfJAubuTAsSb55kaMFEeZJ+93fwJ2X5LIl2rOx/tpuRGe4k3FxvqfSjnY7OxPdx6Zshvq2Dgii7ySky9NAoGBAMtDw4cQ+RLZxf9dAoJO6QmdmJKFgI+UZP/oLsNtqa3eqQU7W2/jS2pVm5bC3uebjCs+keKad9ESQ3ddiULThe1UfHelbpLSpSmTTxwcx29qtAgrQ+jlIoJmKfSMGR0Y6ahQaCCjXKsLs24TCOlbqJtT0Sk5aRiMffkX+A2X9nSb";
-	private static final String ALIPAY_NOTIFY_URL = "http://innertest.aircommunity.cn/api/v1/payment/alipay/notify"; // TODO
 	private static final String ALIPAY_GATEWAY_URL = "https://openapi.alipay.com/gateway.do";
 	private static final String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAooqAPK0uB0LBA9RjaTNgD1NK5h/ZYbuVteNhVMyeUcJQUXrOWB8Fbpv/uhJoqjtZlXud4svJ8jJ9xx2H2LJqW4eGnAekyI848T/C99X6z67R0QBzyZHjFejUxvv6GbDyF80eMn4MJFslaS51iBhZQC3ilCzgBQ4jjBRwCMP3tPVgoMpYV0vo6QJ9pTFojs84fe23lNcd0fA5rfRWJsai4F7oBD0odG77SVPbohuPefj3BHYppItCSFdwmjLXdGFsi2X+KIvkDQCsHcwhbjJvp9A8SWU0vUAcpakE5dvp2zoN5mYQJDR/CePiEEe7i32CtwJ0Uni5eqIKsSmmMbOIEQIDAQAB";
 	private static final String ALIPAY_SIGN_TYPE = "RSA2";
 	private static final String ALIPAY_PAY_FORMAT = "json";
 	private static final String ALIPAY_PAY_CHARSET = "utf-8";
 	private static final String ALIPAY_PRODUCT_CODE = "QUICK_MSECURITY_PAY";
-	// TRADE_FINISHED: 交易结束，不可退款
-	// TRADE_SUCCESS: 交易支付成功
+
+	// TRADE_FINISHED: 交易结束，不可退款, TRADE_SUCCESS: 交易支付成功
 	private static final String TRADE_FINISHED = "TRADE_FINISHED";
 	private static final String TRADE_SUCCESS = "TRADE_SUCCESS";
-
 	private static final PaymentResponse PAYMENT_RESPONSE_FAILURE = new PaymentResponse("failure");
 	private static final PaymentResponse PAYMENT_RESPONSE_SUCCESS = new PaymentResponse("success");
-	//
 	private static final SimpleDateFormat PAYMENT_TIMESTAMP_FORMATTER = DateFormats.simple("yyyy-MM-dd HH:mm:ss");
-	private static final String PAYMENT_RESULT_STATUS = "resultStatus";
 	private static final String PAYMENT_RESULT_TRADE_APP_PAY_RESPONSE = "alipay_trade_app_pay_response";
-	private static final String PAYMENT_RESULT_SIGN = "sign";
+	private static final String PAYMENT_RESULT_STATUS = "resultStatus";
 	private static final String PAYMENT_RESULT_OUT_TRADE_NO = "out_trade_no";
 	private static final String PAYMENT_RESULT_TRADE_NO = "trade_no";
 	private static final String PAYMENT_RESULT_TRADE_STATUS = "trade_status";
@@ -84,7 +84,13 @@ public class AlipayPaymentGateway implements PaymentGateway {
 	private final AlipayClient alipayClient;
 
 	@Resource
+	private Configuration configuration;
+
+	@Resource
 	private CommonOrderService commonOrderService;
+
+	@Resource
+	private RefundRepository refundRepository;
 
 	@Resource
 	private ObjectMapper objectMapper;
@@ -122,11 +128,13 @@ public class AlipayPaymentGateway implements PaymentGateway {
 		model.setTotalAmount(String.valueOf(totalAmount));
 		model.setProductCode(ALIPAY_PRODUCT_CODE);
 		request.setBizModel(model);
-		request.setNotifyUrl(ALIPAY_NOTIFY_URL);
+		request.setNotifyUrl(configuration.getAlipayNotifyUrl());
+		LOG.debug("Alipay notify url: {}", configuration.getAlipayNotifyUrl());
 		try {
 			AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
 			// 就是orderString 可以直接给客户端请求，无需再做处理
 			String orderString = response.getBody();
+			LOG.debug("Alipay orderString: {}", orderString);
 			return new PaymentRequest(orderString);
 		}
 		catch (AlipayApiException e) {
@@ -174,6 +182,7 @@ public class AlipayPaymentGateway implements PaymentGateway {
 	@Override
 	public PaymentVerification verifyClientPaymentNotification(PaymentNotification notification) {
 		Map<String, String> result = (Map<String, String>) notification.getData();
+		LOG.debug("{} client notification: {}", getPaymentMethod(), result);
 		String resultStatus = result.get(PAYMENT_RESULT_STATUS);
 		if (PAYMENT_STATUS_SUCCESS.equals(resultStatus)) {
 			try {
@@ -219,13 +228,7 @@ public class AlipayPaymentGateway implements PaymentGateway {
 	@SuppressWarnings("unchecked")
 	public PaymentResponse processServerPaymentNotification(PaymentNotification notification) {
 		try {
-			Map<String, String> paramsRaw = (Map<String, String>) notification.getData();
-			ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-			paramsRaw.entrySet().stream().forEach(e -> {
-				boolean needUrlDecode = !PAYMENT_RESULT_SIGN.equals(e.getKey()); // no URL decode for sign
-				builder.put(e.getKey(), needUrlDecode ? urlDecode(e.getValue()) : e.getValue());
-			});
-			Map<String, String> params = builder.build();
+			Map<String, String> params = (Map<String, String>) notification.getData();
 			String orderNo = params.get(PAYMENT_RESULT_OUT_TRADE_NO); // 商户订单号
 			String tradeNo = params.get(PAYMENT_RESULT_TRADE_NO); // 流水号
 			String tradeStatus = params.get(PAYMENT_RESULT_TRADE_STATUS); // 交易状态
@@ -234,13 +237,15 @@ public class AlipayPaymentGateway implements PaymentGateway {
 			BigDecimal totalAmount = new BigDecimal(params.get(PAYMENT_RESULT_TOTAL_AMOUNT)); // 订单金额
 
 			// 1) check trade status
-			if (!tradeStatus.equals(TRADE_FINISHED) || !tradeStatus.equals(TRADE_SUCCESS)) {
+			if (!(tradeStatus.equals(TRADE_FINISHED) || tradeStatus.equals(TRADE_SUCCESS))) {
 				LOG.error("Payment trade status {} is not success, payment failed", tradeStatus);
 				return PAYMENT_RESPONSE_FAILURE;
 			}
 
 			// 2) verify sign
-			boolean signVerified = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, ALIPAY_PAY_CHARSET);
+			boolean signVerified = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, ALIPAY_PAY_CHARSET,
+					ALIPAY_SIGN_TYPE);
+			// boolean signVerified = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, ALIPAY_PAY_CHARSET);
 			if (!signVerified) {
 				LOG.error("Signature verification failure, payment failed");
 				return PAYMENT_RESPONSE_FAILURE;
@@ -261,7 +266,7 @@ public class AlipayPaymentGateway implements PaymentGateway {
 
 			// 4) check total amount
 			Order order = orderRef.get();
-			if (OrderPrices.priceMatches(totalAmount, order.getTotalPrice())) {
+			if (!OrderPrices.priceMatches(totalAmount, order.getTotalPrice())) {
 				LOG.error("Order total amount mismatch, expected: {}, but was: {},  payment failed",
 						order.getTotalPrice(), totalAmount);
 				return PAYMENT_RESPONSE_FAILURE;
@@ -302,14 +307,90 @@ public class AlipayPaymentGateway implements PaymentGateway {
 		return PAYMENT_RESPONSE_FAILURE;
 	}
 
-	private static String urlDecode(String str) {
+	@Override
+	public RefundResponse refundPayment(Order order) {
+		AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
+		AlipayTradeRefundModel model = new AlipayTradeRefundModel();
+		// 商户订单号和支付宝交易号不能同时为空 (二选一), trade_no、 out_trade_no如果同时存在优先取trade_no
+		model.setOutTradeNo(order.getOrderNo());
+		// model.setTradeNo(tradeNo);
+		// model.setOutRequestNo(out_request_no);
+		BigDecimal refundAmount = OrderPrices.normalizePrice(order.getTotalPrice());
+		model.setRefundAmount(String.valueOf(refundAmount.doubleValue()));
+		model.setRefundReason(order.getRefundReason());
+		alipayRequest.setBizModel(model);
 		try {
-			return URLDecoder.decode(str, "utf8");
+			AlipayTradeRefundResponse refundResponse = alipayClient.execute(alipayRequest);
+			if (refundResponse.isSuccess()) {
+				Refund refund = new Refund();
+				refund.setAmount(refundAmount);
+				refund.setMethod(Payment.Method.ALIPAY);
+				refund.setOrderNo(refundResponse.getOutTradeNo());
+				refund.setTradeNo(refundResponse.getTradeNo());
+				refund.setTimestamp(refundResponse.getGmtRefundPay());
+				refund.setRefundReason(order.getRefundReason());
+				refund.setRefundResult(M.msg(M.REFUND_SUCCESS));
+				return RefundResponse.success(refund);
+			}
+			return RefundResponse.failure(M.msg(M.REFUND_FAILURE, refundResponse.getCode(), refundResponse.getMsg()));
 		}
-		catch (UnsupportedEncodingException e) {
-			LOG.error("Failed to decode to UFT-8:" + str, e);
+		catch (Exception e) {
+			LOG.error(String.format("Refund failure for order: %s, cause: %s", order, e.getMessage()), e);
+			String refundFailureCause = e.getLocalizedMessage();
+			if (AlipayApiException.class.isAssignableFrom(e.getClass())) {
+				AlipayApiException ex = AlipayApiException.class.cast(e);
+				refundFailureCause = M.msg(M.REFUND_FAILURE, ex.getErrCode(), ex.getErrMsg());
+			}
+			return RefundResponse.failure(refundFailureCause);
 		}
-		return str;
 	}
 
+	// WORKS
+	// private void testQuery() {
+	// AlipayTradeQueryRequest alipayRequest = new AlipayTradeQueryRequest();
+	// AlipayTradeQueryModel model = new AlipayTradeQueryModel();
+	// // model.setOutTradeNo(out_trade_no);
+	// model.setTradeNo("2017061321001004040275979115");
+	// alipayRequest.setBizModel(model);
+	// try {
+	// AlipayTradeQueryResponse alipayResponse = alipayClient.execute(alipayRequest);
+	// System.out.println(alipayResponse.getBody());
+	// }
+	// catch (AlipayApiException e) {
+	// e.printStackTrace();
+	// }
+	// }
+
+	// WORKS
+	// private void testQueryRefund() {
+	// AlipayTradeFastpayRefundQueryRequest alipayRequest = new AlipayTradeFastpayRefundQueryRequest();
+	// AlipayTradeFastpayRefundQueryModel model = new AlipayTradeFastpayRefundQueryModel();
+	// // 商户订单号和支付宝交易号不能同时为空。 trade_no、 out_trade_no如果同时存在优先取trade_no
+	// // 商户订单号，和支付宝交易号二选一
+	// // model.setOutTradeNo("170612O8H9NFUC4400");
+	// model.setTradeNo("2017061321001004040275979115");
+	// // 请求退款接口时，传入的退款请求号，如果在退款请求时未传入，则该值为创建交易时的外部交易号
+	// model.setOutRequestNo("170612O8H9NFUC4400"); // OrderNo.
+	// alipayRequest.setBizModel(model);
+	// try {
+	// AlipayTradeFastpayRefundQueryResponse alipayResponse = alipayClient.execute(alipayRequest);
+	// System.out.println(alipayResponse.getBody());
+	// }
+	// catch (AlipayApiException e) {
+	// e.printStackTrace();
+	// }
+	// }
+
+	// public static void main(String arg[]) throws AlipayApiException {
+	// AlipayPaymentGateway g = new AlipayPaymentGateway();
+	// RefundRequest request = new RefundRequest();
+	// request.setRefundReason("测试退款");
+	// // g.refund(request);
+	// g.testQueryRefund();
+	// g.testQuery();
+	// //
+	// {"alipay_trade_refund_response":{"code":"10000","msg":"Success","buyer_logon_id":"gem***@gmail.com","buyer_user_id":"2088502878657042","fund_change":"Y","gmt_refund_pay":"2017-06-13
+	// //
+	// 00:54:07","open_id":"20881009806334552586332510413604","out_trade_no":"170612O8H9NFUC4400","refund_fee":"0.01","send_back_fee":"0.00","trade_no":"2017061321001004040275979115"},"sign":"DVo5iJv6rHhIQwlH83NZnymTevEWxckYtndYS61U7OgvBZKiRBhtsWwKPx1nZSkAApXeH45k/kKQ8GrJ+th0YWN4KZrhNGHAksy2D25ezpyPt4FpufS5FRMsoDkp6t3Y4fFhhjFCkGclHoF8BBtsPbPJRDUDjEw+fpxBS48xfOg8GyrVVDR7pdBLPfOiTOOEQUB3mYVfLgk7TGb7KRVumyNozf21rDWV61IFY4nWLT8cCmSurKPqHzp+VjioI/zpFozKaAqtZI0KaVkM6FYKHXOgjJLO2LhhrTzJZXONxlj3m8IQt54vbFTLhW9YH7Lci9+4AgUY2OlIQcEbozBWsg=="}
+	// }
 }

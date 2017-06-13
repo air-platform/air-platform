@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.micro.annotation.constraint.NotEmpty;
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
+import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
  * School.
@@ -48,7 +48,7 @@ public class School extends Persistable {
 	private String baseDescription;
 
 	@ManyToOne
-	@XmlJavaTypeAdapter(AccountAdapter.class)
+	@XmlJavaTypeAdapter(TenantAdapter.class)
 	@JoinColumn(name = "tenant_id", nullable = false)
 	private Tenant vendor;
 

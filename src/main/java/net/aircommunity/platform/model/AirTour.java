@@ -119,12 +119,15 @@ public class AirTour extends AircraftAwareProduct {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AirTour [city=").append(city).append(", tourPoint=").append(tourPoint).append(", tourDistance=")
-				.append(tourDistance).append(", tourTime=").append(tourTime).append(", tourShow=").append(tourShow)
-				.append(", boardingLocation=").append(boardingLocation).append(", traffic=").append(traffic)
-				.append(", name=").append(name).append(", score=").append(score).append(", creationDate=")
-				.append(creationDate).append(", description=").append(description).append(", id=").append(id)
-				.append("]");
+		builder.append("AirTour [city=").append(city).append(", tourDistance=").append(tourDistance)
+				.append(", tourTime=").append(tourTime).append(", tourPoint=").append(tourPoint).append(", tourShow=")
+				.append(tourShow).append(", boardingLocation=").append(boardingLocation).append(", traffic=")
+				.append(traffic).append(", tourRoute=").append(tourRoute).append(", name=").append(name)
+				.append(", image=").append(image).append(", score=").append(score).append(", totalSales=")
+				.append(totalSales).append(", rank=").append(rank).append(", published=").append(published)
+				.append(", creationDate=").append(creationDate).append(", clientManagers=").append(clientManagers)
+				.append(", description=").append(description).append(", reviewStatus=").append(reviewStatus)
+				.append(", rejectedReason=").append(rejectedReason).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

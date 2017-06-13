@@ -21,9 +21,14 @@ public abstract class StandardOrder extends Order {
 	private static final long serialVersionUID = 1L;
 
 	// single payment
-	@OneToOne(cascade = { CascadeType.ALL })
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "payment_id")
 	protected Payment payment;
+
+	// single refund
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "refund_id")
+	protected Refund refund;
 
 	// Bidirectional
 	// @XmlTransient
@@ -36,6 +41,14 @@ public abstract class StandardOrder extends Order {
 
 	public void setPayment(Payment payment) {
 		this.payment = payment;
+	}
+
+	public Refund getRefund() {
+		return refund;
+	}
+
+	public void setRefund(Refund refund) {
+		this.refund = refund;
 	}
 
 }

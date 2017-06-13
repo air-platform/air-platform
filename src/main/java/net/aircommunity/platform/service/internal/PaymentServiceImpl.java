@@ -21,6 +21,7 @@ import net.aircommunity.platform.model.PaymentNotification;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PaymentResponse;
 import net.aircommunity.platform.model.PaymentVerification;
+import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.CommonOrderService;
 import net.aircommunity.platform.service.PaymentService;
@@ -49,11 +50,11 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
-	public PaymentRequest createPaymentRequest(Payment.Method paymentMethod, String orderNo) {
-		Order order = commonOrderService.findByOrderNo(orderNo);
+	public PaymentRequest createPaymentRequest(Payment.Method paymentMethod, Order order) {
+		// Order order = commonOrderService.findByOrderNo(orderNo);
 		if (!order.isPayable()) {
-			LOG.error("Order {} is NOT ready to pay", orderNo);
-			throw new AirException(Codes.ORDER_NOT_PAYABLE, M.msg(M.ORDER_NOT_PAYABLE, orderNo));
+			LOG.error("Order {} is NOT ready to pay", order.getOrderNo());
+			throw new AirException(Codes.ORDER_NOT_PAYABLE, M.msg(M.ORDER_NOT_PAYABLE, order.getOrderNo()));
 		}
 		PaymentGateway paymentGateway = getPaymentGateway(paymentMethod);
 		return paymentGateway.createPaymentRequest(order);
@@ -72,6 +73,12 @@ public class PaymentServiceImpl implements PaymentService {
 			PaymentNotification notification) {
 		PaymentGateway paymentGateway = getPaymentGateway(paymentMethod);
 		return paymentGateway.processServerPaymentNotification(notification);
+	}
+
+	@Override
+	public RefundResponse refundPayment(Payment.Method paymentMethod, Order order) {
+		PaymentGateway paymentGateway = getPaymentGateway(paymentMethod);
+		return paymentGateway.refundPayment(order);
 	}
 
 	private PaymentGateway getPaymentGateway(Payment.Method paymentMethod) {

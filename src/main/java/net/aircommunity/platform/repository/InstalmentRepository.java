@@ -1,6 +1,7 @@
 package net.aircommunity.platform.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 
 import net.aircommunity.platform.model.Instalment;
 
@@ -10,6 +11,7 @@ import net.aircommunity.platform.model.Instalment;
  * 
  * @author Bin.Zhang
  */
+@NoRepositoryBean // TODO enabled it once Instalment and InstalmentOrder is used
 public interface InstalmentRepository extends JpaRepository<Instalment, String> {
 
 }

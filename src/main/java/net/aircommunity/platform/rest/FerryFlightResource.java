@@ -17,10 +17,10 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.service.FerryFlightService;
 
 /**
@@ -43,20 +43,30 @@ public class FerryFlightResource extends ProductResourceSupport<FerryFlight> {
 	// ***********************
 
 	/**
-	 * List all TODO query by departure/arrival/date/timeSlot
+	 * List all query by departure/arrival
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Response listAll(@QueryParam("recommended") boolean recommended, @QueryParam("departure") String departure,
-			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+			@QueryParam("arrival") String arrival, @QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		if (recommended) {
 			LOG.debug("List recommended ferryFlights for departure: {}", departure);
 			return Response.ok(ferryFlightService.listTop3FerryFlights(departure)).build();
 		}
-		LOG.debug("List all ferryFlights for departure: {}", departure);
-		Page<FerryFlight> result = ferryFlightService.listFerryFlightsByDeparture(departure, page, pageSize);
-		return Response.ok(result).build();
+		// by departure
+		if (Strings.isNotBlank(departure)) {
+			LOG.debug("List all ferryFlights for departure: {}", departure);
+			return Response.ok(ferryFlightService.listFerryFlightsByDeparture(departure, page, pageSize)).build();
+		}
+		// by arrival
+		if (Strings.isNotBlank(arrival)) {
+			LOG.debug("List all ferryFlights for arrival: {}", arrival);
+			return Response.ok(ferryFlightService.listFerryFlightsByArrival(arrival, page, pageSize)).build();
+		}
+		// all
+		return Response.ok(ferryFlightService.listFerryFlights(page, pageSize)).build();
 	}
 
 	/**

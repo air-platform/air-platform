@@ -94,8 +94,7 @@ public abstract class TenantBaseOrderResource<T extends Order> {
 	@Path("{orderId}/refund")
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void refundOrder(@PathParam("orderId") String orderId) {
-		// XXX and update to Order.Status.REFUNDED once trade completed
-		commonOrderService.updateOrderStatus(orderId, Order.Status.REFUNDING);
+		commonOrderService.acceptOrderRefund(orderId);
 	}
 
 	/**

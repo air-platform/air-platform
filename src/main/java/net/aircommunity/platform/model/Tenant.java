@@ -125,5 +125,14 @@ public class Tenant extends Account {
 		 * A verified tenant status
 		 */
 		VERIFIED;
+
+		public static VerificationStatus fromString(String value) {
+			for (VerificationStatus e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
 	}
 }

@@ -102,6 +102,16 @@ public class FleetCandidate extends Persistable {
 		 * Soft deletion
 		 */
 		DELETED;
+
+		// According to JSR 311 spec, if used in @QueryParam, fromString is a naming conversion
+		public static Status fromString(String source) {
+			for (Status e : values()) {
+				if (e.name().equalsIgnoreCase(source)) {
+					return e;
+				}
+			}
+			return null;
+		}
 	}
 
 }

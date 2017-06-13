@@ -16,6 +16,9 @@ import javax.persistence.Enumerated;
 public abstract class PricedProduct extends Product {
 	private static final long serialVersionUID = 1L;
 
+	// @Digits(integer = 11, fraction = 2)
+	// @Column(name = "price", precision = 9, scale = 2, nullable = false) // DECIMAL(11,2)
+
 	// product price
 	@Column(name = "price", nullable = false)
 	protected BigDecimal price = BigDecimal.ZERO;

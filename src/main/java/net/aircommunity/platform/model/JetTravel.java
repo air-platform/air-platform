@@ -25,11 +25,11 @@ public class JetTravel extends PricedProduct {
 		StringBuilder builder = new StringBuilder();
 		builder.append("JetTravel [price=").append(price).append(", currencyUnit=").append(currencyUnit)
 				.append(", name=").append(name).append(", image=").append(image).append(", score=").append(score)
-				.append(", rank=").append(rank).append(", published=").append(published).append(", creationDate=")
-				.append(creationDate).append(", clientManagers=").append(clientManagers).append(", description=")
-				.append(description).append(", reviewStatus=").append(reviewStatus).append(", rejectedReason=")
-				.append(rejectedReason).append(", id=").append(id).append("]");
+				.append(", totalSales=").append(totalSales).append(", rank=").append(rank).append(", published=")
+				.append(published).append(", creationDate=").append(creationDate).append(", clientManagers=")
+				.append(clientManagers).append(", description=").append(description).append(", reviewStatus=")
+				.append(reviewStatus).append(", rejectedReason=").append(rejectedReason).append(", id=").append(id)
+				.append("]");
 		return builder.toString();
 	}
-
 }

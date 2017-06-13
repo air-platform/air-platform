@@ -9,6 +9,8 @@ import javax.annotation.Nullable;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Payment;
+import net.aircommunity.platform.model.PaymentRequest;
+import net.aircommunity.platform.model.RefundRequest;
 
 /**
  * Common order service list/query all {@code Order}s for a {@code User}.
@@ -74,7 +76,24 @@ public interface CommonOrderService {
 	Order updateOrderStatus(@Nonnull String orderId, @Nonnull Order.Status status);
 
 	@Nonnull
+	PaymentRequest requestOrderPayment(@Nonnull String orderId, @Nonnull Payment.Method paymentMethod);
+
+	@Nonnull
 	Order payOrder(@Nonnull String orderId, @Nonnull Payment payment);
+
+	@Nonnull
+	Order requestOrderRefund(@Nonnull String orderId, @Nonnull RefundRequest request);
+
+	@Nonnull
+	Order acceptOrderRefund(@Nonnull String orderId);
+
+	@Nonnull
+	Order handleOrderRefundFailure(@Nonnull String orderId, @Nonnull String refundFailureCause);
+
+	@Nonnull
+	default Order cancelOrder(@Nonnull String orderId) {
+		return updateOrderStatus(orderId, Order.Status.CANCELLED);
+	}
 
 	/**
 	 * Update order status

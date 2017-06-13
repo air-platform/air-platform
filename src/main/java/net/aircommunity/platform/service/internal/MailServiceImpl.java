@@ -61,7 +61,8 @@ public class MailServiceImpl implements MailService {
 	}
 
 	private void doSend(MailItem item) {
-		LOG.debug("Sending mail to {} with subject: {}, content: {}.", item.mailTo, item.subject, item.content);
+		LOG.debug("Sending mail to {} with subject: {}.", item.mailTo, item.subject);
+		LOG.trace("Sending mail to {} with subject: {}, content: {}.", item.mailTo, item.subject, item.content);
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		try {
 			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
@@ -120,7 +121,7 @@ public class MailServiceImpl implements MailService {
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
 			builder.append("MailItem [mailTo=").append(mailTo).append(", mailFrom=").append(mailFrom)
-					.append(", subject=").append(subject).append(", content=").append(content).append("]");
+					.append(", subject=").append(subject).append(", content=********").append("]");
 			return builder.toString();
 		}
 	}

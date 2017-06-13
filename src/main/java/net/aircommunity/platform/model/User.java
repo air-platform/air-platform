@@ -226,6 +226,15 @@ public class User extends Account {
 	 */
 	public enum Gender {
 		MALE, FEMALE;
+
+		public static Gender fromString(String value) {
+			for (Gender e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
 	}
 
 	/**
@@ -233,6 +242,15 @@ public class User extends Account {
 	 */
 	public enum Rank {
 		MEMBER, SILVER, GOLD, PLATINUM, DIAMOND;
+
+		public static Rank fromString(String value) {
+			for (Rank e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
 	}
 
 }

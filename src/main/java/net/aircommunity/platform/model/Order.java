@@ -147,6 +147,18 @@ public abstract class Order extends Persistable {
 	@Embedded
 	protected Contact contact;
 
+	// information from customer if the order should refund
+	@XmlElement
+	@Lob
+	@Column(name = "refund_reason")
+	protected String refundReason;
+
+	// information from customer if the order refund failure cause
+	@XmlElement
+	@Lob
+	@Column(name = "refund_failure_cause")
+	protected String refundFailureCause;
+
 	// information to customer if the order cannot be accepted, reject reason? TODO
 	@XmlElement
 	@Lob
@@ -277,6 +289,22 @@ public abstract class Order extends Persistable {
 		this.deletedDate = deletedDate;
 	}
 
+	public String getRefundReason() {
+		return refundReason;
+	}
+
+	public void setRefundReason(String refundReason) {
+		this.refundReason = refundReason;
+	}
+
+	public String getRefundFailureCause() {
+		return refundFailureCause;
+	}
+
+	public void setRefundFailureCause(String refundFailureCause) {
+		this.refundFailureCause = refundFailureCause;
+	}
+
 	public String getClosedReason() {
 		return closedReason;
 	}
@@ -320,12 +348,17 @@ public abstract class Order extends Persistable {
 	public abstract Type getType();
 
 	public boolean confirmationRequired() {
-		return getType() != Type.FLEET || getType() != Type.JETTRAVEL;
+		return getType() == Type.FLEET || getType() == Type.JETTRAVEL;
 	}
 
 	public boolean signContractRequired() {
-		return getType() != Type.FLEET || getType() != Type.COURSE || getType() != Type.FERRYFLIGHT
-				|| getType() != Type.JETTRAVEL;
+		return getType() == Type.FLEET || getType() == Type.COURSE || getType() == Type.FERRYFLIGHT
+				|| getType() == Type.JETTRAVEL;
+	}
+
+	@XmlTransient
+	public boolean isInitialStatus() {
+		return status == Order.Status.CREATED || status == Order.Status.PUBLISHED;
 	}
 
 	@XmlTransient
@@ -432,7 +465,7 @@ public abstract class Order extends Persistable {
 		 * Refund
 		 */
 		// user request refund -> tenant accept request -> success
-		REFUND_REQUESTED, REFUNDING, REFUNDED,
+		REFUND_REQUESTED, REFUNDING, REFUNDED, REFUND_FAILED,
 
 		/**
 		 * Finished with success

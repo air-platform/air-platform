@@ -38,14 +38,7 @@ public class AirTaxiOrder extends AircraftAwareOrder {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("AirTaxiOrder [departureDate=").append(departureDate).append(", timeSlot=").append(timeSlot)
-				.append(", contact=").append(contact).append(", orderNo=").append(orderNo).append(", status=")
-				.append(status).append(", commented=").append(commented).append(", creationDate=").append(creationDate)
-				.append(", paymentDate=").append(paymentDate).append(", finishedDate=").append(finishedDate)
-				.append(", cancelledDate=").append(cancelledDate).append(", deletedDate=").append(deletedDate)
-				.append(", note=").append(note).append(", id=").append(id).append("]");
-		return builder.toString();
+		return toBaseString(getClass());
 	}
 
 }

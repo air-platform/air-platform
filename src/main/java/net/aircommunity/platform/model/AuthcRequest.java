@@ -44,4 +44,12 @@ public class AuthcRequest implements Serializable {
 		return otp;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("AuthcRequest [principal=").append(principal).append(", credential=********")
+				.append(", expires=").append(expires).append(", otp=").append(otp).append("]");
+		return builder.toString();
+	}
+
 }

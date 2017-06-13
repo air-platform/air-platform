@@ -14,28 +14,22 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class AirqTopic implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String category;
-	private String title;
-	private String url;
+	private final String category;
+	private final String title;
+	private final String url;
 
-	public void setTitle(String title) {
+	public AirqTopic(String category, String title, String url) {
+		this.category = category;
 		this.title = title;
+		this.url = url;
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
 	public String getUrl() {
 		return url;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
 	}
 
 	public String getCategory() {

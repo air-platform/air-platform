@@ -108,11 +108,17 @@ public class CharterOrder extends StandardOrder {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("CharterOrder [contact=").append(contact).append(", flightLegs=").append(flightLegs)
-				.append(", fleetCandidates=").append(fleetCandidates).append(", orderNo=").append(orderNo)
-				.append(", creationDate=").append(creationDate).append(", paymentDate=").append(paymentDate)
-				.append(", finishedDate=").append(finishedDate).append(", note=").append(note).append(", id=")
-				.append(id).append("]");
+		builder.append("CharterOrder [flightLegs=").append(flightLegs).append(", fleetCandidates=")
+				.append(fleetCandidates).append(", orderNo=").append(orderNo).append(", pointsUsed=").append(pointsUsed)
+				.append(", quantity=").append(quantity).append(", totalPrice=").append(totalPrice).append(", status=")
+				.append(status).append(", commented=").append(commented).append(", creationDate=").append(creationDate)
+				.append(", lastModifiedDate=").append(lastModifiedDate).append(", paymentDate=").append(paymentDate)
+				.append(", refundedDate=").append(refundedDate).append(", finishedDate=").append(finishedDate)
+				.append(", closedDate=").append(closedDate).append(", cancelledDate=").append(cancelledDate)
+				.append(", deletedDate=").append(deletedDate).append(", contact=").append(contact)
+				.append(", refundReason=").append(refundReason).append(", refundFailureCause=")
+				.append(refundFailureCause).append(", closedReason=").append(closedReason).append(", note=")
+				.append(note).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

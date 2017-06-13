@@ -176,13 +176,16 @@ public class Course extends PricedProduct {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Course [startDate=").append(startDate).append(", endDate=").append(endDate).append(", image=")
-				.append(image).append(", enrollment=").append(enrollment).append(", courseService=")
+		builder.append("Course [aircraftType=").append(aircraftType).append(", location=").append(location)
+				.append(", license=").append(license).append(", startDate=").append(startDate).append(", endDate=")
+				.append(endDate).append(", enrollment=").append(enrollment).append(", courseService=")
 				.append(courseService).append(", totalNum=").append(totalNum).append(", enrollNum=").append(enrollNum)
-				.append(", aircraftType=").append(aircraftType).append(", license=").append(license)
-				.append(", location=").append(location).append(", price=").append(price).append(", currencyUnit=")
-				.append(currencyUnit).append(", name=").append(name).append(", score=").append(score)
-				.append(", creationDate=").append(creationDate).append(", description=").append(description)
+				.append(", school=").append(school).append(", price=").append(price).append(", currencyUnit=")
+				.append(currencyUnit).append(", name=").append(name).append(", image=").append(image).append(", score=")
+				.append(score).append(", totalSales=").append(totalSales).append(", rank=").append(rank)
+				.append(", published=").append(published).append(", creationDate=").append(creationDate)
+				.append(", clientManagers=").append(clientManagers).append(", description=").append(description)
+				.append(", reviewStatus=").append(reviewStatus).append(", rejectedReason=").append(rejectedReason)
 				.append(", id=").append(id).append("]");
 		return builder.toString();
 	}

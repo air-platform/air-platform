@@ -306,7 +306,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 			//
 			String mailBody = templateService.renderFile(String.format(Constants.TEMPLATE_MAIL_ORDER_NOTIFICATION,
 					order.getType().name().toLowerCase(Locale.ENGLISH)), context);
-			LOG.debug("Mail body: {}", mailBody);
+			LOG.trace("Mail body: {}", mailBody);
 			if (Strings.isNotBlank(clientManager.getEmail())) {
 				mailService.sendMail(clientManager.getEmail(), configuration.getOrderEmailNotificationSubject(),
 						mailBody);
