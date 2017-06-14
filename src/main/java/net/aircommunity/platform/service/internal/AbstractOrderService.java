@@ -46,6 +46,7 @@ import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PointsExchange;
 import net.aircommunity.platform.model.PricedProduct;
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.Refund;
 import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.model.SalesPackage;
@@ -399,9 +400,19 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
+	 * Reject refund
+	 */
+	protected T doRejectOrderRefund(String orderId, String rejectReason) {
+		// rollback status to PAID
+		T order = doFindOrder(orderId);
+		order.setRefundFailureCause(M.msg(M.REFUND_REQUEST_REJECTED, rejectReason));
+		return doUpdateOrderStatus(order, Order.Status.PAID);
+	}
+
+	/**
 	 * Accept refund
 	 */
-	protected T doAcceptOrderRefund(String orderId) {
+	protected T doAcceptOrderRefund(String orderId, BigDecimal refundAmount) {
 		// update to Order.Status.REFUNDING now
 		T order = doUpdateOrderStatus(orderId, Order.Status.REFUNDING);
 		T orderRefund = order;
@@ -409,15 +420,20 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		if (StandardOrder.class.isAssignableFrom(order.getClass())) {
 			StandardOrder standardOrder = StandardOrder.class.cast(order);
 			Payment payment = standardOrder.getPayment();
-			RefundResponse refundResponse = paymentService.refundPayment(payment.getMethod(), order);
+			RefundResponse refundResponse = paymentService.refundPayment(payment.getMethod(), order, refundAmount);
 			if (refundResponse.isSuccess()) {
-				standardOrder.setRefund(refundResponse.getRefund());
+				Refund refund = refundResponse.getRefund();
+				refund.setVendor(standardOrder.getProduct().getVendor());
+				refund.setOwner(standardOrder.getOwner());
+				standardOrder.setRefund(refund);
+				standardOrder.setRefundFailureCause(null);
 				orderRefund = doUpdateOrderStatus(order, Order.Status.REFUNDED);
-				eventBus.post(new OrderEvent(OrderEvent.EventType.REFUND, orderRefund));
+				eventBus.post(new OrderEvent(OrderEvent.EventType.REFUNDED, orderRefund));
 			}
 			else {
 				order.setRefundFailureCause(refundResponse.getFailureCause());
 				orderRefund = doUpdateOrderStatus(order, Order.Status.REFUND_FAILED);
+				eventBus.post(new OrderEvent(OrderEvent.EventType.REFUND_FAILED, orderRefund));
 			}
 		}
 		// TODO NOT IMPLED
@@ -502,10 +518,16 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				expectOrderStatus(order, newStatus, Order.Status.CONTRACT_SIGNED);
 			}
 			// otherwise, should be in CREATED | PUBLISHED (XXX require confirmation? or just paid and then confirm)
+			// we allow refund request to move back to paid status in case tenant rejected the refund request
 			else {
-				expectOrderStatusCondition(order.isInitialStatus());
+				// expectOrderStatusCondition(order.isInitialStatus());
+				expectOrderStatus(order, newStatus,
+						EnumSet.of(Order.Status.CREATED, Order.Status.PUBLISHED, Order.Status.REFUND_REQUESTED));
 			}
-			order.setPaymentDate(new Date());
+			// already paid for REFUND_REQUESTED (cannot re-setPaymentDate)
+			if (order.getStatus() != Order.Status.REFUND_REQUESTED) {
+				order.setPaymentDate(new Date());
+			}
 			break;
 
 		//
@@ -546,8 +568,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.PAID, Order.Status.TICKET_RELEASED));
 			order.setFinishedDate(new Date());
 			// update points earned
-			long pointsEarnedPercent = memberPointsService
-					.getPointsEarnedFromRule(Constants.POINTS_RULE_ORDER_FINISHED);
+			long pointsEarnedPercent = memberPointsService.getPointsEarnedFromRule(Constants.PointRules.ORDER_FINISHED);
 			long pointsEarned = Math.round(
 					order.getTotalPrice().multiply(BigDecimal.valueOf(pointsEarnedPercent / 100d)).doubleValue());
 			LOG.info("User earned points {}({}%)", pointsEarned, pointsEarnedPercent);

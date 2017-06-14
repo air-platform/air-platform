@@ -1,5 +1,6 @@
 package net.aircommunity.platform.service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 
@@ -85,7 +86,10 @@ public interface CommonOrderService {
 	Order requestOrderRefund(@Nonnull String orderId, @Nonnull RefundRequest request);
 
 	@Nonnull
-	Order acceptOrderRefund(@Nonnull String orderId);
+	Order acceptOrderRefund(@Nonnull String orderId, @Nonnull BigDecimal refundAmount);
+
+	@Nonnull
+	Order rejectOrderRefund(@Nonnull String orderId, @Nonnull String rejectReason);
 
 	@Nonnull
 	Order handleOrderRefundFailure(@Nonnull String orderId, @Nonnull String refundFailureCause);

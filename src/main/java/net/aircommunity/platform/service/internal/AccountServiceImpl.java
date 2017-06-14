@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,7 @@ import net.aircommunity.platform.model.Account.Status;
 import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.Address;
+import net.aircommunity.platform.model.DailySignin;
 import net.aircommunity.platform.model.IdCardInfo;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
@@ -66,6 +68,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	private static final Logger LOG = LoggerFactory.getLogger(AccountServiceImpl.class);
 
 	private static final String CACHE_NAME_ACCOUNT = "cache.account";
+	private static final String CACHE_NAME_ACCOUNT_APIKEY = "cache.account_apikey";
 	// private static final String CACHE_NAME_APIKEY = "cache.account_apikey";
 
 	// FORMAT: http://host:port/context/api-version/account/email/confirm?token=xxx&code=xxx
@@ -247,16 +250,20 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		switch (role) {
 		case ADMIN:
 			newAccount = new Account();
+			newAccount.setRole(Role.ADMIN);
 			break;
 
 		case TENANT:
 			newAccount = new Tenant();
+			newAccount.setRole(Role.TENANT);
 			break;
 
+		case CUSTOMER_SERVICE:
 		case USER:
 			newAccount = new User();
+			newAccount.setRole(role);
 			User u = (User) newAccount;
-			u.setPoints(memberPointsService.getPointsEarnedFromRule(Constants.POINTS_RULE_ACCOUNT_REGISTRATION));
+			u.setPoints(memberPointsService.getPointsEarnedFromRule(Constants.PointRules.ACCOUNT_REGISTRATION));
 			break;
 
 		default: // noop
@@ -264,7 +271,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		// generate an api key
 		newAccount.setNickName(principal);
 		newAccount.setApiKey(UUIDs.shortRandom());
-		newAccount.setRole(role);
 		newAccount.setCreationDate(new Date());
 		newAccount.setStatus(Status.ENABLED);
 		newAccount.setAvatar(configuration.getDefaultAvatar());
@@ -435,7 +441,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				"Update tenant account %s VerificationStatus to %s failed", accountId, newStatus);
 	}
 
-	// TODO enable cache
+	@Cacheable(cacheNames = CACHE_NAME_ACCOUNT_APIKEY)
 	@Override
 	public Optional<Account> findAccountByApiKey(String apiKey) {
 		Account account = accountRepository.findByApiKey(apiKey);
@@ -520,25 +526,29 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return passengers.stream().collect(Collectors.toList());
 	}
 
-	// TODO REMOVE
-	// @CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
 	@Override
 	public Passenger addUserPassenger(String accountId, Passenger passenger) {
 		Account account = findAccount(accountId);
+		// pre-check if account is user
 		if (account.getRole() != Role.USER) {
 			throw new AirException(Codes.ACCOUNT_PASSENGER_NOT_ALLOWED,
 					M.msg(M.ACCOUNT_PASSENGER_NOT_ALLOWED, account.getNickName()));
 		}
+
+		// check ID Card existence
 		Passenger passengerFound = passengerRepository.findByOwnerIdAndIdentity(accountId, passenger.getIdentity());
 		if (passengerFound != null) {
 			throw new AirException(Codes.ACCOUNT_PASSENGER_ALREADY_EXISTS,
 					M.msg(M.PASSENGER_ALREADY_EXISTS, passenger.getIdentity()));
 		}
+
 		// verify ID Card
 		boolean valid = identityCardService.verifyIdentityCard(passenger.getIdentity(), passenger.getName());
 		if (!valid) {
 			throw new AirException(Codes.ACCOUNT_ADD_PASSENGER_FAILURE, M.msg(M.ACCOUNT_INVALID_IDCARD));
 		}
+
+		// perform passenger add
 		User user = User.class.cast(account);
 		user.addPassenger(passenger);
 		return safeExecute(() -> {
@@ -553,8 +563,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}, "Add user %s passenger %s failed", accountId, passenger);
 	}
 
-	// TODO REMOVE
-	// @CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
 	@Override
 	public void removeUserPassenger(String accountId, String passengerId) {
 		Account account = findAccount(accountId);
@@ -585,6 +593,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	// TODO list all/cleanup unconfirmed/expired accounts, need to resend email if confirm link expired
 
+	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
 	@Override
 	public Account updateUserPoints(String accountId, long deltaPoints) {
 		User user = findAccount(accountId, User.class);
@@ -727,6 +736,9 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return safeExecute(() -> accountRepository.save(account), "Reset account %s password failed", accountId);
 	}
 
+	// XXX check if update cache using #result.id works?
+	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#result.id")
+	@Cacheable
 	@Override
 	public Account resetPasswordViaMobile(String mobile, String newPassword) {
 		AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(AuthType.MOBILE, mobile);
@@ -761,7 +773,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return accountUpdated;
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@Caching(put = @CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId"), evict = @CacheEvict(cacheNames = CACHE_NAME_ACCOUNT_APIKEY))
 	@Override
 	public Account refreshApiKey(String accountId) {
 		Account account = findAccount(accountId);
@@ -769,7 +781,52 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return safeExecute(() -> accountRepository.save(account), "Refresh account %s apikey failed", accountId);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@Override
+	public Account dailySignin(String accountId) {
+		Account account = findAccount(accountId);
+		if (!User.class.isAssignableFrom(account.getClass())) {
+			LOG.warn("Signin ignored for none user account: {}", account);
+			return account;
+		}
+		User user = User.class.cast(account);
+		DailySignin dailySignin = user.getDailySignin();
+		if (dailySignin == null) {
+			dailySignin = new DailySignin();
+			dailySignin.setSuccess(true);
+		}
+		// not signin yet
+		if (!dailySignin.isSignin()) {
+			Map<Integer, Long> rules = memberPointsService.getDailySigninPointRules();
+			LOG.debug("Daily signin rules: {}", rules);
+			int maxDailySignins = rules.isEmpty() ? 0 : rules.keySet().stream().mapToInt(x -> x).max().getAsInt();
+			Long signin1Point = rules.get(1);
+			long pointsEarned = signin1Point == null ? 0 : signin1Point;
+			if (dailySignin.isConsecutive()) {
+				dailySignin.increaseConsecutiveSignins();
+				int consecutiveSignins = Math.min(dailySignin.getConsecutiveSignins(), maxDailySignins);
+				Long points = rules.get(consecutiveSignins);
+				if (points != null) {
+					pointsEarned = points;
+				}
+			}
+			else {
+				// reset consecutive
+				dailySignin.resetConsecutiveSignins();
+			}
+			dailySignin.setLastSigninDate(new Date());
+			dailySignin.setPointsEarned(pointsEarned);
+			dailySignin.setSuccess(true);
+		}
+		else {
+			dailySignin.setSuccess(false);
+		}
+		user.setDailySignin(dailySignin);
+		user.setPoints(user.getPoints() + dailySignin.getPointsEarned());
+		return safeExecute(() -> accountRepository.save(user), "Update user %s for signin", accountId);
+	}
+
+	@CacheEvict(cacheNames = { CACHE_NAME_ACCOUNT, CACHE_NAME_ACCOUNT_APIKEY }, key = "#accountId")
 	@Override
 	public void deleteAccount(String accountId) {
 		Account account = accountRepository.findOne(accountId);

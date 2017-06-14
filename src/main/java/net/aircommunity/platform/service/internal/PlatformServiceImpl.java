@@ -4,16 +4,14 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.Contact;
 import net.aircommunity.platform.model.Settings;
-import net.aircommunity.platform.repository.SettingsRepository;
 import net.aircommunity.platform.service.PlatformService;
 
 /**
@@ -22,13 +20,23 @@ import net.aircommunity.platform.service.PlatformService;
  * @author Bin.Zhang
  */
 @Service
-public class PlatformServiceImpl implements PlatformService {
+public class PlatformServiceImpl extends AbstractServiceSupport implements PlatformService {
 	private static final Logger LOG = LoggerFactory.getLogger(PlatformServiceImpl.class);
 
 	private static final String PLATFORM_CLIENT_MANAGERS = "platform.client_managers";
 
-	@Resource
-	private SettingsRepository settingsRepository;
+	@Override
+	public void clearCache(String cacheName) {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			cache.clear();
+		}
+	}
+
+	@Override
+	public void clearAllCaches() {
+		cacheManager.getCacheNames().parallelStream().forEach(name -> cacheManager.getCache(name).clear());
+	}
 
 	@Override
 	public void setPlatformClientManagers(Set<Contact> clientManagers) {

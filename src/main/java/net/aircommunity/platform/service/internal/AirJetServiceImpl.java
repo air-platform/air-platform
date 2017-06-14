@@ -55,7 +55,7 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 		try {
 			String json = MoreFiles.toString(AIRJETS_INFO);
 			if (json == null) {
-				LOG.warn("Not airjet information provided, skip importing jetair info to DB");
+				LOG.warn("No airjet information provided, skip importing jetair info to DB");
 				return;
 			}
 			List<AirJet> airjets = objectMapper.readValue(json, new TypeReference<List<AirJet>>() {
@@ -104,7 +104,8 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 	public AirJet findAirJet(String airJetId) {
 		AirJet airJet = airjetRepository.findOne(airJetId);
 		if (airJet == null) {
-			throw new AirException(Codes.AIRJET_NOT_FOUND, M.msg(M.AIRJET_NOT_FOUND, airJetId));
+			LOG.error("Airjet {} not found", airJetId);
+			throw new AirException(Codes.AIRJET_NOT_FOUND, M.msg(M.AIRJET_NOT_FOUND));
 		}
 		return airJet;
 	}
@@ -113,6 +114,7 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 	public AirJet findAirJetByType(String type) {
 		AirJet airJet = airjetRepository.findByTypeIgnoreCase(type);
 		if (airJet == null) {
+			LOG.error("Airjet type {} not found", type);
 			throw new AirException(Codes.AIRJET_NOT_FOUND, M.msg(M.AIRJET_TYPE_NOT_FOUND, type));
 		}
 		return airJet;
@@ -124,6 +126,7 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 		AirJet airJet = findAirJet(airJetId);
 		AirJet airJetExisting = airjetRepository.findByTypeIgnoreCase(newAirJet.getType());
 		if (airJetExisting != null && !airJetExisting.getId().equals(airJetId)) {
+			LOG.error("Airjet type {} already exists", airJet.getType());
 			throw new AirException(Codes.AIRJET_ALREADY_EXISTS, M.msg(M.AIRJET_ALREADY_EXISTS, airJet.getType()));
 		}
 		copyProperties(newAirJet, airJet);
@@ -144,7 +147,7 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAirJets() {
-		safeExecute(() -> airjetRepository.deleteAll(), "Update all airJets failed");
+		safeExecute(() -> airjetRepository.deleteAll(), "Delete all airJets failed");
 	}
 
 }

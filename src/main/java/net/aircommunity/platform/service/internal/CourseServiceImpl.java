@@ -74,16 +74,20 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 
 	@Override
 	public Course createCourse(String schoolId, Course course) {
+		School school = schoolService.findSchool(course.getSchool().getId());
+		course.setSchool(school);
 		return doCreateProduct(schoolId, course);
 	}
 
 	@Override
 	protected void copyProperties(Course src, Course tgt) {
+		// just set school that find previously
+		tgt.setSchool(src.getSchool());
+		//
 		tgt.setName(src.getName());
 		tgt.setImage(src.getImage());
 		tgt.setClientManagers(src.getClientManagers());
 		tgt.setDescription(src.getDescription());
-
 		//
 		tgt.setAircraftType(src.getAircraftType());
 		tgt.setCourseService(src.getCourseService());
@@ -114,8 +118,8 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 	@Override
 	public Course updateCourse(String courseId, Course newCourse) {
 		Course course = findCourse(courseId);
-		School newSchool = schoolService.findSchool(newCourse.getSchool().getId());
 		copyProperties(newCourse, course);
+		School newSchool = schoolService.findSchool(newCourse.getSchool().getId());
 		course.setSchool(newSchool);
 		return safeExecute(() -> courseRepository.save(course), "Update course %s to %s failed", courseId, newCourse);
 	}

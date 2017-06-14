@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.model.Order;
@@ -16,6 +18,8 @@ import net.aircommunity.platform.model.RefundResponse;
  * @author Bin.Zhang
  */
 public interface PaymentService {
+
+	String LOGGER_NAME = "net.aircommunity.platform.payment";
 
 	/**
 	 * Create payment request.
@@ -50,6 +54,7 @@ public interface PaymentService {
 			PaymentNotification notification);
 
 	@Nonnull
-	RefundResponse refundPayment(@Nonnull Payment.Method paymentMethod, @Nonnull Order order);
+	RefundResponse refundPayment(@Nonnull Payment.Method paymentMethod, @Nonnull Order order,
+			@Nonnull BigDecimal refundAmount);
 
 }

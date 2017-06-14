@@ -35,6 +35,7 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableSet;
@@ -65,11 +66,15 @@ import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.AuthcRequest;
 import net.aircommunity.platform.model.AvatarImage;
+import net.aircommunity.platform.model.DailySignin;
+import net.aircommunity.platform.model.DailySigninResponse;
 import net.aircommunity.platform.model.EmailRequest;
 import net.aircommunity.platform.model.ImageCropResult;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.PasswordRequest;
 import net.aircommunity.platform.model.PasswordResetRequest;
 import net.aircommunity.platform.model.Role;
+import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.model.UserAccountRequest;
 import net.aircommunity.platform.model.UsernameRequest;
 import net.aircommunity.platform.nls.M;
@@ -113,99 +118,6 @@ public class AccountResource {
 
 	@Resource
 	private Configuration configuration;
-
-	// TODO AirQ
-	/**
-	 * @deprecated
-	 */
-	// @ApiOperation(value = "login", hidden = true)
-	// @GET
-	// @Path("login")
-	// @PermitAll
-	// @Produces(MediaType.TEXT_HTML)
-	// public Response login(@Context SecurityContext context) {
-	// SimplePrincipal principal = (SimplePrincipal) context.getUserPrincipal();
-	// LOG.debug("principal: {}", principal);
-	// String accountId = null;
-	// if (principal == null) {
-	// return Response.ok("access-denied").build();
-	// }
-	// else {
-	// accountId = principal.getName();
-	// }
-	// Account account = accountService.findAccount(accountId);
-	// LOG.debug("account: {}", account);
-	// String username = getUsername(account);
-	// LOG.debug("username: {}", username);
-	// String token = accessTokenService.generateToken(account.getId(),
-	// ImmutableMap.of(Claims.CLAIM_ROLES, ImmutableSet.of(account.getRole().name()), Claims.CLAIM_EXPIRY,
-	// configuration.getTokenExpirationTimeSeconds(), Constants.CLAIM_USERNAME, username));
-	// String domain = configuration.getPublicHost();
-	//
-	// LOG.debug("domain: {}", domain);
-	// domain = "aircommunity.net";
-	// int maxAge = (int) configuration.getTokenExpirationTimeSeconds();
-	// NewCookie cookie = new NewCookie("token", token, "/"/* path */, domain, NewCookie.DEFAULT_VERSION,
-	// null/* comment */, maxAge, null/* expiry */, false/* secure */, true/* httpOnly */);
-	// return Response.ok("ok").cookie(cookie).build();
-	// }
-
-	/**
-	 * AirQ
-	 * @deprecated
-	 */
-	// TODO AirQ
-	// @ApiOperation(value = "airq", response = AccessToken.class)
-	// @ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 403, message = "") })
-	// @GET
-	// @Path("airq")
-	// @PermitAll
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public Response airq(@Context SecurityContext context) {
-	// SimplePrincipal principal = (SimplePrincipal) context.getUserPrincipal();
-	// LOG.debug("principal: {}", principal);
-	// String accountId = null;
-	// if (principal == null) {
-	// return Response.status(Status.FORBIDDEN).build();
-	// }
-	// else {
-	// accountId = principal.getName();
-	// }
-	// Account account = accountService.findAccount(accountId);
-	// LOG.debug("account: {}", account);
-	// String username = getUsername(account);
-	// Map<String, Object> claims = ImmutableMap.<String, Object> builder()
-	// .put(Claims.CLAIM_ROLES, ImmutableSet.of(account.getRole().name()))
-	// .put(Claims.CLAIM_EXPIRY, configuration.getTokenExpirationTimeSeconds())
-	// .put(Constants.CLAIM_ID, account.getId()).put(Constants.CLAIM_USERNAME, username)
-	// .put(Constants.CLAIM_NICKNAME, account.getNickName()).build();
-	// String token = accessTokenService.generateToken(account.getId(), claims);
-	// return Response.ok(new AccessToken(token)).build();
-	// }
-
-	/**
-	 * Avatar upload to cloud, e.g. ?cropOptions=300x300a50a50 ( {cropsize}a<dx>a<dy> )
-	 */
-	@POST
-	@Path("avatars")
-	@Authenticated
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_JSON)
-	public ImageCropResult uploadAvatarToCloud(@QueryParam("cropOptions") String cropOptions,
-			@MultipartForm AvatarImage avatarImage) {
-		try {
-			LOG.debug("Uploading avatar {} to cloud", avatarImage.getFileName());
-			String extension = MoreFiles.getExtension(avatarImage.getFileName());
-			return fileService.cropImage(
-					String.format(Constants.FILE_UPLOAD_NAME_FORMAT, UUIDs.shortRandom(), extension),
-					avatarImage.getFileData(), cropOptions);
-		}
-		finally {
-			if (avatarImage != null) {
-				avatarImage.close();
-			}
-		}
-	}
 
 	/**
 	 * Create user (registration)
@@ -294,6 +206,49 @@ public class AccountResource {
 		}
 		AccountAuth accountAuthMobile = accountService.findAccountMobile(account.getId());
 		return accountAuthMobile.getPrincipal();
+	}
+
+	/**
+	 * Daily signin
+	 */
+	@POST
+	@Path("daily-signin")
+	@Authenticated
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response dailySignin(@Context SecurityContext context) {
+		String accountId = context.getUserPrincipal().getName();
+		Account account = accountService.findAccount(accountId);
+		if (!User.class.isAssignableFrom(account.getClass())) {
+			LOG.warn("Signin is forbidden for none user account: {}", account);
+			return Response.status(Status.FORBIDDEN).build();
+		}
+		account = accountService.dailySignin(accountId);
+		DailySignin dailySignin = User.class.cast(account).getDailySignin();
+		return Response.ok(new DailySigninResponse(dailySignin)).build();
+	}
+
+	/**
+	 * Avatar upload to cloud, e.g. ?cropOptions=300x300a50a50 ( {cropsize}a<dx>a<dy> )
+	 */
+	@POST
+	@Path("avatars")
+	@Authenticated
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public ImageCropResult uploadAvatarToCloud(@QueryParam("cropOptions") String cropOptions,
+			@MultipartForm AvatarImage avatarImage) {
+		try {
+			LOG.debug("Uploading avatar {} to cloud", avatarImage.getFileName());
+			String extension = MoreFiles.getExtension(avatarImage.getFileName());
+			return fileService.cropImage(
+					String.format(Constants.FILE_UPLOAD_NAME_FORMAT, UUIDs.shortRandom(), extension),
+					avatarImage.getFileData(), cropOptions);
+		}
+		finally {
+			if (avatarImage != null) {
+				avatarImage.close();
+			}
+		}
 	}
 
 	/**
@@ -401,6 +356,7 @@ public class AccountResource {
 	@Path("profile")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
+	@JsonView(JsonViews.User.class)
 	public Response getSelfAccount(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		return buildAccountResponse(accountId);
@@ -591,5 +547,74 @@ public class AccountResource {
 				request.isOtp());
 		accountService.deleteAccount(account.getId());
 	}
+
+	// TODO AirQ
+	/**
+	 * @deprecated
+	 */
+	// @ApiOperation(value = "login", hidden = true)
+	// @GET
+	// @Path("login")
+	// @PermitAll
+	// @Produces(MediaType.TEXT_HTML)
+	// public Response login(@Context SecurityContext context) {
+	// SimplePrincipal principal = (SimplePrincipal) context.getUserPrincipal();
+	// LOG.debug("principal: {}", principal);
+	// String accountId = null;
+	// if (principal == null) {
+	// return Response.ok("access-denied").build();
+	// }
+	// else {
+	// accountId = principal.getName();
+	// }
+	// Account account = accountService.findAccount(accountId);
+	// LOG.debug("account: {}", account);
+	// String username = getUsername(account);
+	// LOG.debug("username: {}", username);
+	// String token = accessTokenService.generateToken(account.getId(),
+	// ImmutableMap.of(Claims.CLAIM_ROLES, ImmutableSet.of(account.getRole().name()), Claims.CLAIM_EXPIRY,
+	// configuration.getTokenExpirationTimeSeconds(), Constants.CLAIM_USERNAME, username));
+	// String domain = configuration.getPublicHost();
+	//
+	// LOG.debug("domain: {}", domain);
+	// domain = "aircommunity.net";
+	// int maxAge = (int) configuration.getTokenExpirationTimeSeconds();
+	// NewCookie cookie = new NewCookie("token", token, "/"/* path */, domain, NewCookie.DEFAULT_VERSION,
+	// null/* comment */, maxAge, null/* expiry */, false/* secure */, true/* httpOnly */);
+	// return Response.ok("ok").cookie(cookie).build();
+	// }
+
+	/**
+	 * AirQ
+	 * @deprecated
+	 */
+	// TODO AirQ
+	// @ApiOperation(value = "airq", response = AccessToken.class)
+	// @ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 403, message = "") })
+	// @GET
+	// @Path("airq")
+	// @PermitAll
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public Response airq(@Context SecurityContext context) {
+	// SimplePrincipal principal = (SimplePrincipal) context.getUserPrincipal();
+	// LOG.debug("principal: {}", principal);
+	// String accountId = null;
+	// if (principal == null) {
+	// return Response.status(Status.FORBIDDEN).build();
+	// }
+	// else {
+	// accountId = principal.getName();
+	// }
+	// Account account = accountService.findAccount(accountId);
+	// LOG.debug("account: {}", account);
+	// String username = getUsername(account);
+	// Map<String, Object> claims = ImmutableMap.<String, Object> builder()
+	// .put(Claims.CLAIM_ROLES, ImmutableSet.of(account.getRole().name()))
+	// .put(Claims.CLAIM_EXPIRY, configuration.getTokenExpirationTimeSeconds())
+	// .put(Constants.CLAIM_ID, account.getId()).put(Constants.CLAIM_USERNAME, username)
+	// .put(Constants.CLAIM_NICKNAME, account.getNickName()).build();
+	// String token = accessTokenService.generateToken(account.getId(), claims);
+	// return Response.ok(new AccessToken(token)).build();
+	// }
 
 }

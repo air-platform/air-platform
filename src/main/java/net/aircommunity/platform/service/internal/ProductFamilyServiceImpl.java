@@ -70,7 +70,7 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 	public ProductFamily reviewProductFamily(String productFamilyId, ReviewStatus reviewStatus, String rejectedReason) {
 		ProductFamily productFamily = findProductFamily(productFamilyId);
 		productFamily.setReviewStatus(reviewStatus);
-		if (reviewStatus == ReviewStatus.APPROVED) {
+		if (reviewStatus != ReviewStatus.APPROVED) {
 			productFamily.setRejectedReason(rejectedReason);
 		}
 		return safeExecute(() -> productFamilyRepository.save(productFamily), "Review product family %s to %s failed",

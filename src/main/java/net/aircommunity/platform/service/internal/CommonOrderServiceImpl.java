@@ -1,11 +1,11 @@
 package net.aircommunity.platform.service.internal;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -85,8 +85,14 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public Order acceptOrderRefund(String orderId) {
-		return doAcceptOrderRefund(orderId);
+	public Order acceptOrderRefund(String orderId, BigDecimal refundAmount) {
+		return doAcceptOrderRefund(orderId, refundAmount);
+	}
+
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	@Override
+	public Order rejectOrderRefund(String orderId, String rejectReason) {
+		return doRejectOrderRefund(orderId, rejectReason);
 	}
 
 	@Override
@@ -94,13 +100,15 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 		return doHandleOrderRefundFailure(orderId, refundFailureCause);
 	}
 
+	// TODO check if #result.id works?
+	// Cache cache = cacheManager.getCache(CACHE_NAME);
+	// Order order = doUpdateOrderStatusByOrderNo(orderNo, status);
+	// cache.put(order.getId(), order);
+	// return order;
+	@CachePut(cacheNames = CACHE_NAME, key = "#result.id")
 	@Override
 	public Order updateOrderStatusByOrderNo(String orderNo, Status status) {
-		// TODO a better way to update cache?
-		Cache cache = cacheManager.getCache(CACHE_NAME);
-		Order order = doUpdateOrderStatusByOrderNo(orderNo, status);
-		cache.put(order.getId(), order);
-		return order;
+		return doUpdateOrderStatusByOrderNo(orderNo, status);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")

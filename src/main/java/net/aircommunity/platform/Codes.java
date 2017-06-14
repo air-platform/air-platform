@@ -49,30 +49,31 @@ public final class Codes {
 	public static final Code APIKEY_NOT_FOUND = Code.notFound(11_002_0001);
 	public static final Code APIKEY_ILLEGAL_ACCESS = Code.illegalAccess(11_002_0002);
 
-	// AIR JET
+	// product
 	public static final Code PRODUCT_NOT_FOUND = Code.notFound(11_003_0001);
-	public static final Code PROMOTION_NOT_FOUND = Code.notFound(11_003_0002);
-	public static final Code PRODUCT_FAQ_NOT_FOUND = Code.notFound(11_003_0003); // TODO re-org-code
+	public static final Code PRODUCT_PROMOTION_NOT_FOUND = Code.notFound(11_003_0002);
+	public static final Code PRODUCT_FAQ_NOT_FOUND = Code.notFound(11_003_0003);
 	public static final Code PRODUCT_FAMILY_NOT_FOUND = Code.notFound(11_003_0004);
 	public static final Code PRODUCT_FAMILY_NOT_APPROVED = Code.notFound(11_003_0005);
 	public static final Code PRODUCT_INVALID_DEPARTURE_DATE = Code.notFound(11_003_0006);
-
-	public static final Code ORDER_NOT_PAYABLE = Code.illegalAccess(11_003_0002); // TODO add illeableState?
-	public static final Code ORDER_NOT_FOUND = Code.notFound(11_003_0002);
-	public static final Code ORDER_ILLEGAL_STATUS = Code.illegalAccess(11_003_0003);
-	public static final Code ORDER_INSTALMENT_NOT_FOUND = Code.illegalAccess(11_003_0003); // TODO re-org-code
-
-	public static final Code AIRJET_ALREADY_EXISTS = Code.alreadyExists(11_003_0004);
-	public static final Code AIRJET_NOT_FOUND = Code.notFound(11_003_0005);
-	public static final Code BANNER_NOT_FOUND = Code.notFound(11_003_0005);  //XXX
-	public static final Code AIRCRAFT_ALREADY_EXISTS = Code.alreadyExists(11_003_0006);
-	public static final Code AIRCRAFT_NOT_FOUND = Code.notFound(11_003_0007);
-	public static final Code SALESPACKAGE_NOT_FOUND = Code.notFound(11_003_0008);
-	public static final Code PASSENGER_NOT_FOUND = Code.notFound(11_003_0009);
-	public static final Code PASSENGER_REQUIRED = Code.invalidArgument(11_003_0010);
-	public static final Code AIRPORT_NOT_FOUND = Code.notFound(11_003_0011);
-	public static final Code AIRPORT_ALREADY_EXISTS = Code.notFound(11_003_0012);
-	public static final Code AIRPORT_INVALID_CODE = Code.invalidArgument(11_003_0013);
+	// order
+	public static final Code ORDER_NOT_PAYABLE = Code.illegalState(11_003_1001);
+	public static final Code ORDER_NOT_FOUND = Code.notFound(11_003_1002);
+	public static final Code ORDER_ILLEGAL_STATUS = Code.illegalAccess(11_003_1003);
+	public static final Code ORDER_INSTALMENT_NOT_FOUND = Code.illegalAccess(11_003_1004);
+	public static final Code ORDER_REFUND_FAILURE = Code.illegalState(11_003_1005);
+	// common product related
+	public static final Code AIRJET_ALREADY_EXISTS = Code.alreadyExists(11_003_2001);
+	public static final Code AIRJET_NOT_FOUND = Code.notFound(11_003_2002);
+	public static final Code BANNER_NOT_FOUND = Code.notFound(11_003_2003);
+	public static final Code AIRCRAFT_ALREADY_EXISTS = Code.alreadyExists(11_003_2004);
+	public static final Code AIRCRAFT_NOT_FOUND = Code.notFound(11_003_2005);
+	public static final Code SALESPACKAGE_NOT_FOUND = Code.notFound(11_003_2006);
+	public static final Code PASSENGER_NOT_FOUND = Code.notFound(11_003_2007);
+	public static final Code PASSENGER_REQUIRED = Code.invalidArgument(11_003_2008);
+	public static final Code AIRPORT_NOT_FOUND = Code.notFound(11_003_2009);
+	public static final Code AIRPORT_ALREADY_EXISTS = Code.notFound(11_003_2010);
+	public static final Code AIRPORT_INVALID_CODE = Code.invalidArgument(11_003_2011);
 
 	// fleet
 	public static final Code FLEET_NOT_FOUND = Code.notFound(11_004_0001);
@@ -108,6 +109,9 @@ public final class Codes {
 	public static final Code COMMENT_NOT_FOUND = Code.notFound(11_013_0001);
 	public static final Code COMMENT_NOT_ALLOWED = Code.notPerimitted(11_013_0002);
 	public static final Code COMMENT_INVALID_DATA = Code.invalidArgument(11_013_0003);
+
+	// air class
+	public static final Code AIRCLASS_NOT_FOUND = Code.notFound(11_014_0001);
 
 	private Codes() {
 		throw new AssertionError();

@@ -162,7 +162,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		T product = doFindProduct(productId);
 		try {
 			product.setReviewStatus(reviewStatus);
-			if (reviewStatus == ReviewStatus.APPROVED) {
+			if (reviewStatus != ReviewStatus.APPROVED) {
 				product.setRejectedReason(rejectedReason);
 			}
 			return getProductRepository().save(product);

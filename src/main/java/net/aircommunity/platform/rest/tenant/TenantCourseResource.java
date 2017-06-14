@@ -56,6 +56,7 @@ public class TenantCourseResource extends TenantProductResourceSupport<Course> {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response create(@NotNull @Valid Course request, @Context UriInfo uriInfo) {
+		LOG.debug("Creating: {}", request);
 		Course created = courseService.createCourse(request.getSchool().getId(), request);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created: {}", uri);

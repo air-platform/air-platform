@@ -10,8 +10,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -58,6 +60,7 @@ public class User extends Account {
 	private String city;
 
 	// multiple hobbies with comma(,) separated, e.g. travel, shopping
+	@Lob
 	@Column(name = "hobbies")
 	private String hobbies;
 
@@ -71,16 +74,15 @@ public class User extends Account {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", orphanRemoval = true)
 	private List<Passenger> passengers = new ArrayList<>();
 
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "dailysignin_id")
+	private DailySignin dailySignin;
+
 	public User() {
 	}
 
 	public User(String id) {
 		this.id = id;
-	}
-
-	@PrePersist
-	private void beforeSave() {
-		role = Role.USER;
 	}
 
 	public long getPoints() {
@@ -206,6 +208,14 @@ public class User extends Account {
 			}
 		}
 		return null;
+	}
+
+	public DailySignin getDailySignin() {
+		return dailySignin;
+	}
+
+	public void setDailySignin(DailySignin dailySignin) {
+		this.dailySignin = dailySignin;
 	}
 
 	@Override

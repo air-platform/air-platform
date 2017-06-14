@@ -9,6 +9,7 @@ import javax.persistence.MappedSuperclass;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -46,6 +47,7 @@ public abstract class Persistable implements Serializable {
 	 * 
 	 * @return if the object is new
 	 */
+	@XmlTransient
 	public boolean isNew() {
 		return id == null;
 	}

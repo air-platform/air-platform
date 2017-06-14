@@ -18,6 +18,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String FLEET_NOT_SELECTED;
 	public static String REFUND_SUCCESS;
 	public static String REFUND_FAILURE;
+	public static String REFUND_REQUEST_REJECTED;
 
 	//
 	public static String PRODUCT_NOT_FOUND;
@@ -34,11 +35,15 @@ public class LocalizedMessages extends NLSResource {
 	public static String ORDER_INSTALMENT_NOT_FOUND;
 	public static String ORDER_ILLEGAL_STATUS;
 	public static String ORDER_NOT_PAYABLE;
+	public static String ORDER_REFUND_FAILURE;
 
 	public static String COMMENT_NOT_ALLOWED;
 	public static String COMMENT_NOT_FOUND;
 	public static String COMMENT_INVALID_SOURCE;
 	public static String COMMENT_NOT_ALLOWED_ORDER_NOT_FINISHED;
+
+	// air class
+	public static String AIRCLASS_NOT_FOUND;
 
 	public static String SCHOOL_NOT_FOUND;
 	public static String COURSE_NOT_FOUND;
@@ -52,7 +57,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String AIRPORT_NOT_FOUND;
 
 	public static String BANNER_NOT_FOUND;
-	
+
 	public static String AIRJET_ALREADY_EXISTS;
 	public static String AIRJET_TYPE_NOT_FOUND;
 	public static String AIRJET_NOT_FOUND;

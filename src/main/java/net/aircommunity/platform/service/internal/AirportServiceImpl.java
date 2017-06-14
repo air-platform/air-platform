@@ -51,6 +51,10 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 
 	@PostConstruct
 	private void init() {
+		if (airportRepository.count() > 0) {
+			LOG.warn("Airport information({}) is already populated, skip importing it to DB", AIRPORTS_INFO);
+			return;
+		}
 		try {
 			String json = MoreFiles.toString(AIRPORTS_INFO);
 			if (json == null) {
@@ -83,8 +87,8 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 					LOG.warn("Failed to import airport: " + airport, e);
 				}
 			}
-			LOG.info("Imported {}(new)/{}(updated)/{}(total) airports information. ", imported, updated,
-					airports.size());
+			LOG.info("Successfully imported {}(new)/{}(updated)/{}(total) airports information from {}. ", imported,
+					updated, airports.size(), AIRPORTS_INFO);
 		}
 		catch (Exception e) {
 			LOG.warn("Failed to initialize airport information, casue: " + e.getMessage(), e);

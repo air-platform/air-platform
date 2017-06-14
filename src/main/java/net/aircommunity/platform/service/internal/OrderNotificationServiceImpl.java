@@ -117,6 +117,8 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 			break;
 
 		case PAYMENT:
+		case REFUNDED:
+		case REFUND_FAILED:
 			// TODO send SMS to notify customer and tenant customer manager ?
 			break;
 

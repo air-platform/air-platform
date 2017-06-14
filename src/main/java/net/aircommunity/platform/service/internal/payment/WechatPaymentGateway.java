@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.internal.payment;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 
 import net.aircommunity.platform.model.Order;
@@ -43,7 +45,7 @@ public class WechatPaymentGateway implements PaymentGateway {
 	}
 
 	@Override
-	public RefundResponse refundPayment(Order order) {
+	public RefundResponse refundPayment(Order order, BigDecimal refundAmount) {
 		// TODO Auto-generated method stub
 		return null;
 	}

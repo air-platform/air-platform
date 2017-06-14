@@ -125,10 +125,7 @@ public class AdminProductFamilyResource extends BaseResourceSupport {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void disapproveProductFamily(@PathParam("productFamilyId") String productFamilyId,
 			JsonObject rejectedReason) {
-		String reason = null;
-		if (rejectedReason != null) {
-			reason = rejectedReason.getString("reason");
-		}
+		String reason = getRejectedReason(rejectedReason);
 		productFamilyService.reviewProductFamily(productFamilyId, ReviewStatus.REJECTED, reason);
 	}
 

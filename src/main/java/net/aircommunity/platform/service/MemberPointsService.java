@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service;
 
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.model.PointsExchange;
@@ -40,6 +42,13 @@ public interface MemberPointsService {
 	 * @return points for this rule
 	 */
 	long getPointsEarnedFromRule(@Nonnull String pointRule);
+
+	/**
+	 * Point rules for daily signin.
+	 * 
+	 * @return point rules for daily signin or empty if none
+	 */
+	Map<Integer, Long> getDailySigninPointRules();
 
 	/**
 	 * Exchange points for money

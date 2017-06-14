@@ -21,6 +21,7 @@ public final class Code implements Serializable {
 	private static final int NOT_FOUND = 404;
 	private static final int ALREADY_EXISTS = 409;
 	private static final int ILLEGAL_ACCESS = 409;
+	private static final int ILLEGAL_STATE = 409;
 
 	/**
 	 * This resource is gone. Used to indicate that an API endpoint has been turned off.
@@ -59,6 +60,10 @@ public final class Code implements Serializable {
 
 	public static Code success(int value) {
 		return new Code(SUCCESS, value);
+	}
+
+	public static Code illegalState(int value) {
+		return new Code(ILLEGAL_STATE, value);
 	}
 
 	public static Code invalidArgument(int value) {

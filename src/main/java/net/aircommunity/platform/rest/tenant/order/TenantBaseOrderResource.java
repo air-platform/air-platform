@@ -1,5 +1,7 @@
 package net.aircommunity.platform.rest.tenant.order;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
@@ -12,11 +14,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonView;
 
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.nls.M;
+import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.CommonOrderService;
 
 /**
@@ -25,7 +34,8 @@ import net.aircommunity.platform.service.CommonOrderService;
  * @author Bin.Zhang
  */
 @SuppressWarnings("unchecked")
-public abstract class TenantBaseOrderResource<T extends Order> {
+public abstract class TenantBaseOrderResource<T extends Order> extends BaseResourceSupport {
+	private static final Logger LOG = LoggerFactory.getLogger(TenantBaseOrderResource.class);
 
 	@Resource
 	private CommonOrderService commonOrderService;
@@ -91,10 +101,27 @@ public abstract class TenantBaseOrderResource<T extends Order> {
 	 * Mark order as refunding (accepted user refund request)
 	 */
 	@POST
-	@Path("{orderId}/refund")
+	@Path("{orderId}/refund/accept")
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
-	public void refundOrder(@PathParam("orderId") String orderId) {
-		commonOrderService.acceptOrderRefund(orderId);
+	public void acceptOrderRefund(@PathParam("orderId") String orderId, JsonObject request) {
+		LOG.debug("Refund request: {}", request);
+		BigDecimal amount = getAmount(request);
+		LOG.debug("Refund amount original: {}", amount);
+		Order order = commonOrderService.acceptOrderRefund(orderId, amount);
+		if (order.getStatus() == Order.Status.REFUND_FAILED) {
+			throw new AirException(Codes.ORDER_REFUND_FAILURE, M.msg(M.ORDER_REFUND_FAILURE, order.getOrderNo()));
+		}
+	}
+
+	/**
+	 * Mark order as refunding (reject user refund request)
+	 */
+	@POST
+	@Path("{orderId}/refund/reject")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+	public void rejectOrderRefund(@PathParam("orderId") String orderId, JsonObject rejectedReason) {
+		String reason = getRejectedReason(rejectedReason);
+		commonOrderService.rejectOrderRefund(orderId, reason);
 	}
 
 	/**

@@ -3,7 +3,6 @@ package net.aircommunity.platform.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
-import javax.persistence.PrePersist;
 
 /**
  * Tenant (Jet service provider) profile.
@@ -44,11 +43,6 @@ public class Tenant extends Account {
 
 	public Tenant(String id) {
 		this.id = id;
-	}
-
-	@PrePersist
-	private void beforeSave() {
-		role = Role.TENANT;
 	}
 
 	public String getEmail() {

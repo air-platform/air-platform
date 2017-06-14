@@ -292,6 +292,15 @@ public interface AccountService {
 	Account refreshApiKey(@Nonnull String accountId);
 
 	/**
+	 * Daily signin
+	 * 
+	 * @param accountId the accountId
+	 * @return update account (user only)
+	 */
+	@Nonnull
+	Account dailySignin(@Nonnull String accountId);
+
+	/**
 	 * Delete an account by principal.
 	 * 
 	 * @param accountId the accountId

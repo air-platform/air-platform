@@ -40,14 +40,21 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 public abstract class Order extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-	// finished, closed, cancelled or refunded
+	/**
+	 * All not finished or closed or refund
+	 */
 	public static final EnumSet<Status> PENDING_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
-			Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.TICKET_RELEASED);
+			Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.TICKET_RELEASED, Status.PARTIAL_PAID, Status.PAID);
 
+	/**
+	 * Refund
+	 */
 	public static final EnumSet<Status> REFUND_STATUSES = EnumSet.of(Status.REFUND_REQUESTED, Status.REFUNDING,
-			Status.REFUNDED);
+			Status.REFUNDED, Status.REFUND_FAILED);
 
-	// finished or closed
+	/**
+	 * Finished or closed
+	 */
 	public static final EnumSet<Status> COMPLETED_STATUSES = EnumSet.of(Status.FINISHED, Status.CLOSED);
 
 	// allow cancel
@@ -57,11 +64,6 @@ public abstract class Order extends Persistable {
 	// finished, closed, cancelled or refunded
 	private static final EnumSet<Status> TERMINATION_STATUSES = EnumSet.of(Status.FINISHED, Status.CANCELLED,
 			Status.REFUNDED, Status.CLOSED);
-
-	// TODO add ALIPAY TradeNo?
-	// @XmlElement --> product
-	// @Column(name = "discount", nullable = true)
-	// protected double discount;
 
 	// Order Number
 	@XmlElement

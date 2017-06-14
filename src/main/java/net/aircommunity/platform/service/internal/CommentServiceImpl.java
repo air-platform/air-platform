@@ -87,7 +87,9 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 				throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.msg(M.COMMENT_NOT_ALLOWED));
 			}
 			if (order.getStatus() != Order.Status.FINISHED) {
-				LOG.error("Account {} comment on order {} is not allowed, order is not FINISHED", accountId, orderId);
+				LOG.error(
+						"Account {} comment on order {} is not allowed, order is not FINISHED, current order status: {}",
+						accountId, orderId, order.getStatus());
 				throw new AirException(Codes.COMMENT_NOT_ALLOWED, M.msg(M.COMMENT_NOT_ALLOWED_ORDER_NOT_FINISHED));
 			}
 			// only can be null if CharterOrder

@@ -21,12 +21,12 @@ public abstract class StandardOrder extends Order {
 	private static final long serialVersionUID = 1L;
 
 	// single payment
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "payment_id")
 	protected Payment payment;
 
 	// single refund
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "refund_id")
 	protected Refund refund;
 

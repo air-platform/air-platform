@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.spi;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.model.Order;
@@ -30,6 +32,6 @@ public interface PaymentGateway {
 	PaymentResponse processServerPaymentNotification(@Nonnull PaymentNotification notification);
 
 	@Nonnull
-	RefundResponse refundPayment(@Nonnull Order order);
+	RefundResponse refundPayment(@Nonnull Order order, @Nonnull BigDecimal refundAmount);
 
 }

@@ -15,6 +15,7 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.nls.M;
+import net.aircommunity.platform.repository.SettingsRepository;
 import net.aircommunity.platform.service.AccountService;
 
 /**
@@ -27,6 +28,9 @@ abstract class AbstractServiceSupport {
 
 	@Resource
 	protected AccountService accountService;
+
+	@Resource
+	protected SettingsRepository settingsRepository;
 
 	@Resource
 	protected CacheManager cacheManager;

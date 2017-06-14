@@ -45,7 +45,7 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 	public Promotion findPromotion(String promotionId) {
 		Promotion promotion = promotionRepository.findOne(promotionId);
 		if (promotion == null) {
-			throw new AirException(Codes.PROMOTION_NOT_FOUND, M.msg(M.PROMOTION_NOT_FOUND));
+			throw new AirException(Codes.PRODUCT_PROMOTION_NOT_FOUND, M.msg(M.PROMOTION_NOT_FOUND));
 		}
 		return promotion;
 	}

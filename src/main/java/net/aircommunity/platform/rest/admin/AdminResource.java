@@ -20,9 +20,11 @@ import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.rest.AirClassResource;
 import net.aircommunity.platform.rest.AirJetResource;
 import net.aircommunity.platform.rest.AirportResource;
 import net.aircommunity.platform.rest.BannerResource;
+import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.rest.CommentResource;
 import net.aircommunity.platform.rest.PromotionResource;
 import net.aircommunity.platform.rest.admin.order.AdminOrderResource;
@@ -71,7 +73,7 @@ import net.aircommunity.platform.service.CommonProductService;
 @RESTful
 @Path("platform")
 @RolesAllowed(Roles.ROLE_ADMIN)
-public class AdminResource {
+public class AdminResource extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(AdminResource.class);
 
 	private static final String TENANTS_PATH_PREFIX = "tenants";
@@ -140,6 +142,14 @@ public class AdminResource {
 	@Path("") // path already in the resource
 	public AirJetResource airjets() {
 		return airJetResource;
+	}
+
+	@Resource
+	private AirClassResource airClassResource;
+
+	@Path("") // path already in the resource
+	public AirClassResource airclasses() {
+		return airClassResource;
 	}
 
 	@Resource
@@ -294,16 +304,13 @@ public class AdminResource {
 	}
 
 	/**
-	 * Disapprove a tenant product
+	 * Disapprove a tenant product (body: {"reason": "xxxx"} )
 	 */
 	@POST
 	@Path("products/{productId}/disapprove")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void disapproveProduct(@PathParam("productId") String productId, JsonObject rejectedReason) {
-		String reason = null;
-		if (rejectedReason != null) {
-			reason = rejectedReason.getString("reason");
-		}
+		String reason = getRejectedReason(rejectedReason);
 		commonProductService.reviewProduct(productId, ReviewStatus.REJECTED, reason);
 	}
 

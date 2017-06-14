@@ -1,5 +1,7 @@
 package net.aircommunity.platform.model;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -68,14 +70,16 @@ public class Settings extends Persistable {
 	}
 
 	public static Settings newSystemSettings() {
-		Settings settings = new Settings();
-		settings.category = CATEGORY_SYSTEM;
-		return settings;
+		return newSettings(CATEGORY_SYSTEM);
 	}
 
 	public static Settings newUserSettings() {
+		return newSettings(CATEGORY_USER);
+	}
+
+	public static Settings newSettings(String category) {
 		Settings settings = new Settings();
-		settings.category = CATEGORY_USER;
+		settings.category = Objects.requireNonNull(category, "category cannot be null");
 		return settings;
 	}
 }

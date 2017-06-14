@@ -11,6 +11,7 @@
     <property name="max_file_size" value="10MB" />
     <property name="max_history" value="20" />
     <property name="access_log_pattern" value="[${PID:-}] [%d{ISO8601}] [%-5level] [ACCESS] - %msg%n" />
+    <property name="payment_log_pattern" value="[${PID:-}] [%d{ISO8601}] [%-5level] [PAYMENT] [%X{paymentMethod}] [%X{paymentAction}] - %msg%n" />
     <property name="normal_log_pattern" value="[${PID:-}] [%d{ISO8601}] [%thread] [%-5level] [%15.15t][%-40.40logger{39}] - %msg%n" />
     <property name="err_log_pattern" value="[${PID:-}] [%d{ISO8601}] [%thread] [%-5level] [%15.15t][%-40.40logger{39}] - %msg%n" />
     <property name="console_log_pattern" value="%clr([${PID:-}]){magenta} %clr([%d{ISO8601}]){faint} %clr([%-5level]) %clr([%15.15t]){faint} %clr([%-40.40logger{39}]){cyan} %clr(-){faint} %m%n" />
@@ -28,6 +29,21 @@
         </rollingPolicy>
         <encoder>
             <pattern>${access_log_pattern}</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="PAYMENT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.dir}/air-${logging.suffix}-payment.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logging.dir}/air-${logging.suffix}.payment-log-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${max_file_size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+             <!-- keep N days worth of history -->
+             <maxHistory>${max_history}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${payment_log_pattern}</pattern>
         </encoder>
     </appender>
     
@@ -85,6 +101,9 @@
 	    <logger name="net.aircommunity.platform.rest.filter" level="DEBUG" additivity="false">
 	         <appender-ref ref="ACCESS" />
 	    </logger>
+	    <logger name="net.aircommunity.platform.payment" level="DEBUG" additivity="false">
+	         <appender-ref ref="PAYMENT" />
+	    </logger>
 	</springProfile>
     
     <springProfile name="prd">
@@ -92,6 +111,9 @@
 	     <!-- additivity=false ensures access log data only goes to the access log -->
 	    <logger name="net.aircommunity.platform.rest.filter" level="INFO" additivity="false">
 	         <appender-ref ref="ACCESS" />
+	    </logger>
+	     <logger name="net.aircommunity.platform.payment" level="INFO" additivity="false">
+	         <appender-ref ref="PAYMENT" />
 	    </logger>
     </springProfile>
     

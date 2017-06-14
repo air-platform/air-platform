@@ -46,12 +46,11 @@ public class DatabaseTokenConfigStorage implements AccessTokenConfigStorage {
 		try {
 			Settings settings = settingsRepository.findByName(keyId);
 			if (settings == null) {
-				settings = new Settings();
+				settings = Settings.newSystemSettings();
 			}
 			String body = objectMapper.writeValueAsString(config);
 			settings.setName(keyId);
 			settings.setValue(body);
-			settings.setCategory(Settings.CATEGORY_SYSTEM);
 			settingsRepository.save(settings);
 		}
 		catch (Exception e) {

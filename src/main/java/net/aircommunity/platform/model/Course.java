@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -69,9 +70,12 @@ public class Course extends PricedProduct {
 	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date endDate;
 
+	// enrollment requirement
+	@Lob
 	@Column(name = "enrollment")
 	private String enrollment;
 
+	@Lob
 	@Column(name = "course_service")
 	private String courseService;
 

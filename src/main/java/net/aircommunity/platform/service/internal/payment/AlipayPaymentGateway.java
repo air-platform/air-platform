@@ -45,6 +45,7 @@ import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.RefundRepository;
 import net.aircommunity.platform.service.CommonOrderService;
+import net.aircommunity.platform.service.PaymentService;
 import net.aircommunity.platform.service.spi.PaymentGateway;
 
 /**
@@ -54,7 +55,7 @@ import net.aircommunity.platform.service.spi.PaymentGateway;
  */
 @Service
 public class AlipayPaymentGateway implements PaymentGateway {
-	private static final Logger LOG = LoggerFactory.getLogger(AlipayPaymentGateway.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PaymentService.LOGGER_NAME);
 
 	private static final String APP_ID = "2017060907455116";
 	private static final String APP_PRIVATE_KEY = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCmD0tN9FnXpnbA7KbdxTKHOm1k+HKveD5skZQ/r2ZV43rQFHOtQQEY2sdvNgBeUKAnv15PDf6uFyD9VpqtDzhSR9uFDLF7Gz6BVNByEKno5on1FDT1loUHz0/yXMxfapYpk5SLgXowI0cmn2vIzhxeHF4zLK9oU39c4bpmtvIDA7NHS2LuQmuCoLVuwtsuMaqFuJ3pMG9oZywC8Z5EVd3ogjyyxDbKgY897jO0hhv71/SfZ9GOAgrFNBpGMZO3nUtrpk7H7Yx1E3EuzKryplf8EdUs/WgfmSfhRw6yIKMaW0hM9/GdG670SkwEwuvrpDdReiYROUDtbCihioi5y+2/AgMBAAECggEACvTPXyFUHCpbg3cZu2AbaVithw/tYS5pz/f69Ai6k8gifkAbMb8sN1uX9Pp3I8HmDzlNG6Isv4e/IXfpVKnAaY1cKncf7qNpiFb0OdJno3oyd/0RUXLQ7Cb9e1wsD8+UgMG/90Rfr3VkaGP0VJdkv8DXZkD4gcWgjZxHFCfV5+TnScLQqgWmByu5pJKPuQX4XnWajexM1nJQm2Go1OTC8zEChBc3whSZyYqnBAQU4rS7Pz83seTUDFmPAG7xWKnBLT/jy9TpwOyHpMsHFismLJXCZHF+aGq7Wyx+Xemv4r5a6UEBfHSY3eACl2mElYESyi6CQkoNH2PaGdtNSLOcQQKBgQDhpQ2wXl+q3w5G4UV6eSBX4frG3bSxiI5HM+xMsE+kQhu99wf3Ri8P8MhUBmtKnKl4j4KgEZt0kmxzlFlT8dQ7Tj7bO5x4auCZi2YmKq/37x0iFrUQiXfyego1FZxUeNTcKWiHHi5db3OCc+fwI8YnzdOJ2KKRDXdi6zhw7kuhWQKBgQC8ZjObionxX/mi3y4GvbrNSSkO9jzSUJ9nMeBcy1hpBC695gXoSoR5QQtRMdQxWtK4c6+8MgJMPdCwSUsAF4pvI0LrZPaFIUWEb9pUZkLY1+mhMf87xAFAa78CM5p2J25n5jq1t6PTn0+JbCRlsjgIsM5emecAx/rXX1NT8klM1wKBgC8OP5uPIr48g/quEdInnmIVYznDlGINizY4EsgvYHxtuOFVudiMT1YwrWYwbIGDyCe3LdN5uISH4Iv93N8PqGWxvJP1i3zlNO9wTZ4Z+tZmjBnGyH2pXVU4tBY76n0HMcSz8fNzjNG5Y0pKJ41BuJomZz3w6n37Y/FCAmQynZ0JAoGBALPkms6ggIr8a6/7j0VckSxH+W6R7Q2dcjflRikU+bx9A+zL4UQnM0tcsmO7QrRF1wPNYzY+QjdupwBNW9IgqEzqzJFcfJAubuTAsSb55kaMFEeZJ+93fwJ2X5LIl2rOx/tpuRGe4k3FxvqfSjnY7OxPdx6Zshvq2Dgii7ySky9NAoGBAMtDw4cQ+RLZxf9dAoJO6QmdmJKFgI+UZP/oLsNtqa3eqQU7W2/jS2pVm5bC3uebjCs+keKad9ESQ3ddiULThe1UfHelbpLSpSmTTxwcx29qtAgrQ+jlIoJmKfSMGR0Y6ahQaCCjXKsLs24TCOlbqJtT0Sk5aRiMffkX+A2X9nSb";
@@ -68,17 +69,21 @@ public class AlipayPaymentGateway implements PaymentGateway {
 	// TRADE_FINISHED: 交易结束，不可退款, TRADE_SUCCESS: 交易支付成功
 	private static final String TRADE_FINISHED = "TRADE_FINISHED";
 	private static final String TRADE_SUCCESS = "TRADE_SUCCESS";
-	private static final PaymentResponse PAYMENT_RESPONSE_FAILURE = new PaymentResponse("failure");
-	private static final PaymentResponse PAYMENT_RESPONSE_SUCCESS = new PaymentResponse("success");
+	// TRADE_CLOSED: 未付款交易超时关闭，或支付完成后全额退款
+	private static final String TRADE_CLOSED = "TRADE_CLOSED";
+	private static final PaymentResponse NOTIFICATION_RESPONSE_FAILURE = new PaymentResponse("failure");
+	private static final PaymentResponse NOTIFICATION_RESPONSE_SUCCESS = new PaymentResponse("success");
 	private static final SimpleDateFormat PAYMENT_TIMESTAMP_FORMATTER = DateFormats.simple("yyyy-MM-dd HH:mm:ss");
-	private static final String PAYMENT_RESULT_TRADE_APP_PAY_RESPONSE = "alipay_trade_app_pay_response";
-	private static final String PAYMENT_RESULT_STATUS = "resultStatus";
-	private static final String PAYMENT_RESULT_OUT_TRADE_NO = "out_trade_no";
-	private static final String PAYMENT_RESULT_TRADE_NO = "trade_no";
-	private static final String PAYMENT_RESULT_TRADE_STATUS = "trade_status";
-	private static final String PAYMENT_RESULT_APP_ID = "app_id";
-	private static final String PAYMENT_RESULT_GMT_PAYMENT = "gmt_payment";
-	private static final String PAYMENT_RESULT_TOTAL_AMOUNT = "total_amount";
+	private static final String NOTIFICATION_RESULT_TRADE_APP_PAY_RESPONSE = "alipay_trade_app_pay_response";
+	private static final String NOTIFICATION_RESULT_STATUS = "resultStatus";
+	private static final String NOTIFICATION_RESULT_OUT_TRADE_NO = "out_trade_no";
+	private static final String NOTIFICATION_RESULT_TRADE_NO = "trade_no";
+	private static final String NOTIFICATION_RESULT_TRADE_STATUS = "trade_status";
+	private static final String NOTIFICATION_RESULT_APP_ID = "app_id";
+	private static final String NOTIFICATION_RESULT_GMT_PAYMENT = "gmt_payment";
+	private static final String NOTIFICATION_RESULT_TOTAL_AMOUNT = "total_amount";
+	// private static final String NOTIFICATION_RESULT_GMT_REFUND = "gmt_refund";
+	// private static final String NOTIFICATION_RESULT_REFUND_FEE = "refund_fee";
 	private static final String PAYMENT_STATUS_SUCCESS = "9000"; // code: 9000, 订单支付成功
 
 	private final AlipayClient alipayClient;
@@ -107,6 +112,8 @@ public class AlipayPaymentGateway implements PaymentGateway {
 
 	@Override
 	public PaymentRequest createPaymentRequest(Order order) {
+		LOG.debug("Create payment request for order: {}", order);
+		LOG.info("orderNo: {}", order.getOrderNo());
 		AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
 		// SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
 		AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
@@ -129,12 +136,12 @@ public class AlipayPaymentGateway implements PaymentGateway {
 		model.setProductCode(ALIPAY_PRODUCT_CODE);
 		request.setBizModel(model);
 		request.setNotifyUrl(configuration.getAlipayNotifyUrl());
-		LOG.debug("Alipay notify url: {}", configuration.getAlipayNotifyUrl());
+		LOG.debug("notify url: {}", configuration.getAlipayNotifyUrl());
 		try {
 			AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
 			// 就是orderString 可以直接给客户端请求，无需再做处理
 			String orderString = response.getBody();
-			LOG.debug("Alipay orderString: {}", orderString);
+			LOG.info("orderInfo: {}", orderString);
 			return new PaymentRequest(orderString);
 		}
 		catch (AlipayApiException e) {
@@ -182,8 +189,8 @@ public class AlipayPaymentGateway implements PaymentGateway {
 	@Override
 	public PaymentVerification verifyClientPaymentNotification(PaymentNotification notification) {
 		Map<String, String> result = (Map<String, String>) notification.getData();
-		LOG.debug("{} client notification: {}", getPaymentMethod(), result);
-		String resultStatus = result.get(PAYMENT_RESULT_STATUS);
+		LOG.info("client notification: {}", result);
+		String resultStatus = result.get(NOTIFICATION_RESULT_STATUS);
 		if (PAYMENT_STATUS_SUCCESS.equals(resultStatus)) {
 			try {
 				// 1) parse result (it also will verified sign)
@@ -193,10 +200,10 @@ public class AlipayPaymentGateway implements PaymentGateway {
 						new TypeReference<Map<String, Object>>() {
 						});
 				Map<String, Object> tradePayResponse = (Map<String, Object>) resultBody
-						.get(PAYMENT_RESULT_TRADE_APP_PAY_RESPONSE);
+						.get(NOTIFICATION_RESULT_TRADE_APP_PAY_RESPONSE);
 
 				// 2) check APP_ID
-				String appId = (String) tradePayResponse.get(PAYMENT_RESULT_APP_ID);
+				String appId = (String) tradePayResponse.get(NOTIFICATION_RESULT_APP_ID);
 				if (APP_ID.equals(appId)) {
 					String orderNo = response.getOutTradeNo();
 					BigDecimal totalAmount = new BigDecimal(response.getTotalAmount());
@@ -229,101 +236,122 @@ public class AlipayPaymentGateway implements PaymentGateway {
 	public PaymentResponse processServerPaymentNotification(PaymentNotification notification) {
 		try {
 			Map<String, String> params = (Map<String, String>) notification.getData();
-			String orderNo = params.get(PAYMENT_RESULT_OUT_TRADE_NO); // 商户订单号
-			String tradeNo = params.get(PAYMENT_RESULT_TRADE_NO); // 流水号
-			String tradeStatus = params.get(PAYMENT_RESULT_TRADE_STATUS); // 交易状态
-			String appId = params.get(PAYMENT_RESULT_APP_ID); // 支付宝分配给开发者的应用Id
-			Date paymentTimestamp = PAYMENT_TIMESTAMP_FORMATTER.parse(params.get(PAYMENT_RESULT_GMT_PAYMENT)); // 交易付款时间
-			BigDecimal totalAmount = new BigDecimal(params.get(PAYMENT_RESULT_TOTAL_AMOUNT)); // 订单金额
+			LOG.info("server notificaion: {}", params);
+			String orderNo = params.get(NOTIFICATION_RESULT_OUT_TRADE_NO); // 商户订单号
+			String tradeNo = params.get(NOTIFICATION_RESULT_TRADE_NO); // 流水号
+			String tradeStatus = params.get(NOTIFICATION_RESULT_TRADE_STATUS); // 交易状态
+			String appId = params.get(NOTIFICATION_RESULT_APP_ID); // 支付宝分配给开发者的应用Id
+			BigDecimal totalAmount = new BigDecimal(params.get(NOTIFICATION_RESULT_TOTAL_AMOUNT)); // 订单金额
 
-			// 1) check trade status
-			if (!(tradeStatus.equals(TRADE_FINISHED) || tradeStatus.equals(TRADE_SUCCESS))) {
-				LOG.error("Payment trade status {} is not success, payment failed", tradeStatus);
-				return PAYMENT_RESPONSE_FAILURE;
-			}
-
-			// 2) verify sign
+			// 1) verify sign
 			boolean signVerified = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, ALIPAY_PAY_CHARSET,
 					ALIPAY_SIGN_TYPE);
-			// boolean signVerified = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, ALIPAY_PAY_CHARSET);
 			if (!signVerified) {
 				LOG.error("Signature verification failure, payment failed");
-				return PAYMENT_RESPONSE_FAILURE;
+				return NOTIFICATION_RESPONSE_FAILURE;
 			}
 
-			// 3) check APP_ID
+			// 2) check APP_ID
 			if (!APP_ID.equals(appId)) {
 				LOG.error("APP ID mismatch expected: {}, but was: {}, payment failed", APP_ID, appId);
-				return PAYMENT_RESPONSE_FAILURE;
+				return NOTIFICATION_RESPONSE_FAILURE;
 			}
 
-			// 3) check orderNo existence
 			Optional<Order> orderRef = commonOrderService.lookupByOrderNo(orderNo);
-			if (!orderRef.isPresent()) {
-				LOG.error("OrderNo: {} not exists, payment failed", orderNo);
-				return PAYMENT_RESPONSE_FAILURE;
-			}
+			// 3) check trade status
+			switch (tradeStatus) {
+			// refund success or payment timeout and closed
+			case TRADE_CLOSED:
+				// 交易退款时间
+				// Date refundTimestamp = PAYMENT_TIMESTAMP_FORMATTER.parse(params.get(NOTIFICATION_RESULT_GMT_REFUND));
+				// 总退款金额
+				// String refundFee = params.get(NOTIFICATION_RESULT_REFUND_FEE);
+				if (orderRef.isPresent()) {
+					Order order = orderRef.get();
+					LOG.info("[{}]: {}", tradeStatus, order);
+				}
+				// just success anyway
+				return NOTIFICATION_RESPONSE_SUCCESS;
 
-			// 4) check total amount
-			Order order = orderRef.get();
-			if (!OrderPrices.priceMatches(totalAmount, order.getTotalPrice())) {
-				LOG.error("Order total amount mismatch, expected: {}, but was: {},  payment failed",
-						order.getTotalPrice(), totalAmount);
-				return PAYMENT_RESPONSE_FAILURE;
-			}
+			// payment success
+			case TRADE_FINISHED:
+			case TRADE_SUCCESS:
+				// 3) check orderNo existence
+				orderRef = commonOrderService.lookupByOrderNo(orderNo);
+				if (!orderRef.isPresent()) {
+					LOG.error("OrderNo: {} not exists, payment failed", orderNo);
+					return NOTIFICATION_RESPONSE_FAILURE;
+				}
 
-			// 5) check order status
-			if (!order.isPayable()) {
-				LOG.error("Order status is {}, and it is NOT payable,  payment failed", order.getStatus());
-				return PAYMENT_RESPONSE_FAILURE;
-			}
+				// 4) check total amount
+				Order order = orderRef.get();
+				if (!OrderPrices.priceMatches(totalAmount, order.getTotalPrice())) {
+					LOG.error("Order total amount mismatch, expected: {}, but was: {},  payment failed",
+							order.getTotalPrice(), totalAmount);
+					return NOTIFICATION_RESPONSE_FAILURE;
+				}
 
-			// 6) check if same tradeNo to avoid pay multiple time
-			Optional<Payment> paymentRef = commonOrderService.findPaymentByTradeNo(Payment.Method.ALIPAY, tradeNo);
-			if (paymentRef.isPresent()) {
-				LOG.warn("OrderNo: {} is already paid with {} with tradeNo: {}", orderNo, Payment.Method.ALIPAY,
-						tradeNo);
-				return PAYMENT_RESPONSE_SUCCESS;
-			}
+				// 5) check order status
+				if (!order.isPayable()) {
+					LOG.error("Order status is {}, and it is NOT payable,  payment failed", order.getStatus());
+					return NOTIFICATION_RESPONSE_FAILURE;
+				}
 
-			// 7) handle payment
-			Payment payment = new Payment();
-			payment.setAmount(totalAmount);
-			payment.setMethod(Payment.Method.ALIPAY);
-			payment.setOrderNo(orderNo);
-			payment.setTradeNo(tradeNo);
-			payment.setTimestamp(paymentTimestamp);
-			order = commonOrderService.payOrder(order.getId(), payment);
-			LOG.debug("Payment success, updated order: {}", order);
-			return PAYMENT_RESPONSE_SUCCESS;
+				// 6) check if same tradeNo to avoid pay multiple time
+				Optional<Payment> paymentRef = commonOrderService.findPaymentByTradeNo(Payment.Method.ALIPAY, tradeNo);
+				if (paymentRef.isPresent()) {
+					LOG.warn("OrderNo: {} is already paid with {} with tradeNo: {}, notification ignored", orderNo,
+							Payment.Method.ALIPAY, tradeNo);
+					return NOTIFICATION_RESPONSE_SUCCESS;
+				}
+
+				// 7) handle payment
+				Date paymentTimestamp = PAYMENT_TIMESTAMP_FORMATTER.parse(params.get(NOTIFICATION_RESULT_GMT_PAYMENT)); // 交易付款时间
+				Payment payment = new Payment();
+				payment.setAmount(totalAmount);
+				payment.setMethod(Payment.Method.ALIPAY);
+				payment.setOrderNo(orderNo);
+				payment.setTradeNo(tradeNo);
+				payment.setTimestamp(paymentTimestamp);
+				order = commonOrderService.payOrder(order.getId(), payment);
+				LOG.debug("Payment success, updated order: {}", order);
+				return NOTIFICATION_RESPONSE_SUCCESS;
+
+			default:
+				LOG.error("Trade status {} is not processed, just considered as failed", tradeStatus);
+				return NOTIFICATION_RESPONSE_FAILURE;
+			}
 		}
 		catch (AlipayApiException e) {
-			LOG.error(String.format("Process payment result failure, errcode: %s, errmsg: %s, cause: %s",
+			LOG.error(String.format("Process trade notification result failure, errcode: %s, errmsg: %s, cause: %s",
 					e.getErrCode(), e.getErrMsg(), e.getMessage()), e);
 		}
 		catch (Exception e) {
-			LOG.error(String.format("Process payment result failure, cause: %s", e.getMessage()), e);
+			LOG.error(String.format("Process trade notification result failure, cause: %s", e.getMessage()), e);
 		}
-		return PAYMENT_RESPONSE_FAILURE;
+		return NOTIFICATION_RESPONSE_FAILURE;
 	}
 
 	@Override
-	public RefundResponse refundPayment(Order order) {
+	public RefundResponse refundPayment(Order order, BigDecimal refundAmount) {
 		AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
 		AlipayTradeRefundModel model = new AlipayTradeRefundModel();
 		// 商户订单号和支付宝交易号不能同时为空 (二选一), trade_no、 out_trade_no如果同时存在优先取trade_no
 		model.setOutTradeNo(order.getOrderNo());
 		// model.setTradeNo(tradeNo);
 		// model.setOutRequestNo(out_request_no);
-		BigDecimal refundAmount = OrderPrices.normalizePrice(order.getTotalPrice());
-		model.setRefundAmount(String.valueOf(refundAmount.doubleValue()));
+		BigDecimal originalRefundAmount = OrderPrices.normalizePrice(order.getTotalPrice());
+		refundAmount = OrderPrices.normalizePrice(refundAmount);
+		// if refundAmount=0, we will use full amount refund of the order
+		BigDecimal actualRefundAmount = (BigDecimal.ZERO == refundAmount) ? originalRefundAmount : refundAmount;
+		model.setRefundAmount(String.valueOf(actualRefundAmount.doubleValue()));
 		model.setRefundReason(order.getRefundReason());
 		alipayRequest.setBizModel(model);
 		try {
 			AlipayTradeRefundResponse refundResponse = alipayClient.execute(alipayRequest);
 			if (refundResponse.isSuccess()) {
 				Refund refund = new Refund();
-				refund.setAmount(refundAmount);
+				refund.setAmount(actualRefundAmount);
 				refund.setMethod(Payment.Method.ALIPAY);
 				refund.setOrderNo(refundResponse.getOutTradeNo());
 				refund.setTradeNo(refundResponse.getTradeNo());

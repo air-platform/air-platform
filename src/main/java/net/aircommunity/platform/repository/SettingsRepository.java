@@ -1,5 +1,7 @@
 package net.aircommunity.platform.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.model.Settings;
@@ -19,5 +21,13 @@ public interface SettingsRepository extends JpaRepository<Settings, String> {
 	 * @return an Settings or null if none
 	 */
 	Settings findByName(String name);
+
+	/**
+	 * Find a Settings by name starting with.
+	 * 
+	 * @param name the name
+	 * @return an Settings or empty if none
+	 */
+	List<Settings> findByNameStartingWith(String name);
 
 }
