@@ -27,6 +27,7 @@ import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.Course_;
 import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.School;
 import net.aircommunity.platform.model.Tenant;
@@ -76,6 +77,7 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 	public Course createCourse(String schoolId, Course course) {
 		School school = schoolService.findSchool(course.getSchool().getId());
 		course.setSchool(school);
+		course.setCategory(Category.AIR_TRAINING);
 		return doCreateProduct(schoolId, course);
 	}
 

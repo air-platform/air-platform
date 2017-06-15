@@ -19,6 +19,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -64,6 +65,7 @@ import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.AccountRequest;
+import net.aircommunity.platform.model.AuthContext;
 import net.aircommunity.platform.model.AuthcRequest;
 import net.aircommunity.platform.model.AvatarImage;
 import net.aircommunity.platform.model.DailySignin;
@@ -164,17 +166,19 @@ public class AccountResource {
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response authenticate(@QueryParam("type") AuthType type, @NotNull @Valid AuthcRequest request) {
+	public Response authenticate(@HeaderParam(value = "x-forwarded-for") String ip,
+			@HeaderParam("user-agent") String userAgent, @QueryParam("type") AuthType type,
+			@NotNull @Valid AuthcRequest request) {
 		// Authenticate the user using the credentials provided against a database credentials can be account not found
 		// or via external auth
 		Account account = null;
+		AuthContext ctx = new AuthContext().ipAddress(ip).otp(request.isOtp()).source(userAgent)
+				.expiry(request.getExpires());
 		if (type != null && !type.isInternal()) {
-			account = accountService.authenticateAccount(type, request.getPrincipal(), request.getCredential(),
-					request.getExpires());
+			account = accountService.authenticateAccount(type, request.getPrincipal(), request.getCredential(), ctx);
 		}
 		else {
-			account = accountService.authenticateAccount(request.getPrincipal(), request.getCredential(),
-					request.isOtp());
+			account = accountService.authenticateAccount(request.getPrincipal(), request.getCredential(), ctx);
 		}
 		// should never happen here, just check it for sure
 		if (account == null) {
@@ -231,7 +235,7 @@ public class AccountResource {
 	 * Avatar upload to cloud, e.g. ?cropOptions=300x300a50a50 ( {cropsize}a<dx>a<dy> )
 	 */
 	@POST
-	@Path("avatars")
+	@Path("avatar")
 	@Authenticated
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -542,9 +546,10 @@ public class AccountResource {
 	@ApiResponses(value = { @ApiResponse(code = 204, message = ""), @ApiResponse(code = 401, message = "") })
 	@DELETE
 	@Authenticated
-	public void deleteSelfAccount(@NotNull @Valid AuthcRequest request) {
+	public void deleteSelfAccount(@HeaderParam(value = "x-forwarded-for") String ip,
+			@HeaderParam("user-agent") String userAgent, @NotNull @Valid AuthcRequest request) {
 		Account account = accountService.authenticateAccount(request.getPrincipal(), request.getCredential(),
-				request.isOtp());
+				new AuthContext().ipAddress(ip).otp(request.isOtp()).source(userAgent).expiry(request.getExpires()));
 		accountService.deleteAccount(account.getId());
 	}
 

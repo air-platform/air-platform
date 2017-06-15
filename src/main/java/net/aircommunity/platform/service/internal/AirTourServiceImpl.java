@@ -14,6 +14,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTour;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.repository.AirTourRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
@@ -38,6 +39,7 @@ public class AirTourServiceImpl extends AircraftAwareProductService<AirTour> imp
 
 	@Override
 	public AirTour createAirTour(String tenantId, AirTour airTour) {
+		airTour.setCategory(Category.AIR_TOUR);
 		return doCreateProduct(tenantId, airTour);
 	}
 

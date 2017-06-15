@@ -67,6 +67,7 @@ public class BannerServiceImpl extends AbstractServiceSupport implements BannerS
 		tgt.setImage(src.getImage());
 		tgt.setLink(src.getLink());
 		tgt.setTitle(src.getTitle());
+		tgt.setLinkType(src.getLinkType());
 	}
 
 	@Override

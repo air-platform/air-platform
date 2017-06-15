@@ -14,6 +14,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.FerryFlightRepository;
@@ -34,6 +35,7 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 
 	@Override
 	public FerryFlight createFerryFlight(String tenantId, FerryFlight ferryFlight) {
+		ferryFlight.setCategory(Category.AIR_JET);
 		return doCreateProduct(tenantId, ferryFlight);
 	}
 

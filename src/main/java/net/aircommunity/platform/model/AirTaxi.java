@@ -56,6 +56,14 @@ public class AirTaxi extends AircraftAwareProduct {
 	}
 
 	@Override
+	public Category getCategory() {
+		if (category == null) {
+			return Category.AIR_TAXI;
+		}
+		return category;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTaxi [flightRoute=").append(flightRoute).append(", distance=").append(distance)

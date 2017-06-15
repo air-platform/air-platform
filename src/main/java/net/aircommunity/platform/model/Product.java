@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -41,6 +43,11 @@ public abstract class Product extends Reviewable {
 	@NotEmpty
 	@Column(name = "name", nullable = false)
 	protected String name;
+
+	// product category
+	@Column(name = "category", nullable = false)
+	@Enumerated(EnumType.STRING)
+	protected Category category;
 
 	// product image
 	@Column(name = "image")
@@ -105,6 +112,14 @@ public abstract class Product extends Reviewable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	public String getImage() {
@@ -190,7 +205,7 @@ public abstract class Product extends Reviewable {
 	 * Product Category
 	 */
 	public enum Category {
-		NONE, AIR_JET, AIR_TAXI, AIR_TRANS, AIR_TRAINING;
+		NONE, AIR_JET, AIR_TOUR, AIR_TAXI, AIR_TRANS, AIR_TRAINING;
 
 		public static Category fromString(String value) {
 			for (Category e : values()) {

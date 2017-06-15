@@ -51,6 +51,7 @@ public class AirTransportServiceImpl extends AircraftAwareProductService<AirTran
 
 	@Override
 	public AirTransport createAirTransport(String tenantId, AirTransport airTransport) {
+		airTransport.setCategory(Category.AIR_TRANS);
 		return doCreateProduct(tenantId, airTransport);
 	}
 

@@ -71,6 +71,10 @@ public class AccountAuth extends Persistable {
 	@Column(name = "last_accessed_ip")
 	private String lastAccessedIp;
 
+	// User-Agent
+	@Column(name = "last_accessed_source")
+	private String lastAccessedSource;
+
 	@ManyToOne
 	@JoinColumn(name = "account_id", nullable = false)
 	@XmlJavaTypeAdapter(AccountAdapter.class)
@@ -142,6 +146,14 @@ public class AccountAuth extends Persistable {
 		this.lastAccessedIp = lastAccessedIp;
 	}
 
+	public String getLastAccessedSource() {
+		return lastAccessedSource;
+	}
+
+	public void setLastAccessedSource(String lastAccessedSource) {
+		this.lastAccessedSource = lastAccessedSource;
+	}
+
 	public Account getAccount() {
 		return account;
 	}
@@ -153,10 +165,11 @@ public class AccountAuth extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AccountAuth [type=").append(type).append(", principal=").append(principal).append(", expires=")
-				.append(expires).append(", verified=").append(verified).append(", creationDate=").append(creationDate)
-				.append(", lastAccessedDate=").append(lastAccessedDate).append(", lastAccessedIp=")
-				.append(lastAccessedIp).append(", id=").append(id).append("]");
+		builder.append("AccountAuth [type=").append(type).append(", principal=").append(principal)
+				.append(", credential=******").append(", expires=").append(expires).append(", verified=")
+				.append(verified).append(", creationDate=").append(creationDate).append(", lastAccessedDate=")
+				.append(lastAccessedDate).append(", lastAccessedIp=").append(lastAccessedIp)
+				.append(", lastAccessedSource=").append(lastAccessedSource).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

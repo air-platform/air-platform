@@ -117,6 +117,14 @@ public class AirTour extends AircraftAwareProduct {
 	}
 
 	@Override
+	public Category getCategory() {
+		if (category == null) {
+			return Category.AIR_TOUR;
+		}
+		return category;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTour [city=").append(city).append(", tourDistance=").append(tourDistance)

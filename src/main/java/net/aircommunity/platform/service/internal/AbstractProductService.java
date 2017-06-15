@@ -17,6 +17,7 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PricedProduct;
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFaq;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Tenant;
@@ -75,6 +76,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		newProduct.setRank(0);
 		newProduct.setTotalSales(0);
 		newProduct.setPublished(false);
+		newProduct.setCategory(product.getCategory());
 		newProduct.setReviewStatus(ReviewStatus.PENDING);
 		// priced
 		if (PricedProduct.class.isAssignableFrom(product.getClass())) {
@@ -237,14 +239,30 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	/**
 	 * List all products for ADMIN with filter ReviewStatus (products of any tenant with any published state)
 	 */
-	@Nonnull
 	protected final Page<T> doListAllProducts(@Nullable ReviewStatus reviewStatus, int page, int pageSize) {
-		if (reviewStatus == null) {
-			return Pages.adapt(
-					getProductRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+		return doListAllProducts(reviewStatus, null, page, pageSize);
+	}
+
+	protected final Page<T> doListAllProducts(@Nullable ReviewStatus reviewStatus, @Nullable Category category,
+			int page, int pageSize) {
+		if (reviewStatus != null) {
+			// reviewStatus + category
+			if (category != null) {
+				return Pages.adapt(getProductRepository().findByReviewStatusAndCategoryOrderByCreationDateDesc(
+						reviewStatus, category, Pages.createPageRequest(page, pageSize)));
+			}
+			// reviewStatus
+			return Pages.adapt(getProductRepository().findByReviewStatusOrderByCreationDateDesc(reviewStatus,
+					Pages.createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(getProductRepository().findByReviewStatusOrderByCreationDateDesc(reviewStatus,
-				Pages.createPageRequest(page, pageSize)));
+		// category
+		if (category != null) {
+			return Pages.adapt(getProductRepository().findByCategoryOrderByCreationDateDesc(category,
+					Pages.createPageRequest(page, pageSize)));
+		}
+		// both null
+		return Pages.adapt(
+				getProductRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
 	}
 
 	/**

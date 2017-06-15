@@ -120,6 +120,12 @@ public class Configuration {
 	@Value("${air.payment.alipay.notify-url}")
 	private String alipayNotifyUrl;
 
+	@Value("${air.payment.wechat.notify-url}")
+	private String wechatNotifyUrl;
+
+	@Value("${air.payment.newpay.notify-url}")
+	private String newpayNotifyUrl;
+
 	public String getTimeZone() {
 		return timeZone;
 	}
@@ -254,6 +260,14 @@ public class Configuration {
 
 	public String getAlipayNotifyUrl() {
 		return alipayNotifyUrl;
+	}
+
+	public String getWechatNotifyUrl() {
+		return wechatNotifyUrl;
+	}
+
+	public String getNewpayNotifyUrl() {
+		return newpayNotifyUrl;
 	}
 
 	// private static final String AUTH_METHODS_SEP = ",";

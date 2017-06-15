@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
- * The basic knowledge of aviation managed by ADMIN. XXX class vs knowledge
+ * The basic knowledge of aviation managed by ADMIN.
  * 
  * @author Bin.Zhang
  */

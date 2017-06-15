@@ -84,12 +84,13 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 		String airjet = normalizeProductCategory(Category.AIR_JET);
 		String airtaxi = normalizeProductCategory(Category.AIR_TAXI);
 		String airtrans = normalizeProductCategory(Category.AIR_TRANS);
+		String airtour = normalizeProductCategory(Category.AIR_TOUR);
 		String airtraining = normalizeProductCategory(Category.AIR_TRAINING);
 		orderTypeMapping.put(Order.Type.FLEET, airjet);
 		orderTypeMapping.put(Order.Type.FERRYFLIGHT, airjet);
 		orderTypeMapping.put(Order.Type.JETTRAVEL, airjet);
 		orderTypeMapping.put(Order.Type.AIRTAXI, airtaxi);
-		orderTypeMapping.put(Order.Type.AIRTOUR, airtaxi);
+		orderTypeMapping.put(Order.Type.AIRTOUR, airtour);
 		orderTypeMapping.put(Order.Type.AIRTRANSPORT, airtrans);
 		orderTypeMapping.put(Order.Type.COURSE, airtraining);
 		eventBus.register(this);

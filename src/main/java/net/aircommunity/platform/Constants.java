@@ -25,6 +25,7 @@ public final class Constants {
 	public static final String DEFAULT_PASSWORD = "Air@pwd123";
 	public static final String HEADER_X_FORWARDED_FOR = "X-Forwarded-For";
 	public static final String LOOPBACK_LOCALHOST = "127.0.0.1";
+	public static final String IP_UNKNOWN = "0.0.0.0";
 	public static final Set<String> LOOPBACK_ADDRESSES = ImmutableSet.of("127.0.0.1", "0:0:0:0:0:0:0:1");
 
 	// **************

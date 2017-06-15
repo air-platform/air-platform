@@ -13,6 +13,8 @@ public class LocalizedMessages extends NLSResource {
 	// NLS resource bundle
 	private static final String RESOURCE_BUNDLE_BASENAME = LocalizedMessages.class.getPackage().getName() + ".message";
 
+	// message for display
+	public static String PAYMENT_PRODUCT_DESCRIPTION;
 	public static String USERNAME_ANONYMOUS;
 	public static String FLEET_OFFERED;
 	public static String FLEET_NOT_SELECTED;
@@ -20,15 +22,20 @@ public class LocalizedMessages extends NLSResource {
 	public static String REFUND_FAILURE;
 	public static String REFUND_REQUEST_REJECTED;
 
-	//
+	// product
 	public static String PRODUCT_NOT_FOUND;
 	public static String PRODUCT_NOT_APPROVED;
-	public static String PROMOTION_NOT_FOUND;
 	public static String PRODUCT_FAQ_NOT_FOUND;
 	public static String PRODUCT_FAMILY_NOT_FOUND;
 	public static String PRODUCT_FAMILY_NOT_APPROVED;
 	public static String PRODUCT_INVALID_DEPARTURE_DATE;
 
+	// banner & promotion & airclass
+	public static String BANNER_NOT_FOUND;
+	public static String PROMOTION_NOT_FOUND;
+	public static String AIRCLASS_NOT_FOUND;
+
+	// order
 	public static String ORDER_OPERATION_SUBMIT;
 	public static String ORDER_OPERATION_CANCEL;
 	public static String ORDER_NOT_FOUND;
@@ -37,27 +44,10 @@ public class LocalizedMessages extends NLSResource {
 	public static String ORDER_NOT_PAYABLE;
 	public static String ORDER_REFUND_FAILURE;
 
-	public static String COMMENT_NOT_ALLOWED;
-	public static String COMMENT_NOT_FOUND;
-	public static String COMMENT_INVALID_SOURCE;
-	public static String COMMENT_NOT_ALLOWED_ORDER_NOT_FINISHED;
-
-	// air class
-	public static String AIRCLASS_NOT_FOUND;
-
-	public static String SCHOOL_NOT_FOUND;
-	public static String COURSE_NOT_FOUND;
-
-	public static String FLEET_NOT_FOUND;
-	public static String FLEET_ALREADY_EXISTS;
-
 	public static String AIRPORT_ICAO_ALREADY_EXISTS;
 	public static String AIRPORT_IATA_ALREADY_EXISTS;
 	public static String AIRPORT_INVALID_CODE;
 	public static String AIRPORT_NOT_FOUND;
-
-	public static String BANNER_NOT_FOUND;
-
 	public static String AIRJET_ALREADY_EXISTS;
 	public static String AIRJET_TYPE_NOT_FOUND;
 	public static String AIRJET_NOT_FOUND;
@@ -65,6 +55,19 @@ public class LocalizedMessages extends NLSResource {
 	public static String AIRCRAFT_NOT_FOUND;
 	public static String SALESPACKAGE_NOT_FOUND;
 
+	// comment
+	public static String COMMENT_NOT_ALLOWED;
+	public static String COMMENT_NOT_FOUND;
+	public static String COMMENT_INVALID_SOURCE;
+	public static String COMMENT_NOT_ALLOWED_ORDER_NOT_FINISHED;
+
+	// specific products
+	public static String SCHOOL_NOT_FOUND;
+	public static String COURSE_NOT_FOUND;
+	public static String FLEET_NOT_FOUND;
+	public static String FLEET_ALREADY_EXISTS;
+
+	// account
 	public static String ACCOUNT_TYPE_MISMATCH;
 	public static String ACCOUNT_EMAIL_NOT_BIND;
 	public static String ACCOUNT_MOBILE_NOT_FOUND;
@@ -91,16 +94,13 @@ public class LocalizedMessages extends NLSResource {
 	public static String PASSENGER_NOT_FOUND;
 	public static String PASSENGER_ALREADY_EXISTS;
 	public static String PASSENGER_INFO_REQUIRED;
-
+	public static String IDCARD_VERIFICATION_FAILURE;
 	public static String SMS_TOO_MANY_VERIFICATION_REQUEST;
 	public static String SMS_SEND_FAILURE;
-
-	public static String IDCARD_VERIFICATION_FAILURE;
 
 	public static String AIRQ_ERROR;
 
 	public static String SERVICE_UNAVAILABLE;
-
 	// internal server error
 	public static String INTERNAL_SERVER_ERROR;
 

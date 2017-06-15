@@ -6,10 +6,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,17 +19,14 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micro.common.DateFormats;
-import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.common.OrderPrices;
 import net.aircommunity.platform.model.Order;
-import net.aircommunity.platform.model.Payment;
 import net.aircommunity.platform.model.Payment.Method;
 import net.aircommunity.platform.model.PaymentNotification;
 import net.aircommunity.platform.model.PaymentRequest;
@@ -43,10 +36,6 @@ import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.Refund;
 import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.nls.M;
-import net.aircommunity.platform.repository.RefundRepository;
-import net.aircommunity.platform.service.CommonOrderService;
-import net.aircommunity.platform.service.PaymentService;
-import net.aircommunity.platform.service.spi.PaymentGateway;
 
 /**
  * Alipay PaymentGateway
@@ -54,8 +43,7 @@ import net.aircommunity.platform.service.spi.PaymentGateway;
  * @author Bin.Zhang
  */
 @Service
-public class AlipayPaymentGateway implements PaymentGateway {
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentService.LOGGER_NAME);
+public class AlipayPaymentGateway extends AbstractPaymentGateway {
 
 	private static final String APP_ID = "2017060907455116";
 	private static final String APP_PRIVATE_KEY = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCmD0tN9FnXpnbA7KbdxTKHOm1k+HKveD5skZQ/r2ZV43rQFHOtQQEY2sdvNgBeUKAnv15PDf6uFyD9VpqtDzhSR9uFDLF7Gz6BVNByEKno5on1FDT1loUHz0/yXMxfapYpk5SLgXowI0cmn2vIzhxeHF4zLK9oU39c4bpmtvIDA7NHS2LuQmuCoLVuwtsuMaqFuJ3pMG9oZywC8Z5EVd3ogjyyxDbKgY897jO0hhv71/SfZ9GOAgrFNBpGMZO3nUtrpk7H7Yx1E3EuzKryplf8EdUs/WgfmSfhRw6yIKMaW0hM9/GdG670SkwEwuvrpDdReiYROUDtbCihioi5y+2/AgMBAAECggEACvTPXyFUHCpbg3cZu2AbaVithw/tYS5pz/f69Ai6k8gifkAbMb8sN1uX9Pp3I8HmDzlNG6Isv4e/IXfpVKnAaY1cKncf7qNpiFb0OdJno3oyd/0RUXLQ7Cb9e1wsD8+UgMG/90Rfr3VkaGP0VJdkv8DXZkD4gcWgjZxHFCfV5+TnScLQqgWmByu5pJKPuQX4XnWajexM1nJQm2Go1OTC8zEChBc3whSZyYqnBAQU4rS7Pz83seTUDFmPAG7xWKnBLT/jy9TpwOyHpMsHFismLJXCZHF+aGq7Wyx+Xemv4r5a6UEBfHSY3eACl2mElYESyi6CQkoNH2PaGdtNSLOcQQKBgQDhpQ2wXl+q3w5G4UV6eSBX4frG3bSxiI5HM+xMsE+kQhu99wf3Ri8P8MhUBmtKnKl4j4KgEZt0kmxzlFlT8dQ7Tj7bO5x4auCZi2YmKq/37x0iFrUQiXfyego1FZxUeNTcKWiHHi5db3OCc+fwI8YnzdOJ2KKRDXdi6zhw7kuhWQKBgQC8ZjObionxX/mi3y4GvbrNSSkO9jzSUJ9nMeBcy1hpBC695gXoSoR5QQtRMdQxWtK4c6+8MgJMPdCwSUsAF4pvI0LrZPaFIUWEb9pUZkLY1+mhMf87xAFAa78CM5p2J25n5jq1t6PTn0+JbCRlsjgIsM5emecAx/rXX1NT8klM1wKBgC8OP5uPIr48g/quEdInnmIVYznDlGINizY4EsgvYHxtuOFVudiMT1YwrWYwbIGDyCe3LdN5uISH4Iv93N8PqGWxvJP1i3zlNO9wTZ4Z+tZmjBnGyH2pXVU4tBY76n0HMcSz8fNzjNG5Y0pKJ41BuJomZz3w6n37Y/FCAmQynZ0JAoGBALPkms6ggIr8a6/7j0VckSxH+W6R7Q2dcjflRikU+bx9A+zL4UQnM0tcsmO7QrRF1wPNYzY+QjdupwBNW9IgqEzqzJFcfJAubuTAsSb55kaMFEeZJ+93fwJ2X5LIl2rOx/tpuRGe4k3FxvqfSjnY7OxPdx6Zshvq2Dgii7ySky9NAoGBAMtDw4cQ+RLZxf9dAoJO6QmdmJKFgI+UZP/oLsNtqa3eqQU7W2/jS2pVm5bC3uebjCs+keKad9ESQ3ddiULThe1UfHelbpLSpSmTTxwcx29qtAgrQ+jlIoJmKfSMGR0Y6ahQaCCjXKsLs24TCOlbqJtT0Sk5aRiMffkX+A2X9nSb";
@@ -88,18 +76,6 @@ public class AlipayPaymentGateway implements PaymentGateway {
 
 	private final AlipayClient alipayClient;
 
-	@Resource
-	private Configuration configuration;
-
-	@Resource
-	private CommonOrderService commonOrderService;
-
-	@Resource
-	private RefundRepository refundRepository;
-
-	@Resource
-	private ObjectMapper objectMapper;
-
 	public AlipayPaymentGateway() {
 		alipayClient = new DefaultAlipayClient(ALIPAY_GATEWAY_URL, APP_ID, APP_PRIVATE_KEY, ALIPAY_PAY_FORMAT,
 				ALIPAY_PAY_CHARSET, ALIPAY_PUBLIC_KEY, ALIPAY_SIGN_TYPE);
@@ -118,9 +94,9 @@ public class AlipayPaymentGateway implements PaymentGateway {
 		// SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
 		AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
 		Product product = order.getProduct();
-		String body = Strings.isBlank(product.getDescription()) ? product.getName() : product.getDescription();
+		// String body = Strings.isBlank(product.getDescription()) ? product.getName() : product.getDescription();
 		// 对一笔交易的具体描述信息。如果是多种商品，请将商品描述字符串累加传给body, e.g. iPhone6S 16G
-		model.setBody(body);
+		model.setBody(M.msg(M.PAYMENT_PRODUCT_DESCRIPTION, product.getName()));
 		// 商品的标题/交易标题/订单标题/订单关键字等
 		model.setSubject(product.getName());
 		// 商户网站唯一订单号
@@ -257,7 +233,6 @@ public class AlipayPaymentGateway implements PaymentGateway {
 				return NOTIFICATION_RESPONSE_FAILURE;
 			}
 
-			Optional<Order> orderRef = commonOrderService.lookupByOrderNo(orderNo);
 			// 3) check trade status
 			switch (tradeStatus) {
 			// refund success or payment timeout and closed
@@ -266,56 +241,20 @@ public class AlipayPaymentGateway implements PaymentGateway {
 				// Date refundTimestamp = PAYMENT_TIMESTAMP_FORMATTER.parse(params.get(NOTIFICATION_RESULT_GMT_REFUND));
 				// 总退款金额
 				// String refundFee = params.get(NOTIFICATION_RESULT_REFUND_FEE);
+				Optional<Order> orderRef = commonOrderService.lookupByOrderNo(orderNo);
 				if (orderRef.isPresent()) {
 					Order order = orderRef.get();
 					LOG.info("[{}]: {}", tradeStatus, order);
 				}
-				// just success anyway
+				// just success anyway because AlipaySignature.rsaCheckV1 is already done (no order check ATM)
 				return NOTIFICATION_RESPONSE_SUCCESS;
 
 			// payment success
 			case TRADE_FINISHED:
 			case TRADE_SUCCESS:
-				// 3) check orderNo existence
-				orderRef = commonOrderService.lookupByOrderNo(orderNo);
-				if (!orderRef.isPresent()) {
-					LOG.error("OrderNo: {} not exists, payment failed", orderNo);
-					return NOTIFICATION_RESPONSE_FAILURE;
-				}
-
-				// 4) check total amount
-				Order order = orderRef.get();
-				if (!OrderPrices.priceMatches(totalAmount, order.getTotalPrice())) {
-					LOG.error("Order total amount mismatch, expected: {}, but was: {},  payment failed",
-							order.getTotalPrice(), totalAmount);
-					return NOTIFICATION_RESPONSE_FAILURE;
-				}
-
-				// 5) check order status
-				if (!order.isPayable()) {
-					LOG.error("Order status is {}, and it is NOT payable,  payment failed", order.getStatus());
-					return NOTIFICATION_RESPONSE_FAILURE;
-				}
-
-				// 6) check if same tradeNo to avoid pay multiple time
-				Optional<Payment> paymentRef = commonOrderService.findPaymentByTradeNo(Payment.Method.ALIPAY, tradeNo);
-				if (paymentRef.isPresent()) {
-					LOG.warn("OrderNo: {} is already paid with {} with tradeNo: {}, notification ignored", orderNo,
-							Payment.Method.ALIPAY, tradeNo);
-					return NOTIFICATION_RESPONSE_SUCCESS;
-				}
-
-				// 7) handle payment
-				Date paymentTimestamp = PAYMENT_TIMESTAMP_FORMATTER.parse(params.get(NOTIFICATION_RESULT_GMT_PAYMENT)); // 交易付款时间
-				Payment payment = new Payment();
-				payment.setAmount(totalAmount);
-				payment.setMethod(Payment.Method.ALIPAY);
-				payment.setOrderNo(orderNo);
-				payment.setTradeNo(tradeNo);
-				payment.setTimestamp(paymentTimestamp);
-				order = commonOrderService.payOrder(order.getId(), payment);
-				LOG.debug("Payment success, updated order: {}", order);
-				return NOTIFICATION_RESPONSE_SUCCESS;
+				// 交易付款时间
+				Date paymentDate = PAYMENT_TIMESTAMP_FORMATTER.parse(params.get(NOTIFICATION_RESULT_GMT_PAYMENT));
+				return doProcessPaymentNotification(totalAmount, orderNo, tradeNo, paymentDate);
 
 			default:
 				LOG.error("Trade status {} is not processed, just considered as failed", tradeStatus);
@@ -334,6 +273,7 @@ public class AlipayPaymentGateway implements PaymentGateway {
 
 	@Override
 	public RefundResponse refundPayment(Order order, BigDecimal refundAmount) {
+		LOG.info("Refund {}, refundAmount: {}", order, refundAmount);
 		AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
 		AlipayTradeRefundModel model = new AlipayTradeRefundModel();
 		// 商户订单号和支付宝交易号不能同时为空 (二选一), trade_no、 out_trade_no如果同时存在优先取trade_no
@@ -347,12 +287,22 @@ public class AlipayPaymentGateway implements PaymentGateway {
 		model.setRefundAmount(String.valueOf(actualRefundAmount.doubleValue()));
 		model.setRefundReason(order.getRefundReason());
 		alipayRequest.setBizModel(model);
+		if (LOG.isInfoEnabled()) {
+			LOG.info("Final refund request: {}", toJson(alipayRequest));
+		}
 		try {
+			// REFUND_SUCCESS: 退款成功
+			// 全额退款情况：trade_status= TRADE_CLOSED，而refund_status=REFUND_SUCCESS；
+			// 非全额退款情况：trade_status= TRADE_SUCCESS，而refund_status=REFUND_SUCCESS
+			// REFUND_CLOSED: 退款关闭
 			AlipayTradeRefundResponse refundResponse = alipayClient.execute(alipayRequest);
+			if (LOG.isInfoEnabled()) {
+				LOG.info("Final refund response: {}", toJson(refundResponse));
+			}
 			if (refundResponse.isSuccess()) {
 				Refund refund = new Refund();
 				refund.setAmount(actualRefundAmount);
-				refund.setMethod(Payment.Method.ALIPAY);
+				refund.setMethod(getPaymentMethod());
 				refund.setOrderNo(refundResponse.getOutTradeNo());
 				refund.setTradeNo(refundResponse.getTradeNo());
 				refund.setTimestamp(refundResponse.getGmtRefundPay());
@@ -371,6 +321,25 @@ public class AlipayPaymentGateway implements PaymentGateway {
 			}
 			return RefundResponse.failure(refundFailureCause);
 		}
+	}
+
+	@Override
+	protected PaymentResponse getPaymentFailureResponse() {
+		return NOTIFICATION_RESPONSE_FAILURE;
+	}
+
+	@Override
+	protected PaymentResponse getPaymentSuccessResponse() {
+		return NOTIFICATION_RESPONSE_SUCCESS;
+	}
+
+	private String toJson(Object object) {
+		try {
+			return objectMapper.writeValueAsString(object);
+		}
+		catch (JsonProcessingException ignore) {
+		}
+		return null;
 	}
 
 	// WORKS

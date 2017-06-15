@@ -12,6 +12,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.JetTravel;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.JetTravelRepository;
@@ -31,8 +32,9 @@ public class JetTravelServiceImpl extends AbstractProductService<JetTravel> impl
 	private JetTravelRepository jetTravelRepository;
 
 	@Override
-	public JetTravel createJetTravel(String tenantId, JetTravel JetTravel) {
-		return doCreateProduct(tenantId, JetTravel);
+	public JetTravel createJetTravel(String tenantId, JetTravel jetTravel) {
+		jetTravel.setCategory(Category.AIR_JET);
+		return doCreateProduct(tenantId, jetTravel);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -49,7 +51,7 @@ public class JetTravelServiceImpl extends AbstractProductService<JetTravel> impl
 
 	@Override
 	protected void copyProperties(JetTravel src, JetTravel tgt) {
-		// TODO if any
+		// do copy if any (not prop for now)
 	}
 
 	@Override

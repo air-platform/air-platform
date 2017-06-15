@@ -12,6 +12,7 @@ import net.aircommunity.platform.model.Account.Status;
 import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.Address;
+import net.aircommunity.platform.model.AuthContext;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.Role;
@@ -29,11 +30,11 @@ public interface AccountService {
 	 * 
 	 * @param principal the username, mobile or email (internal)
 	 * @param credential the credential
-	 * @param isOtp whether is one time password or not (dynamic code via mobile)
+	 * @param context the auth context
 	 * @return authenticated account, null otherwise
 	 */
 	@Nonnull
-	Account authenticateAccount(@Nonnull String principal, @Nonnull String credential, boolean isOtp);
+	Account authenticateAccount(@Nonnull String principal, @Nonnull String credential, @Nonnull AuthContext context);
 
 	/**
 	 * Authenticate an account with external auth methods (external, a.k.a. 3rd party).
@@ -41,12 +42,12 @@ public interface AccountService {
 	 * @param type auth type
 	 * @param principal the auth principal
 	 * @param credential the auth credential
-	 * @param expires the account authentication expiry
+	 * @param context the auth context
 	 * @return the authenticated account
 	 */
 	@Nonnull
 	Account authenticateAccount(@Nonnull AuthType type, @Nonnull String principal, @Nonnull String credential,
-			long expires);
+			@Nonnull AuthContext context);
 
 	/**
 	 * Create an account.

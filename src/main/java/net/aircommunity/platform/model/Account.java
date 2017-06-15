@@ -60,8 +60,13 @@ public class Account extends Persistable {
 	@Column(name = "avatar")
 	protected String avatar;
 
+	// last accessed IP regardless from which source (auth type)
+	@XmlTransient
+	@Column(name = "last_accessed_ip") // TODO? need, or just use AccountAuth data?
+	protected String lastAccessedIp;
+
 	// @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-	// private List<AccountAuth> auths;
+	// private List<AccountAuth> auths; //TODO return as well?
 
 	public Account() {
 	}
@@ -124,6 +129,14 @@ public class Account extends Persistable {
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	public String getLastAccessedIp() {
+		return lastAccessedIp;
+	}
+
+	public void setLastAccessedIp(String lastAccessedIp) {
+		this.lastAccessedIp = lastAccessedIp;
 	}
 
 	@Override

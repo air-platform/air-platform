@@ -38,6 +38,7 @@ import net.aircommunity.platform.model.Account.Status;
 import net.aircommunity.platform.model.AccountAuth;
 import net.aircommunity.platform.model.AccountAuth.AuthType;
 import net.aircommunity.platform.model.Address;
+import net.aircommunity.platform.model.AuthContext;
 import net.aircommunity.platform.model.DailySignin;
 import net.aircommunity.platform.model.IdCardInfo;
 import net.aircommunity.platform.model.Page;
@@ -147,11 +148,16 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	}
 
 	@Override
-	public Account authenticateAccount(String principal, String credential, boolean isOtp) {
+	public Account authenticateAccount(String principal, String credential, AuthContext context) {
 		AccountAuth auth = null;
 		for (AuthType authType : AuthType.internalAuths()) {
 			auth = accountAuthRepository.findByTypeAndPrincipal(authType, principal);
 			if (auth != null) {
+				// TODO
+				auth.setLastAccessedDate(new Date());
+				auth.setLastAccessedIp(context.ipAddress());
+				auth.setLastAccessedSource(context.source());
+				auth = accountAuthRepository.save(auth);
 				break;
 			}
 		}
@@ -171,7 +177,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 		boolean valid = false;
 		// OTP is available for mobile
-		if (isOtp) {
+		if (context.isOtp()) {
 			if (configuration.isMobileVerificationEnabled()) {
 				valid = verificationService.verifyCode(credential, credential);
 			}
@@ -190,21 +196,26 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	}
 
 	@Override
-	public Account authenticateAccount(AuthType type, String principal, String credential, long expires) {
+	public Account authenticateAccount(AuthType type, String principal, String credential, AuthContext context) {
 		Account account = null;
 		switch (type) {
+		// TODO internal auth
 		case WECHAT:
 		case QQ:
 		case WEIBO:
 			AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(type, principal);
 			if (auth == null) {
 				// create account
-				account = createAccount(type, principal, credential, null, expires, Role.USER);
+				account = createAccount(type, principal, credential, null, context.expiry(), Role.USER);
+				auth = accountAuthRepository.findByTypeAndPrincipal(type, principal);
+				auth.setLastAccessedIp(context.ipAddress());
+				accountAuthRepository.save(auth);
 			}
 			else {
 				// update with new credential, e.g. access-token returned from wechat
 				auth.setCredential(credential);
 				auth.setLastAccessedDate(new Date());
+				auth.setLastAccessedIp(context.ipAddress());
 				accountAuthRepository.save(auth);
 				account = auth.getAccount();
 			}

@@ -1,6 +1,5 @@
 package net.aircommunity.platform.rest;
 
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -16,17 +15,13 @@ import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.ProductFaq;
-import net.aircommunity.platform.service.CommonProductService;
 
 /**
  * Product RESTful API. <b>all permission</b> for ALL (NOTE: base resource class for subclass extending MUST be public)
  * 
  * @author Bin.Zhang
  */
-public abstract class ProductResourceSupport<T extends Product> {
-
-	@Resource
-	protected CommonProductService commonProductService;
+public abstract class ProductResourceSupport<T extends Product> extends BaseResourceSupport {
 
 	// *****************
 	// Product

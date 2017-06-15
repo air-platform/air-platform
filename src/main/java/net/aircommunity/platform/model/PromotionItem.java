@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -41,6 +43,11 @@ public class PromotionItem extends Persistable {
 	@Size(max = 1024)
 	@Column(name = "link", length = 1024)
 	private String link;
+
+	// link type
+	@Column(name = "link_type", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private LinkType linkType = LinkType.PRODUCT;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
@@ -84,6 +91,14 @@ public class PromotionItem extends Persistable {
 		this.link = link;
 	}
 
+	public LinkType getLinkType() {
+		return linkType;
+	}
+
+	public void setLinkType(LinkType linkType) {
+		this.linkType = linkType;
+	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -104,7 +119,8 @@ public class PromotionItem extends Persistable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("PromotionItem [title=").append(title).append(", image=").append(image).append(", link=")
-				.append(link).append(", creationDate=").append(creationDate).append(", id=").append(id).append("]");
+				.append(link).append(", linkType=").append(linkType).append(", creationDate=").append(creationDate)
+				.append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

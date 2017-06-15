@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFaq;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
@@ -67,7 +68,33 @@ public interface CommonProductService {
 	 * @param pageSize the pageSize
 	 * @return a page of Product to be reviewed
 	 */
-	Page<Product> listAllProducts(@Nullable ReviewStatus reviewStatus, int page, int pageSize);
+	default Page<Product> listAllProducts(@Nullable ReviewStatus reviewStatus, int page, int pageSize) {
+		return listAllProducts(reviewStatus, null, page, pageSize);
+	}
+
+	/**
+	 * List all approved products by category. (ADMIN ONLY)
+	 * 
+	 * @param category the product category
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a list of product
+	 */
+	default Page<Product> listAllApprovedProducts(@Nullable Category category, int page, int pageSize) {
+		return listAllProducts(ReviewStatus.APPROVED, category, page, pageSize);
+	}
+
+	/**
+	 * List all products by reviewStatus & category. (ADMIN ONLY)
+	 * 
+	 * @param reviewStatus the reviewStatus
+	 * @param category the product category
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a list of product
+	 */
+	Page<Product> listAllProducts(@Nullable ReviewStatus reviewStatus, @Nullable Category category, int page,
+			int pageSize);
 
 	/**
 	 * Delete a product.

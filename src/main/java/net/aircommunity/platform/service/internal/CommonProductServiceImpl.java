@@ -12,6 +12,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFaq;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.repository.BaseProductRepository;
@@ -61,8 +62,8 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 	}
 
 	@Override
-	public Page<Product> listAllProducts(ReviewStatus reviewStatus, int page, int pageSize) {
-		return doListAllProducts(reviewStatus, page, pageSize);
+	public Page<Product> listAllProducts(ReviewStatus reviewStatus, Category category, int page, int pageSize) {
+		return doListAllProducts(reviewStatus, category, page, pageSize);
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#productId")

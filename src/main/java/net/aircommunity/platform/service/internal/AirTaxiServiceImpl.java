@@ -12,6 +12,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.repository.AirTaxiRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
@@ -36,6 +37,7 @@ public class AirTaxiServiceImpl extends AircraftAwareProductService<AirTaxi> imp
 
 	@Override
 	public AirTaxi createAirTaxi(String tenantId, AirTaxi airTaxi) {
+		airTaxi.setCategory(Category.AIR_TAXI);
 		return doCreateProduct(tenantId, airTaxi);
 	}
 

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 
 /**
@@ -14,6 +15,17 @@ import net.aircommunity.platform.model.Reviewable.ReviewStatus;
  * @author Bin.Zhang
  */
 public interface BaseProductRepository<T extends Product> extends JpaRepository<T, String> {
+
+	/**
+	 * Find all products by review status. (For END USER mainly). Only show approved and published product.
+	 * 
+	 * @param reviewStatus the reviewStatus
+	 * @param published the published status
+	 * @param category the product category
+	 * @param pageable the page request
+	 * @return page of products
+	 */
+	Page<T> findByPublishedAndCategoryOrderByRankAscScoreDesc(boolean published, Category category, Pageable pageable);
 
 	/**
 	 * Find all products by review status. (For END USER mainly). Only show approved and published product.
@@ -36,6 +48,15 @@ public interface BaseProductRepository<T extends Product> extends JpaRepository<
 	Page<T> findAllByOrderByCreationDateDesc(Pageable pageable);
 
 	/**
+	 * Find all products. (For ADMIN ONLY)
+	 * 
+	 * @param category the category
+	 * @param pageable the page request
+	 * @return page of products
+	 */
+	Page<T> findByCategoryOrderByCreationDateDesc(Category category, Pageable pageable);
+
+	/**
 	 * Find all products by review status. (For ADMIN ONLY)
 	 * 
 	 * @param reviewStatus the reviewStatus
@@ -43,6 +64,17 @@ public interface BaseProductRepository<T extends Product> extends JpaRepository<
 	 * @return @return page of products
 	 */
 	Page<T> findByReviewStatusOrderByCreationDateDesc(ReviewStatus reviewStatus, Pageable pageable);
+
+	/**
+	 * Find all products by review status. (For ADMIN ONLY)
+	 * 
+	 * @param reviewStatus the reviewStatus
+	 * @param category the category
+	 * @param pageable the page request
+	 * @return @return page of products
+	 */
+	Page<T> findByReviewStatusAndCategoryOrderByCreationDateDesc(ReviewStatus reviewStatus, Category category,
+			Pageable pageable);
 
 	/**
 	 * Count all products by review status. (For ADMIN ONLY)

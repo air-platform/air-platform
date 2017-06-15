@@ -112,12 +112,8 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		newComment.setOwner(owner);
 		newComment.setProduct(product);
 		newComment.setSource(source);
-		// TODO REMOVE: already set from REST before creation
-		// Account replyTo = comment.getReplyTo();
-		// if (replyTo != null) {
-		// replyTo = findAccount(replyTo.getId(), User.class);
-		// newComment.setReplyTo(replyTo);
-		// }
+		// replyTo is already set from REST before creation
+		newComment.setReplyTo(comment.getReplyTo());
 		try {
 			Comment savedComment = commentRepository.save(newComment);
 			// calculate score if comment from order
@@ -135,7 +131,6 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 				}
 				order.setCommented(true);
 				commonOrderService.saveOrder(order);
-				// productRepository.save(product); // TODO REMOVE? do we need save product?
 			}
 			return savedComment;
 		}

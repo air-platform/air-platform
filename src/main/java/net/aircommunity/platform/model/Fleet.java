@@ -170,6 +170,14 @@ public class Fleet extends PricedProduct {
 	}
 
 	@Override
+	public Category getCategory() {
+		if (category == null) {
+			return Category.AIR_JET;
+		}
+		return category;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Fleet [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)

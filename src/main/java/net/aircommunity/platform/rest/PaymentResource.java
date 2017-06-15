@@ -1,5 +1,6 @@
 package net.aircommunity.platform.rest;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -131,9 +132,10 @@ public class PaymentResource {
 		PaymentResponse paymentResponse = paymentService.processServerPaymentNotification(paymentMethod,
 				new PaymentNotification(params));
 		LOG.debug("Payment response to server: {}", paymentResponse);
-		response.getWriter().write(paymentResponse.getBody());
-		response.getWriter().flush();
-		response.getWriter().close();
+		PrintWriter out = response.getWriter();
+		out.write(paymentResponse.getBody());
+		out.flush();
+		out.close();
 	}
 
 }

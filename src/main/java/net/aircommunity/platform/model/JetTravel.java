@@ -21,6 +21,14 @@ public class JetTravel extends PricedProduct {
 	}
 
 	@Override
+	public Category getCategory() {
+		if (category == null) {
+			return Category.AIR_JET;
+		}
+		return category;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("JetTravel [price=").append(price).append(", currencyUnit=").append(currencyUnit)

@@ -62,6 +62,14 @@ public class AirTransport extends AircraftAwareProduct {
 	}
 
 	@Override
+	public Category getCategory() {
+		if (category == null) {
+			return Category.AIR_TRANS;
+		}
+		return category;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTransport [family=").append(family).append(", timeEstimation=").append(timeEstimation)

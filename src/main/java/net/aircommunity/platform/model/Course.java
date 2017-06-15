@@ -178,6 +178,14 @@ public class Course extends PricedProduct {
 	}
 
 	@Override
+	public Category getCategory() {
+		if (category == null) {
+			return Category.AIR_TRAINING;
+		}
+		return category;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Course [aircraftType=").append(aircraftType).append(", location=").append(location)

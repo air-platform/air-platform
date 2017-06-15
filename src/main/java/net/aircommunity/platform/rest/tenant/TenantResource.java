@@ -2,10 +2,15 @@ package net.aircommunity.platform.rest.tenant;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
+import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.CommentResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
@@ -38,6 +43,13 @@ public class TenantResource {
 	@Path("product/families")
 	public TenantProductFamilyResource productFamilies() {
 		return tenantProductFamilyResource;
+	}
+
+	@GET
+	@Path("product/categories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Category[] productCategories() {
+		return Product.Category.values();
 	}
 
 	// ***********************

@@ -1,15 +1,22 @@
 package net.aircommunity.platform.rest.admin;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +24,10 @@ import org.slf4j.LoggerFactory;
 import io.micro.annotation.RESTful;
 import io.micro.core.security.AccessTokenService;
 import io.swagger.annotations.Api;
+import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.Product.Category;
+import net.aircommunity.platform.model.ProductSummary;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.AirClassResource;
@@ -119,7 +129,7 @@ public class AdminResource extends BaseResourceSupport {
 	@Resource
 	private PromotionResource promotionResource;
 
-	@Path("") // path already in the resource
+	@Path("promotions")
 	public PromotionResource promotions() {
 		return promotionResource;
 	}
@@ -127,7 +137,7 @@ public class AdminResource extends BaseResourceSupport {
 	@Resource
 	private BannerResource bannerResource;
 
-	@Path("") // path already in the resource
+	@Path("banners")
 	public BannerResource banners() {
 		return bannerResource;
 	}
@@ -139,7 +149,7 @@ public class AdminResource extends BaseResourceSupport {
 	@Resource
 	private AirJetResource airJetResource;
 
-	@Path("") // path already in the resource
+	@Path("airjets")
 	public AirJetResource airjets() {
 		return airJetResource;
 	}
@@ -147,7 +157,7 @@ public class AdminResource extends BaseResourceSupport {
 	@Resource
 	private AirClassResource airClassResource;
 
-	@Path("") // path already in the resource
+	@Path("airclasses")
 	public AirClassResource airclasses() {
 		return airClassResource;
 	}
@@ -155,7 +165,7 @@ public class AdminResource extends BaseResourceSupport {
 	@Resource
 	private AirportResource airportResource;
 
-	@Path("") // path already in the resource
+	@Path("airports")
 	public AirportResource airports() {
 		return airportResource;
 	}
@@ -171,8 +181,6 @@ public class AdminResource extends BaseResourceSupport {
 	// ***********************
 	// Product Management
 	// ***********************
-	@Resource
-	private CommonProductService commonProductService;
 
 	// *********
 	// AIRCRAFT
@@ -205,6 +213,13 @@ public class AdminResource extends BaseResourceSupport {
 	@Path("product/families")
 	public AdminProductFamilyResource families() {
 		return adminProductFamilyResource;
+	}
+
+	@GET
+	@Path("product/categories")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Category[] productCategories() {
+		return Product.Category.values();
 	}
 
 	// *********
@@ -287,6 +302,24 @@ public class AdminResource extends BaseResourceSupport {
 	// **************
 	// Review Product
 	// **************
+	@Resource
+	private CommonProductService commonProductService;
+
+	@GET
+	@Path("product/summaries")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response productSummaries(@QueryParam("category") Category category,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		Page<Product> result = commonProductService.listAllApprovedProducts(category, page, pageSize);
+		List<ProductSummary> content = result.getContent().stream().map(ProductSummary::new)
+				.collect(Collectors.toList());
+		if (page > 0) {
+			return Response.ok(
+					new Page<ProductSummary>(result.getPage(), result.getPageSize(), result.getTotalRecords(), content))
+					.build();
+		}
+		return Response.ok(content).build();
+	}
 
 	@POST
 	@Path("products/{productId}")
@@ -333,7 +366,7 @@ public class AdminResource extends BaseResourceSupport {
 	@Resource
 	private CommentResource commentResource;
 
-	@Path("") // path already in the resource
+	@Path("comments") // path already in the resource
 	public CommentResource comments() {
 		return commentResource;
 	}

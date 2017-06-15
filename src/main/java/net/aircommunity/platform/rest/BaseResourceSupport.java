@@ -2,9 +2,12 @@ package net.aircommunity.platform.rest;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Resource;
 import javax.json.Json;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
+
+import net.aircommunity.platform.service.CommonProductService;
 
 /**
  * Common RESTful API support
@@ -16,6 +19,9 @@ public abstract class BaseResourceSupport {
 	private static final String JSON_PROP_COUNT = "count";
 	private static final String JSON_PROP_REJECT_REASON = "reason";
 	private static final String JSON_PROP_AMOUNT = "amount";
+
+	@Resource
+	protected CommonProductService commonProductService;
 
 	protected JsonObject buildCountResponse(long count) {
 		return Json.createObjectBuilder().add(JSON_PROP_COUNT, count).build();
