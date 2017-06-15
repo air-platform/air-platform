@@ -71,7 +71,7 @@ public class AccountAuth extends Persistable {
 	@Column(name = "last_accessed_ip")
 	private String lastAccessedIp;
 
-	// User-Agent
+	// user-agent
 	@Column(name = "last_accessed_source")
 	private String lastAccessedSource;
 

@@ -26,9 +26,9 @@ import net.aircommunity.platform.model.Tenant.VerificationStatus;
 public interface AccountService {
 
 	/**
-	 * Authenticate an account.
+	 * Authenticate an account via internal auth type (username, mobile or email).
 	 * 
-	 * @param principal the username, mobile or email (internal)
+	 * @param principal the username, mobile or email
 	 * @param credential the credential
 	 * @param context the auth context
 	 * @return authenticated account, null otherwise

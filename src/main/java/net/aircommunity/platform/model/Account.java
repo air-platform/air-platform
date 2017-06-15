@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
@@ -60,13 +62,14 @@ public class Account extends Persistable {
 	@Column(name = "avatar")
 	protected String avatar;
 
-	// last accessed IP regardless from which source (auth type)
-	@XmlTransient
-	@Column(name = "last_accessed_ip") // TODO? need, or just use AccountAuth data?
+	// last accessed IP regardless from which source (AUTH type)
+	// just duplicated AccountAuth lastAccessedIp for quick lookup
+	@Column(name = "last_accessed_ip")
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected String lastAccessedIp;
 
 	// @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-	// private List<AccountAuth> auths; //TODO return as well?
+	// private List<AccountAuth> auths;
 
 	public Account() {
 	}

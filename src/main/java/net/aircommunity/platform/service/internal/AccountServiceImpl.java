@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
@@ -27,6 +28,7 @@ import io.micro.common.Randoms;
 import io.micro.common.Strings;
 import io.micro.common.UUIDs;
 import io.micro.common.crypto.password.PasswordEncoder;
+import io.micro.common.tuple.Pair;
 import io.micro.core.security.AccessTokenService;
 import io.micro.core.security.Claims;
 import net.aircommunity.platform.AirException;
@@ -147,20 +149,25 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 	}
 
+	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#result.id")
 	@Override
 	public Account authenticateAccount(String principal, String credential, AuthContext context) {
 		AccountAuth auth = null;
 		for (AuthType authType : AuthType.internalAuths()) {
 			auth = accountAuthRepository.findByTypeAndPrincipal(authType, principal);
 			if (auth != null) {
-				// TODO
-				auth.setLastAccessedDate(new Date());
-				auth.setLastAccessedIp(context.ipAddress());
-				auth.setLastAccessedSource(context.source());
-				auth = accountAuthRepository.save(auth);
+				auth = accountAccessed(auth, context);
 				break;
 			}
 		}
+		return doAuthenticate(principal, credential, context, auth).getAccount();
+	}
+
+	/**
+	 * Perform authentication and return AccountAuth
+	 */
+	private @Nonnull AccountAuth doAuthenticate(String principal, String credential, AuthContext context,
+			AccountAuth auth) {
 		if (auth == null) {
 			LOG.error("Failed to authenticate, account {} is not found", principal);
 			throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.msg(M.ACCOUNT_NOT_FOUND));
@@ -175,8 +182,9 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			LOG.warn("Account {} is not enabled, cannot be authenticated", principal);
 			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED, M.msg(M.ACCOUNT_UNAUTHORIZED_DISABLED));
 		}
-		boolean valid = false;
+
 		// OTP is available for mobile
+		boolean valid = false;
 		if (context.isOtp()) {
 			if (configuration.isMobileVerificationEnabled()) {
 				valid = verificationService.verifyCode(credential, credential);
@@ -192,52 +200,75 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		if (!valid) {
 			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED, M.msg(M.ACCOUNT_UNAUTHORIZED));
 		}
-		return account;
+		return auth;
 	}
 
+	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#result.id")
 	@Override
 	public Account authenticateAccount(AuthType type, String principal, String credential, AuthContext context) {
-		Account account = null;
+		AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(type, principal);
 		switch (type) {
-		// TODO internal auth
+		// internal auth
+		case USERNAME:
+		case EMAIL:
+		case MOBILE:
+			auth = doAuthenticate(principal, credential, context, auth);
+			break;
+
+		// external auth
 		case WECHAT:
 		case QQ:
 		case WEIBO:
-			AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(type, principal);
 			if (auth == null) {
 				// create account
-				account = createAccount(type, principal, credential, null, context.expiry(), Role.USER);
-				auth = accountAuthRepository.findByTypeAndPrincipal(type, principal);
-				auth.setLastAccessedIp(context.ipAddress());
-				accountAuthRepository.save(auth);
+				Pair<Account, AccountAuth> created = createAccount(type, principal, credential, null, context.expiry(),
+						Role.USER);
+				auth = created.getRight();
 			}
 			else {
 				// update with new credential, e.g. access-token returned from wechat
 				auth.setCredential(credential);
-				auth.setLastAccessedDate(new Date());
-				auth.setLastAccessedIp(context.ipAddress());
-				accountAuthRepository.save(auth);
-				account = auth.getAccount();
 			}
 			break;
 
 		default: // noop
 		}
-		return account;
+
+		// record accessed
+		if (auth != null) {
+			auth = accountAccessed(auth, context);
+		}
+		return auth == null ? null : auth.getAccount();
+	}
+
+	private AccountAuth accountAccessed(AccountAuth auth, AuthContext context) {
+		auth.setLastAccessedDate(new Date());
+		auth.setLastAccessedIp(context.ipAddress());
+		auth.setLastAccessedSource(context.source());
+		// also update LastAccessedIp of account for quick lookup
+		Account account = auth.getAccount();
+		account.setLastAccessedIp(context.ipAddress());
+		account = accountRepository.save(account);
+		auth.setAccount(account);
+		return accountAuthRepository.save(auth);
 	}
 
 	@Override
 	public Account createAccount(String username, String password, Role role) {
-		return createAccount(AuthType.USERNAME, username, password, null, AccountAuth.EXPIRES_NERVER, role);
+		Pair<Account, AccountAuth> pair = createAccount(AuthType.USERNAME, username, password, null,
+				AccountAuth.EXPIRES_NERVER, role);
+		return pair.getLeft();
 	}
 
 	@Override
 	public Account createAccount(String mobile, String password, String verificationCode, Role role) {
-		return createAccount(AuthType.MOBILE, mobile, password, verificationCode, AccountAuth.EXPIRES_NERVER, role);
+		Pair<Account, AccountAuth> pair = createAccount(AuthType.MOBILE, mobile, password, verificationCode,
+				AccountAuth.EXPIRES_NERVER, role);
+		return pair.getLeft();
 	}
 
-	private Account createAccount(AuthType type, String principal, String credential, String verificationCode,
-			long expires, Role role) {
+	private Pair<Account, AccountAuth> createAccount(AuthType type, String principal, String credential,
+			String verificationCode, long expires, Role role) {
 		// user will only provide mobile to register an account
 		if (type == AuthType.MOBILE && Strings.isBlank(verificationCode)) {
 			throw new AirException(Codes.ACCOUNT_INVALID_VERIFICATION_CODE,
@@ -249,8 +280,8 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return doCreateAccount(type, principal, credential, verificationCode, expires, role);
 	}
 
-	private Account doCreateAccount(AuthType type, String principal, String credential, String verificationCode,
-			long expires, Role role) {
+	private Pair<Account, AccountAuth> doCreateAccount(AuthType type, String principal, String credential,
+			String verificationCode, long expires, Role role) {
 		AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(type, principal);
 		if (auth != null) {
 			LOG.error("Account with {}: {} is already exists", type, principal);
@@ -286,7 +317,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		newAccount.setStatus(Status.ENABLED);
 		newAccount.setAvatar(configuration.getDefaultAvatar());
 
-		// save for nodebb user
+		// save for airq user
 		String password = credential;
 
 		// auth type
@@ -355,13 +386,13 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			auth.setVerified(verified);
 			auth.setCreationDate(new Date());
 			auth.setLastAccessedDate(auth.getCreationDate());
-			accountAuthRepository.save(auth);
+			auth = accountAuthRepository.save(auth);
 			// create account in AirQ
 			if (configuration.isAirqAccountSync()) {
 				LOG.info("Create corresponding account on AirQ for {}", principal);
 				airqAccountService.createAccount(principal, password);
 			}
-			return accountCreated;
+			return Pair.of(accountCreated, auth);
 		}
 		catch (Exception e) {
 			LOG.error(String.format("Create account with auth: %s, principal: %s failed, casue: %s", type, principal,
@@ -372,7 +403,9 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	@Override
 	public Account createAdminAccount(String username, String password) {
-		return doCreateAccount(AuthType.USERNAME, username, password, null, AccountAuth.EXPIRES_NERVER, Role.ADMIN);
+		Pair<Account, AccountAuth> pair = doCreateAccount(AuthType.USERNAME, username, password, null,
+				AccountAuth.EXPIRES_NERVER, Role.ADMIN);
+		return pair.getLeft();
 	}
 
 	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
