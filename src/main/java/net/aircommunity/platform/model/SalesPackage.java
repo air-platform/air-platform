@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,7 +34,7 @@ import net.aircommunity.platform.model.constraint.PriceList;
 import net.aircommunity.platform.model.jaxb.ProductAdapter;
 
 /**
- * Sales Package for taxi, tour and transportation.
+ * Sales Package for taxi, tour and transport. (TODO make it generic without bound to a aircraft?)
  * 
  * @author Bin.Zhang
  */
@@ -66,6 +67,7 @@ public class SalesPackage extends Persistable {
 	private List<Double> priceList;
 
 	// in presalesDays before
+	@Min(0)
 	@Column(name = "presales_days")
 	private int presalesDays = 0;
 
@@ -91,17 +93,16 @@ public class SalesPackage extends Persistable {
 	@XmlJavaTypeAdapter(ProductAdapter.class)
 	private Product product;
 
-	@PostLoad
-	private void onLoad() {
-		normalizeAndApplyPrices(prices);
-	}
-
 	public SalesPackage() {
-
 	}
 
 	public SalesPackage(String id) {
 		this.id = id;
+	}
+
+	@PostLoad
+	private void onLoad() {
+		normalizeAndApplyPrices(prices);
 	}
 
 	public String getName() {

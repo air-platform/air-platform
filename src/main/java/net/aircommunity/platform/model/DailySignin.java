@@ -51,15 +51,9 @@ public class DailySignin extends Persistable {
 	@Transient
 	private boolean success;
 
-	// @XmlJavaTypeAdapter(AccountAdapter.class)
-	// @XmlTransient
-	// @OneToOne
-	// @JoinColumn(name = "user_id", nullable = false)
-	// private User user;
-
 	public DailySignin() {
 		lastSigninDate = new Date();
-		consecutiveSignins = 1;
+		consecutiveSignins = 0;
 	}
 
 	public int getConsecutiveSignins() {

@@ -17,9 +17,9 @@ import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTaxiOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTourOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTransportOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantCharterOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantEnrollmentResource;
 import net.aircommunity.platform.rest.tenant.order.TenantFerryFlightOrderResource;
-import net.aircommunity.platform.rest.tenant.order.TenantFleetOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantJetTravelOrderResource;
 
 /**
@@ -163,11 +163,11 @@ public class TenantResource {
 	// Air Jet
 	// ***********************
 	@Resource
-	private TenantFleetOrderResource tenantFleetOrderResource;
+	private TenantCharterOrderResource tenantCharterOrderResource;
 
 	@Path("charter/orders")
-	public TenantFleetOrderResource fleetOrders() {
-		return tenantFleetOrderResource;
+	public TenantCharterOrderResource charterOrders() {
+		return tenantCharterOrderResource;
 	}
 
 	@Resource

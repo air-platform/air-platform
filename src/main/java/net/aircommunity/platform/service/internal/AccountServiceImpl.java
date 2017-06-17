@@ -70,9 +70,8 @@ import net.aircommunity.platform.service.VerificationService;
 public class AccountServiceImpl extends AbstractServiceSupport implements AccountService {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountServiceImpl.class);
 
-	private static final String CACHE_NAME_ACCOUNT = "cache.account";
-	private static final String CACHE_NAME_ACCOUNT_APIKEY = "cache.account_apikey";
-	// private static final String CACHE_NAME_APIKEY = "cache.account_apikey";
+	private static final String CACHE_NAME = "cache.account";
+	private static final String CACHE_NAME_APIKEY = "cache.account_apikey";
 
 	// FORMAT: http://host:port/context/api-version/account/email/confirm?token=xxx&code=xxx
 	private static final String EMAIL_CONFIRMATION_LINK_WITH_PORT_BASE_FORMAT = "http%s://%s:%d%s/%s/account/email/confirm?%s";
@@ -149,7 +148,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#result.id")
+	@CachePut(cacheNames = CACHE_NAME, key = "#result.id")
 	@Override
 	public Account authenticateAccount(String principal, String credential, AuthContext context) {
 		AccountAuth auth = null;
@@ -190,8 +189,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				valid = verificationService.verifyCode(credential, credential);
 			}
 			else {
-				LOG.warn("Mobiel verification is not enabled, verification skipped.");
-				valid = true;
+				LOG.warn("Mobile verification is not enabled, verification failed.");
 			}
 		}
 		else {
@@ -203,7 +201,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return auth;
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#result.id")
+	@CachePut(cacheNames = CACHE_NAME, key = "#result.id")
 	@Override
 	public Account authenticateAccount(AuthType type, String principal, String credential, AuthContext context) {
 		AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(type, principal);
@@ -306,6 +304,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			newAccount.setRole(role);
 			User u = (User) newAccount;
 			u.setPoints(memberPointsService.getPointsEarnedFromRule(Constants.PointRules.ACCOUNT_REGISTRATION));
+			u.setDailySignin(new DailySignin());
 			break;
 
 		default: // noop
@@ -408,7 +407,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return pair.getLeft();
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account updateAccount(String accountId, Account newAccount) {
 		Account account = findAccount(accountId);
@@ -458,7 +457,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				newAccount);
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account updateAccountStatus(String accountId, Status newStatus) {
 		Account account = findAccount(accountId);
@@ -471,7 +470,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				newStatus);
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account updateTenantVerificationStatus(String accountId, VerificationStatus newStatus) {
 		Account account = findAccount(accountId);
@@ -485,14 +484,14 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				"Update tenant account %s VerificationStatus to %s failed", accountId, newStatus);
 	}
 
-	@Cacheable(cacheNames = CACHE_NAME_ACCOUNT_APIKEY)
+	@Cacheable(cacheNames = CACHE_NAME_APIKEY)
 	@Override
 	public Optional<Account> findAccountByApiKey(String apiKey) {
 		Account account = accountRepository.findByApiKey(apiKey);
 		return Optional.ofNullable(account);
 	}
 
-	@Cacheable(cacheNames = CACHE_NAME_ACCOUNT)
+	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public Account findAccount(String accountId) {
 		Account account = accountRepository.findOne(accountId);
@@ -533,7 +532,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return addresses.stream().collect(Collectors.toList());
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account addUserAddress(String accountId, Address address) {
 		Account account = findAccount(accountId);
@@ -546,7 +545,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return safeExecute(() -> accountRepository.save(user), "Add user %s address %s failed", accountId, address);
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account removeUserAddress(String accountId, String addressId) {
 		Account account = findAccount(accountId);
@@ -637,7 +636,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	// TODO list all/cleanup unconfirmed/expired accounts, need to resend email if confirm link expired
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account updateUserPoints(String accountId, long deltaPoints) {
 		User user = findAccount(accountId, User.class);
@@ -754,7 +753,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		safeExecute(() -> accountAuthRepository.save(auth), "Confirm account %s email failed", accountId);
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account updatePassword(String accountId, String oldPassword, String newPassword) {
 		Account account = findAccount(accountId);
@@ -772,7 +771,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return safeExecute(() -> accountRepository.save(account), "Update account %s password failed", accountId);
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account resetPasswordTo(String accountId, String newPassword) {
 		Account account = findAccount(accountId);
@@ -781,7 +780,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	}
 
 	// XXX check if update cache using #result.id works?
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#result.id")
+	@CachePut(cacheNames = CACHE_NAME, key = "#result.id")
 	@Cacheable
 	@Override
 	public Account resetPasswordViaMobile(String mobile, String newPassword) {
@@ -795,7 +794,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				mobile);
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account resetPasswordViaEmail(String accountId) {
 		Account account = findAccount(accountId);
@@ -817,7 +816,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return accountUpdated;
 	}
 
-	@Caching(put = @CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId"), evict = @CacheEvict(cacheNames = CACHE_NAME_ACCOUNT_APIKEY))
+	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#accountId"), evict = @CacheEvict(cacheNames = CACHE_NAME_APIKEY))
 	@Override
 	public Account refreshApiKey(String accountId) {
 		Account account = findAccount(accountId);
@@ -825,7 +824,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return safeExecute(() -> accountRepository.save(account), "Refresh account %s apikey failed", accountId);
 	}
 
-	@CachePut(cacheNames = CACHE_NAME_ACCOUNT, key = "#accountId")
+	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account dailySignin(String accountId) {
 		Account account = findAccount(accountId);
@@ -837,6 +836,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		DailySignin dailySignin = user.getDailySignin();
 		if (dailySignin == null) {
 			dailySignin = new DailySignin();
+			dailySignin.setConsecutiveSignins(1);
 			dailySignin.setSuccess(true);
 		}
 		// not signin yet
@@ -870,7 +870,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return safeExecute(() -> accountRepository.save(user), "Update user %s for signin", accountId);
 	}
 
-	@CacheEvict(cacheNames = { CACHE_NAME_ACCOUNT, CACHE_NAME_ACCOUNT_APIKEY }, key = "#accountId")
+	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_APIKEY }, key = "#accountId")
 	@Override
 	public void deleteAccount(String accountId) {
 		Account account = accountRepository.findOne(accountId);

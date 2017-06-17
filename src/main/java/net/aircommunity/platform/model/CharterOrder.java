@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -103,6 +104,17 @@ public class CharterOrder extends StandardOrder {
 	@Override
 	public void setProduct(Product product) {
 		// XXX noops, use FleetCandidate only
+	}
+
+	@Override
+	public UnitProductPrice getUnitProductPrice() {
+		Product product = getProduct();
+		BigDecimal unitPrice = BigDecimal.ZERO;
+		// if Fleet, the product can be null
+		if (product != null && StandardProduct.class.isAssignableFrom(product.getClass())) {
+			unitPrice = ((StandardProduct) product).getPrice();
+		}
+		return new UnitProductPrice(PricePolicy.PER_HOUR, unitPrice);
 	}
 
 	@Override

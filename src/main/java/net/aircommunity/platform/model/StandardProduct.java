@@ -8,12 +8,12 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 /**
- * Product of an {@code Tenant} with single price.
+ * Standard product with a single price.
  * 
  * @author Bin.Zhang
  */
 @Entity
-public abstract class PricedProduct extends Product {
+public abstract class StandardProduct extends Product {
 	private static final long serialVersionUID = 1L;
 
 	// @Digits(integer = 11, fraction = 2)

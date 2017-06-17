@@ -1,5 +1,7 @@
 package net.aircommunity.platform.model;
 
+import java.math.BigDecimal;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -49,6 +51,17 @@ public abstract class StandardOrder extends Order {
 
 	public void setRefund(Refund refund) {
 		this.refund = refund;
+	}
+
+	@Override
+	public UnitProductPrice getUnitProductPrice() {
+		Product product = getProduct();
+		BigDecimal unitPrice = BigDecimal.ZERO;
+		// if Fleet, the product can be null
+		if (product != null && StandardProduct.class.isAssignableFrom(product.getClass())) {
+			unitPrice = ((StandardProduct) product).getPrice();
+		}
+		return new UnitProductPrice(PricePolicy.STANDARD, unitPrice);
 	}
 
 }

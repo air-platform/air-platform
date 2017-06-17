@@ -1,10 +1,11 @@
 package net.aircommunity.platform.model;
 
 /**
- * Unit Currency.
+ * Currency Unit.
  * 
  * @author Bin.Zhang
  */
 public enum CurrencyUnit {
-	RMB, HKD, USD, EUR;
+	// XXX use CNY instead of RMB ?
+	RMB, CNY, HKD, USD, EUR;
 }

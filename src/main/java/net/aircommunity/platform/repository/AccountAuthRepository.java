@@ -44,7 +44,7 @@ public interface AccountAuthRepository extends JpaRepository<AccountAuth, String
 	AccountAuth findByTypeAndPrincipal(AuthType type, String principal);
 
 	/**
-	 * Delete auth by accountId
+	 * Delete auths of an account
 	 *
 	 * @param accountId the accountId
 	 * @return the number of records deleted

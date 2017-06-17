@@ -1,6 +1,5 @@
 package net.aircommunity.platform.model;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,45 +9,22 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
-import javax.persistence.PostLoad;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
- * AircraftAware Product of an {@code Tenant} with multiple-prices (sales packages).
+ * SalesPackage Product with multiple-prices (sales packages).
  * 
  * @author Bin.Zhang
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class AircraftAwareProduct extends Product {
+public abstract class SalesPackageProduct extends Product {
 	private static final long serialVersionUID = 1L;
-
-	// provide the server time to the client, TODO a better place?
-	@Transient
-	@XmlJavaTypeAdapter(DateTimeAdapter.class)
-	protected Date currentTime;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	protected Set<SalesPackage> salesPackages = new HashSet<>();
-
-	@PostLoad
-	private void afterLoad() {
-		setCurrentTime(new Date());
-	}
-
-	public Date getCurrentTime() {
-		return currentTime;
-	}
-
-	public void setCurrentTime(Date currentTime) {
-		this.currentTime = currentTime;
-	}
 
 	public Set<SalesPackage> getSalesPackages() {
 		return salesPackages;

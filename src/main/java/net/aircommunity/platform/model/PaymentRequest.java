@@ -19,13 +19,14 @@ public class PaymentRequest implements Serializable {
 	// order payment string
 	// e.g. alipay: url encoded full ordering string
 	// e.g. wechat: xml unified ordering string
-	private final String paymentInfo;
+	// e.g. newpay: json sign json order request
+	private final Object paymentInfo;
 
-	public PaymentRequest(String paymentInfo) {
+	public PaymentRequest(Object paymentInfo) {
 		this.paymentInfo = paymentInfo;
 	}
 
-	public String getPaymentInfo() {
+	public Object getPaymentInfo() {
 		return paymentInfo;
 	}
 

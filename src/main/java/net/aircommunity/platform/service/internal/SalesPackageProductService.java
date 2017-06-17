@@ -5,16 +5,16 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import net.aircommunity.platform.model.Aircraft;
-import net.aircommunity.platform.model.AircraftAwareProduct;
+import net.aircommunity.platform.model.SalesPackageProduct;
 import net.aircommunity.platform.model.SalesPackage;
 import net.aircommunity.platform.service.AircraftService;
 
 /**
- * Abstract Aircraft aware Product service support.
+ * Abstract SalesPackage product service support.
  * 
  * @author Bin.Zhang
  */
-abstract class AircraftAwareProductService<T extends AircraftAwareProduct> extends AbstractProductService<T> {
+abstract class SalesPackageProductService<T extends SalesPackageProduct> extends AbstractProductService<T> {
 
 	@Resource
 	protected AircraftService aircraftService;

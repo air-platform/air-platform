@@ -12,7 +12,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "air_platfrom_airtaxi")
-public class AirTaxi extends AircraftAwareProduct {
+public class AirTaxi extends SalesPackageProduct {
 	private static final long serialVersionUID = 1L;
 
 	@Embedded

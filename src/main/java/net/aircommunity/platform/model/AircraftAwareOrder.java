@@ -25,7 +25,7 @@ import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
- * Aircraft Aware Order model has SalesPackage (taxi, tour, trans)
+ * Aircraft aware order model that has multiple prices a.k.a. SalesPackage (for taxi, tour, trans)
  * 
  * @author Bin.Zhang
  */
@@ -35,20 +35,14 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
 public abstract class AircraftAwareOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
-	// TODO REMOVE --> use quantity
-	// the number of package in this order
-	// @NotNull
-	// @JoinColumn(name = "salespackage_num", nullable = false)
-	// protected int salesPackageNum;
-
-	// calculated on order creation
-	@Column(name = "salespackage_price", nullable = false)
-	protected BigDecimal salesPackagePrice = BigDecimal.ZERO;
-
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "salespackage_id", nullable = false)
 	protected SalesPackage salesPackage;
+
+	// calculated on order creation
+	@Column(name = "salespackage_price", nullable = false)
+	protected BigDecimal salesPackagePrice = BigDecimal.ZERO;
 
 	// departure date, e.g. 2017-5-1
 	@NotNull
@@ -67,20 +61,20 @@ public abstract class AircraftAwareOrder extends VendorAwareOrder {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	protected Set<PassengerItem> passengers = new HashSet<>();
 
-	public BigDecimal getSalesPackagePrice() {
-		return salesPackagePrice;
-	}
-
-	public void setSalesPackagePrice(BigDecimal salesPackagePrice) {
-		this.salesPackagePrice = salesPackagePrice;
-	}
-
 	public SalesPackage getSalesPackage() {
 		return salesPackage;
 	}
 
 	public void setSalesPackage(SalesPackage salesPackage) {
 		this.salesPackage = salesPackage;
+	}
+
+	public BigDecimal getSalesPackagePrice() {
+		return salesPackagePrice;
+	}
+
+	public void setSalesPackagePrice(BigDecimal salesPackagePrice) {
+		this.salesPackagePrice = salesPackagePrice;
 	}
 
 	public String getTimeSlot() {
@@ -109,6 +103,11 @@ public abstract class AircraftAwareOrder extends VendorAwareOrder {
 			passengers.clear();
 			passengers.addAll(items);
 		}
+	}
+
+	@Override
+	public UnitProductPrice getUnitProductPrice() {
+		return new UnitProductPrice(PricePolicy.SALES_PACKAGE, salesPackagePrice);
 	}
 
 	protected String toBaseString(Class<?> type) {

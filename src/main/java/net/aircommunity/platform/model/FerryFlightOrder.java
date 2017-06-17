@@ -1,11 +1,9 @@
 package net.aircommunity.platform.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -18,23 +16,10 @@ import javax.validation.constraints.NotNull;
 public class FerryFlightOrder extends CharterableOrder {
 	private static final long serialVersionUID = 1L;
 
-	// the number of passengers
-	@Min(1)
-	@Column(name = "passengers")
-	private int passengers;
-
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "ferryflight_id", nullable = false)
 	private FerryFlight ferryFlight;
-
-	public int getPassengers() {
-		return passengers;
-	}
-
-	public void setPassengers(int passengers) {
-		this.passengers = passengers;
-	}
 
 	@Override
 	public Type getType() {

@@ -17,6 +17,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -76,6 +77,7 @@ public abstract class Order extends Persistable {
 	protected long pointsUsed;
 
 	@XmlElement
+	@Min(1)
 	@Column(name = "quantity", nullable = false)
 	protected int quantity = 1;
 
@@ -411,6 +413,9 @@ public abstract class Order extends Persistable {
 	public abstract Product getProduct();
 
 	public abstract void setProduct(Product product);
+
+	@XmlTransient
+	public abstract UnitProductPrice getUnitProductPrice();
 
 	/**
 	 * Order product type

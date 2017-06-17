@@ -63,12 +63,12 @@ import net.aircommunity.platform.rest.tenant.order.TenantAirTourOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTransportOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantEnrollmentResource;
 import net.aircommunity.platform.rest.tenant.order.TenantFerryFlightOrderResource;
-import net.aircommunity.platform.rest.tenant.order.TenantFleetOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantCharterOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantJetTravelOrderResource;
 import net.aircommunity.platform.rest.user.AirTaxiOrderResource;
 import net.aircommunity.platform.rest.user.AirTourOrderResource;
 import net.aircommunity.platform.rest.user.AirTransportOrderResource;
-import net.aircommunity.platform.rest.user.ChaterOrderResource;
+import net.aircommunity.platform.rest.user.CharterOrderResource;
 import net.aircommunity.platform.rest.user.FerryFlightOrderResource;
 import net.aircommunity.platform.rest.user.JetTravelOrderResource;
 import net.aircommunity.platform.rest.user.UserEnrollmentResource;
@@ -483,10 +483,10 @@ public class AdminResource extends BaseResourceSupport {
 
 	// Air Jet
 	@Resource
-	private TenantFleetOrderResource tenantFleetOrderResource;
+	private TenantCharterOrderResource tenantFleetOrderResource;
 
 	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/charter/orders")
-	public TenantFleetOrderResource tenantCharterOrders(@PathParam("tenantId") String tenantId) {
+	public TenantCharterOrderResource tenantCharterOrders(@PathParam("tenantId") String tenantId) {
 		return tenantFleetOrderResource;
 	}
 
@@ -549,10 +549,10 @@ public class AdminResource extends BaseResourceSupport {
 	// Air Jet
 	// ***********************
 	@Resource
-	private ChaterOrderResource chaterOrderResource;
+	private CharterOrderResource chaterOrderResource;
 
 	@Path(USERS_PATH_PREFIX + "/{userId}/chater/orders")
-	public ChaterOrderResource chaterOrders(@PathParam("userId") String userId) {
+	public CharterOrderResource chaterOrders(@PathParam("userId") String userId) {
 		return chaterOrderResource;
 	}
 

@@ -170,6 +170,15 @@ public class Account extends Persistable {
 		 * A disabled account may not login to applications.
 		 */
 		DISABLED;
+
+		public static Status fromString(String value) {
+			for (Status e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
 	}
 
 }

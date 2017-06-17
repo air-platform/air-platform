@@ -53,11 +53,6 @@ public class JetTravelOrderServiceImpl extends AbstractVendorAwareOrderService<J
 		return doUpdateOrder(orderId, newOrder);
 	}
 
-	@Override
-	protected void copyProperties(JetTravelOrder src, JetTravelOrder tgt) {
-		tgt.setContact(src.getContact());
-	}
-
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public JetTravelOrder updateJetTravelOrderStatus(String orderId, Status status) {

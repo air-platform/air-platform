@@ -35,7 +35,7 @@ import net.aircommunity.platform.service.ProductFamilyService;
  */
 @Service
 @Transactional
-public class AirTransportServiceImpl extends AircraftAwareProductService<AirTransport> implements AirTransportService {
+public class AirTransportServiceImpl extends SalesPackageProductService<AirTransport> implements AirTransportService {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTransportServiceImpl.class);
 
 	private static final String CACHE_NAME = "cache.airtransport";

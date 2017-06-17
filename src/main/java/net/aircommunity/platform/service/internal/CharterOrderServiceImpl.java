@@ -88,13 +88,8 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 		return doUpdateOrderStatus(orderId, status);
 	}
 
-	/**
-	 * Copy properties from src to tgt without ID
-	 */
 	@Override
 	protected void copyProperties(CharterOrder src, CharterOrder tgt) {
-		tgt.setContact(src.getContact());
-		tgt.setNote(src.getNote());
 		tgt.setFlightLegs(src.getFlightLegs());
 		Set<FleetCandidate> fleetCandidates = src.getFleetCandidates();
 		if (fleetCandidates != null) {

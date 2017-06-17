@@ -44,13 +44,14 @@ import net.aircommunity.platform.model.PassengerItem;
 import net.aircommunity.platform.model.Payment;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PointsExchange;
-import net.aircommunity.platform.model.PricedProduct;
+import net.aircommunity.platform.model.PricePolicy;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.Refund;
 import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.model.SalesPackage;
 import net.aircommunity.platform.model.StandardOrder;
+import net.aircommunity.platform.model.UnitProductPrice;
 import net.aircommunity.platform.model.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseOrderRepository;
@@ -148,8 +149,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				LOG.error("Failed to create order {} for user {}, cause: product is not set", order, userId);
 				throw newInternalException();
 			}
-			String productId = product.getId();
-			product = commonProductService.findProduct(productId);
+			product = commonProductService.findProduct(product.getId());
+			LOG.debug("Product: {}", product);
+			order.setProduct(product);
 			newOrder.setProduct(product);
 		}
 		newOrder.setOwner(owner);
@@ -178,7 +180,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			LOG.info("User[{}] {} used points {} for order {}", owner.getId(), owner.getNickName(), pointsUsed,
 					newOrder);
 		}
-		LOG.info("Order {} created for user[{}] {}", newOrder, owner.getId(), owner.getNickName());
+		LOG.info("Creating order {} for user[{}] {}", newOrder, owner.getId(), owner.getNickName());
 		final T orderToSave = newOrder;
 		return safeExecute(() -> {
 			T orderSaved = getOrderRepository().save(orderToSave);
@@ -201,31 +203,57 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		tgt.setNote(src.getNote());
 		tgt.setContact(src.getContact());
 
-		// XXX NOTE: price is not set for CharterOrder (AirJet), only price/per hour
-		// need to set manually after customer service calculated, so total price would be 0 for CharterOrder
-		BigDecimal unitPrice = BigDecimal.ZERO;
-		// priced
-		Product product = src.getProduct(); // can be null for charter order
-		if (product != null && PricedProduct.class.isAssignableFrom(product.getClass())) {
-			PricedProduct pricedProduct = PricedProduct.class.cast(src.getProduct());
-			unitPrice = pricedProduct.getPrice();
-		}
-		// charterable (FerryFlightOrder only ATM)
+		// Set order price
+		// --------------------------------------------------------------------------------
+		// Three types of products regarding pricing:
+		// Product (has no price defined)
+		// 1) StandardProduct (full price): totalPrice= price * quantity
+		// 2) CharterableProduct (seat price & full price) - special type of PricedProduct
+		// 2.1) chartered(true): totalPrice = price
+		// 2.2) chartered(false): totalPrice = seatPrice *
+		// 3) SalesPackageProduct (SalesPackages)
+		// --------------------------------------------------------------------------------
+		// NOTE: price is not set for CharterOrder (AirJet), only price/per hour
+		// need to set manually after customer service calculated,
+		// so total price would be 0 for CharterOrder
+
+		// -----------------------
+		// Charterable
+		// -----------------------
+		// (FerryFlight) CharterableOrder => VendorAwareOrder => StandardOrder
 		if (CharterableOrder.class.isAssignableFrom(tgt.getClass())) {
-			CharterableOrder newCharterableOrder = CharterableOrder.class.cast(tgt);
-			CharterableOrder charterableOrder = CharterableOrder.class.cast(src);
+			CharterableOrder newCharterableOrder = (CharterableOrder) tgt;
+			CharterableOrder charterableOrder = (CharterableOrder) src;
 			newCharterableOrder.setChartered(charterableOrder.isChartered());
 		}
-		// sales package (AircraftAwareOrder)
+		// -----------------------
+		// SalesPackage
+		// -----------------------
+		// (Taxi, Tour, Trans) AircraftAwareOrder => VendorAwareOrder => StandardOrder
 		if (AircraftAwareOrder.class.isAssignableFrom(tgt.getClass())) {
-			AircraftAwareOrder newAircraftAwareOrder = AircraftAwareOrder.class.cast(tgt);
-			AircraftAwareOrder aircraftAwareOrder = AircraftAwareOrder.class.cast(src);
+			AircraftAwareOrder newAircraftAwareOrder = (AircraftAwareOrder) tgt;
+			AircraftAwareOrder aircraftAwareOrder = (AircraftAwareOrder) src;
 			copyPropertiesAircraftAware(aircraftAwareOrder, newAircraftAwareOrder);
-			unitPrice = newAircraftAwareOrder.getSalesPackagePrice();
 		}
-		// double totalPrice = Math.floor(unitPrice * src.getQuantity());
-		// tgt.setTotalPrice(BigDecimal.valueOf(unitPrice * src.getQuantity()));
-		tgt.setTotalPrice(OrderPrices.normalizePrice(unitPrice.multiply(BigDecimal.valueOf(src.getQuantity()))));
+		// -----------------------
+		// Standard
+		// -----------------------
+		// 1) (Fleet) StandardOrder (XXX No price is available, need provide manually or calculated via external system)
+		// 2) (JetTravel, Course) VendorAwareOrder => StandardOrder
+
+		// unit product price
+		BigDecimal unitPrice = BigDecimal.ZERO;
+		UnitProductPrice unitProductPrice = tgt.getUnitProductPrice();
+		LOG.debug("unitProductPrice: {}", unitProductPrice);
+		if (unitProductPrice.getPricePolicy() == PricePolicy.PER_HOUR) {
+			// TODO calculated via external system if possible, just make it zero for now
+		}
+		else {
+			unitPrice = unitProductPrice.getUnitPrice();
+		}
+		LOG.debug("final unitPrice: {}, quantity: {}", unitPrice, tgt.getQuantity());
+		tgt.setTotalPrice(OrderPrices.normalizePrice(unitPrice.multiply(BigDecimal.valueOf(tgt.getQuantity()))));
+		LOG.debug("final totalPrice: {}", tgt.getTotalPrice());
 	}
 
 	private void copyPropertiesAircraftAware(AircraftAwareOrder src, AircraftAwareOrder tgt) {

@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
  * Account authentication info (support multiple authentication methods).
@@ -29,8 +30,8 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
  */
 @Entity
 @Table(name = "air_platfrom_account_auth", indexes = {
-		// one principal per account
-		@Index(name = "idx_type_principal", columnList = "account_id, type", unique = true),
+		// one same auth type per account
+		@Index(name = "idx_account_id_type", columnList = "account_id, type", unique = true),
 		// unique principal per auth type
 		@Index(name = "idx_type_principal", columnList = "type, principal", unique = true) })
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -62,16 +63,18 @@ public class AccountAuth extends Persistable {
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private Date creationDate;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "last_accessed_date", nullable = false)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private Date lastAccessedDate;
 
 	@Column(name = "last_accessed_ip")
 	private String lastAccessedIp;
 
-	// user-agent
+	// user-agent, from which source: app, browser etc.
 	@Column(name = "last_accessed_source")
 	private String lastAccessedSource;
 
@@ -79,8 +82,6 @@ public class AccountAuth extends Persistable {
 	@JoinColumn(name = "account_id", nullable = false)
 	@XmlJavaTypeAdapter(AccountAdapter.class)
 	private Account account;
-
-	// TODO from which source: app, browser etc.?
 
 	public AuthType getType() {
 		return type;
@@ -191,6 +192,15 @@ public class AccountAuth extends Persistable {
 						.copyOf(Stream.of(AuthType.values()).filter(AuthType::isInternal).collect(Collectors.toSet()));
 			}
 			return internalAuths;
+		}
+
+		public static AuthType fromString(String value) {
+			for (AuthType e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
 		}
 	}
 

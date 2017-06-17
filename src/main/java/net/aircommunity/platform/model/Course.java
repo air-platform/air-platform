@@ -36,7 +36,7 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
 })
 //@formatter:on
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Course extends PricedProduct {
+public class Course extends StandardProduct {
 	private static final long serialVersionUID = 1L;
 
 	// TODO 分期付款 instalment stage number?

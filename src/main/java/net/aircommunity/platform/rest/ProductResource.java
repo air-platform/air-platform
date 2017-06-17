@@ -7,8 +7,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Product;
 
 /**
@@ -31,6 +34,7 @@ public class ProductResource extends BaseResourceSupport {
 	@GET
 	@Path("{productId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Product findProduct(@PathParam("productId") String productId) {
 		return commonProductService.findProduct(productId);
 	}

@@ -225,11 +225,12 @@ public class UserResource {
 	// Air Jet
 	// ***********************
 	@Resource
-	private ChaterOrderResource chaterOrderResource;
+	private CharterOrderResource charterOrderResource;
 
-	@Path("chater/orders")
-	public ChaterOrderResource chaterOrders() {
-		return chaterOrderResource;
+	// @Path("chater/orders")
+	@Path("charter/orders")
+	public CharterOrderResource charterOrders() {
+		return charterOrderResource;
 	}
 
 	@Resource
@@ -287,7 +288,7 @@ public class UserResource {
 	@Resource
 	private UserEnrollmentResource userEnrollmentResource;
 
-	@Path("course/enrollments")
+	@Path("course/orders")
 	public UserEnrollmentResource enrollments() {
 		return userEnrollmentResource;
 	}

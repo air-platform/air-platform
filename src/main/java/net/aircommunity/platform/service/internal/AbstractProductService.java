@@ -15,7 +15,7 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.PricedProduct;
+import net.aircommunity.platform.model.StandardProduct;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFaq;
@@ -79,9 +79,9 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		newProduct.setCategory(product.getCategory());
 		newProduct.setReviewStatus(ReviewStatus.PENDING);
 		// priced
-		if (PricedProduct.class.isAssignableFrom(product.getClass())) {
-			PricedProduct newPricedProduct = PricedProduct.class.cast(newProduct);
-			PricedProduct pricedProduct = PricedProduct.class.cast(product);
+		if (StandardProduct.class.isAssignableFrom(product.getClass())) {
+			StandardProduct newPricedProduct = StandardProduct.class.cast(newProduct);
+			StandardProduct pricedProduct = StandardProduct.class.cast(product);
 			newPricedProduct.setPrice(pricedProduct.getPrice());
 		}
 		copyProperties(product, newProduct);

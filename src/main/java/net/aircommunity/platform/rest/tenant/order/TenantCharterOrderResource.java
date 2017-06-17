@@ -34,8 +34,8 @@ import net.aircommunity.platform.service.CharterOrderService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantFleetOrderResource extends TenantBaseOrderResource<CharterOrder> {
-	private static final Logger LOG = LoggerFactory.getLogger(TenantFleetOrderResource.class);
+public class TenantCharterOrderResource extends TenantBaseOrderResource<CharterOrder> {
+	private static final Logger LOG = LoggerFactory.getLogger(TenantCharterOrderResource.class);
 
 	@Resource
 	private CharterOrderService charterOrderService;

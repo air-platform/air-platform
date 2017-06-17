@@ -120,9 +120,15 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 			LOG.info("orderInfo: {}", orderString);
 			return new PaymentRequest(orderString);
 		}
-		catch (AlipayApiException e) {
-			LOG.error(String.format("Failed to create payment info, errcode: %s, errmsg: %s, cause: %s", e.getErrCode(),
-					e.getErrMsg(), e.getMessage()), e);
+		catch (Exception e) {
+			if (AlipayApiException.class.isAssignableFrom(e.getClass())) {
+				AlipayApiException ex = AlipayApiException.class.cast(e);
+				LOG.error(String.format("Failed to create payment info, errcode: %s, errmsg: %s, cause: %s",
+						ex.getErrCode(), ex.getErrMsg(), ex.getMessage()), ex);
+			}
+			else {
+				LOG.error(String.format("Failed to create payment info, cause: %s", e.getMessage()), e);
+			}
 			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
 		}
 	}

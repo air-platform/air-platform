@@ -1,6 +1,5 @@
 package net.aircommunity.platform.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,7 +9,6 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -24,7 +22,7 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
  */
 @Entity
 @Table(name = "air_platfrom_ferryflight", indexes = { @Index(name = "idx_departure", columnList = "departure") })
-public class FerryFlight extends PricedProduct {
+public class FerryFlight extends CharterableProduct {
 	private static final long serialVersionUID = 1L;
 
 	// Flight NO. cannot be unique, because it can be different date
@@ -44,19 +42,6 @@ public class FerryFlight extends PricedProduct {
 	// arrival city
 	@Column(name = "arrival", nullable = false)
 	private String arrival;
-
-	// single seat price
-	@Column(name = "seat_price")
-	private BigDecimal seatPrice = BigDecimal.ZERO;
-
-	// Number of seats
-	@Column(name = "seats")
-	private int seats;
-
-	// min passengers required (XXX useful?)
-	@Min(0)
-	@Column(name = "min_passengers")
-	private int minPassengers;
 
 	// departure date, e.g. 2017-5-1
 	@NotNull
@@ -111,30 +96,6 @@ public class FerryFlight extends PricedProduct {
 
 	public void setArrival(String arrival) {
 		this.arrival = arrival;
-	}
-
-	public BigDecimal getSeatPrice() {
-		return seatPrice;
-	}
-
-	public void setSeatPrice(BigDecimal seatPrice) {
-		this.seatPrice = seatPrice;
-	}
-
-	public int getSeats() {
-		return seats;
-	}
-
-	public void setSeats(int seats) {
-		this.seats = seats;
-	}
-
-	public int getMinPassengers() {
-		return minPassengers;
-	}
-
-	public void setMinPassengers(int minPassengers) {
-		this.minPassengers = minPassengers;
 	}
 
 	public Date getDepartureDate() {

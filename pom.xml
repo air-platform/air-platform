@@ -330,12 +330,22 @@
 							<include>**/*.properties</include>
 						</includes>
 					</resource>
+					<!-- copy in resources, but don't filter for jks, otherwise it corrupts 
+						the jks files -->
 					<resource>
 						<directory>src/main/resources</directory>
 						<filtering>true</filtering>
 						<excludes>
 							<exclude>config/application-prd.properties</exclude>
+							<exclude>**/*.jks</exclude>
 						</excludes>
+					</resource>
+					<resource>
+						<directory>src/main/resources</directory>
+						<filtering>false</filtering>
+						<includes>
+							<include>**/*.jks</include>
+						</includes>
 					</resource>
 				</resources>
 			</build>
@@ -363,6 +373,13 @@
 							<include>logo.*</include>
 							<include>messages*.properties</include>
 							<include>apidoc-messages*.yaml</include>
+						</includes>
+					</resource>
+					<resource>
+						<directory>src/main/resources</directory>
+						<filtering>false</filtering>
+						<includes>
+							<include>**/*.jks</include>
 						</includes>
 					</resource>
 				</resources>

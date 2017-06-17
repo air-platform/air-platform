@@ -197,8 +197,10 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 				List<Expression<Boolean>> expressions = predicate.getExpressions();
 				Path<Date> p = root.get(Course_.startDate);
 				query.orderBy(cb.desc(p));
-				if (Strings.isNotBlank(license)) {
-					expressions.add(cb.equal(root.get(Course_.location), license));
+				if (Strings.isNotBlank(location)) {
+					// XXX for fuzzy match if needed
+					// expressions.add(cb.like(root.get(Course_.location), "%" + location + "%"));
+					expressions.add(cb.equal(root.get(Course_.location), location));
 				}
 				if (Strings.isNotBlank(license)) {
 					expressions.add(cb.equal(root.get(Course_.license), license));

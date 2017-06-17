@@ -44,6 +44,8 @@ public class Instalment extends Persistable {
 	@JoinColumn(name = "payment_id")
 	private Payment payment;
 
+	// TODO and also Refund refund ?
+
 	@ManyToOne
 	@JoinColumn(name = "order_id", nullable = false)
 	@XmlJavaTypeAdapter(OrderAdapter.class)

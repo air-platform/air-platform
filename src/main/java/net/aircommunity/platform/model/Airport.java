@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @Table(name = "air_platfrom_airport", indexes = { 
 	@Index(name = "idx_name", columnList = "name"),
 	@Index(name = "idx_city_and_name", columnList = "city,name"),
-	@Index(name = "idx_icao4", columnList = "icao4"), 
+	@Index(name = "idx_icao4", columnList = "icao4", unique = true), 
 	@Index(name = "idx_iata3", columnList = "iata3"),
 	@Index(name = "idx_city", columnList = "city") 
 })

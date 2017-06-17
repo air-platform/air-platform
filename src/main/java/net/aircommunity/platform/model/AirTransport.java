@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "air_platfrom_airtransport")
-public class AirTransport extends AircraftAwareProduct {
+public class AirTransport extends SalesPackageProduct {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull
