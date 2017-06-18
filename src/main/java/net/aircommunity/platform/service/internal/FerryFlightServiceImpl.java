@@ -59,11 +59,6 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 		tgt.setTimeSlot(src.getTimeSlot());
 		tgt.setDepartureDate(src.getDepartureDate());
 		tgt.setDeparture(src.getDeparture());
-		tgt.setMinPassengers(src.getMinPassengers());
-		tgt.setCurrencyUnit(src.getCurrencyUnit());
-		tgt.setPrice(src.getPrice());
-		tgt.setSeatPrice(src.getSeatPrice());
-		tgt.setSeats(src.getSeats());
 		tgt.setAppearances(src.getAppearances());
 	}
 

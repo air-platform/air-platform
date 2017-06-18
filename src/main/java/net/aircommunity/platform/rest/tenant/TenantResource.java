@@ -18,7 +18,7 @@ import net.aircommunity.platform.rest.tenant.order.TenantAirTaxiOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTourOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTransportOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantCharterOrderResource;
-import net.aircommunity.platform.rest.tenant.order.TenantEnrollmentResource;
+import net.aircommunity.platform.rest.tenant.order.TenantCourseOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantFerryFlightOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantJetTravelOrderResource;
 
@@ -224,21 +224,11 @@ public class TenantResource {
 	// ***********************
 
 	@Resource
-	private TenantEnrollmentResource tenantEnrollmentResource;
+	private TenantCourseOrderResource tenantCourseOrderResource;
 
-	@Path("course/enrollments")
-	public TenantEnrollmentResource enrollments() {
-		return tenantEnrollmentResource;
+	@Path("course/orders")
+	public TenantCourseOrderResource courseOrders() {
+		return tenantCourseOrderResource;
 	}
-
-	// TODO REMOVE
-	// @Resource
-	// private CommonOrderService commonOrderService;
-	//
-	// @POST
-	// @Path("orders/{orderId}/finish")
-	// public void finishOrder(@PathParam("orderId") String orderId) {
-	// commonOrderService.updateOrderStatus(orderId, Order.Status.FINISHED);
-	// }
 
 }

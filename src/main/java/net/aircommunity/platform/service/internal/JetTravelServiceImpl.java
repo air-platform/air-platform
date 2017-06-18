@@ -50,11 +50,6 @@ public class JetTravelServiceImpl extends AbstractProductService<JetTravel> impl
 	}
 
 	@Override
-	protected void copyProperties(JetTravel src, JetTravel tgt) {
-		// do copy if any (not prop for now)
-	}
-
-	@Override
 	public Page<JetTravel> listAllJetTravels(ReviewStatus reviewStatus, int page, int pageSize) {
 		return doListAllProducts(reviewStatus, page, pageSize);
 	}

@@ -14,7 +14,7 @@ import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
- * School.
+ * School model.
  * 
  * @author guankai
  */

@@ -57,13 +57,6 @@ public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 		return doUpdateOrder(orderId, newOrder);
 	}
 
-	// XXX
-	// @Override
-	// protected void copyProperties(AirTaxiOrder src, AirTaxiOrder tgt) {
-	// AirTaxi airTaxi = airTaxiService.findAirTaxi(src.getAirTaxi().getId());
-	// tgt.setAirTaxi(airTaxi);
-	// }
-
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public AirTaxiOrder updateAirTaxiOrderStatus(String orderId, Status status) {

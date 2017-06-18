@@ -53,12 +53,6 @@ public class FerryFlightOrderServiceImpl extends AbstractVendorAwareOrderService
 		return doUpdateOrder(orderId, newOrder);
 	}
 
-	@Override
-	protected void copyProperties(FerryFlightOrder src, FerryFlightOrder tgt) {
-		tgt.setContact(src.getContact());
-		tgt.setPassengers(src.getPassengers());
-	}
-
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public FerryFlightOrder updateFerryFlightOrderStatus(String orderId, Status status) {
@@ -95,12 +89,13 @@ public class FerryFlightOrderServiceImpl extends AbstractVendorAwareOrderService
 	}
 
 	@Override
+	protected Code orderNotFoundCode() {
+		return Codes.FERRYFLIGHT_ORDER_NOT_FOUND;
+	}
+
+	@Override
 	protected VendorAwareOrderRepository<FerryFlightOrder> getOrderRepository() {
 		return ferryFlightOrderRepository;
 	}
 
-	@Override
-	protected Code orderNotFoundCode() {
-		return Codes.FERRYFLIGHT_ORDER_NOT_FOUND;
-	}
 }

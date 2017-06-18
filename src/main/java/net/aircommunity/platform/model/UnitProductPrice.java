@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -18,15 +19,17 @@ public class UnitProductPrice implements Serializable {
 	private final PricePolicy pricePolicy;
 	private final BigDecimal unitPrice;
 
-	public UnitProductPrice(PricePolicy pricePolicy, BigDecimal unitPrice) {
+	public UnitProductPrice(@Nonnull PricePolicy pricePolicy, @Nonnull BigDecimal unitPrice) {
 		this.pricePolicy = Objects.requireNonNull(pricePolicy, "pricePolicy cannot be null");
 		this.unitPrice = Objects.requireNonNull(unitPrice, "unitPrice cannot be null");
 	}
 
+	@Nonnull
 	public PricePolicy getPricePolicy() {
 		return pricePolicy;
 	}
 
+	@Nonnull
 	public BigDecimal getUnitPrice() {
 		return unitPrice;
 	}

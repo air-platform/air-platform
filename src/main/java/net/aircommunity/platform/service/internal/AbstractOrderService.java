@@ -128,10 +128,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	protected T doCreateOrder(String userId, T order, Order.Status status) {
 		User owner = findAccount(userId, User.class);
 		if (owner.getStatus() == Account.Status.LOCKED) {
-			LOG.warn("Account {} is locked, cannot be place orders", owner);
+			LOG.warn("Account {} is locked, cannot place orders", owner);
 			throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.ACCOUNT_PERMISSION_DENIED_LOCKED));
 		}
-
 		T newOrder = null;
 		try {
 			newOrder = type.newInstance();
@@ -167,6 +166,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		// copy order specific properties
 		copyProperties(order, newOrder);
 
+		LOG.info("[Creating order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), order);
 		// Calculate points to exchange
 		long pointToExchange = order.getPointsUsed();
 		if (pointToExchange > 0 && pointToExchange > owner.getPoints()) {
@@ -174,16 +174,31 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		if (pointToExchange > 0) {
 			PointsExchange pointsUsed = memberPointsService.exchangePoints(pointToExchange);
-			newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
-			// update total price
-			newOrder.setTotalPrice(newOrder.getTotalPrice().subtract(BigDecimal.valueOf(pointsUsed.getMoney())));
-			LOG.info("User[{}] {} used points {} for order {}", owner.getId(), owner.getNickName(), pointsUsed,
-					newOrder);
+			LOG.info("[Exchanging points] User[{}][{}]: order[{}], exchanged points {}", owner.getId(),
+					owner.getNickName(), newOrder.getOrderNo(), pointsUsed);
+			BigDecimal moneyExchanged = BigDecimal.valueOf(pointsUsed.getMoneyExchanged());
+			BigDecimal updatedTotalPrice = newOrder.getTotalPrice().subtract(moneyExchanged);
+			// cannot be less than 0 after points exchange, just ignore points exchange if less or equal than 0
+			if (updatedTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
+				newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
+				// update total price
+				newOrder.setTotalPrice(updatedTotalPrice);
+				User account = (User) accountService.updateUserPoints(owner.getId(), -pointsUsed.getPointsExchanged());
+				LOG.info(
+						"[Exchanged points] User[{}][{}]: order[{}], updated total price: {}, points used: {}, account points balance: {}",
+						owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice,
+						pointsUsed.getPointsExchanged(), account.getPoints());
+			}
+			else {
+				LOG.warn(
+						"[Exchange points] User[{}][{}]: order[{}]: update total price is: {} (less than 0), points exchange ignored.",
+						owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice);
+			}
 		}
-		LOG.info("Creating order {} for user[{}] {}", newOrder, owner.getId(), owner.getNickName());
 		final T orderToSave = newOrder;
 		return safeExecute(() -> {
 			T orderSaved = getOrderRepository().save(orderToSave);
+			LOG.info("[Created order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), orderSaved);
 			eventBus.post(new OrderEvent(OrderEvent.EventType.CREATION, orderSaved));
 			return orderSaved;
 		}, "Create %s: %s for user %s failed", type.getSimpleName(), order, userId);
@@ -225,6 +240,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			CharterableOrder newCharterableOrder = (CharterableOrder) tgt;
 			CharterableOrder charterableOrder = (CharterableOrder) src;
 			newCharterableOrder.setChartered(charterableOrder.isChartered());
+			newCharterableOrder.setPassengers(charterableOrder.getPassengers());
 		}
 		// -----------------------
 		// SalesPackage
@@ -273,7 +289,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		tgt.setSalesPackagePrice(salesPackage.getPrice(days));
 		tgt.setSalesPackage(salesPackage);
-		// set properties
 		tgt.setTimeSlot(src.getTimeSlot());
 		tgt.setDepartureDate(src.getDepartureDate());
 		Set<PassengerItem> passengers = src.getPassengers();

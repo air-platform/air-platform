@@ -25,7 +25,7 @@ import net.aircommunity.platform.model.AirTourOrder;
 import net.aircommunity.platform.model.AirTransportOrder;
 import net.aircommunity.platform.model.CharterOrder;
 import net.aircommunity.platform.model.Contact;
-import net.aircommunity.platform.model.Enrollment;
+import net.aircommunity.platform.model.CourseOrder;
 import net.aircommunity.platform.model.FerryFlightOrder;
 import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.FleetCandidate;
@@ -300,7 +300,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 				break;
 
 			case COURSE:
-				Enrollment enrollment = Enrollment.class.cast(order);
+				CourseOrder enrollment = CourseOrder.class.cast(order);
 				context.put("enrollment", enrollment);
 				break;
 

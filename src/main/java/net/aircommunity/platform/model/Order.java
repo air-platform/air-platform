@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -410,11 +412,13 @@ public abstract class Order extends Persistable {
 	}
 
 	@XmlTransient
+	@Nullable
 	public abstract Product getProduct();
 
 	public abstract void setProduct(Product product);
 
 	@XmlTransient
+	@Nonnull
 	public abstract UnitProductPrice getUnitProductPrice();
 
 	/**

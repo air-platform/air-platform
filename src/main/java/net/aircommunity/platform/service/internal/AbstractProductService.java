@@ -14,12 +14,14 @@ import org.slf4j.LoggerFactory;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.CharterableProduct;
+import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.StandardProduct;
 import net.aircommunity.platform.model.Product;
 import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductFaq;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.StandardProduct;
 import net.aircommunity.platform.model.Tenant;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
@@ -78,11 +80,20 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		newProduct.setPublished(false);
 		newProduct.setCategory(product.getCategory());
 		newProduct.setReviewStatus(ReviewStatus.PENDING);
-		// priced
+		// standard
 		if (StandardProduct.class.isAssignableFrom(product.getClass())) {
-			StandardProduct newPricedProduct = StandardProduct.class.cast(newProduct);
-			StandardProduct pricedProduct = StandardProduct.class.cast(product);
-			newPricedProduct.setPrice(pricedProduct.getPrice());
+			StandardProduct newStandardProduct = (StandardProduct) newProduct;
+			StandardProduct standardProduct = (StandardProduct) product;
+			newStandardProduct.setPrice(standardProduct.getPrice());
+			CurrencyUnit currencyUnit = standardProduct.getCurrencyUnit();
+			newStandardProduct.setCurrencyUnit(currencyUnit == null ? CurrencyUnit.RMB : currencyUnit);
+		}
+		if (CharterableProduct.class.isAssignableFrom(product.getClass())) {
+			CharterableProduct newCharterableProduct = (CharterableProduct) newProduct;
+			CharterableProduct charterableProduct = (CharterableProduct) product;
+			newCharterableProduct.setSeatPrice(charterableProduct.getSeatPrice());
+			newCharterableProduct.setSeats(charterableProduct.getSeats());
+			newCharterableProduct.setMinPassengers(charterableProduct.getMinPassengers());
 		}
 		copyProperties(product, newProduct);
 		// set props cannot be overridden by subclass

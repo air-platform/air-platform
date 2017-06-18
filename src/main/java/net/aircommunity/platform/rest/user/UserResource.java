@@ -286,10 +286,10 @@ public class UserResource {
 	// Course
 	// ***********************
 	@Resource
-	private UserEnrollmentResource userEnrollmentResource;
+	private UserCourseOrderResource userEnrollmentResource;
 
 	@Path("course/orders")
-	public UserEnrollmentResource enrollments() {
+	public UserCourseOrderResource enrollments() {
 		return userEnrollmentResource;
 	}
 

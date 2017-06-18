@@ -47,6 +47,7 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 		}
 		Aircraft newAircraft = new Aircraft();
 		copyProperties(aircraft, newAircraft);
+		newAircraft.setCreationDate(new Date());
 		newAircraft.setVendor(vendor);
 		return safeExecute(() -> aircraftRepository.save(newAircraft), "Create Aircraft %s failed", aircraft);
 	}
@@ -85,7 +86,6 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 		tgt.setMinPassengers(src.getMinPassengers());
 		tgt.setSeats(src.getSeats());
 		tgt.setType(src.getType());
-		tgt.setCreationDate(new Date());
 	}
 
 	@Override

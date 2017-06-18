@@ -43,11 +43,6 @@ public class AirClassServiceImpl extends AbstractServiceSupport implements AirCl
 		return safeExecute(() -> airClassRepository.save(newAirClass), "Create airClass %s failed", airClass);
 	}
 
-	private void copyProperties(AirClass src, AirClass tgt) {
-		tgt.setTitle(src.getTitle());
-		tgt.setContent(src.getContent());
-	}
-
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public AirClass findAirClass(String airClassId) {
@@ -66,6 +61,11 @@ public class AirClassServiceImpl extends AbstractServiceSupport implements AirCl
 		copyProperties(newAirClass, airClass);
 		return safeExecute(() -> airClassRepository.save(airClass), "Update airClass %s to %s failed", airClassId,
 				airClass);
+	}
+
+	private void copyProperties(AirClass src, AirClass tgt) {
+		tgt.setTitle(src.getTitle());
+		tgt.setContent(src.getContent());
 	}
 
 	@Override

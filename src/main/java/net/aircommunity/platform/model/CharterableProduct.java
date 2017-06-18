@@ -20,6 +20,7 @@ public abstract class CharterableProduct extends StandardProduct {
 	protected BigDecimal seatPrice = BigDecimal.ZERO;
 
 	// Number of seats
+	@Min(1)
 	@Column(name = "seats")
 	protected int seats;
 

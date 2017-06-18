@@ -61,7 +61,7 @@ import net.aircommunity.platform.rest.tenant.TenantSchoolResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTaxiOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTourOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTransportOrderResource;
-import net.aircommunity.platform.rest.tenant.order.TenantEnrollmentResource;
+import net.aircommunity.platform.rest.tenant.order.TenantCourseOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantFerryFlightOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantCharterOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantJetTravelOrderResource;
@@ -71,7 +71,7 @@ import net.aircommunity.platform.rest.user.AirTransportOrderResource;
 import net.aircommunity.platform.rest.user.CharterOrderResource;
 import net.aircommunity.platform.rest.user.FerryFlightOrderResource;
 import net.aircommunity.platform.rest.user.JetTravelOrderResource;
-import net.aircommunity.platform.rest.user.UserEnrollmentResource;
+import net.aircommunity.platform.rest.user.UserCourseOrderResource;
 import net.aircommunity.platform.service.CommonProductService;
 
 /**
@@ -534,11 +534,11 @@ public class AdminResource extends BaseResourceSupport {
 	}
 
 	@Resource
-	private TenantEnrollmentResource tenantEnrollmentResource;
+	private TenantCourseOrderResource tenantCourseOrderResource;
 
-	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/course/enrollments")
-	public TenantEnrollmentResource enrollments(@PathParam("tenantId") String tenantId) {
-		return tenantEnrollmentResource;
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/course/orders")
+	public TenantCourseOrderResource courseOrders(@PathParam("tenantId") String tenantId) {
+		return tenantCourseOrderResource;
 	}
 
 	// **************************************************************************
@@ -609,10 +609,10 @@ public class AdminResource extends BaseResourceSupport {
 	// Air Tour
 	// ***********************
 	@Resource
-	private UserEnrollmentResource userEnrollmentResource;
+	private UserCourseOrderResource userCourseOrderResource;
 
-	@Path(USERS_PATH_PREFIX + "/{userId}/course/enrollments")
-	public UserEnrollmentResource userEnrollments(@PathParam("userId") String userId) {
-		return userEnrollmentResource;
+	@Path(USERS_PATH_PREFIX + "/{userId}/course/orders")
+	public UserCourseOrderResource userCourseOrders(@PathParam("userId") String userId) {
+		return userCourseOrderResource;
 	}
 }

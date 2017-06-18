@@ -65,11 +65,11 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 	}
 
 	private void copyProperties(School src, School tgt) {
+		tgt.setName(src.getName());
+		tgt.setImage(src.getImage());
 		tgt.setAddress(src.getAddress());
 		tgt.setContact(src.getContact());
-		tgt.setImage(src.getImage());
 		tgt.setDescription(src.getDescription());
-		tgt.setName(src.getName());
 		tgt.setBaseDescription(src.getBaseDescription());
 	}
 

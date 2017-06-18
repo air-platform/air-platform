@@ -18,16 +18,16 @@ public class PointsExchange implements Serializable {
 
 	public static final PointsExchange NONE = new PointsExchange(0, 0);
 
-	private final long money;
+	private final long moneyExchanged;
 	private final long pointsExchanged;
 
-	public PointsExchange(long money, long pointsExchanged) {
-		this.money = money;
+	public PointsExchange(long moneyExchanged, long pointsExchanged) {
+		this.moneyExchanged = moneyExchanged;
 		this.pointsExchanged = pointsExchanged;
 	}
 
-	public long getMoney() {
-		return money;
+	public long getMoneyExchanged() {
+		return moneyExchanged;
 	}
 
 	public long getPointsExchanged() {
@@ -37,8 +37,8 @@ public class PointsExchange implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("PointsExchange [money=").append(money).append(", pointsExchanged=").append(pointsExchanged)
-				.append("]");
+		builder.append("PointsExchange [moneyExchanged=").append(moneyExchanged).append(", pointsExchanged=")
+				.append(pointsExchanged).append("]");
 		return builder.toString();
 	}
 }

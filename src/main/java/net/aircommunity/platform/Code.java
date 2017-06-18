@@ -5,6 +5,8 @@ import java.io.Serializable;
 /**
  * The set of canonical status codes. If new codes are added over time they must choose a numerical value that does not
  * collide with any previously used value.
+ * 
+ * @author Bin.Zhang
  */
 public final class Code implements Serializable {
 	private static final long serialVersionUID = 1L;

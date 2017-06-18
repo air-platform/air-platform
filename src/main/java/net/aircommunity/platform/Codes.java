@@ -103,7 +103,7 @@ public final class Codes {
 	// school/course/enrollment
 	public static final Code SCHOOL_NOT_FOUND = Code.notFound(11_010_0001);
 	public static final Code COURSE_NOT_FOUND = Code.notFound(11_011_0001);
-	public static final Code ENROLLMENT_NOT_FOUND = Code.notFound(12_010_0001);
+	public static final Code COURSEORDER_NOT_FOUND = Code.notFound(12_010_0001);
 
 	// comment
 	public static final Code COMMENT_NOT_FOUND = Code.notFound(11_013_0001);

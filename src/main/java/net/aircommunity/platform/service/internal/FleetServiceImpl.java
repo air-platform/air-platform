@@ -87,10 +87,8 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 		tgt.setStatus(src.getStatus());
 		tgt.setBeds(src.getBeds());
 		tgt.setCapacity(src.getCapacity());
-		tgt.setCurrencyUnit(src.getCurrencyUnit());
 		tgt.setFacilities(src.getFacilities());
 		tgt.setFullloadRange(src.getFullloadRange());
-		tgt.setPrice(src.getPrice());
 		tgt.setWeight(src.getWeight());
 		tgt.setAppearances(src.getAppearances());
 		tgt.setInterior(src.getInterior());

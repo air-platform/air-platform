@@ -132,7 +132,6 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 		CharterOrder charterOrderSaved = safeExecute(() -> {
 			return charterOrderRepository.save(charterOrder);
 		}, "Offer FleetCandidate %s for order %s failed", fleetCandidateId, orderId);
-
 		// TODO SMS notification to customer
 		return charterOrderSaved;
 	}
@@ -151,8 +150,6 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 		if (status == null) {
 			data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorIdAndStatusNot(tenantId,
 					FleetCandidate.Status.DELETED, Pages.createPageRequest(page, pageSize)));
-			// data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorId(tenantId,
-			// Pages.createPageRequest(page, pageSize)));
 		}
 		else {
 			data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorIdAndOrderStatus(tenantId, status,

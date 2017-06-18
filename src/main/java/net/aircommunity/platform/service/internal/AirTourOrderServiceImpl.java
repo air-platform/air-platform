@@ -57,13 +57,6 @@ public class AirTourOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 		return doUpdateOrder(orderId, newOrder);
 	}
 
-	// XXX
-	// @Override
-	// protected void copyProperties(AirTourOrder src, AirTourOrder tgt) {
-	// AirTour airTour = airTourService.findAirTour(src.getAirTour().getId());
-	// tgt.setAirTour(airTour);
-	// }
-
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public AirTourOrder updateAirTourOrderStatus(String orderId, Status status) {

@@ -19,7 +19,6 @@ public class Configuration {
 	private String apiVersion;
 
 	// AIR
-
 	@Value("${air.time-zone}")
 	private String timeZone;
 

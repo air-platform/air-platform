@@ -25,7 +25,7 @@ abstract class SalesPackageProductService<T extends SalesPackageProduct> extends
 		doCopyProperties(src, tgt);
 	}
 
-	protected Set<SalesPackage> applySalesPackages(Set<SalesPackage> srcSalesPackages) {
+	private Set<SalesPackage> applySalesPackages(Set<SalesPackage> srcSalesPackages) {
 		if (srcSalesPackages != null) {
 			srcSalesPackages.stream().forEach(salesPackage -> {
 				Aircraft aircraft = salesPackage.getAircraft();

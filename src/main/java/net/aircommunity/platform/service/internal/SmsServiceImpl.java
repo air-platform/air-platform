@@ -22,6 +22,8 @@ import net.aircommunity.platform.service.SmsService;
 
 /**
  * SMS service implementation
+ * 
+ * @author kxw
  */
 @Service
 public class SmsServiceImpl implements SmsService {
@@ -52,13 +54,12 @@ public class SmsServiceImpl implements SmsService {
 
 		SmsMessage smsMsg = new SmsMessage();
 		smsMsg.setCode(message);
-
 		try {
 			String body = objectMapper.writeValueAsString(smsMsg);
-			LOG.debug("Get sms message body:{}", body);
+			LOG.debug("Get SMS message body:{}", body);
 			req.setSmsParamString(body);
 			AlibabaAliqinFcSmsNumSendResponse rsp = client.execute(req);
-			LOG.debug("Get sms resp:{}.", rsp.getBody());
+			LOG.debug("Get SMS response:{}.", rsp.getBody());
 		}
 		catch (Exception e) {
 			LOG.error("Failed to send SMS:" + e.getMessage(), e);

@@ -38,8 +38,8 @@ public class BannerServiceImpl extends AbstractServiceSupport implements BannerS
 	@Override
 	public Banner createBanner(Banner banner) {
 		Banner newBanner = new Banner();
-		newBanner.setCreationDate(new Date());
 		copyProperties(banner, newBanner);
+		newBanner.setCreationDate(new Date());
 		return safeExecute(() -> bannerRepository.save(newBanner), "Create banner %s failed", banner);
 	}
 

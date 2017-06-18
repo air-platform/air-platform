@@ -16,42 +16,42 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
-import net.aircommunity.platform.model.Enrollment;
+import net.aircommunity.platform.model.CourseOrder;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.EnrollmentService;
+import net.aircommunity.platform.service.CourseOrderService;
 
 /**
- * Tenant can view the {@code Course} Enrollment of a {@code User}
+ * Tenant can view the {@code Course} CourseOrder of a {@code User}
  * 
- * Created by guankai on 13/04/2017.
+ * @author guankai
  */
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantEnrollmentResource extends TenantBaseOrderResource<Enrollment> {
-	private static final Logger LOG = LoggerFactory.getLogger(TenantEnrollmentResource.class);
+public class TenantCourseOrderResource extends TenantBaseOrderResource<CourseOrder> {
+	private static final Logger LOG = LoggerFactory.getLogger(TenantCourseOrderResource.class);
 
 	@Resource
-	private EnrollmentService enrollmentService;
+	private CourseOrderService courseOrderService;
 
 	/**
-	 * List enrollments of a course or all
+	 * List CourseOrders of a course or all
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Page<Enrollment> list(@PathParam("tenantId") String tenantId, @QueryParam("status") Order.Status status,
+	public Page<CourseOrder> list(@PathParam("tenantId") String tenantId, @QueryParam("status") Order.Status status,
 			@QueryParam("course") String courseId, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		LOG.debug("List all enrollments tenantId: {}, course: {}", tenantId, courseId);
+		LOG.debug("List all CourseOrders tenantId: {}, course: {}", tenantId, courseId);
 		if (Strings.isNotBlank(courseId)) {
-			return enrollmentService.listEnrollmentsForTenantByCourse(tenantId, courseId, status, page, pageSize);
+			return courseOrderService.listCourseOrdersForTenantByCourse(tenantId, courseId, status, page, pageSize);
 		}
-		return enrollmentService.listEnrollmentsForTenant(tenantId, status, page, pageSize);
+		return courseOrderService.listCourseOrdersForTenant(tenantId, status, page, pageSize);
 	}
 
 }

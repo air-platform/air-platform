@@ -40,7 +40,6 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 	private static final String CACHE_NAME = "cache.airport";
 	private static final String CACHE_NAME_ICAO4 = "cache.airport-icao4";
 	private static final String CACHE_NAME_IATA3 = "cache.airport-iata3";
-
 	private static final String AIRPORTS_INFO = "data/airports.json";
 
 	@Resource

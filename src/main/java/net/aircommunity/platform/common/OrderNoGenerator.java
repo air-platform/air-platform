@@ -1,10 +1,7 @@
 package net.aircommunity.platform.common;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
-import io.micro.common.DateFormats;
 import io.micro.common.SnowFlake;
 
 /**
@@ -12,8 +9,8 @@ import io.micro.common.SnowFlake;
  * 
  * @author Bin.Zhang
  */
-public class OrderNoGenerator {
-	private static final SimpleDateFormat SAFE_FORMATTER = DateFormats.simple("yyMMdd");
+public final class OrderNoGenerator {
+	// private static final SimpleDateFormat SAFE_FORMATTER = DateFormats.simple("yyMMdd");
 	private final SnowFlake snowflake;
 
 	public OrderNoGenerator(long datacenterId, long nodeId) {
@@ -26,7 +23,8 @@ public class OrderNoGenerator {
 	 * @return generated order number
 	 */
 	public String next() {
-		return new StringBuilder().append(SAFE_FORMATTER.format(new Date()))
-				.append(Long.toString(snowflake.nextId(), 32)).toString().toUpperCase(Locale.ENGLISH);
+		// return new StringBuilder().append(SAFE_FORMATTER.format(new Date()))
+		// .append(Long.toString(snowflake.nextId(), 32)).toString().toUpperCase(Locale.ENGLISH);
+		return Long.toString(snowflake.nextId(), 16).toString().toUpperCase(Locale.ENGLISH);
 	}
 }

@@ -25,7 +25,6 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.Course_;
-import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.Reviewable.ReviewStatus;
@@ -86,11 +85,6 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 		// just set school that find previously
 		tgt.setSchool(src.getSchool());
 		//
-		tgt.setName(src.getName());
-		tgt.setImage(src.getImage());
-		tgt.setClientManagers(src.getClientManagers());
-		tgt.setDescription(src.getDescription());
-		//
 		tgt.setAircraftType(src.getAircraftType());
 		tgt.setCourseService(src.getCourseService());
 		tgt.setEnrollment(src.getEnrollment());
@@ -99,20 +93,12 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 		tgt.setStartDate(src.getStartDate());
 		tgt.setEndDate(src.getEndDate());
 		tgt.setTotalNum(src.getTotalNum());
-		tgt.setPrice(src.getPrice());
-		tgt.setCurrencyUnit(src.getCurrencyUnit() == null ? CurrencyUnit.RMB : src.getCurrencyUnit());
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public Course findCourse(String courseId) {
 		return doFindProduct(courseId);
-		// TODO REMOVE
-		// Course course = courseRepository.findOne(courseId);
-		// if (course == null) {
-		// throw new AirException(Codes.COURSE_NOT_FOUND, M.msg(M.COURSE_NOT_FOUND));
-		// }
-		// return course;
 	}
 
 	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#courseId"), evict = @CacheEvict(cacheNames = {
@@ -188,11 +174,6 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 		Specification<Course> spec = new Specification<Course>() {
 			@Override
 			public Predicate toPredicate(Root<Course> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-				// TODO REMOVE
-				// List<Predicate> predicatesList = new ArrayList<>();
-				// Predicate[] p = predicatesList.toArray(new Predicate[predicatesList.size()]);
-				// query.where(p).orderBy(cb.desc(root.get(Course_.startDate)));
-
 				Predicate predicate = cb.conjunction();
 				List<Expression<Boolean>> expressions = predicate.getExpressions();
 				Path<Date> p = root.get(Course_.startDate);

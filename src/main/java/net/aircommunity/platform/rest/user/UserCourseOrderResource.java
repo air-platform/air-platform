@@ -24,13 +24,13 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.model.Enrollment;
+import net.aircommunity.platform.model.CourseOrder;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.EnrollmentService;
+import net.aircommunity.platform.service.CourseOrderService;
 
 /**
  * User {@code Course} Enrollment of a {@code School}
@@ -40,11 +40,11 @@ import net.aircommunity.platform.service.EnrollmentService;
 @RESTful
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
-public class UserEnrollmentResource extends UserBaseOrderResource<Enrollment> {
-	private static final Logger LOG = LoggerFactory.getLogger(UserEnrollmentResource.class);
+public class UserCourseOrderResource extends UserBaseOrderResource<CourseOrder> {
+	private static final Logger LOG = LoggerFactory.getLogger(UserCourseOrderResource.class);
 
 	@Resource
-	private EnrollmentService enrollmentService;
+	private CourseOrderService courseOrderService;
 
 	/**
 	 * Create
@@ -52,10 +52,10 @@ public class UserEnrollmentResource extends UserBaseOrderResource<Enrollment> {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
-	public Response create(@PathParam("userId") String userId, @NotNull @Valid Enrollment request,
+	public Response create(@PathParam("userId") String userId, @NotNull @Valid CourseOrder request,
 			@Context UriInfo uriInfo) {
-		LOG.debug("create enrollment {}", request);
-		Enrollment created = enrollmentService.createEnrollment(userId, request);
+		LOG.debug("create course order {}", request);
+		CourseOrder created = courseOrderService.createCourseOrder(userId, request);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created: {}", uri);
 		return Response.created(uri).build();
@@ -67,8 +67,8 @@ public class UserEnrollmentResource extends UserBaseOrderResource<Enrollment> {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
-	public Page<Enrollment> list(@PathParam("userId") String userId, @QueryParam("status") Order.Status status,
+	public Page<CourseOrder> list(@PathParam("userId") String userId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		return enrollmentService.listUserEnrollments(userId, status, page, pageSize);
+		return courseOrderService.listUserCourseOrders(userId, status, page, pageSize);
 	}
 }

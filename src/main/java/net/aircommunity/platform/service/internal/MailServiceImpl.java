@@ -23,6 +23,8 @@ import net.aircommunity.platform.service.MailService;
 
 /**
  * Mail service implementation
+ * 
+ * @author Bin.Zhang
  */
 @Service
 public class MailServiceImpl implements MailService {

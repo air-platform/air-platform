@@ -18,8 +18,8 @@ import io.micro.annotation.constraint.NotEmpty;
  */
 @Entity
 @XmlAccessorType(XmlAccessType.FIELD)
-@Table(name = "air_platform_course_enrollment")
-public class Enrollment extends VendorAwareOrder {
+@Table(name = "air_platform_course_order")
+public class CourseOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
@@ -39,10 +39,10 @@ public class Enrollment extends VendorAwareOrder {
 	@JoinColumn(name = "course_id", nullable = false)
 	private Course course;
 
-	public Enrollment() {
+	public CourseOrder() {
 	}
 
-	public Enrollment(String id) {
+	public CourseOrder(String id) {
 		this.id = id;
 	}
 
@@ -88,7 +88,7 @@ public class Enrollment extends VendorAwareOrder {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Enrollment [aircraftType=").append(aircraftType).append(", license=").append(license)
+		builder.append("CourseOrder [aircraftType=").append(aircraftType).append(", license=").append(license)
 				.append(", location=").append(location).append(", contact=").append(contact).append(", orderNo=")
 				.append(orderNo).append(", status=").append(status).append(", creationDate=").append(creationDate)
 				.append(", paymentDate=").append(paymentDate).append(", finishedDate=").append(finishedDate)

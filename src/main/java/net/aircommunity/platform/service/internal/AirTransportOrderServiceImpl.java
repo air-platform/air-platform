@@ -62,13 +62,6 @@ public class AirTransportOrderServiceImpl extends AbstractVendorAwareOrderServic
 		return doUpdateOrder(orderId, newOrder);
 	}
 
-	// XXX
-	// @Override
-	// protected void copyProperties(AirTransportOrder src, AirTransportOrder tgt) {
-	// AirTransport airTransport = airTransportService.findAirTransport(src.getAirTransport().getId());
-	// tgt.setAirTransport(airTransport);
-	// }
-
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public AirTransportOrder updateAirTransportOrderStatus(String orderId, Status status) {
@@ -105,13 +98,13 @@ public class AirTransportOrderServiceImpl extends AbstractVendorAwareOrderServic
 	}
 
 	@Override
-	protected VendorAwareOrderRepository<AirTransportOrder> getOrderRepository() {
-		return airTransportOrderRepository;
+	protected Code orderNotFoundCode() {
+		return Codes.AIRTRANSPORT_ORDER_NOT_FOUND;
 	}
 
 	@Override
-	protected Code orderNotFoundCode() {
-		return Codes.AIRTRANSPORT_ORDER_NOT_FOUND;
+	protected VendorAwareOrderRepository<AirTransportOrder> getOrderRepository() {
+		return airTransportOrderRepository;
 	}
 
 }

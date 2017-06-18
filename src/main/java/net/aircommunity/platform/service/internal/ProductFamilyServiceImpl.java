@@ -38,8 +38,8 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 	public ProductFamily createProductFamily(String tenantId, ProductFamily productFamily) {
 		Tenant tenant = findAccount(tenantId, Tenant.class);
 		ProductFamily newProductFamily = new ProductFamily();
-		newProductFamily.setCreationDate(new Date());
 		copyProperties(productFamily, newProductFamily);
+		newProductFamily.setCreationDate(new Date());
 		newProductFamily.setReviewStatus(ReviewStatus.PENDING);
 		newProductFamily.setVendor(tenant);
 		return safeExecute(() -> productFamilyRepository.save(newProductFamily), "Create %s for tenant %s failed",

@@ -13,6 +13,7 @@ import net.aircommunity.platform.model.Product;
  * Common domain Specifications used {@code JpaSpecificationExecutor}
  * 
  * @author Bin.Zhang
+ * @deprecated
  */
 final class QuerySpecifications {
 

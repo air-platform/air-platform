@@ -26,9 +26,8 @@ public class TemplateServiceImpl implements TemplateService {
 	private final Jinjava templateEngine;
 
 	public TemplateServiceImpl() {
-		JinjavaConfig config = JinjavaConfig.newBuilder().withCharset(StandardCharsets.UTF_8).withLocale(Locale.CHINESE)
-				.build();
-		templateEngine = new Jinjava(config);
+		templateEngine = new Jinjava(
+				JinjavaConfig.newBuilder().withCharset(StandardCharsets.UTF_8).withLocale(Locale.CHINESE).build());
 	}
 
 	@Override
