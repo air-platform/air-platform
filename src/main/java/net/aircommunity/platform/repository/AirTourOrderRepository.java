@@ -1,6 +1,6 @@
 package net.aircommunity.platform.repository;
 
-import net.aircommunity.platform.model.AirTourOrder;
+import net.aircommunity.platform.model.domain.AirTourOrder;
 
 /**
  * Created by guankai on 15/04/2017.

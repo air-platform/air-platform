@@ -3,7 +3,9 @@ package net.aircommunity.platform.model;
 import java.io.Serializable;
 
 /**
- * Created by kongxiangwen on 2017/4/11.
+ * SMS Message
+ * 
+ * @author kxw
  */
 public class SmsMessage implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import net.aircommunity.platform.model.Fleet;
+import net.aircommunity.platform.model.domain.Fleet;
 
 /**
  * Repository interface for {@link Fleet} instances. Provides basic CRUD operations due to the extension of

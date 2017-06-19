@@ -19,8 +19,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.JsonViews;
+import net.aircommunity.platform.model.domain.FerryFlight;
 import net.aircommunity.platform.service.FerryFlightService;
 
 /**

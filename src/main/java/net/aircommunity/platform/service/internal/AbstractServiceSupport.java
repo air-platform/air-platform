@@ -12,8 +12,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.SettingsRepository;
 import net.aircommunity.platform.service.AccountService;

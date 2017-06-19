@@ -3,8 +3,8 @@ package net.aircommunity.platform.service;
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.AirClass;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.AirClass;
 
 /**
  * AirClass service (only available for platform ADMIN).

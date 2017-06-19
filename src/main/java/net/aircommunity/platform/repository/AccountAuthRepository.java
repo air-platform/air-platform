@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.AccountAuth;
-import net.aircommunity.platform.model.AccountAuth.AuthType;
+import net.aircommunity.platform.model.domain.AccountAuth;
+import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 
 /**
  * Repository interface for {@link AccountAuth} instances. Provides basic CRUD operations due to the extension of

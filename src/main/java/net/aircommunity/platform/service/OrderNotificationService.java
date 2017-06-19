@@ -4,8 +4,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import net.aircommunity.platform.model.Contact;
 import net.aircommunity.platform.model.OrderEvent;
+import net.aircommunity.platform.model.domain.Contact;
 
 /**
  * Order notification service.

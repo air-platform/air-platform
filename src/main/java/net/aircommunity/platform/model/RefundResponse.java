@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import net.aircommunity.platform.model.domain.Refund;
+
 /**
  * Refund request.
  * 

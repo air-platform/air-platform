@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.Comment;
-import net.aircommunity.platform.model.Comment.Source;
+import net.aircommunity.platform.model.domain.Comment;
+import net.aircommunity.platform.model.domain.Comment.Source;
 
 /**
  * Repository interface for {@link Comment} instances. Provides basic CRUD operations due to the extension of

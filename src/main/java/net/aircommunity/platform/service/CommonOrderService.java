@@ -7,11 +7,11 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Payment;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.RefundRequest;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Payment;
 
 /**
  * Common order service list/query all {@code Order}s for a {@code User}.

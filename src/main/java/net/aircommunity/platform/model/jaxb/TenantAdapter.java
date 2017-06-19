@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import net.aircommunity.platform.model.Tenant;
+import net.aircommunity.platform.model.domain.Tenant;
 
 /**
  * Adapt a Tenant object to a JsonObject presentation

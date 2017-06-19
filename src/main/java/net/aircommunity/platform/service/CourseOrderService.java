@@ -3,9 +3,9 @@ package net.aircommunity.platform.service;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.aircommunity.platform.model.CourseOrder;
-import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.CourseOrder;
+import net.aircommunity.platform.model.domain.Order;
 
 /**
  * Course order (CourseOrder) Service

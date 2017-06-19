@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Product;
-import net.aircommunity.platform.model.Product.Category;
-import net.aircommunity.platform.model.ProductFaq;
-import net.aircommunity.platform.model.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.ProductFaq;
+import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.service.CommonProductService;
 

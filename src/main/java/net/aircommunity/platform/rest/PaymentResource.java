@@ -27,12 +27,12 @@ import org.slf4j.LoggerFactory;
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.Order;
-import net.aircommunity.platform.model.Payment;
 import net.aircommunity.platform.model.PaymentNotification;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PaymentResponse;
 import net.aircommunity.platform.model.PaymentVerification;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.service.CommonOrderService;
 import net.aircommunity.platform.service.PaymentService;
 

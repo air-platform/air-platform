@@ -3,7 +3,7 @@ package net.aircommunity.platform.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import net.aircommunity.platform.model.User.Gender;
+import net.aircommunity.platform.model.domain.User.Gender;
 
 /**
  * ID Card info

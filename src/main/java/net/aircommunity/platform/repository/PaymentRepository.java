@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.Payment;
+import net.aircommunity.platform.model.domain.Payment;
 
 /**
  * Repository interface for {@link Payment} instances. Provides basic CRUD operations due to the extension of

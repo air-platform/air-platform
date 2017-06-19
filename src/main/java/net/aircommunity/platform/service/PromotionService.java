@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.Product.Category;
-import net.aircommunity.platform.model.Promotion;
+import net.aircommunity.platform.model.domain.Promotion;
+import net.aircommunity.platform.model.domain.Product.Category;
 
 /**
  * Product Promotion Service.

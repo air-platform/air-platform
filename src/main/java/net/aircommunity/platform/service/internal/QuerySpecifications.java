@@ -7,7 +7,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.domain.Product;
 
 /**
  * Common domain Specifications used {@code JpaSpecificationExecutor}

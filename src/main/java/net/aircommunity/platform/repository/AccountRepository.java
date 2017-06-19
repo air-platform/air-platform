@@ -4,8 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.Role;
+import net.aircommunity.platform.model.domain.Account;
 
 /**
  * Repository interface for {@link Account} instances. Provides basic CRUD operations due to the extension of

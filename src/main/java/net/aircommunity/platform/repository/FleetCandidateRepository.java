@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.FleetCandidate;
-import net.aircommunity.platform.model.Order;
+import net.aircommunity.platform.model.domain.FleetCandidate;
+import net.aircommunity.platform.model.domain.Order;
 
 /**
  * Repository interface for {@link FleetCandidate} instances. Provides basic CRUD operations due to the extension of

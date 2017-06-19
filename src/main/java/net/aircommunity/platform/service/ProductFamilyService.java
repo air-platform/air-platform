@@ -5,9 +5,9 @@ import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Product.Category;
-import net.aircommunity.platform.model.ProductFamily;
-import net.aircommunity.platform.model.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.domain.ProductFamily;
+import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 
 /**
  * ProductFamily Service

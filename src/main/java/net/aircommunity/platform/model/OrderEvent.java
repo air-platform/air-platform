@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import javax.annotation.concurrent.Immutable;
 
+import net.aircommunity.platform.model.domain.Order;
+
 /**
  * Order CURD Event.
  * 

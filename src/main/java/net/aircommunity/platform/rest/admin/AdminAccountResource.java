@@ -25,12 +25,12 @@ import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.Constants;
-import net.aircommunity.platform.model.Account;
 import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.model.Tenant.VerificationStatus;
+import net.aircommunity.platform.model.domain.Account;
+import net.aircommunity.platform.model.domain.Tenant.VerificationStatus;
 import net.aircommunity.platform.service.AccountService;
 
 /**

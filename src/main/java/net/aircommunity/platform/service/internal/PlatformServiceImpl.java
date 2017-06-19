@@ -10,8 +10,8 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 
 import net.aircommunity.platform.Constants;
-import net.aircommunity.platform.model.Contact;
-import net.aircommunity.platform.model.Settings;
+import net.aircommunity.platform.model.domain.Contact;
+import net.aircommunity.platform.model.domain.Settings;
 import net.aircommunity.platform.service.PlatformService;
 
 /**

@@ -31,7 +31,7 @@ import io.micro.common.Strings;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.model.School;
+import net.aircommunity.platform.model.domain.School;
 import net.aircommunity.platform.service.SchoolService;
 
 /**

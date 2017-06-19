@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.JetTravelOrder;
-import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.JetTravelOrder;
+import net.aircommunity.platform.model.domain.Order;
 
 /**
  * JetTravelOrder service.

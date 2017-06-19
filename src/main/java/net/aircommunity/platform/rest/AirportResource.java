@@ -30,10 +30,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.Airport;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Airport;
 import net.aircommunity.platform.service.AirportService;
 
 /**

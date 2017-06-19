@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import net.aircommunity.platform.model.AirTaxi;
+import net.aircommunity.platform.model.domain.AirTaxi;
 
 /**
  * Repository interface for {@link AirTaxi} instances. Provides basic CRUD operations due to the extension of

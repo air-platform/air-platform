@@ -2,7 +2,7 @@ package net.aircommunity.platform.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.JetTravel;
+import net.aircommunity.platform.model.domain.JetTravel;
 
 /**
  * Repository interface for {@link JetTravel} instances. Provides basic CRUD operations due to the extension of

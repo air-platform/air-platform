@@ -2,7 +2,7 @@ package net.aircommunity.platform.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.CharterOrder;
+import net.aircommunity.platform.model.domain.CharterOrder;
 
 /**
  * Repository interface for {@link CharterOrder} instances. Provides basic CRUD operations due to the extension of

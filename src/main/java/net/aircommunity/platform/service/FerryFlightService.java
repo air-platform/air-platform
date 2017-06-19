@@ -6,9 +6,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.domain.FerryFlight;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 
 /**
  * FerryFlight service.

@@ -7,16 +7,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.Account;
-import net.aircommunity.platform.model.Account.Status;
-import net.aircommunity.platform.model.AccountAuth;
-import net.aircommunity.platform.model.AccountAuth.AuthType;
-import net.aircommunity.platform.model.Address;
 import net.aircommunity.platform.model.AuthContext;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Passenger;
 import net.aircommunity.platform.model.Role;
-import net.aircommunity.platform.model.Tenant.VerificationStatus;
+import net.aircommunity.platform.model.domain.Account;
+import net.aircommunity.platform.model.domain.AccountAuth;
+import net.aircommunity.platform.model.domain.Address;
+import net.aircommunity.platform.model.domain.Passenger;
+import net.aircommunity.platform.model.domain.Account.Status;
+import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
+import net.aircommunity.platform.model.domain.Tenant.VerificationStatus;
 
 /**
  * Account service manages {@code Account}s. The account principal can be username, mobile or email.

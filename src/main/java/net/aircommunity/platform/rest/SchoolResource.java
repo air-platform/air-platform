@@ -19,7 +19,7 @@ import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.School;
+import net.aircommunity.platform.model.domain.School;
 import net.aircommunity.platform.service.SchoolService;
 
 /**

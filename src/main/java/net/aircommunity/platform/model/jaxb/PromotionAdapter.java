@@ -2,7 +2,7 @@ package net.aircommunity.platform.model.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import net.aircommunity.platform.model.Promotion;
+import net.aircommunity.platform.model.domain.Promotion;
 
 /**
  * Adapt a Promotion object to a string presentation

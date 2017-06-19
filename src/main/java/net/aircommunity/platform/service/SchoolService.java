@@ -3,7 +3,7 @@ package net.aircommunity.platform.service;
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.School;
+import net.aircommunity.platform.model.domain.School;
 
 /**
  * Created by guankai on 11/04/2017.

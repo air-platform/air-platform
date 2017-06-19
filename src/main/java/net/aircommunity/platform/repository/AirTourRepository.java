@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import net.aircommunity.platform.model.AirTour;
+import net.aircommunity.platform.model.domain.AirTour;
 
 /**
  * Repository interface for {@link AirTour} instances. Provides basic CRUD operations due to the extension of

@@ -2,7 +2,7 @@ package net.aircommunity.platform.model.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.domain.Product;
 
 /**
  * Adapt a Product object to a string presentation

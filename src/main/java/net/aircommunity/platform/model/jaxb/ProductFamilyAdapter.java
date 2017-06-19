@@ -2,7 +2,7 @@ package net.aircommunity.platform.model.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import net.aircommunity.platform.model.ProductFamily;
+import net.aircommunity.platform.model.domain.ProductFamily;
 
 /**
  * Adapt a ProductFamily object to a simple name

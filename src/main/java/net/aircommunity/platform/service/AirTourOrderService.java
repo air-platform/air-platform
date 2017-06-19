@@ -1,9 +1,9 @@
 package net.aircommunity.platform.service;
 
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.AirTourOrder;
-import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.AirTourOrder;
+import net.aircommunity.platform.model.domain.Order;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -1,8 +1,8 @@
 package net.aircommunity.platform.service.internal;
 
-import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.VendorAwareOrder;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.VendorAwareOrder;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 
 /**

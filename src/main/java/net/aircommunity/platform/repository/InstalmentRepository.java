@@ -3,7 +3,7 @@ package net.aircommunity.platform.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import net.aircommunity.platform.model.Instalment;
+import net.aircommunity.platform.model.domain.Instalment;
 
 /**
  * Repository interface for {@link Instalment} instances. Provides basic CRUD operations due to the extension of

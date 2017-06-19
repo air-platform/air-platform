@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import net.aircommunity.platform.model.FerryFlight;
+import net.aircommunity.platform.model.domain.FerryFlight;
 
 /**
  * Repository interface for {@link FerryFlight} instances. Provides basic CRUD operations due to the extension of

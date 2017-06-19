@@ -13,9 +13,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.common.OrderPrices;
-import net.aircommunity.platform.model.Order;
-import net.aircommunity.platform.model.Payment;
 import net.aircommunity.platform.model.PaymentResponse;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.repository.RefundRepository;
 import net.aircommunity.platform.service.CommonOrderService;
 import net.aircommunity.platform.service.PaymentService;

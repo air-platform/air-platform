@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micro.core.security.AccessTokenConfig;
 import io.micro.core.security.AccessTokenConfigStorage;
-import net.aircommunity.platform.model.Settings;
+import net.aircommunity.platform.model.domain.Settings;
 import net.aircommunity.platform.repository.SettingsRepository;
 
 /**

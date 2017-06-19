@@ -6,9 +6,9 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.aircommunity.platform.model.Course;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.domain.Course;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 
 /**
  * Course Service.

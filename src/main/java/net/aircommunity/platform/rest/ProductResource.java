@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.Product;
+import net.aircommunity.platform.model.domain.Product;
 
 /**
  * Common product RESTful API allows list/find/query for ANYONE.

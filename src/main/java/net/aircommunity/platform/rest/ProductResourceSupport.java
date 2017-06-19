@@ -13,8 +13,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Product;
-import net.aircommunity.platform.model.ProductFaq;
+import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.ProductFaq;
 
 /**
  * Product RESTful API. <b>all permission</b> for ALL (NOTE: base resource class for subclass extending MUST be public)

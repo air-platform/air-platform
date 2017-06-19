@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.Comment;
-import net.aircommunity.platform.model.Comment.Source;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.Comment;
+import net.aircommunity.platform.model.domain.Comment.Source;
 
 /**
  * Comment service.

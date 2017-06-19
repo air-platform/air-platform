@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.Airport;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.Airport;
 
 /**
  * Airport service. (for ADMIN only)

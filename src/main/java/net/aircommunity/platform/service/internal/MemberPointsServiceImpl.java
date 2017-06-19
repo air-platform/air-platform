@@ -18,7 +18,7 @@ import com.google.common.collect.ImmutableMap;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.Constants.PointRules;
 import net.aircommunity.platform.model.PointsExchange;
-import net.aircommunity.platform.model.Settings;
+import net.aircommunity.platform.model.domain.Settings;
 import net.aircommunity.platform.service.MemberPointsService;
 
 /**

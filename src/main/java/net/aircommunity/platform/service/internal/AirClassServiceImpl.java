@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.AirClass;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.AirClass;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AirClassRepository;
 import net.aircommunity.platform.service.AirClassService;

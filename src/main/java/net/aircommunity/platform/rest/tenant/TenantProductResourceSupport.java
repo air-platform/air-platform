@@ -28,9 +28,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Product;
-import net.aircommunity.platform.model.ProductFaq;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.ProductFaq;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.CommonProductService;
 

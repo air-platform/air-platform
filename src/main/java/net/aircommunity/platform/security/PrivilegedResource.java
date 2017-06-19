@@ -3,7 +3,7 @@ package net.aircommunity.platform.security;
 import java.io.Serializable;
 
 /**
- * Privileged Resource is used for access control. TODO
+ * Privileged Resource is used for access control.
  * 
  * @author Bin.Zhang
  */

@@ -29,9 +29,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.Banner;
 import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.Product.Category;
+import net.aircommunity.platform.model.domain.Banner;
+import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.service.BannerService;
 

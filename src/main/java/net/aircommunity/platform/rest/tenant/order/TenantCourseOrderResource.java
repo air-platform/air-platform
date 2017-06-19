@@ -16,11 +16,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
-import net.aircommunity.platform.model.CourseOrder;
 import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.CourseOrder;
+import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.CourseOrderService;
 

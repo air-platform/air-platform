@@ -15,8 +15,8 @@ import javax.ws.rs.core.MediaType;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.service.CharterOrderService;
 import net.aircommunity.platform.service.CommonOrderService;
 

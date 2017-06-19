@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-import net.aircommunity.platform.model.Course;
+import net.aircommunity.platform.model.domain.Course;
 
 /**
  * Repository interface for {@link Course} instances. Provides basic CRUD operations due to the extension of

@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.FerryFlightOrder;
-import net.aircommunity.platform.model.Order;
-import net.aircommunity.platform.model.Order.Status;
+import net.aircommunity.platform.model.domain.FerryFlightOrder;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.repository.FerryFlightOrderRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;

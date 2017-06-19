@@ -2,7 +2,7 @@ package net.aircommunity.platform.model.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import net.aircommunity.platform.model.Account;
+import net.aircommunity.platform.model.domain.Account;
 
 /**
  * Adapt a Account object to a string presentation

@@ -25,14 +25,14 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.common.OrderPrices;
-import net.aircommunity.platform.model.Order;
-import net.aircommunity.platform.model.Payment.Method;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.Refund;
+import net.aircommunity.platform.model.domain.Payment.Method;
 import net.aircommunity.platform.model.PaymentNotification;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PaymentResponse;
 import net.aircommunity.platform.model.PaymentVerification;
-import net.aircommunity.platform.model.Product;
-import net.aircommunity.platform.model.Refund;
 import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.nls.M;
 

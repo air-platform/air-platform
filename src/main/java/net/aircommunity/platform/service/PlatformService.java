@@ -4,7 +4,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import net.aircommunity.platform.model.Contact;
+import net.aircommunity.platform.model.domain.Contact;
 
 /**
  * Generic platform service for platform administrators (ADMIN ONLY).

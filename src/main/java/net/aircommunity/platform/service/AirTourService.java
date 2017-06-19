@@ -6,9 +6,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
-import net.aircommunity.platform.model.AirTour;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.domain.AirTour;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 
 /**
  * AirTour Service.

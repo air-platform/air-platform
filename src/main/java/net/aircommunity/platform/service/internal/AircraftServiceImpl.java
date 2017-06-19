@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.Aircraft;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Tenant;
+import net.aircommunity.platform.model.domain.Aircraft;
+import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AircraftRepository;
 import net.aircommunity.platform.service.AircraftService;

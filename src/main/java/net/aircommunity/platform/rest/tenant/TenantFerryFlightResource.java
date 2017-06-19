@@ -27,10 +27,10 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.model.FerryFlight;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.domain.FerryFlight;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.FerryFlightService;

@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.ProductFaq;
+import net.aircommunity.platform.model.domain.ProductFaq;
 
 /**
  * Repository interface for {@link ProductFaq} instances. Provides basic CRUD operations due to the extension of

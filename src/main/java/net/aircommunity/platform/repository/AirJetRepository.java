@@ -2,7 +2,7 @@ package net.aircommunity.platform.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.AirJet;
+import net.aircommunity.platform.model.domain.AirJet;
 
 /**
  * Repository interface for {@link AirJet} instances. Provides basic CRUD operations due to the extension of

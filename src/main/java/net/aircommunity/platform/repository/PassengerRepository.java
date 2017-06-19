@@ -2,7 +2,7 @@ package net.aircommunity.platform.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.Passenger;
+import net.aircommunity.platform.model.domain.Passenger;
 
 /**
  * Repository interface for {@link Passenger} instances. Provides basic CRUD operations due to the extension of

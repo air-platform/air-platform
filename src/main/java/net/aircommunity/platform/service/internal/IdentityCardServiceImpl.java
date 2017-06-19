@@ -25,7 +25,7 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.IdCardInfo;
-import net.aircommunity.platform.model.User.Gender;
+import net.aircommunity.platform.model.domain.User.Gender;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.IdentityCardService;
 import okhttp3.Headers;

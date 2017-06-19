@@ -5,8 +5,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.AirJet;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.AirJet;
 
 /**
  * AirJet service (only available for platform ADMIN).

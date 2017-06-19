@@ -4,9 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.Product.Category;
-import net.aircommunity.platform.model.ProductFamily;
-import net.aircommunity.platform.model.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.domain.ProductFamily;
+import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 
 /**
  * Repository interface for {@link ProductFamily} instances. Provides basic CRUD operations due to the extension of

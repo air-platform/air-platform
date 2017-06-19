@@ -9,10 +9,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
-import io.micro.annotation.RESTful;
-import net.aircommunity.platform.model.Product;
-import net.aircommunity.platform.model.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.rest.ProductResourceSupport;
 import net.aircommunity.platform.service.CommonProductService;
 
@@ -20,7 +19,7 @@ import net.aircommunity.platform.service.CommonProductService;
  * Product administrative RESTful API. NOTE: <b>all permission</b> for ADMIN
  * 
  * @author Bin.Zhang
- * @deprecated
+ * @deprecated (two level sub-resource is NOT working)
  */
 // @RESTful
 @RolesAllowed(Roles.ROLE_ADMIN)

@@ -16,9 +16,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.AirTaxi;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.AirTaxi;
 import net.aircommunity.platform.service.AirTaxiService;
 
 /**

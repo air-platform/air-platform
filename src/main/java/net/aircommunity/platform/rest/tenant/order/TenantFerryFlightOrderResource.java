@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
-import net.aircommunity.platform.model.FerryFlightOrder;
 import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.FerryFlightOrder;
+import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.FerryFlightOrderService;
 

@@ -22,13 +22,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import io.micro.core.security.AccessTokenService;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Product;
-import net.aircommunity.platform.model.Product.Category;
 import net.aircommunity.platform.model.ProductSummary;
-import net.aircommunity.platform.model.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.AirClassResource;
 import net.aircommunity.platform.rest.AirJetResource;
@@ -61,9 +62,9 @@ import net.aircommunity.platform.rest.tenant.TenantSchoolResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTaxiOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTourOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTransportOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantCharterOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantCourseOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantFerryFlightOrderResource;
-import net.aircommunity.platform.rest.tenant.order.TenantCharterOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantJetTravelOrderResource;
 import net.aircommunity.platform.rest.user.AirTaxiOrderResource;
 import net.aircommunity.platform.rest.user.AirTourOrderResource;
@@ -73,6 +74,7 @@ import net.aircommunity.platform.rest.user.FerryFlightOrderResource;
 import net.aircommunity.platform.rest.user.JetTravelOrderResource;
 import net.aircommunity.platform.rest.user.UserCourseOrderResource;
 import net.aircommunity.platform.service.CommonProductService;
+import net.aircommunity.platform.service.PlatformService;
 
 /**
  * Admin RESTful API.
@@ -117,6 +119,19 @@ public class AdminResource extends BaseResourceSupport {
 	// ***********************
 	// Platform Generic
 	// ***********************
+	@Resource
+	private PlatformService platformService;
+
+	@POST
+	@Path("caches/clear")
+	public void clearAllCaches(@QueryParam("cache") String cacheName) {
+		if (Strings.isBlank(cacheName)) {
+			platformService.clearAllCaches();
+		}
+		else {
+			platformService.clearCache(cacheName);
+		}
+	}
 
 	@Resource
 	private AdminSettingsResource adminSettingsResource;

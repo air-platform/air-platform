@@ -2,7 +2,7 @@ package net.aircommunity.platform.model.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import net.aircommunity.platform.model.Order;
+import net.aircommunity.platform.model.domain.Order;
 
 /**
  * Adapt a Order object to a string presentation

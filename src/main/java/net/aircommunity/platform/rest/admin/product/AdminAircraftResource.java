@@ -28,10 +28,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
-import net.aircommunity.platform.model.Aircraft;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Aircraft;
 import net.aircommunity.platform.service.AircraftService;
 
 /**

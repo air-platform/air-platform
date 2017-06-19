@@ -20,10 +20,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.Fleet;
 import net.aircommunity.platform.model.FleetProvider;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.Fleet;
 import net.aircommunity.platform.service.FleetService;
 
 /**

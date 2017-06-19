@@ -4,9 +4,9 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import net.aircommunity.platform.model.Aircraft;
-import net.aircommunity.platform.model.SalesPackageProduct;
-import net.aircommunity.platform.model.SalesPackage;
+import net.aircommunity.platform.model.domain.Aircraft;
+import net.aircommunity.platform.model.domain.SalesPackage;
+import net.aircommunity.platform.model.domain.SalesPackageProduct;
 import net.aircommunity.platform.service.AircraftService;
 
 /**

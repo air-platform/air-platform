@@ -6,9 +6,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.Banner;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Product.Category;
+import net.aircommunity.platform.model.domain.Banner;
+import net.aircommunity.platform.model.domain.Product.Category;
 
 /**
  * Banner service (only available for platform ADMIN).

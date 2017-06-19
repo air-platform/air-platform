@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.Settings;
+import net.aircommunity.platform.model.domain.Settings;
 
 /**
  * Repository interface for {@link Settings} instances. Provides basic CRUD operations due to the extension of

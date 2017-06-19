@@ -12,12 +12,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.aircommunity.platform.model.Order;
-import net.aircommunity.platform.model.Order.Status;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Payment;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.RefundRequest;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.PaymentRepository;
 import net.aircommunity.platform.service.CommonOrderService;

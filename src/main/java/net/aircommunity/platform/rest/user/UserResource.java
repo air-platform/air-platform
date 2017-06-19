@@ -23,14 +23,14 @@ import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.Address;
-import net.aircommunity.platform.model.Order;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Passenger;
-import net.aircommunity.platform.model.Payment;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Address;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Passenger;
+import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CommonOrderService;
 

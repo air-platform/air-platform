@@ -2,7 +2,7 @@ package net.aircommunity.platform.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.AirClass;
+import net.aircommunity.platform.model.domain.AirClass;
 
 /**
  * Repository interface for {@link AirClass} instances. Provides basic CRUD operations due to the extension of

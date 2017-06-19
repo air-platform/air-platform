@@ -17,8 +17,8 @@ import javax.ws.rs.core.MediaType;
 import io.micro.annotation.RESTful;
 import io.micro.core.security.AccessTokenService;
 import net.aircommunity.platform.model.AccessToken;
-import net.aircommunity.platform.model.Contact;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Contact;
 import net.aircommunity.platform.service.PlatformService;
 
 /**

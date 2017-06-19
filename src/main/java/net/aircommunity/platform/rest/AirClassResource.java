@@ -29,10 +29,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.AirClass;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.AirClass;
 import net.aircommunity.platform.service.AirClassService;
 
 /**
