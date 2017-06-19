@@ -27,7 +27,7 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_order_refund", indexes = {
+@Table(name = "air_platform_order_refund", indexes = {
 		@Index(name = "idx_method_trade_no", columnList = "method,trade_no", unique = true),
 		@Index(name = "idx_method_order_no", columnList = "method,order_no", unique = true),
 		@Index(name = "idx_user_order", columnList = "user_id,order_no"),

@@ -24,7 +24,7 @@ import net.aircommunity.platform.model.UnitProductPrice;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_charter_order")
+@Table(name = "air_platform_charter_order")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CharterOrder extends StandardOrder {
 	private static final long serialVersionUID = 1L;

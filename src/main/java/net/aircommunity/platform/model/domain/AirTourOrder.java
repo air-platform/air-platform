@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
  * @author guankai
  */
 @Entity
-@Table(name = "air_platfrom_airtour_order")
+@Table(name = "air_platform_airtour_order")
 public class AirTourOrder extends AircraftAwareOrder {
 	private static final long serialVersionUID = 1L;
 

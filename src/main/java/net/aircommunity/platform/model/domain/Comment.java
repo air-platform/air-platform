@@ -29,7 +29,7 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_product_comment")
+@Table(name = "air_platform_product_comment")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Comment extends Persistable {
 	private static final long serialVersionUID = 1L;

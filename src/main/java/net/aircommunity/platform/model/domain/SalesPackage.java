@@ -40,7 +40,7 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_salespackage")
+@Table(name = "air_platform_salespackage")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SalesPackage extends Persistable {
 	private static final long serialVersionUID = 1L;

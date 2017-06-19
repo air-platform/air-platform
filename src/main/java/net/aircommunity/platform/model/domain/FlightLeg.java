@@ -25,7 +25,7 @@ import net.aircommunity.platform.model.jaxb.OrderAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_flightleg")
+@Table(name = "air_platform_flightleg")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FlightLeg extends Persistable {
 	private static final long serialVersionUID = 1L;

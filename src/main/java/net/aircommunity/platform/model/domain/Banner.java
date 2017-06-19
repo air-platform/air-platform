@@ -24,7 +24,7 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_banner")
+@Table(name = "air_platform_banner")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Banner extends Persistable {
 	private static final long serialVersionUID = 1L;

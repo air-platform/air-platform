@@ -27,7 +27,7 @@ import net.aircommunity.platform.model.jaxb.PromotionAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_promotion_item")
+@Table(name = "air_platform_promotion_item")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PromotionItem extends Persistable {
 	private static final long serialVersionUID = 1L;

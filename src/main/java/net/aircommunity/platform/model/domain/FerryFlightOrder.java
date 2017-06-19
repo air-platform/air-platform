@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_ferryflight_order")
+@Table(name = "air_platform_ferryflight_order")
 public class FerryFlightOrder extends CharterableOrder {
 	private static final long serialVersionUID = 1L;
 

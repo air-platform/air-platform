@@ -22,7 +22,7 @@ import net.aircommunity.platform.model.jaxb.OrderAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_order_passengeritem")
+@Table(name = "air_platform_order_passengeritem")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PassengerItem extends Persistable {
 	private static final long serialVersionUID = 1L;

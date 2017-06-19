@@ -13,7 +13,7 @@ import javax.persistence.Table;
  * @author guankai
  */
 @Entity
-@Table(name = "air_platfrom_airtour", indexes = { @Index(name = "idx_city", columnList = "city") })
+@Table(name = "air_platform_airtour", indexes = { @Index(name = "idx_city", columnList = "city") })
 public class AirTour extends SalesPackageProduct {
 	private static final long serialVersionUID = 1L;
 

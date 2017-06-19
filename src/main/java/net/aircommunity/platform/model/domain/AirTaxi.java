@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * @author guankai
  */
 @Entity
-@Table(name = "air_platfrom_airtaxi")
+@Table(name = "air_platform_airtaxi")
 public class AirTaxi extends SalesPackageProduct {
 	private static final long serialVersionUID = 1L;
 

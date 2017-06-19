@@ -17,7 +17,7 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_user_address")
+@Table(name = "air_platform_user_address")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Address extends Persistable {
 	private static final long serialVersionUID = 1L;

@@ -24,7 +24,7 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_aircraft")
+@Table(name = "air_platform_aircraft")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Aircraft extends Persistable {
 	private static final long serialVersionUID = 1L;

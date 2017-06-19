@@ -21,7 +21,7 @@ import io.micro.annotation.constraint.NotEmpty;
  */
 @Entity
 @XmlAccessorType(XmlAccessType.FIELD)
-@Table(name = "air_platfrom_fleet", indexes = { @Index(name = "idx_aircraft_type", columnList = "aircraft_type") })
+@Table(name = "air_platform_fleet", indexes = { @Index(name = "idx_aircraft_type", columnList = "aircraft_type") })
 public class Fleet extends StandardProduct {
 	private static final long serialVersionUID = 1L;
 

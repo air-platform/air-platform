@@ -24,7 +24,7 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_product_faq")
+@Table(name = "air_platform_product_faq")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProductFaq extends Persistable {
 	private static final long serialVersionUID = 1L;

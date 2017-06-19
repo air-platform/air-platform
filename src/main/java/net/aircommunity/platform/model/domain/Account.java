@@ -29,7 +29,7 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  */
 @Entity
 @Inheritance
-@Table(name = "air_platfrom_account")
+@Table(name = "air_platform_account")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Account extends Persistable {
 	private static final long serialVersionUID = 1L;

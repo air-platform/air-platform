@@ -29,7 +29,7 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_account_auth", indexes = {
+@Table(name = "air_platform_account_auth", indexes = {
 		// one same auth type per account
 		@Index(name = "idx_account_id_type", columnList = "account_id, type", unique = true),
 		// unique principal per auth type

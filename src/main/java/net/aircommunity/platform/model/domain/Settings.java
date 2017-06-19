@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  */
 @Entity
 @XmlAccessorType(XmlAccessType.FIELD)
-@Table(name = "air_platfrom_settings", indexes = { @Index(name = "idx_category", columnList = "category") })
+@Table(name = "air_platform_settings", indexes = { @Index(name = "idx_category", columnList = "category") })
 public class Settings extends Persistable {
 	private static final long serialVersionUID = 1L;
 

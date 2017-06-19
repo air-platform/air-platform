@@ -27,7 +27,7 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_daily_signin")
+@Table(name = "air_platform_daily_signin")
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties("id")
 public class DailySignin extends Persistable {

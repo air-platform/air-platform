@@ -19,7 +19,7 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_user_passenger", indexes = {
+@Table(name = "air_platform_user_passenger", indexes = {
 		@Index(name = "idx_user_identity", columnList = "user_id, identity", unique = true) })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Passenger extends Persistable implements Cloneable {

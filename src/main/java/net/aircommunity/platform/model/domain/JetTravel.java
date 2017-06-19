@@ -10,7 +10,7 @@ import javax.persistence.Table;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_jettravel")
+@Table(name = "air_platform_jettravel")
 public class JetTravel extends StandardProduct {
 	private static final long serialVersionUID = 1L;
 

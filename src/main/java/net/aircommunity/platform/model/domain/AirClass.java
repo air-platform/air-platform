@@ -21,7 +21,7 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_airclass")
+@Table(name = "air_platform_airclass")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AirClass extends Persistable {
 	private static final long serialVersionUID = 1L;

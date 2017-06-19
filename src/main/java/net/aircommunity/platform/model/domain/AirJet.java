@@ -17,7 +17,7 @@ import io.micro.annotation.constraint.NotEmpty;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_airjet", indexes = { @Index(name = "idx_type", columnList = "type") })
+@Table(name = "air_platform_airjet", indexes = { @Index(name = "idx_type", columnList = "type") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AirJet extends Persistable {
 	private static final long serialVersionUID = 1L;

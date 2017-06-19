@@ -28,7 +28,7 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platfrom_product_family", indexes = { @Index(name = "idx_name", columnList = "name"),
+@Table(name = "air_platform_product_family", indexes = { @Index(name = "idx_name", columnList = "name"),
 		@Index(name = "idx_category", columnList = "category") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProductFamily extends Reviewable {
