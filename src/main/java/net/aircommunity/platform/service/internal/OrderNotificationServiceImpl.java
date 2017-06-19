@@ -113,6 +113,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 
 		// fleet is offer by a tenant
 		case FLEET_OFFERED:
+			// TODO SMS notification to customer
 			Contact contactPerson = event.getOrder().getContact();
 			notifyCustomer(ImmutableSet.of(contactPerson), event);
 			break;

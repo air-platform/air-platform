@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.domain.ProductFamily;
-import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.ProductFamily;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.ProductFamilyRepository;
 import net.aircommunity.platform.service.ProductFamilyService;
@@ -144,15 +144,15 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#productFamilyId")
 	@Override
 	public void deleteProductFamily(String productFamilyId) {
-		safeExecute(() -> productFamilyRepository.delete(productFamilyId), "Delete product family %s failed",
-				productFamilyId);
+		safeDeletion(productFamilyRepository, productFamilyId, Codes.PRODUCT_FAMILY_CANNOT_BE_DELETED,
+				M.msg(M.PRODUCT_FAMILY_CANNOT_BE_DELETED));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteProductFamilies(String tenantId) {
-		safeExecute(() -> productFamilyRepository.deleteByVendorId(tenantId),
-				"Delete all product families for tenant %s failed", tenantId);
+		safeDeletion(productFamilyRepository, () -> productFamilyRepository.deleteByVendorId(tenantId),
+				Codes.PRODUCT_FAMILY_CANNOT_BE_DELETED, M.msg(M.TENANT_PRODUCT_FAMILIES_CANNOT_BE_DELETED));
 	}
 
 }

@@ -18,8 +18,8 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirTransport;
-import net.aircommunity.platform.model.domain.ProductFamily;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.ProductFamily;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AirTransportRepository;
@@ -51,7 +51,6 @@ public class AirTransportServiceImpl extends SalesPackageProductService<AirTrans
 
 	@Override
 	public AirTransport createAirTransport(String tenantId, AirTransport airTransport) {
-		airTransport.setCategory(Category.AIR_TRANS);
 		return doCreateProduct(tenantId, airTransport);
 	}
 

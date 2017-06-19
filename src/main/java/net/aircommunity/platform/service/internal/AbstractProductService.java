@@ -2,6 +2,8 @@ package net.aircommunity.platform.service.internal;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Date;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,14 +20,15 @@ import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.CharterableProduct;
 import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.ProductFaq;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.domain.StandardProduct;
 import net.aircommunity.platform.model.domain.Tenant;
-import net.aircommunity.platform.model.domain.Product.Category;
-import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.ProductFaqRepository;
+import net.aircommunity.platform.service.CommentService;
 
 /**
  * Abstract Product service support.
@@ -37,6 +40,9 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractProductService.class);
 
 	protected static final String CACHE_NAME = "cache.product";
+
+	@Resource
+	protected CommentService commentService;
 
 	@Resource
 	protected ProductFaqRepository productFaqRepository;
@@ -75,9 +81,10 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		newProduct.setImage(product.getImage());
 		newProduct.setClientManagers(product.getClientManagers());
 		newProduct.setDescription(product.getDescription());
-		newProduct.setRank(0);
+		newProduct.setRank(Product.DEFAULT_RANK);
 		newProduct.setTotalSales(0);
 		newProduct.setPublished(false);
+		// actually set when @PrePersist
 		newProduct.setCategory(product.getCategory());
 		newProduct.setReviewStatus(ReviewStatus.PENDING);
 		// standard
@@ -193,7 +200,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	protected final T doUpdateProductRank(String productId, int rank) {
 		T product = doFindProduct(productId);
 		if (rank < 0) {
-			rank = 0;
+			rank = Product.DEFAULT_RANK;
 		}
 		product.setRank(rank);
 		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s to rank: %d",
@@ -211,6 +218,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 * For all users/anyone (only show approved and published product)
 	 */
 	protected final Page<T> doListProductsForUsers(int page, int pageSize) {
+		// TODO make rank=100
 		return Pages.adapt(getProductRepository().findByPublishedOrderByRankAscScoreDesc(true/* published */,
 				Pages.createPageRequest(page, pageSize)));
 	}
@@ -290,15 +298,49 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 * Delete
 	 */
 	protected final void doDeleteProduct(String productId) {
-		safeExecute(() -> getProductRepository().delete(productId), "Delete product %s failed", productId);
+		doDeleteProductDependencies(productId);
+		safeDeletion(getProductRepository(), productId, Codes.PRODUCT_CANNOT_BE_DELETED,
+				M.msg(M.PRODUCT_CANNOT_BE_DELETED));
 	}
 
 	/**
 	 * Delete all for a tenant
 	 */
 	protected final void doDeleteProducts(String tenantId) {
-		safeExecute(() -> getProductRepository().deleteByVendorId(tenantId), "Delete all products for tenant %s failed",
-				tenantId);
+		// delete standard products
+		doBatchDeleteProducts(() -> getProductRepository().findByVendorId(tenantId), Codes.PRODUCT_CANNOT_BE_DELETED,
+				M.msg(M.TENANT_PRODUCTS_CANNOT_BE_DELETED, tenantId));
+
+		// doBatchDeleteProductDependencies(() -> getProductRepository().findByVendorId(tenantId));
+		// safeDeletion(getProductRepository(), () -> getProductRepository().deleteByVendorId(tenantId),
+		// Codes.PRODUCT_CANNOT_BE_DELETED, M.msg(M.TENANT_PRODUCTS_CANNOT_BE_DELETED, tenantId));
+	}
+
+	/**
+	 * Batch delete products (will delete dependencies first)
+	 */
+	protected final void doBatchDeleteProducts(Supplier<Stream<T>> productProvider, Code errorCode,
+			String errorMessage) {
+		safeDeletion(getProductRepository(), () -> {
+			try (Stream<T> stream = productProvider.get()) {
+				stream.forEach(product -> {
+					doDeleteProductDependencies(product.getId());
+					getProductRepository().delete(product.getId());
+				});
+			}
+		}, errorCode, errorMessage);
+	}
+
+	protected final void doBatchDeleteProductDependencies(Supplier<Stream<T>> productProvider) {
+		try (Stream<T> stream = productProvider.get()) {
+			stream.forEach(product -> doDeleteProductDependencies(product.getId()));
+		}
+	}
+
+	protected final void doDeleteProductDependencies(String productId) {
+		// delete comments & product FAQ of the product first
+		commentService.deleteComments(productId);
+		productFaqRepository.deleteByProductId(productId);
 	}
 
 	// *********************

@@ -8,10 +8,15 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.google.common.eventbus.EventBus;
+
 import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.nls.M;
@@ -27,6 +32,12 @@ abstract class AbstractServiceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractServiceSupport.class);
 
 	@Resource
+	protected Configuration configuration;
+
+	@Resource
+	protected EventBus eventBus;
+
+	@Resource
 	protected AccountService accountService;
 
 	@Resource
@@ -35,7 +46,7 @@ abstract class AbstractServiceSupport {
 	@Resource
 	protected CacheManager cacheManager;
 
-	protected <T extends Account> T findAccount(String accountId, Class<T> type) {
+	protected final <T extends Account> T findAccount(String accountId, Class<T> type) {
 		Account account = accountService.findAccount(accountId);
 		try {
 			return type.cast(account);
@@ -47,7 +58,7 @@ abstract class AbstractServiceSupport {
 		}
 	}
 
-	protected <T> T safeExecute(Callable<T> action, String errorMessageTemplate, Object... errorMessageArgs) {
+	protected final <T> T safeExecute(Callable<T> action, String errorMessageTemplate, Object... errorMessageArgs) {
 		try {
 			return action.call();
 		}
@@ -58,7 +69,7 @@ abstract class AbstractServiceSupport {
 		}
 	}
 
-	protected void safeExecute(Runnable action, String errorMessageTemplate, Object... errorMessageArgs) {
+	protected final void safeExecute(Runnable action, String errorMessageTemplate, Object... errorMessageArgs) {
 		try {
 			action.run();
 		}
@@ -66,6 +77,46 @@ abstract class AbstractServiceSupport {
 			String errorMessage = String.format(errorMessageTemplate, errorMessageArgs);
 			LOG.error(String.format("%s, casue: %s", errorMessage, e.getMessage()), e);
 			throw newInternalException();
+		}
+	}
+
+	/**
+	 * Delete
+	 */
+	protected final <T> void safeDeletion(JpaRepository<T, String> repository, String id, Code errorCode,
+			String errorMessage) {
+		try {
+			repository.delete(id);
+			// NOTE: important flush() here, otherwise we cannot catch DataIntegrityViolationException
+			repository.flush();
+		}
+		catch (DataIntegrityViolationException e) {
+			LOG.error(String.format("Deletion failure, casue: %s", e.getMessage()), e);
+			throw new AirException(errorCode, errorMessage);
+		}
+		catch (Exception e) {
+			LOG.error(String.format("Internal server error casue: %s", e.getMessage()), e);
+			newInternalException();
+		}
+	}
+
+	/**
+	 * Delete
+	 */
+	protected final <T> void safeDeletion(JpaRepository<T, String> repository, Runnable deleteAction, Code errorCode,
+			String errorMessage) {
+		try {
+			deleteAction.run();
+			// NOTE: important flush() here, otherwise we cannot catch DataIntegrityViolationException
+			repository.flush();
+		}
+		catch (DataIntegrityViolationException e) {
+			LOG.error(String.format("Deletion failure, casue: %s", e.getMessage()), e);
+			throw new AirException(errorCode, errorMessage);
+		}
+		catch (Exception e) {
+			LOG.error(String.format("Internal server error casue: %s", e.getMessage()), e);
+			newInternalException();
 		}
 	}
 

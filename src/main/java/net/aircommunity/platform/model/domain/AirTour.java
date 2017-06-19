@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Lob;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 /**
@@ -116,12 +117,9 @@ public class AirTour extends SalesPackageProduct {
 		this.tourRoute = tourRoute;
 	}
 
-	@Override
-	public Category getCategory() {
-		if (category == null) {
-			return Category.AIR_TOUR;
-		}
-		return category;
+	@PrePersist
+	private void prePersist() {
+		setCategory(Category.AIR_TOUR);
 	}
 
 	@Override

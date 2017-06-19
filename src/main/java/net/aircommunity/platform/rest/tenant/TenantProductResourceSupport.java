@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -31,6 +32,7 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.ProductFaq;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.CommonProductService;
 
@@ -60,6 +62,19 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	}
 
 	/**
+	 * Update Rank
+	 */
+	@POST
+	@Path("{productId}/rank")
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	public Product rankProduct(@PathParam("productId") String productId, JsonObject request) {
+		int newRank = getProductRank(request);
+		return commonProductService.updateProductRank(productId, newRank);
+	}
+
+	/**
 	 * On Sale
 	 */
 	@POST
@@ -81,6 +96,27 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Product unpublishProduct(@PathParam("productId") String productId) {
 		return commonProductService.publishProduct(productId, false);
+	}
+
+	/**
+	 * Approve a tenant product (ADMIN & CS)
+	 */
+	@POST
+	@Path("{productId}/approve")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE })
+	public void approveProduct(@PathParam("productId") String productId) {
+		commonProductService.reviewProduct(productId, ReviewStatus.APPROVED, null);
+	}
+
+	/**
+	 * Disapprove a tenant product (body: {"reason": "xxxx"} ) (ADMIN & CS)
+	 */
+	@POST
+	@Path("{productId}/disapprove")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE })
+	public void disapproveProduct(@PathParam("productId") String productId, JsonObject rejectedReason) {
+		String reason = getRejectedReason(rejectedReason);
+		commonProductService.reviewProduct(productId, ReviewStatus.REJECTED, reason);
 	}
 
 	/**

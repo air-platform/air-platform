@@ -29,9 +29,17 @@ public class LocalizedMessages extends NLSResource {
 	public static String PRODUCT_FAMILY_NOT_FOUND;
 	public static String PRODUCT_FAMILY_NOT_APPROVED;
 	public static String PRODUCT_INVALID_DEPARTURE_DATE;
+	public static String PRODUCT_CANNOT_BE_DELETED;
+	public static String PRODUCT_FAMILY_CANNOT_BE_DELETED;
+	public static String TENANT_PRODUCT_FAMILIES_CANNOT_BE_DELETED;
+	public static String TENANT_PRODUCTS_CANNOT_BE_DELETED;
+	public static String SCHOOL_COURSES_CANNOT_BE_DELETED;
+	public static String SCHOOL_CANNOT_BE_DELETED;
+	public static String TENANT_SCHOOLS_CANNOT_BE_DELETED;
 
 	// banner & promotion & airclass
 	public static String BANNER_NOT_FOUND;
+	public static String BANNER_INVALID_LINK_CATEGORY;
 	public static String PROMOTION_NOT_FOUND;
 	public static String AIRCLASS_NOT_FOUND;
 
@@ -43,6 +51,9 @@ public class LocalizedMessages extends NLSResource {
 	public static String ORDER_ILLEGAL_STATUS;
 	public static String ORDER_NOT_PAYABLE;
 	public static String ORDER_REFUND_FAILURE;
+	public static String ORDER_INVALID_OFFER_TOTAL_AMOUNT;
+	public static String ORDER_CANNOT_BE_DELETED;
+	public static String USER_ORDERS_CANNOT_BE_DELETED;
 
 	public static String AIRPORT_ICAO_ALREADY_EXISTS;
 	public static String AIRPORT_IATA_ALREADY_EXISTS;
@@ -68,6 +79,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String FLEET_ALREADY_EXISTS;
 
 	// account
+	public static String ACCOUNT_ADMIN_CANNOT_BE_DELETED;
 	public static String ACCOUNT_TYPE_MISMATCH;
 	public static String ACCOUNT_EMAIL_NOT_BIND;
 	public static String ACCOUNT_MOBILE_NOT_FOUND;

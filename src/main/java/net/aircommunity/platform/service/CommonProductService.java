@@ -49,6 +49,16 @@ public interface CommonProductService {
 	Product publishProduct(@Nonnull String productId, boolean published);
 
 	/**
+	 * Update product rank.
+	 * 
+	 * @param productId the productId
+	 * @param newRank the newRank
+	 * @return product update
+	 */
+	@Nonnull
+	Product updateProductRank(@Nonnull String productId, int newRank);
+
+	/**
 	 * Review a product to approve or not (by platform ADMIN only)
 	 * 
 	 * @param productId the productId
@@ -109,6 +119,14 @@ public interface CommonProductService {
 	 * @param tenantId the tenantId
 	 */
 	void deleteProducts(@Nonnull String tenantId);
+
+	/**
+	 * Delete all products, and product families, aircrafts, everything related to a tenant. (in case there is no order
+	 * placed on any product of this tenant), otherwise deletion will fail.
+	 * 
+	 * @param tenantId the tenantId
+	 */
+	void purgeProducts(@Nonnull String tenantId);
 
 	// *******
 	// FAQ

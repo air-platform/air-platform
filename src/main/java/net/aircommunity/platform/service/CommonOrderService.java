@@ -127,11 +127,19 @@ public interface CommonOrderService {
 	void deleteOrder(@Nonnull String orderId);
 
 	/**
-	 * Hard delete from DB
+	 * Hard delete user orders from DB (deletion will fail, if user is commented on some products)
 	 * 
 	 * @param userId the userId
 	 */
 	void deleteOrders(@Nonnull String userId);
+
+	/**
+	 * Hard delete user orders from DB, and also user comments on some products, included everything related to this
+	 * user.
+	 * 
+	 * @param userId the userId
+	 */
+	void purgeOrders(@Nonnull String userId);
 
 	/**
 	 * List all user orders with status. (for ADMIN)
@@ -142,7 +150,21 @@ public interface CommonOrderService {
 	 * @return a page of orders
 	 */
 	@Nonnull
-	Page<Order> listAllOrders(@Nullable Order.Status status, int page, int pageSize);
+	default Page<Order> listAllOrders(@Nullable Order.Status status, int page, int pageSize) {
+		return listAllOrders(status, null, page, pageSize);
+	}
+
+	/**
+	 * List all user orders with status and type. (for ADMIN)
+	 * 
+	 * @param status the order status
+	 * @param type the order type
+	 * @param page the page number
+	 * @param pageSize the page size
+	 * @return a page of orders
+	 */
+	@Nonnull
+	Page<Order> listAllOrders(@Nullable Order.Status status, @Nullable Order.Type type, int page, int pageSize);
 
 	/**
 	 * List all orders of a user with all status. (for ADMIN)
@@ -154,7 +176,24 @@ public interface CommonOrderService {
 	 * @return a page of orders
 	 */
 	@Nonnull
-	Page<Order> listAllUserOrders(@Nonnull String userId, @Nullable Order.Status status, int page, int pageSize);
+	default Page<Order> listAllUserOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
+			int pageSize) {
+		return listAllUserOrders(userId, status, null, page, pageSize);
+	}
+
+	/**
+	 * List all orders of a user with all status and type. (for ADMIN)
+	 * 
+	 * @param userId the userId
+	 * @param status the order status
+	 * @param type the order type
+	 * @param page the page number
+	 * @param pageSize the page size
+	 * @return a page of orders
+	 */
+	@Nonnull
+	Page<Order> listAllUserOrders(@Nonnull String userId, @Nullable Order.Status status, @Nullable Order.Type type,
+			int page, int pageSize);
 
 	/**
 	 * List all orders of a user without status in DELETED. (for USER)

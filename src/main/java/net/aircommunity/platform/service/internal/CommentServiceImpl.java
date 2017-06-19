@@ -15,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import io.micro.common.Maths;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.Comment;
+import net.aircommunity.platform.model.domain.Comment.Source;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.model.domain.Comment.Source;
-import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.CommentRepository;
 import net.aircommunity.platform.service.CommentService;
@@ -173,5 +173,12 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	public void deleteComments(String productId) {
 		safeExecute(() -> commentRepository.deleteByProductId(productId), "Delete comments for product %s failed",
 				productId);
+	}
+
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
+	@Override
+	public void deleteCommentsOfAccount(String accountId) {
+		safeExecute(() -> commentRepository.deleteByOwnerId(accountId), "Delete comments for account %s failed",
+				accountId);
 	}
 }

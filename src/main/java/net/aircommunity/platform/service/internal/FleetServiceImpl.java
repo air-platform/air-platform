@@ -16,11 +16,10 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.FleetProvider;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.Fleet;
-import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
-import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.FleetRepository;
@@ -49,7 +48,6 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 		if (existing != null) {
 			throw new AirException(Codes.FLEET_ALREADY_EXISTS, M.msg(M.FLEET_ALREADY_EXISTS, fleet.getFlightNo()));
 		}
-		fleet.setCategory(Category.AIR_JET);
 		return doCreateProduct(tenantId, fleet);
 	}
 

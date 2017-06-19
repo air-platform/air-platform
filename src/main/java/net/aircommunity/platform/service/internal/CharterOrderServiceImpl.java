@@ -13,14 +13,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.micro.common.collect.ImmutableCollectors;
+import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.OrderEvent;
+import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.CharterOrder;
 import net.aircommunity.platform.model.domain.Fleet;
 import net.aircommunity.platform.model.domain.FleetCandidate;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
-import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.CharterOrderRepository;
 import net.aircommunity.platform.repository.FleetCandidateRepository;
@@ -125,14 +128,17 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public CharterOrder offerFleetCandidate(String orderId, String fleetCandidateId, double totalPrice) {
+	public CharterOrder offerFleetCandidate(String orderId, String fleetCandidateId, BigDecimal totalAmount) {
+		if (totalAmount == null || totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
+			throw new AirException(Codes.ORDER_INVALID_TOTAL_AMOUNT, M.msg(M.ORDER_INVALID_OFFER_TOTAL_AMOUNT));
+		}
 		CharterOrder charterOrder = findCharterOrder(orderId);
 		charterOrder.offerFleetCandidate(fleetCandidateId);
-		charterOrder.setTotalPrice(BigDecimal.valueOf(totalPrice));
+		charterOrder.setTotalPrice(totalAmount);
 		CharterOrder charterOrderSaved = safeExecute(() -> {
 			return charterOrderRepository.save(charterOrder);
 		}, "Offer FleetCandidate %s for order %s failed", fleetCandidateId, orderId);
-		// TODO SMS notification to customer
+		eventBus.post(new OrderEvent(OrderEvent.EventType.FLEET_OFFERED, charterOrder));
 		return charterOrderSaved;
 	}
 

@@ -3,6 +3,7 @@ package net.aircommunity.platform.model.domain;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -16,31 +17,10 @@ import javax.validation.constraints.NotNull;
 public class AirTransportOrder extends AircraftAwareOrder {
 	private static final long serialVersionUID = 1L;
 
-	// the number of passengers if NOT chartered
-	// @Column(name = "passenger_num")
-	// private int passengerNum;
-
-	// // departure date, e.g. 2017-5-1
-	// @NotNull
-	// @Temporal(value = TemporalType.DATE)
-	// @Column(name = "date", nullable = false)
-	// @XmlJavaTypeAdapter(DateAdapter.class)
-	// private Date date;
-
-	// e.g. 08:00-09:00, HHmm
-	// @NotEmpty
-	// @Column(name = "time_slot", nullable = false)
-	// private String timeSlot;
-
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "airtransport_id", nullable = false)
 	private AirTransport airTransport;
-
-	@Override
-	public Type getType() {
-		return Type.AIRTRANSPORT;
-	}
 
 	@Override
 	public Product getProduct() {
@@ -50,6 +30,11 @@ public class AirTransportOrder extends AircraftAwareOrder {
 	@Override
 	protected void doSetProduct(Product product) {
 		airTransport = (AirTransport) product;
+	}
+
+	@PrePersist
+	private void prePersist() {
+		setType(Type.AIRTRANSPORT);
 	}
 
 	@Override

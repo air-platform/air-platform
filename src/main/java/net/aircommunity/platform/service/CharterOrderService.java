@@ -1,5 +1,8 @@
 package net.aircommunity.platform.service;
 
+import java.math.BigDecimal;
+
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -81,12 +84,12 @@ public interface CharterOrderService {
 	 * 
 	 * @param charterOrderId the charterOrderId
 	 * @param fleetCandidateId the fleetCandidateId to be selected
-	 * @param totalPrice the tenant offered totalPrice for the charter order
+	 * @param totalAmount the tenant offered totalAmount > 0 for the charter order
 	 * @return updated CharterOrder
 	 */
 	@Nonnull
 	CharterOrder offerFleetCandidate(@Nonnull String charterOrderId, @Nonnull String fleetCandidateId,
-			double totalPrice);
+			@Nonnull @Nonnegative BigDecimal totalAmount);
 
 	/**
 	 * List all CharterOrders by pagination filtered by userId and order status.

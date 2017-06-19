@@ -6,10 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Lob;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.micro.annotation.constraint.NotEmpty;
@@ -122,12 +124,18 @@ public class FerryFlight extends CharterableProduct {
 		this.appearances = appearances;
 	}
 
-	@Override
-	public Category getCategory() {
-		if (category == null) {
-			return Category.AIR_JET;
-		}
-		return category;
+	@XmlElement
+	public boolean isExpired() {
+		return departureDate.before(new Date());
+		// NOTE: because departureDate has no time info, so we cannot use Instant
+		// departureDate.toInstant().isBefore(Instant.now());
+		// Caused by: java.lang.UnsupportedOperationException: null
+		// at java.sql.Date.toInstant(Date.java:304)
+	}
+
+	@PrePersist
+	private void prePersist() {
+		setCategory(Category.AIR_JET);
 	}
 
 	@Override
@@ -143,5 +151,4 @@ public class FerryFlight extends CharterableProduct {
 				.append(description).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
-
 }

@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -84,11 +85,6 @@ public class CharterOrder extends StandardOrder {
 	}
 
 	@Override
-	public Type getType() {
-		return Type.FLEET;
-	}
-
-	@Override
 	public Fleet getProduct() {
 		// quick charter order that selects no fleet
 		if (fleetCandidates == null || fleetCandidates.isEmpty()) {
@@ -117,6 +113,21 @@ public class CharterOrder extends StandardOrder {
 			unitPrice = ((StandardProduct) product).getPrice();
 		}
 		return new UnitProductPrice(PricePolicy.PER_HOUR, unitPrice);
+	}
+
+	@PrePersist
+	private void prePersist() {
+		setType(Type.FLEET);
+	}
+
+	@Override
+	public Type getType() {
+		// NOTE: specific case for charter, the product can be null
+		// because we need check type before @PrePersist for fleet, so it can be null
+		if (type == null) {
+			return Type.FLEET;
+		}
+		return type;
 	}
 
 	@Override

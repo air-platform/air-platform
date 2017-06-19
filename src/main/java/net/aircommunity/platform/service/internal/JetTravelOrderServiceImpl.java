@@ -88,13 +88,13 @@ public class JetTravelOrderServiceImpl extends AbstractVendorAwareOrderService<J
 	}
 
 	@Override
-	protected VendorAwareOrderRepository<JetTravelOrder> getOrderRepository() {
-		return jetTravelOrderRepository;
+	protected Code orderNotFoundCode() {
+		return Codes.JETTRAVEL_ORDER_NOT_FOUND;
 	}
 
 	@Override
-	protected Code orderNotFoundCode() {
-		return Codes.JETTRAVEL_ORDER_NOT_FOUND;
+	protected VendorAwareOrderRepository<JetTravelOrder> getOrderRepository() {
+		return jetTravelOrderRepository;
 	}
 
 }

@@ -74,10 +74,17 @@ public interface CommentService {
 	void deleteComment(@Nonnull String commentId);
 
 	/**
-	 * Delete Comments.
+	 * Delete all comments of a product.
 	 * 
 	 * @param productId the productId
 	 */
 	void deleteComments(@Nonnull String productId);
+
+	/**
+	 * Delete all comments of a account.
+	 * 
+	 * @param accountId the accountId
+	 */
+	void deleteCommentsOfAccount(@Nonnull String accountId);
 
 }

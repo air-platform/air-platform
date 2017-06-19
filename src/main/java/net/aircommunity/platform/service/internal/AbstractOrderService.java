@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
@@ -20,31 +21,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.retry.support.RetryTemplate;
 
-import com.google.common.eventbus.EventBus;
-
 import io.micro.common.DateFormats;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.common.OrderPrices;
-import net.aircommunity.platform.model.domain.Account;
-import net.aircommunity.platform.model.domain.AircraftAwareOrder;
-import net.aircommunity.platform.model.domain.CharterableOrder;
-import net.aircommunity.platform.model.domain.Instalment;
-import net.aircommunity.platform.model.domain.InstalmentOrder;
-import net.aircommunity.platform.model.domain.Order;
-import net.aircommunity.platform.model.domain.Passenger;
-import net.aircommunity.platform.model.domain.PassengerItem;
-import net.aircommunity.platform.model.domain.Payment;
-import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.model.domain.Refund;
-import net.aircommunity.platform.model.domain.SalesPackage;
-import net.aircommunity.platform.model.domain.StandardOrder;
-import net.aircommunity.platform.model.domain.User;
-import net.aircommunity.platform.model.domain.Order.Type;
 import net.aircommunity.platform.model.OrderEvent;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PaymentRequest;
@@ -53,6 +36,21 @@ import net.aircommunity.platform.model.PricePolicy;
 import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.model.UnitProductPrice;
+import net.aircommunity.platform.model.domain.Account;
+import net.aircommunity.platform.model.domain.AircraftAwareOrder;
+import net.aircommunity.platform.model.domain.CharterableOrder;
+import net.aircommunity.platform.model.domain.Instalment;
+import net.aircommunity.platform.model.domain.InstalmentOrder;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Order.Type;
+import net.aircommunity.platform.model.domain.Passenger;
+import net.aircommunity.platform.model.domain.PassengerItem;
+import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.Refund;
+import net.aircommunity.platform.model.domain.SalesPackage;
+import net.aircommunity.platform.model.domain.StandardOrder;
+import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
@@ -73,12 +71,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	private static final SimpleDateFormat DEPARTURE_DATE_FORMATTER = DateFormats.simple("yyyy-MM-dd");
 
 	protected Class<T> type;
-
-	@Resource
-	private Configuration configuration;
-
-	@Resource
-	private EventBus eventBus;
 
 	@Resource
 	private RetryTemplate retryTemplate;
@@ -161,6 +153,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		newOrder.setCreationDate(new Date());
 		newOrder.setLastModifiedDate(newOrder.getCreationDate());
 		newOrder.setCommented(false);
+		// actually set when @PrePersist
+		newOrder.setType(order.getType());
+
 		// copy common properties
 		copyCommonProperties(order, newOrder);
 		// copy order specific properties
@@ -714,39 +709,71 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	/**
 	 * For ADMIN for a user (orders in any status)
 	 */
-	protected Page<T> doListAllUserOrders(String userId, Order.Status status, int page, int pageSize) {
-		if (status == null) {
-			return Pages.adapt(getOrderRepository().findByOwnerIdOrderByCreationDateDesc(userId,
+	protected Page<T> doListAllUserOrders(String userId, @Nullable Order.Status status, int page, int pageSize) {
+		return doListAllUserOrders(userId, status, null, page, pageSize);
+	}
+
+	/**
+	 * For ADMIN for a user (orders in any status and type)
+	 */
+	protected Page<T> doListAllUserOrders(String userId, @Nullable Order.Status status, @Nullable Order.Type type,
+			int page, int pageSize) {
+		if (status != null) {
+			if (type != null) {
+				return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusAndTypeOrderByCreationDateDesc(userId,
+						status, type, Pages.createPageRequest(page, pageSize)));
+			}
+			return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
 					Pages.createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
+		if (type != null) {
+			return Pages.adapt(getOrderRepository().findByOwnerIdAndTypeOrderByCreationDateDesc(userId, type,
+					Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(getOrderRepository().findByOwnerIdOrderByCreationDateDesc(userId,
 				Pages.createPageRequest(page, pageSize)));
 	}
 
 	/**
 	 * For ADMIN (orders in any status)
 	 */
-	protected Page<T> doListAllOrders(Order.Status status, int page, int pageSize) {
-		if (status == null) {
-			return Pages.adapt(
-					getOrderRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+	protected Page<T> doListAllOrders(@Nullable Order.Status status, int page, int pageSize) {
+		return doListAllOrders(status, null, page, pageSize);
+	}
+
+	/**
+	 * For ADMIN (orders in any status and type)
+	 */
+	protected Page<T> doListAllOrders(@Nullable Order.Status status, @Nullable Order.Type type, int page,
+			int pageSize) {
+		if (status != null) {
+			if (type != null) {
+				return Pages.adapt(getOrderRepository().findByStatusAndTypeOrderByCreationDateDesc(status, type,
+						Pages.createPageRequest(page, pageSize)));
+			}
+			return Pages.adapt(getOrderRepository().findByStatusOrderByCreationDateDesc(status,
+					Pages.createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(getOrderRepository().findByStatusOrderByCreationDateDesc(status,
-				Pages.createPageRequest(page, pageSize)));
+		if (type != null) {
+			return Pages.adapt(getOrderRepository().findByTypeOrderByCreationDateDesc(type,
+					Pages.createPageRequest(page, pageSize)));
+		}
+		return Pages
+				.adapt(getOrderRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
 	}
 
 	/**
 	 * For ADMIN
 	 */
 	protected void doDeleteOrder(String orderId) {
-		safeExecute(() -> getOrderRepository().delete(orderId), "Hard delete order %s failed", orderId);
+		safeDeletion(getOrderRepository(), orderId, Codes.ORDER_CANNOT_BE_DELETED, M.msg(M.ORDER_CANNOT_BE_DELETED));
 	}
 
 	/**
 	 * For ADMIN
 	 */
 	protected void doDeleteOrders(String userId) {
-		safeExecute(() -> getOrderRepository().deleteByOwnerId(userId), "Hard delete all orders for user %s failed",
-				userId);
+		safeDeletion(getOrderRepository(), () -> getOrderRepository().deleteByOwnerId(userId),
+				Codes.ORDER_CANNOT_BE_DELETED, M.msg(M.USER_ORDERS_CANNOT_BE_DELETED, userId));
 	}
 }

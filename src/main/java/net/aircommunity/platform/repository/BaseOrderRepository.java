@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
+import net.aircommunity.platform.model.domain.Order.Type;
 
 /**
  * Repository interface for {@link Order} instances. Provides basic CRUD operations due to the extension of
@@ -68,6 +69,28 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	Page<T> findByOwnerIdAndStatusOrderByCreationDateDesc(String userId, Status status, Pageable pageable);
 
 	/**
+	 * Find all user orders
+	 * 
+	 * @param userId the userId
+	 * @param type the type
+	 * @param pageable page request
+	 * @return a page of orders or empty if none
+	 */
+	Page<T> findByOwnerIdAndTypeOrderByCreationDateDesc(String userId, Type type, Pageable pageable);
+
+	/**
+	 * Find all user orders
+	 * 
+	 * @param userId the userId
+	 * @param status the status
+	 * @param type the type
+	 * @param pageable page request
+	 * @return a page of orders or empty if none
+	 */
+	Page<T> findByOwnerIdAndStatusAndTypeOrderByCreationDateDesc(String userId, Status status, Type type,
+			Pageable pageable);
+
+	/**
 	 * Find all orders
 	 * 
 	 * @param pageable page request
@@ -76,13 +99,32 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	Page<T> findAllByOrderByCreationDateDesc(Pageable pageable);
 
 	/**
-	 * Find all orders
+	 * Find all orders filter by status
 	 * 
 	 * @param status the status
 	 * @param pageable page request
 	 * @return a page of orders or empty if none
 	 */
 	Page<T> findByStatusOrderByCreationDateDesc(Status status, Pageable pageable);
+
+	/**
+	 * Find all orders filter by type
+	 * 
+	 * @param type the type
+	 * @param pageable page request
+	 * @return a page of orders or empty if none
+	 */
+	Page<T> findByTypeOrderByCreationDateDesc(Type type, Pageable pageable);
+
+	/**
+	 * Find all orders filter by status and type
+	 * 
+	 * @param status the status
+	 * @param type the type
+	 * @param pageable page request
+	 * @return a page of orders or empty if none
+	 */
+	Page<T> findByStatusAndTypeOrderByCreationDateDesc(Status status, Type type, Pageable pageable);
 
 	/**
 	 * Delete all the orders of a user.

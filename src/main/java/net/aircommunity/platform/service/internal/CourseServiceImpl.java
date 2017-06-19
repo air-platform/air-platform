@@ -26,17 +26,17 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Course;
 import net.aircommunity.platform.model.domain.Course_;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.domain.School;
 import net.aircommunity.platform.model.domain.Tenant;
-import net.aircommunity.platform.model.domain.Product.Category;
-import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.CourseRepository;
 import net.aircommunity.platform.service.CourseService;
 import net.aircommunity.platform.service.SchoolService;
 
 /**
- * CourseService Implementation.
+ * Course service implementation.
  * 
  * @author guankai
  */
@@ -76,7 +76,6 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 	public Course createCourse(String schoolId, Course course) {
 		School school = schoolService.findSchool(course.getSchool().getId());
 		course.setSchool(school);
-		course.setCategory(Category.AIR_TRAINING);
 		return doCreateProduct(schoolId, course);
 	}
 
@@ -200,14 +199,21 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 			@CacheEvict(cacheNames = { CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES }, allEntries = true) })
 	@Override
 	public void deleteCourse(String courseId) {
-		safeExecute(() -> courseRepository.delete(courseId), "Delete course %s failed", courseId);
+		doDeleteProduct(courseId);
 	}
 
 	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES,
 			CACHE_NAME_AIRCRAFT_LOCATIONS }, allEntries = true)
 	@Override
 	public void deleteCourses(String schoolId) {
-		safeExecute(() -> courseRepository.deleteBySchoolId(schoolId), "Delete all courses for school %s", schoolId);
+		doBatchDeleteProducts(() -> courseRepository.findBySchoolId(schoolId), Codes.PRODUCT_CANNOT_BE_DELETED,
+				M.msg(M.SCHOOL_COURSES_CANNOT_BE_DELETED, schoolId));
+	}
+
+	@Override
+	protected Tenant doGetVendor(String schoolId) {
+		School school = schoolService.findSchool(schoolId);
+		return school.getVendor();
 	}
 
 	@Override
@@ -218,12 +224,6 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 	@Override
 	protected BaseProductRepository<Course> getProductRepository() {
 		return courseRepository;
-	}
-
-	@Override
-	protected Tenant doGetVendor(String schoolId) {
-		School school = schoolService.findSchool(schoolId);
-		return school.getVendor();
 	}
 
 }

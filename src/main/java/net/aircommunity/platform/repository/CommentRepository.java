@@ -47,4 +47,6 @@ public interface CommentRepository extends JpaRepository<Comment, String> {
 
 	long deleteByProductId(String productId);
 
+	long deleteByOwnerId(String accountId);
+
 }

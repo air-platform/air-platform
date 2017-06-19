@@ -3,6 +3,7 @@ package net.aircommunity.platform.model.domain;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 /**
@@ -55,12 +56,9 @@ public class AirTaxi extends SalesPackageProduct {
 		this.duration = duration;
 	}
 
-	@Override
-	public Category getCategory() {
-		if (category == null) {
-			return Category.AIR_TAXI;
-		}
-		return category;
+	@PrePersist
+	private void prePersist() {
+		setCategory(Category.AIR_TAXI);
 	}
 
 	@Override

@@ -34,11 +34,12 @@ public class AdminOrderResource extends TenantBaseOrderResource<Order> {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<Order> listAllOrders(@QueryParam("user") String userId, @QueryParam("status") Order.Status status,
-			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+			@QueryParam("status") Order.Type type, @QueryParam("page") @DefaultValue("1") int page,
+			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		if (Strings.isBlank(userId)) {
-			return commonOrderService.listAllOrders(status, page, pageSize);
+			return commonOrderService.listAllOrders(status, type, page, pageSize);
 		}
-		return commonOrderService.listAllUserOrders(userId, status, page, pageSize);
+		return commonOrderService.listAllUserOrders(userId, status, type, page, pageSize);
 	}
 
 	/**

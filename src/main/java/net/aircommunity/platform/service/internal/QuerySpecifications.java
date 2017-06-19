@@ -27,8 +27,8 @@ final class QuerySpecifications {
 				// Path<ReviewStatus> p = root.get("reviewStatus");
 				//
 				// query.orderBy(cb.desc(p));
-				// if (Strings.isNotBlank(license)) {
-				// expressions.add(cb.equal(root.get(Course_.location), license));
+				// if (Strings.isNotBlank(location)) {
+				// expressions.add(cb.equal(root.get(Course_.location), location));
 				// }
 				// if (Strings.isNotBlank(license)) {
 				// expressions.add(cb.equal(root.get(Course_.license), license));

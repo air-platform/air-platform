@@ -32,6 +32,7 @@ import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.service.AccountService;
+import net.aircommunity.platform.service.CharterOrderService;
 import net.aircommunity.platform.service.CommonOrderService;
 
 /**
@@ -50,6 +51,9 @@ public class UserResource {
 
 	@Resource
 	private CommonOrderService commonOrderService;
+
+	@Resource
+	private CharterOrderService charterOrderService;
 
 	// ***********************
 	// User information
@@ -180,6 +184,16 @@ public class UserResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Order findOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
 		return commonOrderService.findOrder(orderId);
+	}
+
+	/**
+	 * Select a fleet (Only allow one vendor to be selected)
+	 */
+	@POST
+	@Path("orders/{orderId}/fleet/select")
+	public void selectFleet(@PathParam("orderId") String orderId,
+			@NotNull @QueryParam("candidate") String fleetCandidateId) {
+		charterOrderService.selectFleetCandidate(orderId, fleetCandidateId);
 	}
 
 	// ***********************************

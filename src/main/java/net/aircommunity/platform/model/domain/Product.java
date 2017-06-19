@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PostLoad;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -39,6 +40,16 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Product extends Reviewable {
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Highest product rank
+	 */
+	public static final int HIGHEST_RANK = 0;
+
+	/**
+	 * Default product rank
+	 */
+	public static final int DEFAULT_RANK = 100;
 
 	// product name
 	@NotEmpty
@@ -67,10 +78,11 @@ public abstract class Product extends Reviewable {
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected int totalSales = 0;
 
-	// product rank (low rank will considered as hot, sort by rank ASC)
+	// product rank (low rank will considered as hot, sort by rank ASC, 0 will be the highest rank)
+	@Min(HIGHEST_RANK)
 	@Column(name = "rank")
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	protected int rank = 0;
+	protected int rank = DEFAULT_RANK;
 
 	// whether it can be published or not
 	// e.g. product put on sale/pull off shelves

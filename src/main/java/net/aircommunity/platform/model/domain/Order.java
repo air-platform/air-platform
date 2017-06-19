@@ -3,7 +3,6 @@ package net.aircommunity.platform.model.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,7 +25,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import net.aircommunity.platform.model.JsonViews;
@@ -74,6 +72,12 @@ public abstract class Order extends Persistable {
 	@XmlElement
 	@Column(name = "order_no", nullable = false, unique = true)
 	protected String orderNo;
+
+	// Order type
+	@XmlElement
+	@Column(name = "type", nullable = false)
+	@Enumerated(EnumType.STRING)
+	protected Type type;
 
 	// points used in this order
 	@XmlElement
@@ -191,6 +195,14 @@ public abstract class Order extends Persistable {
 
 	public void setOrderNo(String orderNo) {
 		this.orderNo = orderNo;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public long getPointsUsed() {
@@ -345,15 +357,16 @@ public abstract class Order extends Persistable {
 		this.owner = owner;
 	}
 
+	// XXX
 	// order type (used by for RESTful API, not persisted)
-	@XmlElement(name = "type")
-	public String getTypeAsString() {
-		return getType().name().toLowerCase(Locale.ENGLISH);
-	}
+	// @XmlElement(name = "type")
+	// public String getTypeAsString() {
+	// return getType().name().toLowerCase(Locale.ENGLISH);
+	// }
 
 	// Not sure why this enum cannot be serialized to JSON (event with @XmlElement), so just use getTypeString instead
-	@XmlTransient
-	public abstract Type getType();
+	// @XmlTransient
+	// public abstract Type getType();
 
 	public boolean confirmationRequired() {
 		return getType() == Type.FLEET || getType() == Type.JETTRAVEL;
@@ -429,10 +442,19 @@ public abstract class Order extends Persistable {
 	public enum Type {
 		FLEET, FERRYFLIGHT, JETTRAVEL, AIRTAXI, AIRTOUR, AIRTRANSPORT, COURSE;
 
-		@JsonValue
-		public String toString() {
-			return super.toString().toLowerCase();
+		public static Type fromString(String value) {
+			for (Type e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
 		}
+
+		// @JsonValue
+		// public String toString() {
+		// return super.toString().toLowerCase();
+		// }
 	}
 
 	/**

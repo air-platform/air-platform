@@ -7,6 +7,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.Lob;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -169,12 +170,9 @@ public class Fleet extends StandardProduct {
 		this.interior = interior;
 	}
 
-	@Override
-	public Category getCategory() {
-		if (category == null) {
-			return Category.AIR_JET;
-		}
-		return category;
+	@PrePersist
+	private void prePersist() {
+		setCategory(Category.AIR_JET);
 	}
 
 	@Override

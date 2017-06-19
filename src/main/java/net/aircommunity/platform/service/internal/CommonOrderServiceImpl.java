@@ -16,10 +16,11 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.model.domain.Order;
-import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Order.Status;
+import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.PaymentRepository;
+import net.aircommunity.platform.service.CommentService;
 import net.aircommunity.platform.service.CommonOrderService;
 
 /**
@@ -37,6 +38,9 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 
 	@Resource
 	private PaymentRepository paymentRepository;
+
+	@Resource
+	private CommentService commentService;
 
 	@Override
 	public Optional<Payment> findPaymentByTradeNo(Payment.Method paymentMethod, String tradeNo) {
@@ -123,13 +127,13 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	}
 
 	@Override
-	public Page<Order> listAllOrders(Order.Status status, int page, int pageSize) {
-		return doListAllOrders(status, page, pageSize);
+	public Page<Order> listAllOrders(Order.Status status, Order.Type type, int page, int pageSize) {
+		return doListAllOrders(status, type, page, pageSize);
 	}
 
 	@Override
-	public Page<Order> listAllUserOrders(String userId, Order.Status status, int page, int pageSize) {
-		return doListAllUserOrders(userId, status, page, pageSize);
+	public Page<Order> listAllUserOrders(String userId, Order.Status status, Order.Type type, int page, int pageSize) {
+		return doListAllUserOrders(userId, status, type, page, pageSize);
 	}
 
 	@Override
@@ -159,7 +163,14 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	}
 
 	@Override
+	public void purgeOrders(String userId) {
+		commentService.deleteCommentsOfAccount(userId);
+		doDeleteOrders(userId);
+	}
+
+	@Override
 	protected BaseOrderRepository<Order> getOrderRepository() {
 		return baseOrderRepository;
 	}
+
 }

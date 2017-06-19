@@ -3,6 +3,7 @@ package net.aircommunity.platform.repository;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -88,6 +89,9 @@ public interface CourseRepository extends BaseProductRepository<Course>, JpaSpec
 
 	Page<Course> findByPublishedAndEndDateGreaterThanEqualAndLocationContainingOrderByStartDateDesc(boolean published,
 			Date endDate, String location, Pageable pageable);
+
+	// iterator over courses (For ADMIN ONLY)
+	Stream<Course> findBySchoolId(String schoolId);
 
 	long deleteBySchoolId(String schoolId);
 

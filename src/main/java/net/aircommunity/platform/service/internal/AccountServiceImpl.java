@@ -33,27 +33,28 @@ import io.micro.core.security.AccessTokenService;
 import io.micro.core.security.Claims;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.AuthContext;
 import net.aircommunity.platform.model.IdCardInfo;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.domain.Account;
+import net.aircommunity.platform.model.domain.Account.Status;
 import net.aircommunity.platform.model.domain.AccountAuth;
+import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 import net.aircommunity.platform.model.domain.Address;
 import net.aircommunity.platform.model.domain.DailySignin;
 import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.Tenant;
-import net.aircommunity.platform.model.domain.User;
-import net.aircommunity.platform.model.domain.Account.Status;
-import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 import net.aircommunity.platform.model.domain.Tenant.VerificationStatus;
+import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AccountAuthRepository;
 import net.aircommunity.platform.repository.AccountRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.service.AccountService;
+import net.aircommunity.platform.service.CommonOrderService;
+import net.aircommunity.platform.service.CommonProductService;
 import net.aircommunity.platform.service.IdentityCardService;
 import net.aircommunity.platform.service.MailService;
 import net.aircommunity.platform.service.MemberPointsService;
@@ -82,9 +83,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	// private static final String EMAIL_BINDING_RESETPASSWORDLINK = "resetPasswordLink";
 	private static final int PASSWORD_LENGTH = 20;
-
-	@Resource
-	private Configuration configuration;
 
 	@Resource
 	private AccountRepository accountRepository;
@@ -118,6 +116,12 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	@Resource
 	private MemberPointsService memberPointsService;
+
+	@Resource
+	private CommonProductService commonProductService;
+
+	@Resource
+	private CommonOrderService commonOrderService;
 
 	private String emailConfirmationLink;
 
@@ -566,7 +570,8 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			return Collections.emptyList();
 		}
 		List<Passenger> passengers = User.class.cast(account).getPassengers();
-		return passengers.stream().collect(Collectors.toList());
+		// lazily load make copy
+		return passengers.stream().map(Passenger::clone).collect(Collectors.toList());
 	}
 
 	@Override
@@ -873,19 +878,35 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_APIKEY }, key = "#accountId")
 	@Override
 	public void deleteAccount(String accountId) {
-		Account account = accountRepository.findOne(accountId);
-		if (account != null && account.getRole() != Role.ADMIN) {
-			// delete account
-			// TODO delete all the data related to this account
-			accountAuthRepository.deleteByAccountId(account.getId());
-			accountRepository.delete(account);
+		Account account = findAccount(accountId);
+		switch (account.getRole()) {
+		case ADMIN:
+			LOG.error("Cannot delete an admin account: {}", account);
+			throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.ACCOUNT_ADMIN_CANNOT_BE_DELETED));
 
-			// delete AirQ account
-			if (configuration.isAirqAccountSync()) {
-				LOG.info("Delete corresponding account on AirQ for {}", account);
-				airqAccountService.deleteAccount(account.getNickName());
-			}
-			LOG.info("Delete account: {}", account);
+		case TENANT:
+			// delete all products and everything of a tenant
+			commonProductService.purgeProducts(account.getId());
+			break;
+
+		// both common user (can login via app)
+		case CUSTOMER_SERVICE:
+		case USER:
+			// delete all orders and everything of a user
+			commonOrderService.purgeOrders(account.getId());
+			break;
+
+		default:// noops
 		}
+
+		// delete all auth data related to this account
+		accountAuthRepository.deleteByAccountId(account.getId());
+		accountRepository.delete(account);
+		// delete AirQ account
+		if (configuration.isAirqAccountSync()) {
+			LOG.info("Delete corresponding account on AirQ for {}", account);
+			airqAccountService.deleteAccount(account.getNickName());
+		}
+		LOG.info("Delete account: {}", account);
 	}
 }

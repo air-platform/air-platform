@@ -3,6 +3,7 @@ package net.aircommunity.platform.model.domain;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -22,11 +23,6 @@ public class JetTravelOrder extends VendorAwareOrder {
 	private JetTravel jetTravel;
 
 	@Override
-	public Type getType() {
-		return Type.JETTRAVEL;
-	}
-
-	@Override
 	public JetTravel getProduct() {
 		return jetTravel;
 	}
@@ -34,6 +30,11 @@ public class JetTravelOrder extends VendorAwareOrder {
 	@Override
 	protected void doSetProduct(Product product) {
 		jetTravel = (JetTravel) product;
+	}
+
+	@PrePersist
+	private void prePersist() {
+		setType(Type.JETTRAVEL);
 	}
 
 	@Override

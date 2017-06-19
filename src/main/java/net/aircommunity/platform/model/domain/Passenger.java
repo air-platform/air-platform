@@ -22,7 +22,7 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
 @Table(name = "air_platfrom_user_passenger", indexes = {
 		@Index(name = "idx_user_identity", columnList = "user_id, identity", unique = true) })
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Passenger extends Persistable {
+public class Passenger extends Persistable implements Cloneable {
 	private static final long serialVersionUID = 1L;
 
 	// Passenger name
@@ -82,6 +82,16 @@ public class Passenger extends Persistable {
 
 	public void setOwner(User owner) {
 		this.owner = owner;
+	}
+
+	@Override
+	public Passenger clone() {
+		try {
+			return (Passenger) super.clone();
+		}
+		catch (CloneNotSupportedException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	@Override

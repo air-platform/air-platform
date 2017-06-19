@@ -8,6 +8,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -177,12 +178,9 @@ public class Course extends StandardProduct {
 		this.school = school;
 	}
 
-	@Override
-	public Category getCategory() {
-		if (category == null) {
-			return Category.AIR_TRAINING;
-		}
-		return category;
+	@PrePersist
+	private void prePersist() {
+		setCategory(Category.AIR_TRAINING);
 	}
 
 	@Override

@@ -1,7 +1,10 @@
 package net.aircommunity.platform.rest.tenant.order;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.json.JsonObject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -61,8 +64,8 @@ public class TenantCharterOrderResource extends TenantBaseOrderResource<CharterO
 	@POST
 	@Path("{orderId}/offer")
 	public void offerFleet(@PathParam("orderId") String orderId,
-			@NotNull @QueryParam("candidate") String fleetCandidateId,
-			@NotNull @QueryParam("totalPrice") double totalPrice) {
-		charterOrderService.offerFleetCandidate(orderId, fleetCandidateId, totalPrice);
+			@NotNull @QueryParam("candidate") String fleetCandidateId, @NotNull JsonObject request) {
+		BigDecimal totalAmount = getTotalAmount(request);
+		charterOrderService.offerFleetCandidate(orderId, fleetCandidateId, totalAmount);
 	}
 }

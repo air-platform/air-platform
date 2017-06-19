@@ -32,12 +32,13 @@ import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.domain.Account;
-import net.aircommunity.platform.model.domain.Comment;
-import net.aircommunity.platform.model.domain.Comment.Source;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Account;
+import net.aircommunity.platform.model.domain.Comment;
+import net.aircommunity.platform.model.domain.Comment.Source;
+import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CommentService;
@@ -147,7 +148,12 @@ public class CommentResource {
 	public Response delete(@PathParam("commentId") String commentId, @Context SecurityContext context) {
 		Comment comment = commentService.findComment(commentId);
 		String accountId = context.getUserPrincipal().getName();
-		if (!comment.getOwner().getId().equals(accountId) && !context.isUserInRole(Role.ADMIN.name())) {
+		Tenant tenant = comment.getProduct().getVendor();
+		Account owner = comment.getOwner();
+		// allow comment owner, product owner (tenant), admin/customer service
+		boolean allowDeleteion = owner.getId().equals(accountId) || tenant.getId().equals(accountId)
+				|| context.isUserInRole(Role.ADMIN.name()) || context.isUserInRole(Role.CUSTOMER_SERVICE.name());
+		if (!allowDeleteion) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 		commentService.deleteComment(commentId);
@@ -160,7 +166,9 @@ public class CommentResource {
 	@DELETE
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	public Response deleteAll(@QueryParam("product") String productId, @Context SecurityContext context) {
-		if (!context.isUserInRole(Role.ADMIN.name())) {
+		boolean allowDeleteion = context.isUserInRole(Role.ADMIN.name())
+				|| context.isUserInRole(Role.CUSTOMER_SERVICE.name());
+		if (!allowDeleteion) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 		commentService.deleteComments(productId);

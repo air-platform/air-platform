@@ -12,11 +12,14 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.model.domain.ProductFaq;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.ProductFaq;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.repository.BaseProductRepository;
+import net.aircommunity.platform.service.AircraftService;
 import net.aircommunity.platform.service.CommonProductService;
+import net.aircommunity.platform.service.ProductFamilyService;
+import net.aircommunity.platform.service.SchoolService;
 
 /**
  * Common ProductService
@@ -33,6 +36,15 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 
 	@Resource
 	private BaseProductRepository<Product> baseProductRepository;
+
+	@Resource
+	private AircraftService aircraftService;
+
+	@Resource
+	private SchoolService schoolService;
+
+	@Resource
+	private ProductFamilyService productFamilyService;
 
 	// *******
 	// Product
@@ -57,6 +69,12 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#productId")
 	@Override
+	public Product updateProductRank(String productId, int newRank) {
+		return doUpdateProductRank(productId, newRank);
+	}
+
+	@CachePut(cacheNames = CACHE_NAME, key = "#productId")
+	@Override
 	public Product reviewProduct(String productId, ReviewStatus reviewStatus, String rejectedReason) {
 		return doReviewProduct(productId, reviewStatus, rejectedReason);
 	}
@@ -76,6 +94,15 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 	@Override
 	public void deleteProducts(String tenantId) {
 		doDeleteProducts(tenantId);
+	}
+
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
+	@Override
+	public void purgeProducts(String tenantId) {
+		doDeleteProducts(tenantId);
+		aircraftService.deleteAircrafts(tenantId);
+		schoolService.deleteSchools(tenantId);
+		productFamilyService.deleteProductFamilies(tenantId);
 	}
 
 	// *******
@@ -125,4 +152,5 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 	protected BaseProductRepository<Product> getProductRepository() {
 		return baseProductRepository;
 	}
+
 }

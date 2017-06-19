@@ -1,5 +1,7 @@
 package net.aircommunity.platform.repository;
 
+import java.util.stream.Stream;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -120,6 +122,9 @@ public interface BaseProductRepository<T extends Product> extends JpaRepository<
 	 */
 	Page<T> findByVendorIdAndReviewStatusOrderByCreationDateDesc(String tenantId, ReviewStatus reviewStatus,
 			Pageable pageable);
+
+	// iterator over products (For ADMIN ONLY)
+	Stream<T> findByVendorId(String tenantId);
 
 	/**
 	 * Delete all the products of a vendor. (For ADMIN ONLY)

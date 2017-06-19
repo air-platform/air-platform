@@ -14,7 +14,6 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.FerryFlight;
-import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.FerryFlightRepository;
@@ -35,7 +34,6 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 
 	@Override
 	public FerryFlight createFerryFlight(String tenantId, FerryFlight ferryFlight) {
-		ferryFlight.setCategory(Category.AIR_JET);
 		return doCreateProduct(tenantId, ferryFlight);
 	}
 
@@ -85,7 +83,9 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 
 	@Override
 	public Page<FerryFlight> listFerryFlights(int page, int pageSize) {
-		return doListProductsForUsers(page, pageSize);
+		// return doListProductsForUsers(page, pageSize);
+		return Pages.adapt(ferryFlightRepository.findByPublishedOrderByRankAscDepartureDateDescScoreDesc(
+				true/* published */, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override

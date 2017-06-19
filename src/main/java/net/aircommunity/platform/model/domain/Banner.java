@@ -47,6 +47,12 @@ public class Banner extends Persistable {
 	@Enumerated(EnumType.STRING)
 	private LinkType linkType = LinkType.PRODUCT;
 
+	// the banner link is which category (should NEVER be NONE)
+	@Column(name = "link_category", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Category linkCategory = Category.NONE;
+
+	// the banner link is which category
 	@Column(name = "category", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Category category = Category.NONE;
@@ -88,6 +94,14 @@ public class Banner extends Persistable {
 		this.linkType = linkType;
 	}
 
+	public Category getLinkCategory() {
+		return linkCategory;
+	}
+
+	public void setLinkCategory(Category linkCategory) {
+		this.linkCategory = linkCategory;
+	}
+
 	public Category getCategory() {
 		return category;
 	}
@@ -108,8 +122,9 @@ public class Banner extends Persistable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Banner [title=").append(title).append(", image=").append(image).append(", link=").append(link)
-				.append(", linkType=").append(linkType).append(", category=").append(category).append(", creationDate=")
-				.append(creationDate).append(", id=").append(id).append("]");
+				.append(", linkType=").append(linkType).append(", linkCategory=").append(linkCategory)
+				.append(", category=").append(category).append(", creationDate=").append(creationDate).append(", id=")
+				.append(id).append("]");
 		return builder.toString();
 	}
 

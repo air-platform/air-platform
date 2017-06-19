@@ -20,7 +20,9 @@ import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.SchoolService;
 
 /**
- * Created by guankai on 11/04/2017.
+ * School service implementation.
+ * 
+ * @author guankai
  */
 @Service
 @Transactional
@@ -86,13 +88,14 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#schoolId")
 	@Override
 	public void deleteSchool(String schoolId) {
-		safeExecute(() -> schoolRepository.delete(schoolId), "Delete school %s failed", schoolId);
+		// NOTE: we can only delete this school if there is no course created on this school
+		safeDeletion(schoolRepository, schoolId, Codes.SCHOOL_CANNOT_BE_DELETED, M.msg(M.SCHOOL_CANNOT_BE_DELETED));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteSchools(String tenantId) {
-		safeExecute(() -> schoolRepository.deleteByVendorId(tenantId), "Delete all schools for tenant %s failed",
-				tenantId);
+		safeDeletion(schoolRepository, () -> schoolRepository.deleteByVendorId(tenantId),
+				Codes.SCHOOL_CANNOT_BE_DELETED, M.msg(M.TENANT_SCHOOLS_CANNOT_BE_DELETED, tenantId));
 	}
 }

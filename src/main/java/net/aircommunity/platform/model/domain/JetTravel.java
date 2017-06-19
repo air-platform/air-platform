@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 /**
@@ -20,12 +21,9 @@ public class JetTravel extends StandardProduct {
 		this.id = id;
 	}
 
-	@Override
-	public Category getCategory() {
-		if (category == null) {
-			return Category.AIR_JET;
-		}
-		return category;
+	@PrePersist
+	private void prePersist() {
+		setCategory(Category.AIR_JET);
 	}
 
 	@Override

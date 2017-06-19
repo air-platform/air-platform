@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -71,11 +72,6 @@ public class CourseOrder extends VendorAwareOrder {
 	}
 
 	@Override
-	public Type getType() {
-		return Type.COURSE;
-	}
-
-	@Override
 	public Course getProduct() {
 		return course;
 	}
@@ -83,6 +79,11 @@ public class CourseOrder extends VendorAwareOrder {
 	@Override
 	protected void doSetProduct(Product product) {
 		course = (Course) product;
+	}
+
+	@PrePersist
+	private void prePersist() {
+		setType(Type.COURSE);
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.LinkType;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Banner;
 import net.aircommunity.platform.model.domain.Product.Category;
@@ -67,7 +68,19 @@ public class BannerServiceImpl extends AbstractServiceSupport implements BannerS
 		tgt.setImage(src.getImage());
 		tgt.setLink(src.getLink());
 		tgt.setTitle(src.getTitle());
-		tgt.setLinkType(src.getLinkType());
+		LinkType type = src.getLinkType();
+		tgt.setLinkType(type);
+		if (type == LinkType.CONTENT) {
+			tgt.setLinkCategory(Category.NONE);
+		}
+		else {
+			Category linkCategory = src.getLinkCategory();
+			if (linkCategory == Category.NONE) {
+				throw new AirException(Codes.BANNER_INVALID_LINK_CATEGORY,
+						M.msg(M.BANNER_INVALID_LINK_CATEGORY, linkCategory));
+			}
+			tgt.setLinkCategory(linkCategory);
+		}
 	}
 
 	@Override

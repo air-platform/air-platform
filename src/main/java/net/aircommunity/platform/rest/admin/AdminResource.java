@@ -27,10 +27,10 @@ import io.micro.core.security.AccessTokenService;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.ProductSummary;
+import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
-import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.rest.AirClassResource;
 import net.aircommunity.platform.rest.AirJetResource;
 import net.aircommunity.platform.rest.AirportResource;
@@ -198,17 +198,6 @@ public class AdminResource extends BaseResourceSupport {
 	// ***********************
 
 	// *********
-	// AIRCRAFT
-	// *********
-	@Resource
-	private AdminAircraftResource adminAircraftResource;
-
-	@Path("aircrafts")
-	public AdminAircraftResource aircrafts() {
-		return adminAircraftResource;
-	}
-
-	// *********
 	// SCHOOL
 	// *********
 	@Resource
@@ -217,6 +206,17 @@ public class AdminResource extends BaseResourceSupport {
 	@Path("schools")
 	public AdminSchoolResource schools() {
 		return adminSchoolResource;
+	}
+
+	// *********
+	// AIRCRAFT
+	// *********
+	@Resource
+	private AdminAircraftResource adminAircraftResource;
+
+	@Path("product/aircrafts")
+	public AdminAircraftResource aircrafts() {
+		return adminAircraftResource;
 	}
 
 	// *********
@@ -276,7 +276,7 @@ public class AdminResource extends BaseResourceSupport {
 	@Resource
 	private AdminAirTransportResource adminAirTransportResource;
 
-	@Path("product/airtranports")
+	@Path("product/airtransports")
 	public AdminAirTransportResource tranports() {
 		return adminAirTransportResource;
 	}
@@ -314,9 +314,6 @@ public class AdminResource extends BaseResourceSupport {
 		return adminCourseResource;
 	}
 
-	// **************
-	// Review Product
-	// **************
 	@Resource
 	private CommonProductService commonProductService;
 
@@ -336,6 +333,9 @@ public class AdminResource extends BaseResourceSupport {
 		return Response.ok(content).build();
 	}
 
+	// **************
+	// Review Product
+	// **************
 	@POST
 	@Path("products/{productId}")
 	public Product findProduct(@PathParam("productId") String productId) {

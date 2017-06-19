@@ -56,24 +56,32 @@ public final class Codes {
 	public static final Code PRODUCT_FAMILY_NOT_FOUND = Code.notFound(11_003_0004);
 	public static final Code PRODUCT_FAMILY_NOT_APPROVED = Code.notFound(11_003_0005);
 	public static final Code PRODUCT_INVALID_DEPARTURE_DATE = Code.notFound(11_003_0006);
+	public static final Code PRODUCT_CANNOT_BE_DELETED = Code.illegalState(11_003_0007);
+	public static final Code PRODUCT_FAMILY_CANNOT_BE_DELETED = Code.illegalState(11_003_0008);
+
 	// order
 	public static final Code ORDER_NOT_PAYABLE = Code.illegalState(11_003_1001);
 	public static final Code ORDER_NOT_FOUND = Code.notFound(11_003_1002);
 	public static final Code ORDER_ILLEGAL_STATUS = Code.illegalAccess(11_003_1003);
 	public static final Code ORDER_INSTALMENT_NOT_FOUND = Code.illegalAccess(11_003_1004);
 	public static final Code ORDER_REFUND_FAILURE = Code.illegalState(11_003_1005);
+	public static final Code ORDER_INVALID_TOTAL_AMOUNT = Code.invalidArgument(11_003_1006);
+	public static final Code ORDER_CANNOT_BE_DELETED = Code.illegalState(11_003_1007);
+
 	// common product related
 	public static final Code AIRJET_ALREADY_EXISTS = Code.alreadyExists(11_003_2001);
 	public static final Code AIRJET_NOT_FOUND = Code.notFound(11_003_2002);
 	public static final Code BANNER_NOT_FOUND = Code.notFound(11_003_2003);
-	public static final Code AIRCRAFT_ALREADY_EXISTS = Code.alreadyExists(11_003_2004);
-	public static final Code AIRCRAFT_NOT_FOUND = Code.notFound(11_003_2005);
-	public static final Code SALESPACKAGE_NOT_FOUND = Code.notFound(11_003_2006);
-	public static final Code PASSENGER_NOT_FOUND = Code.notFound(11_003_2007);
-	public static final Code PASSENGER_REQUIRED = Code.invalidArgument(11_003_2008);
-	public static final Code AIRPORT_NOT_FOUND = Code.notFound(11_003_2009);
-	public static final Code AIRPORT_ALREADY_EXISTS = Code.notFound(11_003_2010);
-	public static final Code AIRPORT_INVALID_CODE = Code.invalidArgument(11_003_2011);
+	public static final Code BANNER_INVALID_LINK_CATEGORY = Code.invalidArgument(11_003_2004);
+
+	public static final Code AIRCRAFT_ALREADY_EXISTS = Code.alreadyExists(11_003_2005);
+	public static final Code AIRCRAFT_NOT_FOUND = Code.notFound(11_003_2006);
+	public static final Code SALESPACKAGE_NOT_FOUND = Code.notFound(11_003_2007);
+	public static final Code PASSENGER_NOT_FOUND = Code.notFound(11_003_2008);
+	public static final Code PASSENGER_REQUIRED = Code.invalidArgument(11_003_2009);
+	public static final Code AIRPORT_NOT_FOUND = Code.notFound(11_003_2010);
+	public static final Code AIRPORT_ALREADY_EXISTS = Code.notFound(11_003_2011);
+	public static final Code AIRPORT_INVALID_CODE = Code.invalidArgument(11_003_2012);
 
 	// fleet
 	public static final Code FLEET_NOT_FOUND = Code.notFound(11_004_0001);
@@ -102,6 +110,8 @@ public final class Codes {
 
 	// school/course/enrollment
 	public static final Code SCHOOL_NOT_FOUND = Code.notFound(11_010_0001);
+	public static final Code SCHOOL_CANNOT_BE_DELETED = Code.illegalState(11_010_0002);
+
 	public static final Code COURSE_NOT_FOUND = Code.notFound(11_011_0001);
 	public static final Code COURSEORDER_NOT_FOUND = Code.notFound(12_010_0001);
 
