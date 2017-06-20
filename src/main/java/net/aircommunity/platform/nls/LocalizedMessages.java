@@ -77,6 +77,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String COURSE_NOT_FOUND;
 	public static String FLEET_NOT_FOUND;
 	public static String FLEET_ALREADY_EXISTS;
+	public static String FLEET_CANDIDATE_NOT_FOUND;
 
 	// account
 	public static String ACCOUNT_ADMIN_CANNOT_BE_DELETED;
@@ -93,6 +94,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String ACCOUNT_CREATION_FAILURE;
 	public static String ACCOUNT_CREATION_ADMIN_NOT_ALLOWED;
 	public static String ACCOUNT_CREATION_INVALID_VERIFICATION_CODE;
+	public static String ACCOUNT_RESET_PASSWORD_INVALID_VERIFICATION_CODE;
 	public static String ACCOUNT_ADD_PASSENGER_FAILURE;
 	public static String ACCOUNT_INVALID_IDCARD;
 	public static String ACCOUNT_PASSENGER_NOT_ALLOWED;

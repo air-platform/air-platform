@@ -1,5 +1,7 @@
 package net.aircommunity.platform.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import net.aircommunity.platform.model.domain.JetTravel;
@@ -12,4 +14,13 @@ import net.aircommunity.platform.model.domain.JetTravel;
  */
 public interface JetTravelRepository extends BaseProductRepository<JetTravel> {
 
+	/**
+	 * Find JetTravel by name.
+	 * 
+	 * @param name
+	 * @param pageable
+	 * @return page of JetTravel
+	 */
+	Page<JetTravel> findByPublishedAndNameContainingIgnoreCaseOrderByRankAscScoreDesc(boolean published, String name,
+			Pageable pageable);
 }

@@ -784,9 +784,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return safeExecute(() -> accountRepository.save(account), "Reset account %s password failed", accountId);
 	}
 
-	// XXX check if update cache using #result.id works?
 	@CachePut(cacheNames = CACHE_NAME, key = "#result.id")
-	@Cacheable
 	@Override
 	public Account resetPasswordViaMobile(String mobile, String newPassword) {
 		AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(AuthType.MOBILE, mobile);

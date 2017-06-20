@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,13 +21,17 @@ import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.domain.AirTaxi;
+import net.aircommunity.platform.model.domain.AirTour;
 import net.aircommunity.platform.model.domain.AirTransport;
 import net.aircommunity.platform.model.domain.Course;
 import net.aircommunity.platform.model.domain.FerryFlight;
+import net.aircommunity.platform.model.domain.JetTravel;
 import net.aircommunity.platform.service.AirTaxiService;
+import net.aircommunity.platform.service.AirTourService;
 import net.aircommunity.platform.service.AirTransportService;
 import net.aircommunity.platform.service.CourseService;
 import net.aircommunity.platform.service.FerryFlightService;
+import net.aircommunity.platform.service.JetTravelService;
 
 /**
  * Generic product search RESTful API allows list/find/query for ANYONE.
@@ -38,11 +43,12 @@ import net.aircommunity.platform.service.FerryFlightService;
 @PermitAll
 @Path("search")
 public class ProductSearchResource {
-
 	private static final int SEARCH_RESULT_TOP_N = 10;
-	private static final String PROP_TAXIS = "taxis";
-	private static final String PROP_TRANSPORTS = "transports";
+	private static final String PROP_TAXIS = "airtaxis";
+	private static final String PROP_TOURS = "airtours";
+	private static final String PROP_TRANSPORTS = "airtransports";
 	private static final String PROP_FERRYFLIGHTS = "ferryflights";
+	private static final String PROP_JETTRAVELS = "jettravels";
 	private static final String PROP_COURSES = "courses";
 	private static final Map<String, Object> EMPTY_SEARCH_RESULT = ImmutableMap.<String, Object> builder()
 			.put(PROP_TAXIS, Collections.emptyList()).put(PROP_TRANSPORTS, Collections.emptyList())
@@ -52,10 +58,16 @@ public class ProductSearchResource {
 	private AirTaxiService airTaxiService;
 
 	@Resource
+	private AirTourService airTourService;
+
+	@Resource
 	private AirTransportService airTransportService;
 
 	@Resource
 	private FerryFlightService ferryFlightService;
+
+	@Resource
+	private JetTravelService jetTravelService;
 
 	@Resource
 	private CourseService courseService;
@@ -66,17 +78,21 @@ public class ProductSearchResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
-	public Map<String, Object> search(@QueryParam("q") String query) {
+	public Map<String, Object> search(@QueryParam("q") String query, @QueryParam("topN") @DefaultValue("0") int topN) {
 		String location = query;
 		if (Strings.isBlank(location)) {
 			return EMPTY_SEARCH_RESULT;
 		}
 		int page = 1;
-		int pageSize = SEARCH_RESULT_TOP_N;
+		int pageSize = topN <= 0 ? SEARCH_RESULT_TOP_N : topN;
 		ImmutableMap.Builder<String, Object> result = ImmutableMap.builder();
 		// taxi
 		List<AirTaxi> taxis = airTaxiService.searchAirTaxisByLocation(location, page, pageSize).getContent();
 		result.put(PROP_TAXIS, taxis);
+
+		// tour
+		List<AirTour> tours = airTourService.listAirToursByCity(location, page, pageSize).getContent();
+		result.put(PROP_TOURS, tours);
 
 		// trans
 		List<AirTransport> trans = airTransportService.searchAirTransportsByLocation(location, page, pageSize)
@@ -87,6 +103,10 @@ public class ProductSearchResource {
 		List<FerryFlight> ferryFlights = ferryFlightService.searchFerryFlightsByLocation(location, page, pageSize)
 				.getContent();
 		result.put(PROP_FERRYFLIGHTS, ferryFlights);
+
+		// jettravels
+		List<JetTravel> jettravels = jetTravelService.searchJetTravels(location, page, pageSize).getContent();
+		result.put(PROP_JETTRAVELS, jettravels);
 
 		// courses
 		List<Course> courses = courseService.listCoursesByLocation(location, page, pageSize).getContent();

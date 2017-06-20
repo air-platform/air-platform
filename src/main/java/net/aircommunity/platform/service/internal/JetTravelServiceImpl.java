@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micro.common.Strings;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
@@ -72,6 +73,15 @@ public class JetTravelServiceImpl extends AbstractProductService<JetTravel> impl
 		return doListProductsForUsers(page, pageSize);
 	}
 
+	@Override
+	public Page<JetTravel> searchJetTravels(String name, int page, int pageSize) {
+		if (Strings.isBlank(name)) {
+			return listJetTravels(page, pageSize);
+		}
+		return Pages.adapt(jetTravelRepository.findByPublishedAndNameContainingIgnoreCaseOrderByRankAscScoreDesc(
+				true/* published */, name, Pages.createPageRequest(page, pageSize)));
+	}
+
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#jetTravelId")
 	@Override
 	public void deleteJetTravel(String jetTravelId) {
@@ -93,5 +103,4 @@ public class JetTravelServiceImpl extends AbstractProductService<JetTravel> impl
 	protected BaseProductRepository<JetTravel> getProductRepository() {
 		return jetTravelRepository;
 	}
-
 }

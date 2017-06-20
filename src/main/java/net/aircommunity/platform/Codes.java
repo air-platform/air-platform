@@ -86,7 +86,8 @@ public final class Codes {
 	// fleet
 	public static final Code FLEET_NOT_FOUND = Code.notFound(11_004_0001);
 	public static final Code FLEET_ALREADY_EXISTS = Code.alreadyExists(11_004_0002);
-	public static final Code CHARTERORDER_NOT_FOUND = Code.notFound(11_004_0003);
+	public static final Code FLEET_CANDIDATE_NOT_FOUND = Code.notFound(11_004_0003);
+	public static final Code CHARTERORDER_NOT_FOUND = Code.notFound(11_004_0004);
 
 	// ferry flight
 	public static final Code FERRYFLIGHT_NOT_FOUND = Code.notFound(11_005_0001);

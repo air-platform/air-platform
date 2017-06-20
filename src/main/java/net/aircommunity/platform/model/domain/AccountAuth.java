@@ -20,6 +20,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
@@ -72,10 +75,12 @@ public class AccountAuth extends Persistable {
 	private Date lastAccessedDate;
 
 	@Column(name = "last_accessed_ip")
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	private String lastAccessedIp;
 
 	// user-agent, from which source: app, browser etc.
 	@Column(name = "last_accessed_source")
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	private String lastAccessedSource;
 
 	@ManyToOne

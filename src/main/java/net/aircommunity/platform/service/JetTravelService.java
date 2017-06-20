@@ -84,6 +84,17 @@ public interface JetTravelService {
 	Page<JetTravel> listJetTravels(int page, int pageSize);
 
 	/**
+	 * List all JetTravels fuzzy match by name by pagination. (USER)
+	 * 
+	 * @param name the fuzzy match by name
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of JetTravels or empty
+	 */
+	@Nonnull
+	Page<JetTravel> searchJetTravels(@Nullable String name, int page, int pageSize);
+
+	/**
 	 * Delete a JetTravel.
 	 * 
 	 * @param jetTravelId the jetTravelId

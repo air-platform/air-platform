@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonWriter;
@@ -72,13 +73,14 @@ import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.PasswordRequest;
 import net.aircommunity.platform.model.PasswordResetRequest;
 import net.aircommunity.platform.model.Role;
+import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.UserAccountRequest;
 import net.aircommunity.platform.model.UsernameRequest;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.AccountAuth;
+import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 import net.aircommunity.platform.model.domain.DailySignin;
 import net.aircommunity.platform.model.domain.User;
-import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.FileService;
@@ -124,11 +126,11 @@ public class AccountResource {
 	/**
 	 * Create user (registration)
 	 */
-	@ApiOperation(value = "register")
-	@ApiResponses(value = { @ApiResponse(code = 201, message = "") })
 	@POST
 	@PermitAll
 	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "register")
+	@ApiResponses(value = { @ApiResponse(code = 201, message = "") })
 	public Response createUserAccount(@ApiParam(required = true) @NotNull @Valid UserAccountRequest request,
 			@Context UriInfo uriInfo) {
 		Account account = accountService.createAccount(request.getMobile(), request.getPassword(),
@@ -141,11 +143,11 @@ public class AccountResource {
 	/**
 	 * Create tenant (registration)
 	 */
-	@ApiOperation(value = "tenant-register", hidden = true)
-	@Path("tenant")
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
 	@PermitAll
+	@Path("tenant")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "tenant-register", hidden = true)
 	public Response createTenantAccount(@NotNull @Valid AccountRequest request, @Context UriInfo uriInfo) {
 		Account account = accountService.createAccount(request.getUsername(), request.getPassword(),
 				Role.TENANT /* force tenant */);
@@ -159,13 +161,13 @@ public class AccountResource {
 	/**
 	 * Authenticate via internal(username,email,mobile) or external(3rd party) auth
 	 */
-	@ApiOperation(value = "auth", response = AccessToken.class)
-	@ApiResponses(value = { @ApiResponse(code = 401, message = ""), @ApiResponse(code = 404, message = "") })
 	@POST
-	@Path("auth")
 	@PermitAll
+	@Path("auth")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "auth", response = AccessToken.class)
+	@ApiResponses(value = { @ApiResponse(code = 401, message = ""), @ApiResponse(code = 404, message = "") })
 	public Response authenticate(@HeaderParam(value = "x-forwarded-for") String ip,
 			@HeaderParam("user-agent") String userAgent, @QueryParam("type") AuthType type,
 			@NotNull @Valid AuthcRequest request) {
@@ -216,8 +218,8 @@ public class AccountResource {
 	 * Daily signin
 	 */
 	@POST
-	@Path("daily-signin")
 	@Authenticated
+	@Path("daily-signin")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response dailySignin(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
@@ -258,24 +260,14 @@ public class AccountResource {
 	/**
 	 * Send SMS verification code
 	 */
-	@ApiOperation(value = "request-verification")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
 	@POST
+	@PermitAll
 	@Path("verification")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll
-	public void requestVerification(@NotNull @QueryParam("mobile") String mobile, @Context HttpServletRequest request) {
-		String forwardIp = "";
-		try {
-			// when using Heroku, the remote host is the AWS application tier, therefore the EC2 ip address.
-			forwardIp = request.getHeader(Constants.HEADER_X_FORWARDED_FOR).split(",")[0];
-		}
-		catch (Exception ignored) {
-		}
-		String ip = request.getRemoteAddr();
-		if (Constants.LOOPBACK_ADDRESSES.contains(ip)) {
-			ip = forwardIp;
-		}
+	@ApiOperation(value = "request-verification")
+	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
+	public void requestVerification(@HeaderParam(value = "x-forwarded-for") String ip,
+			@NotNull @QueryParam("mobile") String mobile, @Context HttpServletRequest request) {
 		if (Strings.isBlank(ip)) {
 			ip = Constants.LOOPBACK_LOCALHOST;
 		}
@@ -289,12 +281,12 @@ public class AccountResource {
 	/**
 	 * Refresh authc token
 	 */
-	@ApiOperation(value = "auth-refresh", response = AccessToken.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 401, message = "") })
 	@POST
 	@Authenticated
 	@Path("auth/refresh")
 	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "auth-refresh", response = AccessToken.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 401, message = "") })
 	public AccessToken refreshToken(@Context SecurityContext context) {
 		SimplePrincipal principal = (SimplePrincipal) context.getUserPrincipal();
 		String refreshedToken = accessTokenService.generateToken(principal.getClaims().getSubject(),
@@ -303,14 +295,14 @@ public class AccountResource {
 	}
 
 	/**
-	 * Get API Key
+	 * Get API Key (ADMIN, CS, TENANT)
 	 */
-	@ApiOperation(value = "apikey-refresh", response = AccessToken.class, hidden = true)
-	@ApiResponses(value = { @ApiResponse(code = 401, message = ""), @ApiResponse(code = 404, message = "") })
 	@GET
 	@Path("apikey")
-	@Authenticated
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "apikey-refresh", response = AccessToken.class, hidden = true)
+	@ApiResponses(value = { @ApiResponse(code = 401, message = ""), @ApiResponse(code = 404, message = "") })
 	public AccessToken findApiKey(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		Account account = accountService.findAccount(accountId);
@@ -318,12 +310,12 @@ public class AccountResource {
 	}
 
 	/**
-	 * Refresh API Key
+	 * Refresh API Key (ADMIN, CS, TENANT)
 	 */
-	@ApiOperation(value = "apikey-refresh", response = AccessToken.class, hidden = true)
 	@POST
-	@Authenticated
 	@Path("apikey/refresh")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
+	@ApiOperation(value = "apikey-refresh", response = AccessToken.class, hidden = true)
 	@Produces(MediaType.APPLICATION_JSON)
 	public AccessToken refreshApiKey(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
@@ -333,14 +325,13 @@ public class AccountResource {
 
 	/**
 	 * Find account by ID (as a result of account creation), may not really useful, just to complete the RESTful API.
-	 * 
-	 * TODO REMOVE?
 	 */
-	@ApiOperation(value = "account-id", hidden = true)
 	@GET
-	@Path("{accountId}")
-	@Produces(MediaType.APPLICATION_JSON)
 	@Authenticated
+	@Path("{accountId}")
+	@JsonView(JsonViews.User.class)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "account-id", hidden = true)
 	public Response findAccount(@PathParam("accountId") String accountId, @Context SecurityContext context) {
 		String selfAccountId = context.getUserPrincipal().getName();
 		// denied for: 1) not self, 2) not admin
@@ -353,14 +344,14 @@ public class AccountResource {
 	/**
 	 * Get account profile for all (user/tenant/admin)
 	 */
+	@GET
+	@Authenticated
+	@Path("profile")
+	@JsonView(JsonViews.User.class)
+	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "profile", response = Account.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 401, message = ""),
 			@ApiResponse(code = 404, message = "") })
-	@GET
-	@Path("profile")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
-	@JsonView(JsonViews.User.class)
 	public Response getSelfAccount(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		return buildAccountResponse(accountId);
@@ -370,7 +361,7 @@ public class AccountResource {
 		Account account = accountService.findAccount(accountId);
 		List<AccountAuth> auths = accountService.findAccountAuths(accountId);
 		try {
-			String json = objectMapper.writeValueAsString(account);
+			String json = objectMapper.writerWithView(JsonViews.User.class).writeValueAsString(account);
 			Map<String, Object> data = objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
 			});
 			for (AccountAuth auth : auths) {
@@ -390,12 +381,13 @@ public class AccountResource {
 	/**
 	 * Get account auths of a profile
 	 */
-	@ApiOperation(value = "profile-auths", response = AccountAuth.class, responseContainer = "List")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "") })
 	@GET
+	@Authenticated
 	@Path("profile/auths")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
+	@JsonView(JsonViews.User.class)
+	@ApiOperation(value = "profile-auths", response = AccountAuth.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "") })
 	public List<AccountAuth> getSelfAccountAuths(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		return accountService.findAccountAuths(accountId);
@@ -404,13 +396,15 @@ public class AccountResource {
 	/**
 	 * Update account (User/Tenant/Admin)
 	 */
-	@ApiOperation(value = "profile-update", response = Account.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "") })
+
 	@PUT
+	@Authenticated
 	@Path("profile")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Authenticated
+	@ApiOperation(value = "profile-update", response = Account.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "") })
+	@JsonView(JsonViews.User.class)
 	public Account updateAccount(@NotNull @Valid JsonObject newData, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		Account account = accountService.findAccount(accountId);
@@ -434,13 +428,13 @@ public class AccountResource {
 	/**
 	 * Change password if old password is correct.
 	 */
+	@POST
+	@Authenticated
+	@Path("password")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "password-update")
 	@ApiResponses(value = { @ApiResponse(code = 204, message = ""), @ApiResponse(code = 401, message = ""),
 			@ApiResponse(code = 404, message = "") })
-	@POST
-	@Path("password")
-	@Authenticated
-	@Consumes(MediaType.APPLICATION_JSON)
 	public void updatePassword(@NotNull @Valid PasswordRequest request, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.updatePassword(accountId, request.getOldPassword(), request.getNewPassword());
@@ -449,12 +443,12 @@ public class AccountResource {
 	/**
 	 * Reset/forget password via mobile
 	 */
+	@POST
+	@PermitAll
+	@Path("password/reset")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "password-reset-mobile")
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
-	@POST
-	@Path("password/reset")
-	@PermitAll
-	@Consumes(MediaType.APPLICATION_JSON)
 	public Response resetPassword(@NotNull @Valid PasswordResetRequest request) {
 		if (!configuration.isMobileVerificationEnabled()) {
 			LOG.warn(
@@ -463,7 +457,7 @@ public class AccountResource {
 		}
 		if (!verificationService.verifyCode(request.getMobile(), request.getVerificationCode())) {
 			throw new AirException(Codes.ACCOUNT_INVALID_VERIFICATION_CODE,
-					M.msg(M.ACCOUNT_CREATION_INVALID_VERIFICATION_CODE, request.getVerificationCode()));
+					M.msg(M.ACCOUNT_RESET_PASSWORD_INVALID_VERIFICATION_CODE, request.getVerificationCode()));
 		}
 		accountService.resetPasswordViaMobile(request.getMobile(), request.getNewPassword());
 		return Response.noContent().build();
@@ -472,11 +466,11 @@ public class AccountResource {
 	/**
 	 * Reset/forget password via email
 	 */
-	@ApiOperation(value = "password-reset-email")
-	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
 	@POST
 	@Authenticated
 	@Path("password/reset/email")
+	@ApiOperation(value = "password-reset-email")
+	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
 	public void resetPassword(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.resetPasswordViaEmail(accountId);
@@ -485,12 +479,13 @@ public class AccountResource {
 	/**
 	 * Change username
 	 */
+
+	@POST
+	@Authenticated
+	@Path("username")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "username-update")
 	@ApiResponses(value = { @ApiResponse(code = 204, message = "") })
-	@POST
-	@Path("username")
-	@Authenticated
-	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateUsername(@NotNull @Valid UsernameRequest request, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.updateUsername(accountId, request.getUsername());
@@ -499,13 +494,13 @@ public class AccountResource {
 	/**
 	 * Change email and need to be verified
 	 */
+	@POST
+	@Authenticated
+	@Path("email")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "email-update")
 	@ApiResponses(value = { @ApiResponse(code = 204, message = ""), @ApiResponse(code = 400, message = ""),
 			@ApiResponse(code = 401, message = ""), @ApiResponse(code = 404, message = "") })
-	@POST
-	@Path("email")
-	@Authenticated
-	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateEmail(@NotNull @Valid EmailRequest request, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		accountService.updateEmail(accountId, request.getEmail());
@@ -514,12 +509,12 @@ public class AccountResource {
 	/**
 	 * Confirm email, account/email/confirm?token=xxx&code=xxx
 	 */
-	@ApiOperation(value = "email-confirm")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "") })
 	@GET
 	@TokenSecured
 	@Path("email/confirm")
 	@Produces(MediaType.TEXT_HTML)
+	@ApiOperation(value = "email-confirm")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "") })
 	public Response confirmEmail(@QueryParam("code") String verificationCode, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		Map<String, Object> bindings = new HashMap<>(3);
@@ -542,10 +537,10 @@ public class AccountResource {
 	/**
 	 * Delete self account
 	 */
-	@ApiOperation(value = "delete", hidden = true)
-	@ApiResponses(value = { @ApiResponse(code = 204, message = ""), @ApiResponse(code = 401, message = "") })
 	@DELETE
 	@Authenticated
+	@ApiOperation(value = "delete", hidden = true)
+	@ApiResponses(value = { @ApiResponse(code = 204, message = ""), @ApiResponse(code = 401, message = "") })
 	public void deleteSelfAccount(@HeaderParam(value = "x-forwarded-for") String ip,
 			@HeaderParam("user-agent") String userAgent, @NotNull @Valid AuthcRequest request) {
 		Account account = accountService.authenticateAccount(request.getPrincipal(), request.getCredential(),
