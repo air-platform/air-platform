@@ -8,6 +8,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import net.aircommunity.platform.model.jaxb.ProductFamilyAdapter;
 
 /**
  * Air Transport
@@ -22,6 +25,7 @@ public class AirTransport extends SalesPackageProduct {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "family_id", nullable = false)
+	@XmlJavaTypeAdapter(ProductFamilyAdapter.class)
 	private ProductFamily family;
 
 	// in minutes

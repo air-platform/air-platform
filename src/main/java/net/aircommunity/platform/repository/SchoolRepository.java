@@ -7,7 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import net.aircommunity.platform.model.domain.School;
 
 /**
- * Created by guankai on 11/04/2017.
+ * Repository interface for {@link School} instances. Provides basic CRUD operations due to the extension of
+ * {@link JpaRepository}.
+ * 
+ * @author guankai
  */
 public interface SchoolRepository extends JpaRepository<School, String> {
 
@@ -16,7 +19,7 @@ public interface SchoolRepository extends JpaRepository<School, String> {
 	 *
 	 * @param tenant
 	 * @param pageable
-	 * @return
+	 * @return a page of school or empty
 	 */
 	Page<School> findByVendorId(String tenantId, Pageable pageable);
 

@@ -87,7 +87,7 @@ public class ProductSearchResource {
 		int pageSize = topN <= 0 ? SEARCH_RESULT_TOP_N : topN;
 		ImmutableMap.Builder<String, Object> result = ImmutableMap.builder();
 		// taxi
-		List<AirTaxi> taxis = airTaxiService.searchAirTaxisByLocation(location, page, pageSize).getContent();
+		List<AirTaxi> taxis = airTaxiService.listAirTaxisByFuzzyLocation(location, page, pageSize).getContent();
 		result.put(PROP_TAXIS, taxis);
 
 		// tour
@@ -95,7 +95,7 @@ public class ProductSearchResource {
 		result.put(PROP_TOURS, tours);
 
 		// trans
-		List<AirTransport> trans = airTransportService.searchAirTransportsByLocation(location, page, pageSize)
+		List<AirTransport> trans = airTransportService.listAirTransportsByFuzzyLocation(location, page, pageSize)
 				.getContent();
 		result.put(PROP_TRANSPORTS, trans);
 

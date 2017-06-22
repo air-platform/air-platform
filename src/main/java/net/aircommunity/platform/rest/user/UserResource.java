@@ -11,6 +11,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import io.micro.annotation.Authenticated;
@@ -47,6 +49,8 @@ import net.aircommunity.platform.service.CommonOrderService;
 @Path("user")
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
 public class UserResource extends BaseResourceSupport {
+
+	private static final String HEADER_FIRST_ORDER = "First-Order";
 
 	@Resource
 	private AccountService accountService;
@@ -176,6 +180,18 @@ public class UserResource extends BaseResourceSupport {
 			return commonOrderService.listUserOrders(userId, null, page, pageSize);
 		}
 		return Page.emptyPage(page, pageSize);
+	}
+
+	/**
+	 * First Order or not
+	 */
+	@HEAD
+	@Path("orders/first")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response firstOrder(@Context SecurityContext context) {
+		String userId = context.getUserPrincipal().getName();
+		boolean exists = commonOrderService.existsOrderForUser(userId);
+		return Response.noContent().header(HEADER_FIRST_ORDER, !exists).build();
 	}
 
 	/**

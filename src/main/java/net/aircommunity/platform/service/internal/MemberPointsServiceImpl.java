@@ -34,6 +34,7 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 	private static final String CACHE_NAME_DAILY_SIGNIN = "cache.points_daily_signin";
 
 	private static final int DEFAULT_EXCHANGE_RATE = 10;
+	private static final int DEFAULT_FIRST_ORDER_PRICE_OFF = 100;
 	private static final String POINTS_EXCHANGE_RATE = "exchange_rate";
 	private static final String POINT_SETTING_CATEGORY = "points";
 	private static final String POINT_RULES_SETTING_CATEGORY = "points.rule";
@@ -45,6 +46,9 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 		}
 		if (!hasSetting(Constants.PointRules.ACCOUNT_REGISTRATION)) {
 			setEarnPointsForRule(Constants.PointRules.ACCOUNT_REGISTRATION, 0);
+		}
+		if (!hasSetting(Constants.PointRules.FIRST_ORDER_PRICE_OFF)) {
+			setEarnPointsForRule(Constants.PointRules.FIRST_ORDER_PRICE_OFF, DEFAULT_FIRST_ORDER_PRICE_OFF);
 		}
 		if (!hasSetting(Constants.PointRules.DAILY_SIGNIN_1)) {
 			setEarnPointsForRule(Constants.PointRules.ORDER_FINISHED, 0);

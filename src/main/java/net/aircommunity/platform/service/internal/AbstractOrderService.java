@@ -2,6 +2,7 @@ package net.aircommunity.platform.service.internal;
 
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -134,7 +135,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 					unexpected.getMessage()), unexpected);
 			throw newInternalException();
 		}
-		// retrieve product related to this order
+		// 1) retrieve product related to this order
 		// fleet product is set in FleetCandidate, ignored
 		if (order.getType() != Type.FLEET) {
 			Product product = order.getProduct();
@@ -150,14 +151,14 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				newOrder.setCurrencyUnit(StandardProduct.class.cast(product).getCurrencyUnit());
 			}
 		}
+		// 2) set currency unit
 		// should be SalesPackageProduct
 		if (AircraftAwareOrder.class.isAssignableFrom(type)) {
-			newOrder.setCurrencyUnit(AircraftAwareOrder.class.cast(newOrder).getSalesPackage().getCurrencyUnit());
+			newOrder.setCurrencyUnit(AircraftAwareOrder.class.cast(order).getSalesPackage().getCurrencyUnit());
 		}
 
+		// 3) set basic properties
 		newOrder.setOwner(owner);
-
-		// set base properties
 		newOrder.setOrderNo(nextOrderNo());
 		newOrder.setStatus(status);
 		newOrder.setCreationDate(new Date());
@@ -166,41 +167,57 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		// actually set when @PrePersist
 		newOrder.setType(order.getType());
 
-		// copy common properties
+		// 4) copy common properties & copy order specific properties
 		copyCommonProperties(order, newOrder);
-		// copy order specific properties
 		copyProperties(order, newOrder);
 
 		LOG.info("[Creating order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), order);
-		// Calculate points to exchange
-		long pointToExchange = order.getPointsUsed();
-		if (pointToExchange > 0 && pointToExchange > owner.getPoints()) {
-			pointToExchange = owner.getPoints();
-		}
-		if (pointToExchange > 0) {
-			PointsExchange pointsUsed = memberPointsService.exchangePoints(pointToExchange);
-			LOG.info("[Exchanging points] User[{}][{}]: order[{}], exchanged points {}", owner.getId(),
-					owner.getNickName(), newOrder.getOrderNo(), pointsUsed);
-			BigDecimal moneyExchanged = BigDecimal.valueOf(pointsUsed.getMoneyExchanged());
-			BigDecimal updatedTotalPrice = newOrder.getTotalPrice().subtract(moneyExchanged);
-			// cannot be less than 0 after points exchange, just ignore points exchange if less or equal than 0
-			if (updatedTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
-				newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
-				// update total price
-				newOrder.setTotalPrice(updatedTotalPrice);
-				newOrder.setOriginalTotalPrice(newOrder.getTotalPrice());
-				User account = (User) accountService.updateUserPoints(owner.getId(), -pointsUsed.getPointsExchanged());
-				LOG.info(
-						"[Exchanged points] User[{}][{}]: order[{}], updated total price: {}, points used: {}, account points balance: {}",
-						owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice,
-						pointsUsed.getPointsExchanged(), account.getPoints());
+		BigDecimal totalPrice = newOrder.getTotalPrice();
+
+		// 5.1) check if first order price off for this user
+		boolean existsOrder = getOrderRepository().existsByOwnerId(userId);
+		if (!existsOrder) {
+			long priceOff = memberPointsService.getPointsEarnedFromRule(Constants.PointRules.FIRST_ORDER_PRICE_OFF);
+			LOG.info("Offer first order price off [-{}] for user: {}", priceOff, userId);
+			BigDecimal newTotalPrice = totalPrice.subtract(BigDecimal.valueOf(priceOff));
+			if (newTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
+				newOrder.setTotalPrice(newTotalPrice);
 			}
-			else {
-				LOG.warn(
-						"[Exchange points] User[{}][{}]: order[{}]: update total price is: {} (less than 0), points exchange ignored.",
-						owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice);
+			LOG.info("Updated total price [{}] for user: {}", newTotalPrice, userId);
+		}
+		// 5.2) Calculate points to exchange
+		else {
+			// max: 50% percent of totalPrice
+			long pointsMax = totalPrice.divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP).longValue();
+			long pointToExchange = order.getPointsUsed();
+			if (pointToExchange > 0) {
+				pointToExchange = Math.min(pointsMax, owner.getPoints());
+				PointsExchange pointsUsed = memberPointsService.exchangePoints(pointToExchange);
+				LOG.info("[Exchanging points] User[{}][{}]: order[{}], exchanged points {}", owner.getId(),
+						owner.getNickName(), newOrder.getOrderNo(), pointsUsed);
+				BigDecimal moneyExchanged = BigDecimal.valueOf(pointsUsed.getMoneyExchanged());
+				BigDecimal updatedTotalPrice = newOrder.getTotalPrice().subtract(moneyExchanged);
+				// cannot be less than 0 after points exchange, just ignore points exchange if less or equal than 0
+				if (updatedTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
+					newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
+					// update total price
+					newOrder.setTotalPrice(updatedTotalPrice);
+					newOrder.setOriginalTotalPrice(newOrder.getTotalPrice());
+					User account = (User) accountService.updateUserPoints(owner.getId(),
+							-pointsUsed.getPointsExchanged());
+					LOG.info(
+							"[Exchanged points] User[{}][{}]: order[{}], updated total price: {}, points used: {}, account points balance: {}",
+							owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice,
+							pointsUsed.getPointsExchanged(), account.getPoints());
+				}
+				else {
+					LOG.warn(
+							"[Exchange points] User[{}][{}]: order[{}]: update total price is: {} (less than 0), points exchange ignored.",
+							owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice);
+				}
 			}
 		}
+		// 6) perform save
 		final T orderToSave = newOrder;
 		return safeExecute(() -> {
 			T orderSaved = getOrderRepository().save(orderToSave);

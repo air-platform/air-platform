@@ -34,6 +34,7 @@ public final class Constants {
 	public static class PointRules {
 		public static final String ACCOUNT_REGISTRATION = "account_registration";
 		public static final String ORDER_FINISHED = "order_finished_percent";
+		public static final String FIRST_ORDER_PRICE_OFF = "first_order_price_off";
 		public static final String DAILY_SIGNIN_PREFIX = "daily_signin_";
 		public static final String DAILY_SIGNIN_1 = DAILY_SIGNIN_PREFIX + "1";
 		public static final String DAILY_SIGNIN_3 = DAILY_SIGNIN_PREFIX + "3";

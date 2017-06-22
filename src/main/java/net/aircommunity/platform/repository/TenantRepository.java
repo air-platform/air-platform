@@ -5,7 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import net.aircommunity.platform.model.domain.Tenant;
 
 /**
- * Created by guankai on 11/04/2017.
+ * Repository interface for {@link Tenant} instances. Provides basic CRUD operations due to the extension of
+ * {@link JpaRepository}.
+ * 
+ * @author Bin.Zhang
  */
 public interface TenantRepository extends JpaRepository<Tenant, String> {
 }

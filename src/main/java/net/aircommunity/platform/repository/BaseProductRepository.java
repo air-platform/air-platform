@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Product.Category;
@@ -16,7 +17,8 @@ import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
  * 
  * @author Bin.Zhang
  */
-public interface BaseProductRepository<T extends Product> extends JpaRepository<T, String> {
+public interface BaseProductRepository<T extends Product>
+		extends JpaRepository<T, String>, JpaSpecificationExecutor<T> {
 
 	/**
 	 * Find all products by review status. (For END USER mainly). Only show approved and published product.

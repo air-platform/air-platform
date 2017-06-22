@@ -16,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import io.micro.common.Strings;
@@ -29,7 +28,7 @@ import net.aircommunity.platform.model.domain.Course_;
  * 
  * @author Bin.Zhang
  */
-public interface CourseRepository extends BaseProductRepository<Course>, JpaSpecificationExecutor<Course> {
+public interface CourseRepository extends BaseProductRepository<Course> {
 
 	@Query("SELECT DISTINCT t.aircraftType FROM #{#entityName} t")
 	Set<String> listAircraftTypes();

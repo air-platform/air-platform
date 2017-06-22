@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.google.common.eventbus.EventBus;
@@ -129,7 +130,11 @@ abstract class AbstractServiceSupport {
 	}
 
 	protected <T, ID extends Serializable> Page<T> findAll(JpaRepository<T, ID> repository, int page, int pageSize) {
-		return Pages.adapt(repository.findAll(Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(repository.findAll(createPageRequest(page, pageSize)));
+	}
+
+	protected static Pageable createPageRequest(int page, int pageSize) {
+		return Pages.createPageRequest(page, pageSize);
 	}
 
 }

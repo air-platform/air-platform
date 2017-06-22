@@ -43,6 +43,11 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	private CommentService commentService;
 
 	@Override
+	public boolean existsOrderForUser(String userId) {
+		return baseOrderRepository.existsByOwnerId(userId);
+	}
+
+	@Override
 	public Optional<Payment> findPaymentByTradeNo(Payment.Method paymentMethod, String tradeNo) {
 		return paymentRepository.findByMethodAndTradeNo(paymentMethod, tradeNo);
 	}

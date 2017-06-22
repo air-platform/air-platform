@@ -19,6 +19,14 @@ import net.aircommunity.platform.model.domain.Order.Type;
 public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, String> {
 
 	/**
+	 * Test if there is any order for user
+	 * 
+	 * @param userId the userId
+	 * @return true if there is an order of this user, false otherwise
+	 */
+	boolean existsByOwnerId(String userId);
+
+	/**
 	 * Find all user orders
 	 * 
 	 * @param userId the userId

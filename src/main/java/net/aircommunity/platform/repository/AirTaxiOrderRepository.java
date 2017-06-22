@@ -1,9 +1,14 @@
 package net.aircommunity.platform.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import net.aircommunity.platform.model.domain.AirTaxiOrder;
 
 /**
- * Created by guankai on 15/04/2017.
+ * Repository interface for {@link AirTaxiOrder} instances. Provides basic CRUD operations due to the extension of
+ * {@link JpaRepository}.
+ * 
+ * @author guankai
  */
 public interface AirTaxiOrderRepository extends VendorAwareOrderRepository<AirTaxiOrder> {
 

@@ -15,7 +15,6 @@ import net.aircommunity.platform.model.domain.School;
 import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.SchoolRepository;
-import net.aircommunity.platform.repository.TenantRepository;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.SchoolService;
 
@@ -31,9 +30,6 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 
 	@Resource
 	private SchoolRepository schoolRepository;
-
-	@Resource
-	private TenantRepository tenantRepository;
 
 	@Resource
 	private AccountService accountService;

@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -45,11 +47,14 @@ public interface AirTaxiService {
 	 */
 	Page<AirTaxi> listAirTaxis(int page, int pageSize);
 
-	@Nonnull
-	Page<AirTaxi> listAirTaxisByDeparture(@Nonnull String departure, int page, int pageSize);
+	Set<String> listArrivalsFromDeparture(@Nonnull String departure);
 
+	Set<String> listDeparturesToArrival(@Nonnull String arrival);
+
+	// list a tenant's all AirTaxis filter by departure & arrival
 	@Nonnull
-	Page<AirTaxi> listAirTaxisByArrival(@Nonnull String arrival, int page, int pageSize);
+	Page<AirTaxi> listAirTaxisWithConditions(@Nullable String departure, @Nullable String arrival,
+			@Nullable String tenantId, int page, int pageSize);
 
 	/**
 	 * Search AirTaxis.
@@ -60,7 +65,7 @@ public interface AirTaxiService {
 	 * @return a page of result
 	 */
 	@Nonnull
-	Page<AirTaxi> searchAirTaxisByLocation(@Nonnull String location, int page, int pageSize);
+	Page<AirTaxi> listAirTaxisByFuzzyLocation(@Nonnull String location, int page, int pageSize);
 
 	/**
 	 * Delete a AirTaxi.

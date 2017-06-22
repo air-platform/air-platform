@@ -20,7 +20,7 @@ public interface FleetRepository extends BaseProductRepository<Fleet> {
 
 	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND t.aircraftType = :aircraftType ORDER BY t.rank ASC, t.score DESC")
 	Page<Fleet> findByAircraftTypeForUser(@Param("aircraftType") String aircraftType, Pageable pageable);
-	// Page<Fleet> findByAircraftTypeOrderByCreationDateDesc(String aircraftType, Pageable pageable);
+	// Page<Fleet> findByPublishedTrueAndAircraftTypeOrderByRankAscScoreDesc(String aircraftType, Pageable pageable);
 
 	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND t.vendor.id = :provider ORDER BY t.rank ASC, t.score DESC")
 	Page<Fleet> findByAircraftProviderForUser(@Param("provider") String tenantId, Pageable pageable);

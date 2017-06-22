@@ -26,7 +26,7 @@ import net.aircommunity.platform.service.AirTourService;
 /**
  * AirTour RESTful API allows list/find/query for ANYONE.
  * 
- * Created by guankai on 15/04/2017.
+ * @author guankai
  */
 @Api
 @RESTful

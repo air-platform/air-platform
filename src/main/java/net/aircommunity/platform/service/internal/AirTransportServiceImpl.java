@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -115,25 +116,31 @@ public class AirTransportServiceImpl extends SalesPackageProductService<AirTrans
 		if (Strings.isBlank(familyId)) {
 			return listAirTransports(page, pageSize);
 		}
-		return Pages.adapt(airTransportRepository.findByFamilyId(familyId, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(airTransportRepository.findByFamilyIdAndPublishedTrueOrderByRankAscScoreDesc(familyId,
+				Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
-	public Page<AirTransport> listAirTransportsByDeparture(String departure, int page, int pageSize) {
-		return Pages.adapt(
-				airTransportRepository.listByDepartureForUser(departure, Pages.createPageRequest(page, pageSize)));
+	public Set<String> listArrivalsFromDeparture(String familyId, String departure) {
+		return airTransportRepository.findArrivalsFromDeparture(familyId, departure);
 	}
 
 	@Override
-	public Page<AirTransport> listAirTransportsByArrival(String arrival, int page, int pageSize) {
+	public Set<String> listDeparturesToArrival(String familyId, String arrival) {
+		return airTransportRepository.findDeparturesToArrival(familyId, arrival);
+	}
+
+	@Override
+	public Page<AirTransport> listAirTransportsByFuzzyLocation(String location, int page, int pageSize) {
 		return Pages
-				.adapt(airTransportRepository.listByArrivalForUser(arrival, Pages.createPageRequest(page, pageSize)));
+				.adapt(airTransportRepository.findFuzzyByLocation(location, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
-	public Page<AirTransport> searchAirTransportsByLocation(String location, int page, int pageSize) {
-		return Pages.adapt(
-				airTransportRepository.searchByLocationForUser(location, Pages.createPageRequest(page, pageSize)));
+	public Page<AirTransport> listAirTransportsWithConditions(String familyId, String departure, String arrival,
+			String tenantId, int page, int pageSize) {
+		return Pages.adapt(airTransportRepository.findWithConditions(familyId, departure, arrival, tenantId,
+				Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTransportId")

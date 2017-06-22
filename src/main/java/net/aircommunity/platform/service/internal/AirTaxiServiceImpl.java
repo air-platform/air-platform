@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.Set;
+
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -21,7 +23,7 @@ import net.aircommunity.platform.service.AircraftService;
 /**
  * AirTaxiService implementation
  * 
- * @author guankai
+ * @author Bin.Zhang
  */
 @Service
 @Transactional
@@ -86,21 +88,25 @@ public class AirTaxiServiceImpl extends SalesPackageProductService<AirTaxi> impl
 	}
 
 	@Override
-	public Page<AirTaxi> listAirTaxisByDeparture(String departure, int page, int pageSize) {
-		return Pages.adapt(
-				airTaxiRepository.listAirTaxisByDepartureForUser(departure, Pages.createPageRequest(page, pageSize)));
+	public Set<String> listArrivalsFromDeparture(String departure) {
+		return airTaxiRepository.findArrivalsFromDeparture(departure);
 	}
 
 	@Override
-	public Page<AirTaxi> listAirTaxisByArrival(String arrival, int page, int pageSize) {
-		return Pages.adapt(
-				airTaxiRepository.listAirTaxisByArrivalForUser(arrival, Pages.createPageRequest(page, pageSize)));
+	public Set<String> listDeparturesToArrival(String arrival) {
+		return airTaxiRepository.findDeparturesToArrival(arrival);
 	}
 
 	@Override
-	public Page<AirTaxi> searchAirTaxisByLocation(String location, int page, int pageSize) {
-		return Pages
-				.adapt(airTaxiRepository.searchByLocationForUser(location, Pages.createPageRequest(page, pageSize)));
+	public Page<AirTaxi> listAirTaxisWithConditions(String departure, String arrival, String tenantId, int page,
+			int pageSize) {
+		return Pages.adapt(airTaxiRepository.findWithConditions(departure, arrival, tenantId,
+				Pages.createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<AirTaxi> listAirTaxisByFuzzyLocation(String location, int page, int pageSize) {
+		return Pages.adapt(airTaxiRepository.findFuzzyByLocation(location, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTaxiId")

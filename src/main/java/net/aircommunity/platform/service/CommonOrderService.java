@@ -22,6 +22,14 @@ import net.aircommunity.platform.model.domain.Refund;
 public interface CommonOrderService {
 
 	/**
+	 * Test if there is any order for this user.
+	 * 
+	 * @param userId the user id
+	 * @return true if exists, false othewise
+	 */
+	boolean existsOrderForUser(@Nonnull String userId);
+
+	/**
 	 * Find the order payment info by tradeNo.
 	 * 
 	 * @param paymentMethod the payment method

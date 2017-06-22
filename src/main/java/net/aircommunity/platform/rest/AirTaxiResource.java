@@ -2,6 +2,7 @@ package net.aircommunity.platform.rest;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -41,18 +42,16 @@ public class AirTaxiResource extends ProductResourceSupport<AirTaxi> {
 	// ***********************
 
 	/**
-	 * List all
+	 * List all (query: departure=xxx&arrival=xxx&provider=xxx)
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
-	public Page<AirTaxi> listAll(@QueryParam("departure") String departure, @QueryParam("page") int page,
-			@QueryParam("pageSize") int pageSize) {
-		LOG.debug("list all air taxi with departure: {}", departure);
-		if (departure == null) {
-			return airTaxiService.listAirTaxis(page, pageSize);
-		}
-		return airTaxiService.listAirTaxisByDeparture(departure, page, pageSize);
+	public Page<AirTaxi> listAll(@QueryParam("departure") String departure, @QueryParam("arrival") String arrival,
+			@QueryParam("provider") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		LOG.debug("List all air taxis for  departure: {}, arrival: {}, tenant: {}", departure, arrival, tenantId);
+		return airTaxiService.listAirTaxisWithConditions(departure, arrival, tenantId, page, pageSize);
 	}
 
 	/**
