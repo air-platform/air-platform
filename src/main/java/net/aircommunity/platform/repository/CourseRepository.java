@@ -5,13 +5,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
+import io.micro.common.Strings;
 import net.aircommunity.platform.model.domain.Course;
+import net.aircommunity.platform.model.domain.Course_;
 
 /**
  * Repository interface for {@link Course} instances. Provides basic CRUD operations due to the extension of
@@ -95,6 +105,38 @@ public interface CourseRepository extends BaseProductRepository<Course>, JpaSpec
 
 	long deleteBySchoolId(String schoolId);
 
+	/**
+	 * List courses with conditions via Specification
+	 */
+	default Page<Course> listCoursesWithConditions(String location, String license, String aircraftType,
+			Pageable pageable) {
+		Specification<Course> spec = new Specification<Course>() {
+			@Override
+			public Predicate toPredicate(Root<Course> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+				Predicate predicate = cb.conjunction();
+				List<Expression<Boolean>> expressions = predicate.getExpressions();
+				Path<Date> p = root.get(Course_.startDate);
+				query.orderBy(cb.desc(p));
+				//
+				Path<Boolean> published = root.get(Course_.published);
+				expressions.add(cb.equal(published, true));
+				if (Strings.isNotBlank(location)) {
+					// XXX for fuzzy match if needed
+					// expressions.add(cb.like(root.get(Course_.location), "%" + location + "%"));
+					expressions.add(cb.equal(root.get(Course_.location), location));
+				}
+				if (Strings.isNotBlank(license)) {
+					expressions.add(cb.equal(root.get(Course_.license), license));
+				}
+				if (Strings.isNotBlank(aircraftType)) {
+					expressions.add(cb.equal(root.get(Course_.aircraftType), aircraftType));
+				}
+				expressions.add(cb.greaterThanOrEqualTo(root.get(Course_.endDate), new Date()/* now */));
+				return predicate;
+			}
+		};
+		return findAll(spec, pageable);
+	}
 	/**
 	 * List courses for tenant
 	 */

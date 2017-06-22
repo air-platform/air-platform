@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirTourOrder;
 import net.aircommunity.platform.model.domain.Order.Status;
-import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.repository.AirTourOrderRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.AirTourOrderService;
@@ -27,7 +27,9 @@ import net.aircommunity.platform.service.AirTourService;
 @Transactional
 public class AirTourOrderServiceImpl extends AbstractVendorAwareOrderService<AirTourOrder>
 		implements AirTourOrderService {
-	private static final String CACHE_NAME = "cache.airtour-order";
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.airtour-order";
 
 	@Resource
 	private AirTourOrderRepository airTourOrderRepository;
@@ -46,6 +48,7 @@ public class AirTourOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 		return doFindOrder(orderId);
 	}
 
+	// TODO REMOVE?
 	@Override
 	protected AirTourOrder doFindOrder0(String orderId) {
 		return airTourOrderRepository.findOne(orderId);
@@ -91,13 +94,13 @@ public class AirTourOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 	}
 
 	@Override
-	protected VendorAwareOrderRepository<AirTourOrder> getOrderRepository() {
-		return airTourOrderRepository;
+	protected Code orderNotFoundCode() {
+		return Codes.TOUR_ORDER_NOT_FOUND;
 	}
 
 	@Override
-	protected Code orderNotFoundCode() {
-		return Codes.TOUR_ORDER_NOT_FOUND;
+	protected VendorAwareOrderRepository<AirTourOrder> getOrderRepository() {
+		return airTourOrderRepository;
 	}
 
 }

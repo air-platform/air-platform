@@ -88,11 +88,11 @@ public class CharterOrderResource extends UserBaseOrderResource<CharterOrder> {
 	/**
 	 * Select a fleet (Only allow one vendor to be selected)
 	 */
-	@POST
-	@Path("{orderId}/select")
-	public void selectFleet(@PathParam("orderId") String orderId,
-			@NotNull @QueryParam("candidate") String fleetCandidateId) {
-		charterOrderService.selectFleetCandidate(orderId, fleetCandidateId);
-	}
+	// @POST
+	// @Path("{orderId}/select")
+	// public void selectFleet(@PathParam("orderId") String orderId,
+	// @NotNull @QueryParam("candidate") String fleetCandidateId) {
+	// charterOrderService.selectFleetCandidate(orderId, fleetCandidateId);
+	// }
 
 }

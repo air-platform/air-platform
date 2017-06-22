@@ -207,6 +207,20 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 				type.getSimpleName(), productId, rank);
 	}
 
+	/**
+	 * Score (ADMIN)
+	 */
+	protected final T doUpdateProductScore(String productId, double score) {
+		T product = doFindProduct(productId);
+		if (score < 0) {
+			LOG.warn("Update product {} score to {}, ignored (because score<0)", productId, score);
+			return product;
+		}
+		product.setScore(score);
+		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s score to: %d",
+				type.getSimpleName(), productId, score);
+	}
+
 	protected void copyProperties(T src, T tgt) {
 	}
 
@@ -218,7 +232,6 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 * For all users/anyone (only show approved and published product)
 	 */
 	protected final Page<T> doListProductsForUsers(int page, int pageSize) {
-		// TODO make rank=100
 		return Pages.adapt(getProductRepository().findByPublishedOrderByRankAscScoreDesc(true/* published */,
 				Pages.createPageRequest(page, pageSize)));
 	}

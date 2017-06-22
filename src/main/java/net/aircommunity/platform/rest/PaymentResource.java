@@ -24,8 +24,11 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Joiner;
+
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.PaymentNotification;
 import net.aircommunity.platform.model.PaymentRequest;
@@ -75,6 +78,10 @@ public class PaymentResource {
 	 * 
 	 * (e.g. Alipay, https://doc.open.alipay.com/doc2/detail.htm?treeId=204&articleId=105302&docType=1)
 	 */
+
+	/**
+	 * Client notification JSON (APP)
+	 */
 	@POST
 	@Path("{paymentMethod}/client/notify")
 	@Authenticated
@@ -82,12 +89,29 @@ public class PaymentResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject notifyPaymentFromClient(@PathParam("paymentMethod") Payment.Method paymentMethod,
 			@NotNull Map<String, Object> result) throws Exception {
-		LOG.debug("{} payment notification result from client: {}", paymentMethod, result);
+		LOG.debug("[{}] payment notification(JSON) from client: {}", paymentMethod, result);
 		PaymentVerification verification = paymentService.verifyClientPaymentNotification(paymentMethod,
 				new PaymentNotification(result));
-		LOG.debug("{} payment notification result verification result: {}", paymentMethod, verification);
+		LOG.debug("[{}] payment notification result verification result: {}", paymentMethod, verification);
 		return Json.createObjectBuilder()
 				.add(PAYMENT_CONFIRMATION_STATUS, verification.name().toLowerCase(Locale.ENGLISH)).build();
+	}
+
+	/**
+	 * Client notification (return from gateway) RAW
+	 */
+	@POST
+	@PermitAll
+	@Path("{paymentMethod}/client/return")
+	public void notifyPaymentFromClient(@PathParam("paymentMethod") Payment.Method paymentMethod,
+			@Context HttpServletRequest request, @Context HttpServletResponse response) throws Exception {
+		Map<String, String> params = extractRequestParams(request);
+		LOG.debug("[{}] payment notification(RAW) from client: {}", paymentMethod, params);
+		PaymentVerification verification = paymentService.verifyClientPaymentNotification(paymentMethod,
+				new PaymentNotification(params));
+		LOG.debug("[{}] payment notification result verification result: {}", paymentMethod, verification);
+		response.getWriter().write(verification.name());
+		response.getWriter().flush();
 	}
 
 	/**
@@ -100,10 +124,10 @@ public class PaymentResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String notifyPaymentJson(@PathParam("paymentMethod") Payment.Method paymentMethod,
 			Map<String, Object> result) throws Exception {
-		LOG.debug("Payment notification(JSON) from server: {}", result);
+		LOG.debug("[{}] payment notification(JSON) from server: {}", paymentMethod, result);
 		PaymentResponse paymentResponse = paymentService.processServerPaymentNotification(paymentMethod,
 				new PaymentNotification(result));
-		LOG.debug("Payment response to server: {}", paymentResponse);
+		LOG.debug("[{}] payment response to server: {}", paymentMethod, paymentResponse);
 		return paymentResponse.getBody();
 	}
 
@@ -115,27 +139,37 @@ public class PaymentResource {
 	@Path("{paymentMethod}/notify")
 	public void notifyPaymentPlainText(@PathParam("paymentMethod") Payment.Method paymentMethod,
 			@Context HttpServletRequest request, @Context HttpServletResponse response) throws Exception {
+		Map<String, String> params = extractRequestParams(request);
+		LOG.debug("[{}] payment notification(RAW) from server: {}", paymentMethod, params);
+		PaymentResponse paymentResponse = paymentService.processServerPaymentNotification(paymentMethod,
+				new PaymentNotification(params));
+		LOG.debug("[{}] payment response to server: {}", paymentMethod, paymentResponse);
+		response.setStatus(paymentResponse.getCode());
+		PrintWriter out = response.getWriter();
+		String body = paymentResponse.getBody();
+		if (Strings.isBlank(body)) {
+			out.write(body);
+		}
+		out.flush();
+		out.close();
+	}
+
+	private Map<String, String> extractRequestParams(HttpServletRequest request) {
 		Map<String, String> params = new HashMap<>();
 		Map<String, String[]> requestParams = request.getParameterMap();
 		for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext();) {
 			String name = iter.next();
 			String[] values = (String[]) requestParams.get(name);
-			String valueStr = "";
-			for (int i = 0; i < values.length; i++) {
-				valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
-			}
+			String valueStr = Joiner.on(",").join(values);
+			// String valueStr = "";
+			// for (int i = 0; i < values.length; i++) {
+			// valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+			// }
 			// 乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
 			// valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
 			params.put(name, valueStr);
 		}
-		LOG.debug("Payment notification(RAW) from server(via HttpServletRequest): {}", params);
-		PaymentResponse paymentResponse = paymentService.processServerPaymentNotification(paymentMethod,
-				new PaymentNotification(params));
-		LOG.debug("Payment response to server: {}", paymentResponse);
-		PrintWriter out = response.getWriter();
-		out.write(paymentResponse.getBody());
-		out.flush();
-		out.close();
+		return params;
 	}
 
 }

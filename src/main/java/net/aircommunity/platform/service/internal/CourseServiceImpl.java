@@ -5,18 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +18,6 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Course;
-import net.aircommunity.platform.model.domain.Course_;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.domain.School;
 import net.aircommunity.platform.model.domain.Tenant;
@@ -43,7 +35,9 @@ import net.aircommunity.platform.service.SchoolService;
 @Service
 @Transactional
 public class CourseServiceImpl extends AbstractProductService<Course> implements CourseService {
-	private static final String CACHE_NAME = "cache.course";
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.course";
+
 	private static final String CACHE_NAME_AIRCRAFT_TYPES = "cache.course.aircraft-types";
 	private static final String CACHE_NAME_AIRCRAFT_LICENSES = "cache.course.aircraft-licenses";
 	private static final String CACHE_NAME_AIRCRAFT_LOCATIONS = "cache.course.aircraft-locations";
@@ -108,7 +102,7 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 		copyProperties(newCourse, course);
 		School newSchool = schoolService.findSchool(newCourse.getSchool().getId());
 		course.setSchool(newSchool);
-		return safeExecute(() -> courseRepository.save(course), "Update course %s to %s failed", courseId, newCourse);
+		return doUpdateProduct(courseId, course);
 	}
 
 	@Override
@@ -170,29 +164,8 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 	@Override
 	public Page<Course> listCoursesWithConditions(String location, String license, String aircraftType, int page,
 			int pageSize) {
-		Specification<Course> spec = new Specification<Course>() {
-			@Override
-			public Predicate toPredicate(Root<Course> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-				Predicate predicate = cb.conjunction();
-				List<Expression<Boolean>> expressions = predicate.getExpressions();
-				Path<Date> p = root.get(Course_.startDate);
-				query.orderBy(cb.desc(p));
-				if (Strings.isNotBlank(location)) {
-					// XXX for fuzzy match if needed
-					// expressions.add(cb.like(root.get(Course_.location), "%" + location + "%"));
-					expressions.add(cb.equal(root.get(Course_.location), location));
-				}
-				if (Strings.isNotBlank(license)) {
-					expressions.add(cb.equal(root.get(Course_.license), license));
-				}
-				if (Strings.isNotBlank(aircraftType)) {
-					expressions.add(cb.equal(root.get(Course_.aircraftType), aircraftType));
-				}
-				expressions.add(cb.greaterThanOrEqualTo(root.get(Course_.endDate), new Date()/* now */));
-				return predicate;
-			}
-		};
-		return Pages.adapt(courseRepository.findAll(spec, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseRepository.listCoursesWithConditions(location, license, aircraftType,
+				Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Caching(evict = { @CacheEvict(cacheNames = CACHE_NAME, key = "#courseId"),

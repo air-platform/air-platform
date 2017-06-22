@@ -29,7 +29,7 @@ import net.aircommunity.platform.service.ProductFamilyService;
 @Service
 @Transactional
 public class ProductFamilyServiceImpl extends AbstractServiceSupport implements ProductFamilyService {
-	private static final String CACHE_NAME = "cache.productfamily";
+	private static final String CACHE_NAME = "cache.product-family";
 
 	@Resource
 	private ProductFamilyRepository productFamilyRepository;

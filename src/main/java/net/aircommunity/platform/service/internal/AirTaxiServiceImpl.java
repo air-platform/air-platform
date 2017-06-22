@@ -26,7 +26,9 @@ import net.aircommunity.platform.service.AircraftService;
 @Service
 @Transactional
 public class AirTaxiServiceImpl extends SalesPackageProductService<AirTaxi> implements AirTaxiService {
-	private static final String CACHE_NAME = "cache.airtaxi";
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.airtaxi";
 
 	@Resource
 	private AirTaxiRepository airTaxiRepository;

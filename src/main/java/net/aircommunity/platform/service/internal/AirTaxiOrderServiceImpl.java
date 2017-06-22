@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirTaxiOrder;
 import net.aircommunity.platform.model.domain.Order.Status;
-import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.repository.AirTaxiOrderRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.AirTaxiOrderService;
@@ -27,7 +27,9 @@ import net.aircommunity.platform.service.AirTaxiService;
 @Transactional
 public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<AirTaxiOrder>
 		implements AirTaxiOrderService {
-	private static final String CACHE_NAME = "cache.airtaxi-order";
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.airtaxi-order";
 
 	@Resource
 	private AirTaxiOrderRepository airTaxiOrderRepository;
@@ -46,6 +48,7 @@ public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 		return doFindOrder(orderId);
 	}
 
+	// FIXME DO we really need? should work using: getOrderRepository().findOne(orderId)
 	@Override
 	protected AirTaxiOrder doFindOrder0(String orderId) {
 		return airTaxiOrderRepository.findOne(orderId);
@@ -91,13 +94,13 @@ public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 	}
 
 	@Override
-	protected VendorAwareOrderRepository<AirTaxiOrder> getOrderRepository() {
-		return airTaxiOrderRepository;
+	protected Code orderNotFoundCode() {
+		return Codes.TAXI_ORDER_NOT_FOUND;
 	}
 
 	@Override
-	protected Code orderNotFoundCode() {
-		return Codes.TAXI_ORDER_NOT_FOUND;
+	protected VendorAwareOrderRepository<AirTaxiOrder> getOrderRepository() {
+		return airTaxiOrderRepository;
 	}
 
 }

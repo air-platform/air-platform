@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.UnitProductPrice;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
@@ -47,7 +48,8 @@ public abstract class Order extends Persistable {
 	 * All not finished or closed or refund
 	 */
 	public static final EnumSet<Status> PENDING_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
-			Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.TICKET_RELEASED, Status.PARTIAL_PAID, Status.PAID);
+			Status.CUSTOMER_CONFIRMED, Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.TICKET_RELEASED,
+			Status.PAYMENT_IN_PROCESS, Status.PARTIAL_PAID, Status.PAID, Status.PAYMENT_FAILED);
 
 	/**
 	 * Refund
@@ -64,9 +66,9 @@ public abstract class Order extends Persistable {
 	private static final EnumSet<Status> CANCELLABLE_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
 			Status.CONFIRMED, Status.CONTRACT_SIGNED);
 
-	// finished, closed, cancelled or refunded
+	// finished, closed, cancelled, payment failed or refunded, FIXME: Status.PAYMENT_FAILED also termination??
 	private static final EnumSet<Status> TERMINATION_STATUSES = EnumSet.of(Status.FINISHED, Status.CANCELLED,
-			Status.REFUNDED, Status.CLOSED);
+			Status.PAYMENT_FAILED, Status.REFUNDED, Status.CLOSED);
 
 	// Order Number
 	@XmlElement
@@ -93,6 +95,16 @@ public abstract class Order extends Persistable {
 	@XmlElement
 	@Column(name = "total_price", nullable = false)
 	protected BigDecimal totalPrice = BigDecimal.ZERO;
+
+	// Order original total price
+	@XmlElement
+	@Column(name = "original_total_price", nullable = false)
+	protected BigDecimal originalTotalPrice = BigDecimal.ZERO;
+
+	// Order price CurrencyUnit
+	@Column(name = "currency_unit", nullable = false)
+	@Enumerated(EnumType.STRING)
+	protected CurrencyUnit currencyUnit = CurrencyUnit.RMB;
 
 	// TODO add tradeStatus? PENDING/IN_PROGRESS/FINISHED/CLOSED?
 	@XmlElement
@@ -171,7 +183,13 @@ public abstract class Order extends Persistable {
 	@Column(name = "refund_failure_cause")
 	protected String refundFailureCause;
 
-	// information to customer if the order cannot be accepted, reject reason? TODO
+	// information from customer about cancel
+	@XmlElement
+	@Lob
+	@Column(name = "cancel_reason")
+	protected String cancelReason;
+
+	// information to customer if the order cannot be accepted, reject reason
 	@XmlElement
 	@Lob
 	@Column(name = "closed_reason")
@@ -235,6 +253,22 @@ public abstract class Order extends Persistable {
 
 	public void setTotalPrice(BigDecimal totalPrice) {
 		this.totalPrice = totalPrice;
+	}
+
+	public BigDecimal getOriginalTotalPrice() {
+		return originalTotalPrice;
+	}
+
+	public void setOriginalTotalPrice(BigDecimal originalTotalPrice) {
+		this.originalTotalPrice = originalTotalPrice;
+	}
+
+	public CurrencyUnit getCurrencyUnit() {
+		return currencyUnit;
+	}
+
+	public void setCurrencyUnit(CurrencyUnit currencyUnit) {
+		this.currencyUnit = currencyUnit;
 	}
 
 	public Boolean getCommented() {
@@ -325,6 +359,14 @@ public abstract class Order extends Persistable {
 		this.refundFailureCause = refundFailureCause;
 	}
 
+	public String getCancelReason() {
+		return cancelReason;
+	}
+
+	public void setCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
+	}
+
 	public String getClosedReason() {
 		return closedReason;
 	}
@@ -384,7 +426,8 @@ public abstract class Order extends Persistable {
 
 	@XmlTransient
 	public boolean isPayable() {
-		return getProduct() != null && status.ordinal() < Status.PAID.ordinal();
+		return getProduct() != null && (status.ordinal() < Status.CONTRACT_SIGNED.ordinal()
+				|| status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
 	}
 
 	@XmlTransient
@@ -475,9 +518,14 @@ public abstract class Order extends Persistable {
 		CREATED,
 
 		/**
-		 * Confirmation
+		 * Customer confirmed (e.g. AIRJET fleet selected)
 		 */
-		// XXX CONFIRM_PENDING status: for airjet user need to select a flightCandidate, if allow user to select/cancel
+		CUSTOMER_CONFIRMED,
+
+		/**
+		 * Vendor Confirmed
+		 */
+		// XXX CONFIRM_PENDING status: for AIRJET user need to select a flightCandidate, if allow user to select/cancel
 		// flightCandidate. We only allow select once, don't allow cancel, so only one state is needed.
 		CONFIRMED,
 
@@ -489,7 +537,7 @@ public abstract class Order extends Persistable {
 		/**
 		 * Payment
 		 */
-		PARTIAL_PAID, PAID,
+		PAYMENT_IN_PROCESS, PARTIAL_PAID, PAID, PAYMENT_FAILED,
 
 		/**
 		 * Ticketing

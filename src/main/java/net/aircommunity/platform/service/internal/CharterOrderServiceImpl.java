@@ -2,10 +2,14 @@ package net.aircommunity.platform.service.internal;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -38,7 +42,10 @@ import net.aircommunity.platform.service.FleetService;
 @Service
 @Transactional
 public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> implements CharterOrderService {
-	private static final String CACHE_NAME = "cache.charterorder";
+	private static final Logger LOG = LoggerFactory.getLogger(CharterOrderServiceImpl.class);
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.charterorder";
 
 	@Resource
 	private CharterOrderRepository charterOrderRepository;
@@ -109,6 +116,8 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 					if (fleet != null) {
 						fleet = fleetService.findFleet(fleet.getId());
 						fleetCandidate.setFleet(fleet);
+						// force CANDIDATE if multiple selection
+						fleetCandidate.setStatus(FleetCandidate.Status.CANDIDATE);
 					}
 				});
 			}
@@ -118,26 +127,53 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public CharterOrder selectFleetCandidate(String orderId, String fleetCandidateId) {
-		CharterOrder charterOrder = findCharterOrder(orderId);
-		charterOrder.selectFleetCandidate(fleetCandidateId);
-		return safeExecute(() -> {
-			return charterOrderRepository.save(charterOrder);
-		}, "Select FleetCandidate %s for order %s failed", fleetCandidateId, orderId);
+	public CharterOrder updateCharterOrderTotalAmount(String orderId, BigDecimal totalAmount) {
+		return doUpdateOrderTotalAmount(orderId, totalAmount);
 	}
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public CharterOrder offerFleetCandidate(String orderId, String fleetCandidateId, BigDecimal totalAmount) {
-		if (totalAmount == null || totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
-			throw new AirException(Codes.ORDER_INVALID_TOTAL_AMOUNT, M.msg(M.ORDER_INVALID_OFFER_TOTAL_AMOUNT));
-		}
+	public CharterOrder selectFleetCandidate(String orderId, String fleetCandidateId) {
 		CharterOrder charterOrder = findCharterOrder(orderId);
-		charterOrder.offerFleetCandidate(fleetCandidateId);
-		charterOrder.setTotalPrice(totalAmount);
+		Optional<FleetCandidate> selected = charterOrder.selectFleetCandidate(fleetCandidateId);
+		if (!selected.isPresent()) {
+			LOG.error("selectFleetCandidate failed, the requested fleetCandidateId: {} not found", fleetCandidateId);
+			throw new AirException(Codes.FLEET_CANDIDATE_NOT_FOUND, M.msg(M.FLEET_CANDIDATE_NOT_FOUND));
+		}
+		BigDecimal totalPrice = selected.get().getOfferedPrice();
+		charterOrder.setTotalPrice(totalPrice);
+		return doUpdateOrderStatus(charterOrder, Order.Status.CUSTOMER_CONFIRMED);
+	}
+
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	@Override
+	public CharterOrder offerFleetCandidate(String orderId, String fleetCandidateId, BigDecimal offeredAmount) {
+		ensureTotalAmount(offeredAmount);
+		CharterOrder charterOrder = findCharterOrder(orderId);
+		Optional<FleetCandidate> offered = charterOrder.offerFleetCandidate(fleetCandidateId, offeredAmount);
+		if (!offered.isPresent()) {
+			LOG.error("offerFleetCandidate failed, the requested fleetCandidateId: {} not found", fleetCandidateId);
+			throw new AirException(Codes.FLEET_CANDIDATE_NOT_FOUND, M.msg(M.FLEET_CANDIDATE_NOT_FOUND));
+		}
 		CharterOrder charterOrderSaved = safeExecute(() -> {
 			return charterOrderRepository.save(charterOrder);
 		}, "Offer FleetCandidate %s for order %s failed", fleetCandidateId, orderId);
+		eventBus.post(new OrderEvent(OrderEvent.EventType.FLEET_OFFERED, charterOrder));
+		return charterOrderSaved;
+	}
+
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	@Override
+	public CharterOrder refuseFleetCandidate(String orderId, String fleetCandidateId) {
+		CharterOrder charterOrder = findCharterOrder(orderId);
+		Optional<FleetCandidate> refused = charterOrder.refuseFleetCandidate(fleetCandidateId);
+		if (!refused.isPresent()) {
+			LOG.error("refuseFleetCandidate failed, the requested fleetCandidateId: {} not found", fleetCandidateId);
+			throw new AirException(Codes.FLEET_CANDIDATE_NOT_FOUND, M.msg(M.FLEET_CANDIDATE_NOT_FOUND));
+		}
+		CharterOrder charterOrderSaved = safeExecute(() -> {
+			return charterOrderRepository.save(charterOrder);
+		}, "Refuse FleetCandidate %s for order %s failed", fleetCandidateId, orderId);
 		eventBus.post(new OrderEvent(OrderEvent.EventType.FLEET_OFFERED, charterOrder));
 		return charterOrderSaved;
 	}
@@ -161,8 +197,16 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 			data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorIdAndOrderStatus(tenantId, status,
 					Pages.createPageRequest(page, pageSize)));
 		}
-		List<CharterOrder> content = data.getContent().stream().map(fleetCandidate -> fleetCandidate.getOrder())
-				.distinct().collect(ImmutableCollectors.toList());
+		List<CharterOrder> content = data.getContent().stream().map(fleetCandidate -> {
+			// make copy
+			CharterOrder order = fleetCandidate.getOrder().clone();
+			// remove FleetCandidate whose owner is NOT current tenant
+			// means tenant can only see his own FleetCandidate of this order
+			Set<FleetCandidate> candidates = order.getFleetCandidates().stream()
+					.filter(candidate -> candidate.isOwnedByTenant(tenantId)).collect(Collectors.toSet());
+			order.setFleetCandidates(candidates);
+			return order;
+		}).distinct().collect(ImmutableCollectors.toList());
 		return Pages.createPage(page, pageSize, data.getTotalRecords(), content);
 	}
 

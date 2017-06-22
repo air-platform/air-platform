@@ -13,10 +13,21 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class PaymentResponse {
 
+	// http status code
+	private final int code;
 	private final String body;
 
 	public PaymentResponse(String body) {
+		this(200, body);
+	}
+
+	public PaymentResponse(int code, String body) {
+		this.code = code;
 		this.body = body;
+	}
+
+	public int getCode() {
+		return code;
 	}
 
 	public String getBody() {
@@ -26,7 +37,7 @@ public final class PaymentResponse {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("PaymentResponse [body=").append(body).append("]");
+		builder.append("PaymentResponse [code=").append(code).append(", body=").append(body).append("]");
 		return builder.toString();
 	}
 }

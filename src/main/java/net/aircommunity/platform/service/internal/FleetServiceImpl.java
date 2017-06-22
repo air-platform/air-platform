@@ -34,7 +34,9 @@ import net.aircommunity.platform.service.FleetService;
 @Service
 @Transactional
 public class FleetServiceImpl extends AbstractProductService<Fleet> implements FleetService {
-	private static final String CACHE_NAME = "cache.fleet";
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.fleet";
 
 	@Resource
 	private AccountService accountService;

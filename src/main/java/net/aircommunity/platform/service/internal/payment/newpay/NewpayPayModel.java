@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
- * TradePayModel
+ * NewpayPay Model
  * 
  * @author Bin.Zhang
  */

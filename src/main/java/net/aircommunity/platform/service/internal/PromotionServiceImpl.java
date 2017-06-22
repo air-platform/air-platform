@@ -8,13 +8,14 @@ import javax.annotation.Resource;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.domain.Promotion;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.Promotion;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.PromotionRepository;
 import net.aircommunity.platform.service.PromotionService;
@@ -28,10 +29,12 @@ import net.aircommunity.platform.service.PromotionService;
 @Transactional
 public class PromotionServiceImpl extends AbstractServiceSupport implements PromotionService {
 	private static final String CACHE_NAME = "cache.promotion";
+	private static final String CACHE_NAME_CATEGORY = "cache.promotion-category";
 
 	@Resource
 	private PromotionRepository promotionRepository;
 
+	@CacheEvict(cacheNames = CACHE_NAME_CATEGORY, allEntries = true)
 	@Override
 	public Promotion createPromotion(Promotion promotion) {
 		Promotion newPromotion = new Promotion();
@@ -50,7 +53,7 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 		return promotion;
 	}
 
-	@CachePut(cacheNames = CACHE_NAME, key = "#promotionId")
+	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#promotionId"), evict = @CacheEvict(cacheNames = CACHE_NAME_CATEGORY, allEntries = true))
 	@Override
 	public Promotion updatePromotion(String promotionId, Promotion newPromotion) {
 		Promotion promotion = findPromotion(promotionId);
@@ -66,6 +69,7 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 		tgt.setItems(src.getItems());
 	}
 
+	@Cacheable(cacheNames = CACHE_NAME_CATEGORY)
 	@Override
 	public List<Promotion> listPromotions(Category category) {
 		if (category == null) {
@@ -74,13 +78,14 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 		return promotionRepository.findByCategory(category);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME, key = "#promotionId")
+	@Caching(evict = { @CacheEvict(cacheNames = CACHE_NAME, key = "#promotionId"),
+			@CacheEvict(cacheNames = CACHE_NAME_CATEGORY, allEntries = true) })
 	@Override
 	public void deletePromotion(String promotionId) {
 		safeExecute(() -> promotionRepository.delete(promotionId), "Delete promotion %s failed", promotionId);
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
+	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_CATEGORY }, allEntries = true)
 	@Override
 	public void deletePromotions() {
 		safeExecute(() -> promotionRepository.deleteAll(), "Delete all promotions failed");

@@ -70,6 +70,17 @@ public interface CharterOrderService {
 	CharterOrder updateCharterOrderStatus(@Nonnull String charterOrderId, @Nonnull Order.Status status);
 
 	/**
+	 * Update CharterOrder total amount.
+	 * 
+	 * @param charterOrderId the charterOrderId
+	 * @param totalAmount the tenant offered totalAmount > 0 for the charter order
+	 * @return updated CharterOrder
+	 */
+	@Nonnull
+	CharterOrder updateCharterOrderTotalAmount(@Nonnull String charterOrderId,
+			@Nonnull @Nonnegative BigDecimal totalAmount);
+
+	/**
 	 * Update CharterOrder to select a fleet candidate
 	 * 
 	 * @param charterOrderId the charterOrderId
@@ -80,7 +91,7 @@ public interface CharterOrderService {
 	CharterOrder selectFleetCandidate(@Nonnull String charterOrderId, @Nonnull String fleetCandidateId);
 
 	/**
-	 * Update CharterOrder to offer a fleet candidate by tenant
+	 * Update CharterOrder to offer a fleet candidate(optional) and a price by tenant
 	 * 
 	 * @param charterOrderId the charterOrderId
 	 * @param fleetCandidateId the fleetCandidateId to be selected
@@ -88,8 +99,18 @@ public interface CharterOrderService {
 	 * @return updated CharterOrder
 	 */
 	@Nonnull
-	CharterOrder offerFleetCandidate(@Nonnull String charterOrderId, @Nonnull String fleetCandidateId,
+	CharterOrder offerFleetCandidate(@Nonnull String charterOrderId, String fleetCandidateId,
 			@Nonnull @Nonnegative BigDecimal totalAmount);
+
+	/**
+	 * Update CharterOrder to refuse a fleet candidate by tenant
+	 * 
+	 * @param charterOrderId the charterOrderId
+	 * @param fleetCandidateId the fleetCandidateId to be selected
+	 * @return updated CharterOrder
+	 */
+	@Nonnull
+	CharterOrder refuseFleetCandidate(@Nonnull String charterOrderId, @Nonnull String fleetCandidateId);
 
 	/**
 	 * List all CharterOrders by pagination filtered by userId and order status.

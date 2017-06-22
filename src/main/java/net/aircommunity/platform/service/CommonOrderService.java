@@ -12,6 +12,7 @@ import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.Refund;
 
 /**
  * Common order service list/query all {@code Order}s for a {@code User}.
@@ -58,13 +59,13 @@ public interface CommonOrderService {
 	Order findOrder(@Nonnull String orderId);
 
 	/**
-	 * Save/Update order (NOTE: userId MUST BE already set in the order), XXX use this API with caution.
+	 * Update order as commented.
 	 * 
-	 * @param order the order to be saved
+	 * @param orderId the orderId
 	 * @return order updated
 	 */
 	@Nonnull
-	Order saveOrder(@Nonnull Order order);
+	Order updateOrderCommented(@Nonnull String orderId);
 
 	/**
 	 * Update order status
@@ -89,15 +90,16 @@ public interface CommonOrderService {
 	Order acceptOrderRefund(@Nonnull String orderId, @Nonnull BigDecimal refundAmount);
 
 	@Nonnull
+	Order acceptOrderRefund(@Nonnull String orderId, @Nonnull Refund refund);
+
+	@Nonnull
 	Order rejectOrderRefund(@Nonnull String orderId, @Nonnull String rejectReason);
 
 	@Nonnull
 	Order handleOrderRefundFailure(@Nonnull String orderId, @Nonnull String refundFailureCause);
 
 	@Nonnull
-	default Order cancelOrder(@Nonnull String orderId) {
-		return updateOrderStatus(orderId, Order.Status.CANCELLED);
-	}
+	Order cancelOrder(@Nonnull String orderId, @Nonnull String cancelReason);
 
 	/**
 	 * Update order status
@@ -113,11 +115,11 @@ public interface CommonOrderService {
 	 * Update order total price
 	 * 
 	 * @param orderId the orderId
-	 * @param price the order price
+	 * @param newTotalAmount the order totalAmount
 	 * @return order updated
 	 */
 	@Nonnull
-	Order updateOrderPrice(@Nonnull String orderId, double newPrice);
+	Order updateOrderTotalAmount(@Nonnull String orderId, BigDecimal newTotalAmount);
 
 	/**
 	 * Hard delete from DB

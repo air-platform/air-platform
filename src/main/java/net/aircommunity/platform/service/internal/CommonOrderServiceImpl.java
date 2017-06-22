@@ -18,6 +18,7 @@ import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.PaymentRepository;
 import net.aircommunity.platform.service.CommentService;
@@ -31,7 +32,6 @@ import net.aircommunity.platform.service.CommonOrderService;
 @Service
 @Transactional
 public class CommonOrderServiceImpl extends AbstractOrderService<Order> implements CommonOrderService {
-	private static final String CACHE_NAME = "cache.order";
 
 	@Resource
 	private BaseOrderRepository<Order> baseOrderRepository;
@@ -47,7 +47,8 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 		return paymentRepository.findByMethodAndTradeNo(paymentMethod, tradeNo);
 	}
 
-	@Cacheable(cacheNames = CACHE_NAME)
+	// XXX REMOVE we cannot cache by orderNo, need update cache
+	// @Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public Order findByOrderNo(String orderNo) {
 		return doFindOrderByOrderNo(orderNo);
@@ -95,20 +96,28 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
+	public Order acceptOrderRefund(String orderId, Refund refund) {
+		return doAcceptOrderRefund(orderId, refund);
+	}
+
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	@Override
 	public Order rejectOrderRefund(String orderId, String rejectReason) {
 		return doRejectOrderRefund(orderId, rejectReason);
 	}
 
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public Order handleOrderRefundFailure(String orderId, String refundFailureCause) {
 		return doHandleOrderRefundFailure(orderId, refundFailureCause);
 	}
 
-	// TODO check if #result.id works?
-	// Cache cache = cacheManager.getCache(CACHE_NAME);
-	// Order order = doUpdateOrderStatusByOrderNo(orderNo, status);
-	// cache.put(order.getId(), order);
-	// return order;
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	@Override
+	public Order cancelOrder(String orderId, String cancelReason) {
+		return doCancelOrder(orderId, cancelReason);
+	}
+
 	@CachePut(cacheNames = CACHE_NAME, key = "#result.id")
 	@Override
 	public Order updateOrderStatusByOrderNo(String orderNo, Status status) {
@@ -117,13 +126,14 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public Order updateOrderPrice(String orderId, double newPrice) {
-		return doUpdateOrderPrice(orderId, newPrice);
+	public Order updateOrderTotalAmount(String orderId, BigDecimal newTotalAmount) {
+		return doUpdateOrderTotalAmount(orderId, newTotalAmount);
 	}
 
+	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
-	public Order saveOrder(Order order) {
-		return safeExecute(() -> baseOrderRepository.save(order), "Save order %s failed", order);
+	public Order updateOrderCommented(String orderId) {
+		return doUpdateOrderCommented(orderId);
 	}
 
 	@Override
@@ -157,11 +167,13 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 		doDeleteOrder(orderId);
 	}
 
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteOrders(String userId) {
 		doDeleteOrders(userId);
 	}
 
+	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void purgeOrders(String userId) {
 		commentService.deleteCommentsOfAccount(userId);

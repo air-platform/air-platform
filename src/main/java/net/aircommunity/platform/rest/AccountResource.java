@@ -243,9 +243,13 @@ public class AccountResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public ImageCropResult uploadAvatarToCloud(@QueryParam("cropOptions") String cropOptions,
 			@MultipartForm AvatarImage avatarImage) {
+		String fileName = avatarImage.getFileName();
+		LOG.debug("Uploading avatar {} to cloud", fileName);
+		if (Strings.isBlank(fileName)) {
+			throw new AirException(Codes.INVALID_FORM_INPUT, M.msg(M.FORM_INVALID_FILE_INPUT));
+		}
 		try {
-			LOG.debug("Uploading avatar {} to cloud", avatarImage.getFileName());
-			String extension = MoreFiles.getExtension(avatarImage.getFileName());
+			String extension = MoreFiles.getExtension(fileName);
 			return fileService.cropImage(
 					String.format(Constants.FILE_UPLOAD_NAME_FORMAT, UUIDs.shortRandom(), extension),
 					avatarImage.getFileData(), cropOptions);

@@ -1,46 +1,31 @@
 package net.aircommunity.platform.service.internal.payment.newpay;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
-import java.util.function.BiFunction;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
-
-import io.micro.common.DateFormats;
-import io.micro.common.UUIDs;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * TradePayModel
+ * NewpayPay Request
  * 
  * @author Bin.Zhang
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class NewpayPayRequest implements Serializable {
+public class NewpayPayRequest extends NewpayRequest {
 	private static final long serialVersionUID = 1L;
-
-	private final static String SUBMIT_TIME_PATTERN = "yyyyMMddHHmmss";
-	private static final SimpleDateFormat SUBMIT_TIME_FORMATTER = DateFormats.simple(SUBMIT_TIME_PATTERN);
-
-	// 版本 String(4) - 当前版本 2.6
-	@XmlElement(name = "version", required = true)
-	private String version = "2.6";
-
-	// 请求序列号 String(32) - 商户本次提交请求的序列号,每次提交必须唯一 (用于验证商户重复提交)
-	@XmlElement(name = "serialID", required = true)
-	private String requestId;
 
 	// 订单提交时间 String(14), yyyyMMddHHmmss
 	@XmlElement(name = "submitTime", required = true)
-	private String submitTime;
+	@XmlJavaTypeAdapter(TimeAdapter.class)
+	private Date submitTime;
 
 	// 订单失效时间 String(14), yyyyMMddHHmmss
 	@XmlElement(name = "failureTime", required = false)
-	private String failureTime = "";
+	@XmlJavaTypeAdapter(TimeAdapter.class)
+	private Date failureTime;
 
 	// 客户下单域名 及IP String(128) - 商户系统域名和客户下单 IP 例如:www.taoXX.com[192.168.1.2]
 	@XmlElement(name = "customerIP", required = false)
@@ -103,43 +88,35 @@ public class NewpayPayRequest implements Serializable {
 	@XmlElement(name = "noticeUrl", required = true)
 	private String notifyUrl;
 
-	// 商户 ID String(32) - 新生支付平台 供给商户的 ID 号 (11000002981)
-	@XmlElement(name = "partnerID", required = true)
-	private String partnerId;
-
 	// 扩展字段 String(256) 填写英文或中文字符串,照原样返回给商户
 	@XmlElement(name = "remark", required = false)
 	private String remark = "";
 
-	// 编码方式 String(1) - 1:UTF-8
-	@XmlElement(name = "charset", required = true)
-	private String charset = "1";
-
-	// 签名类型 String(1) - 1:RSA 2:MD5
-	@XmlElement(name = "signType", required = true)
-	private String signType = "1";
-
-	// 签名字符串 String(256)
-	@XmlElement(name = "signMsg", required = true)
-	private String sign;
-
 	@XmlTransient
 	private NewpayPayModel model;
 
-	public NewpayPayModel getModel() {
-		return model;
-	}
-
 	public String getReturnUrl() {
 		return returnUrl;
+	}
+
+	public void setReturnUrl(String returnUrl) {
+		this.returnUrl = returnUrl;
 	}
 
 	public String getNotifyUrl() {
 		return notifyUrl;
 	}
 
-	public String getPartnerId() {
-		return partnerId;
+	public void setNotifyUrl(String notifyUrl) {
+		this.notifyUrl = notifyUrl;
+	}
+
+	public NewpayPayModel getModel() {
+		return model;
+	}
+
+	public void setModel(NewpayPayModel model) {
+		this.model = model;
 	}
 
 	private String buildSignMsg() {
@@ -147,8 +124,8 @@ public class NewpayPayRequest implements Serializable {
 		return new StringBuilder()
 		 .append("version=").append(version)
 		 .append("&serialID=").append(requestId)
-		 .append("&submitTime=").append(submitTime)
-		 .append("&failureTime=").append(failureTime)
+		 .append("&submitTime=").append(formatTimestamp(submitTime))
+		 .append("&failureTime=").append(formatTimestamp(failureTime))
 		 .append("&customerIP=").append(customerIpAddress)
 		 .append("&orderDetails=").append(orderDetails)
 		 .append("&totalAmount=").append(totalAmount)
@@ -171,67 +148,77 @@ public class NewpayPayRequest implements Serializable {
 		// @formatter:on
 	}
 
-	private String build() {
-		requestId = UUIDs.shortTimebased();
-		submitTime = SUBMIT_TIME_FORMATTER.format(new Date());
+	NewpayPayRequest build() {
+		requestId = newRequestId();
+		submitTime = new Date();
 		// TODO REMOVE (TESTING)
 		// requestId = "dde03550527111e7d2395f079d75b256";
 		// submitTime = "20170616165746";
 		totalAmount = model.getTotalAmount();
 		orderDetails = model.toOrderDetails();
-		return buildSignMsg();
+		String signMsg = buildSignMsg();
+		sign = signRsaSignature(signMsg, NewpayCharset.fromString(charset));
+		return this;
 	}
 
-	public static Builder builder(BiFunction<String, NewpayCharset, String> signer) {
-		return new Builder(signer);
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("NewpayPayRequest [submitTime=").append(submitTime).append(", failureTime=").append(failureTime)
+				.append(", customerIpAddress=").append(customerIpAddress).append(", orderDetails=").append(orderDetails)
+				.append(", totalAmount=").append(totalAmount).append(", type=").append(type).append(", buyerMarked=")
+				.append(buyerMarked).append(", payType=").append(payType).append(", orgCode=").append(orgCode)
+				.append(", currencyCode=").append(currencyCode).append(", directFlag=").append(directFlag)
+				.append(", borrowingMarked=").append(borrowingMarked).append(", couponFlag=").append(couponFlag)
+				.append(", platformID=").append(platformID).append(", returnUrl=").append(returnUrl)
+				.append(", notifyUrl=").append(notifyUrl).append(", remark=").append(remark).append(", model=")
+				.append(model).append(", version=").append(version).append(", requestId=").append(requestId)
+				.append(", partnerId=").append(partnerId).append(", charset=").append(charset).append(", signType=")
+				.append(signType).append(", sign=").append(sign).append("]");
+		return builder.toString();
 	}
 
-	public static class Builder {
-		private final BiFunction<String, NewpayCharset, String> signer;
-		private String notifyUrl;
-		private String returnUrl;
-		private String partnerId;
-		private NewpayPayModel model;
+	// public static Builder builder() {
+	// return new Builder();
+	// }
 
-		public Builder(BiFunction<String, NewpayCharset, String> signer) {
-			this.signer = Objects.requireNonNull(signer, "signer cannot be null");
-		}
-
-		public Builder notifyUrl(String notifyUrl) {
-			this.notifyUrl = notifyUrl;
-			return this;
-		}
-
-		public Builder returnUrl(String returnUrl) {
-			this.returnUrl = returnUrl;
-			return this;
-		}
-
-		public Builder partnerId(String partnerId) {
-			this.partnerId = partnerId;
-			return this;
-		}
-
-		public Builder model(NewpayPayModel model) {
-			this.model = model;
-			return this;
-		}
-
-		public final NewpayPayRequest build() {
-			NewpayPayRequest req = new NewpayPayRequest();
-			req.notifyUrl = notifyUrl;
-			req.returnUrl = returnUrl;
-			req.partnerId = partnerId;
-			req.model = model;
-			String signMsg = req.build();
-			try {
-				req.sign = signer.apply(signMsg, NewpayCharset.fromString(req.charset));
-			}
-			catch (Exception e) {
-				throw new IllegalArgumentException("Failed to sign request:" + e.getMessage(), e);
-			}
-			return req;
-		}
-	}
+	// public static class Builder {
+	// private String notifyUrl;
+	// private String returnUrl;
+	// private String partnerId;
+	// private NewpayPayModel model;
+	//
+	// private Builder() {
+	// }
+	//
+	// public Builder notifyUrl(String notifyUrl) {
+	// this.notifyUrl = notifyUrl;
+	// return this;
+	// }
+	//
+	// public Builder returnUrl(String returnUrl) {
+	// this.returnUrl = returnUrl;
+	// return this;
+	// }
+	//
+	// public Builder partnerId(String partnerId) {
+	// this.partnerId = partnerId;
+	// return this;
+	// }
+	//
+	// public Builder model(NewpayPayModel model) {
+	// this.model = model;
+	// return this;
+	// }
+	//
+	// public final NewpayPayRequest build() {
+	// NewpayPayRequest req = new NewpayPayRequest();
+	// req.notifyUrl = notifyUrl;
+	// req.returnUrl = returnUrl;
+	// req.partnerId = partnerId;
+	// req.model = model;
+	// return req.build();
+	// }
+	// }
 
 }

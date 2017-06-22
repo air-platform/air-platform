@@ -19,8 +19,9 @@ public final class Codes {
 	public static final Code WRITE_JSON_FAILURE = Code.invalidArgument(11_000_0006);
 
 	// file upload
-	public static final Code UNSUPPORTED_FILE_TYPE = Code.invalidArgument(11_000_0007);
-	public static final Code TOO_MANY_VERIFICATION_REQUEST = Code.rateLimiting(11_000_0008);
+	public static final Code INVALID_FORM_INPUT = Code.invalidArgument(11_000_0007);
+	public static final Code UNSUPPORTED_FILE_TYPE = Code.invalidArgument(11_000_0008);
+	public static final Code TOO_MANY_VERIFICATION_REQUEST = Code.rateLimiting(11_000_0009);
 
 	// account
 	public static final Code ACCOUNT_UNAUTHORIZED = Code.notAuthorized(11_001_0001);
@@ -88,6 +89,7 @@ public final class Codes {
 	public static final Code FLEET_ALREADY_EXISTS = Code.alreadyExists(11_004_0002);
 	public static final Code FLEET_CANDIDATE_NOT_FOUND = Code.notFound(11_004_0003);
 	public static final Code CHARTERORDER_NOT_FOUND = Code.notFound(11_004_0004);
+	public static final Code CHARTERORDER_CANNOT_UPDATE_PRICE = Code.invalidArgument(11_004_0005);
 
 	// ferry flight
 	public static final Code FERRYFLIGHT_NOT_FOUND = Code.notFound(11_005_0001);

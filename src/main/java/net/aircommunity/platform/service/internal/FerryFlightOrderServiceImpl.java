@@ -28,7 +28,9 @@ import net.aircommunity.platform.service.FerryFlightService;
 @Transactional
 public class FerryFlightOrderServiceImpl extends AbstractVendorAwareOrderService<FerryFlightOrder>
 		implements FerryFlightOrderService {
-	private static final String CACHE_NAME = "cache.ferryflight-order";
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.ferryflight-order";
 
 	@Resource
 	private FerryFlightOrderRepository ferryFlightOrderRepository;

@@ -38,7 +38,8 @@ import net.aircommunity.platform.service.ProductFamilyService;
 public class AirTransportServiceImpl extends SalesPackageProductService<AirTransport> implements AirTransportService {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTransportServiceImpl.class);
 
-	private static final String CACHE_NAME = "cache.airtransport";
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.airtransport";
 
 	@Resource
 	private AircraftService aircraftService;

@@ -15,8 +15,8 @@ final class NewpaySignature {
 	private final NewpayConfig config;
 	private final PrivateKey privateKey;
 
-	NewpaySignature(NewpayConfig configuration) {
-		config = configuration;
+	NewpaySignature(NewpayConfig config) {
+		this.config = config;
 		try {
 			InputStream in = NewpaySignature.class.getClassLoader().getResourceAsStream(config.getKeystorePath());
 			KeyStore ks = KeyStore.getInstance(KEYSTORE_TYPE);

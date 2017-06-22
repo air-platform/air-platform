@@ -10,10 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.CourseOrder;
 import net.aircommunity.platform.model.domain.Order;
-import net.aircommunity.platform.model.domain.Order.Status;
-import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.repository.CourseOrderRepository;
 import net.aircommunity.platform.repository.SchoolRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
@@ -28,7 +27,9 @@ import net.aircommunity.platform.service.CourseService;
 @Service
 @Transactional
 public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<CourseOrder> implements CourseOrderService {
-	private static final String CACHE_NAME = "cache.course-courseorder";
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.course-courseorder";
 
 	@Resource
 	private CourseOrderRepository courseOrderRepository;
@@ -59,7 +60,7 @@ public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<Cour
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#courseOrderId")
 	@Override
-	public CourseOrder updateCourseOrderStatus(String courseOrderId, Status status) {
+	public CourseOrder updateCourseOrderStatus(String courseOrderId, Order.Status status) {
 		return doUpdateOrderStatus(courseOrderId, status);
 	}
 

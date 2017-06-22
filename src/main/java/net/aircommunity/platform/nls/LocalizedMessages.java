@@ -22,6 +22,9 @@ public class LocalizedMessages extends NLSResource {
 	public static String REFUND_FAILURE;
 	public static String REFUND_REQUEST_REJECTED;
 
+	// generic
+	public static String FORM_INVALID_FILE_INPUT;
+
 	// product
 	public static String PRODUCT_NOT_FOUND;
 	public static String PRODUCT_NOT_APPROVED;
@@ -78,6 +81,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String FLEET_NOT_FOUND;
 	public static String FLEET_ALREADY_EXISTS;
 	public static String FLEET_CANDIDATE_NOT_FOUND;
+	public static String CHARTERORDER_CANNOT_UPDATE_PRICE_INVALID_STATUS;
 
 	// account
 	public static String ACCOUNT_ADMIN_CANNOT_BE_DELETED;

@@ -56,7 +56,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	@GET
 	@Path("{productId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	public Product findProduct(@PathParam("productId") String productId) {
 		return commonProductService.findProduct(productId);
 	}
@@ -67,7 +67,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	@POST
 	@Path("{productId}/rank")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Product rankProduct(@PathParam("productId") String productId, JsonObject request) {
 		int newRank = getProductRank(request);
@@ -80,7 +80,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	@POST
 	@Path("{productId}/publish")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Product publishProduct(@PathParam("productId") String productId) {
 		return commonProductService.publishProduct(productId, true);
@@ -92,7 +92,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	@POST
 	@Path("{productId}/unpublish")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Product unpublishProduct(@PathParam("productId") String productId) {
 		return commonProductService.publishProduct(productId, false);
@@ -124,7 +124,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	 */
 	@DELETE
 	@Path("{productId}")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	public void deleteProduct(@PathParam("productId") String productId) {
 		commonProductService.deleteProduct(productId);
 	}
@@ -133,7 +133,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	 * Delete all
 	 */
 	@DELETE
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	public void deleteProducts(@PathParam("tenantId") String tenantId) {
 		commonProductService.deleteProducts(tenantId);
 	}
@@ -147,7 +147,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	@GET
 	@Path("{productId}/faqs")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<ProductFaq> listProductFaqs(@PathParam("productId") String productId,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
@@ -160,7 +160,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	@POST
 	@Path("{productId}/faqs")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Response createProductFaq(@PathParam("productId") String productId, @NotNull @Valid ProductFaq faq,
 			@Context UriInfo uriInfo) {
@@ -176,7 +176,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	@GET
 	@Path("{productId}/faqs/{productFaqId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public ProductFaq findProductFaq(@PathParam("productFaqId") String productFaqId) {
 		return commonProductService.findProductFaq(productFaqId);
@@ -189,7 +189,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	@Path("{productId}/faqs/{productFaqId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public ProductFaq updateProductFaq(@PathParam("productFaqId") String productFaqId, @NotNull ProductFaq newFaq) {
 		return commonProductService.updateProductFaq(productFaqId, newFaq);
@@ -200,7 +200,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	 */
 	@DELETE
 	@Path("{productId}/faqs/{productFaqId}")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	public void deleteProductFaq(@PathParam("productFaqId") String productFaqId) {
 		commonProductService.deleteProductFaq(productFaqId);
 	}
@@ -210,7 +210,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	 */
 	@DELETE
 	@Path("{productId}/faqs")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	public void deleteProductFaqs(@PathParam("productId") String productId) {
 		commonProductService.deleteProductFaqs(productId);
 	}

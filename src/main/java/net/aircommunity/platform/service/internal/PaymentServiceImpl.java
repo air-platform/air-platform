@@ -37,6 +37,7 @@ import net.aircommunity.platform.service.spi.PaymentGateway;
  * @author Bin.Zhang
  */
 @Service
+@Transactional
 public class PaymentServiceImpl implements PaymentService {
 	private static final Logger LOG = LoggerFactory.getLogger(LOGGER_NAME);
 

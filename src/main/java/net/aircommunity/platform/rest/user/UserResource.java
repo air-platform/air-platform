@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -31,6 +32,7 @@ import net.aircommunity.platform.model.domain.Address;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CharterOrderService;
 import net.aircommunity.platform.service.CommonOrderService;
@@ -44,7 +46,7 @@ import net.aircommunity.platform.service.CommonOrderService;
 @RESTful
 @Path("user")
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
-public class UserResource {
+public class UserResource extends BaseResourceSupport {
 
 	@Resource
 	private AccountService accountService;
@@ -215,13 +217,15 @@ public class UserResource {
 	@Path("orders/{orderId}/refund")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void refundOrder(@PathParam("orderId") String orderId, @NotNull @Valid RefundRequest request) {
+		// TODO just replace RefundRequest --> JsonObject ( {reason: ""} )
 		commonOrderService.requestOrderRefund(orderId, request);
 	}
 
 	@POST
 	@Path("orders/{orderId}/cancel")
-	public void cancelOrder(@PathParam("orderId") String orderId) {
-		commonOrderService.cancelOrder(orderId);
+	public void cancelOrder(@PathParam("orderId") String orderId, JsonObject request) {
+		String reason = getCancelReason(request);
+		commonOrderService.cancelOrder(orderId, reason);
 	}
 
 	@DELETE

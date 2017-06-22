@@ -1,11 +1,13 @@
-package net.aircommunity.platform.service.internal.payment;
+package net.aircommunity.platform.service.internal.payment.wechat;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.annotation.Resource;
+import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.binarywang.wxpay.bean.WxPayOrderNotifyResponse;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
@@ -22,19 +24,19 @@ import me.chanjar.weixin.common.bean.result.WxError;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.common.OrderPrices;
-import net.aircommunity.platform.model.domain.Order;
-import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.model.domain.Refund;
-import net.aircommunity.platform.model.domain.Payment.Method;
 import net.aircommunity.platform.model.PaymentNotification;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PaymentResponse;
 import net.aircommunity.platform.model.PaymentVerification;
 import net.aircommunity.platform.model.RefundResponse;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Payment.Method;
+import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.nls.M;
+import net.aircommunity.platform.service.internal.payment.AbstractPaymentGateway;
 
 /**
  * Wechat PaymentGateway
@@ -42,13 +44,9 @@ import net.aircommunity.platform.nls.M;
  * @author Bin.Zhang
  */
 @Service
+@Transactional
 public class WechatPaymentGateway extends AbstractPaymentGateway {
-	// 微信公众账号或开放平台APP的唯一标识
-	private static final String APP_ID = "TODO";// TODO
-	// 微信支付商户号
-	private static final String MCH_ID = "TODO";// TODO
-	// API密钥(微信支付商户密钥)
-	private static final String MCH_KEY = "TODO";// TODO
+	private static final String TRADE_TYPE = "APP";
 	private static final String RETURN_CODE_SUCCESS = "SUCCESS"; // SUCCESS/FAIL
 	private static final String RETURN_MSG_SUCCESS = "OK";
 	private static final String RETURN_MSG_FAIL = "FAIL";
@@ -60,17 +58,22 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 			WxPayOrderNotifyResponse.fail(RETURN_MSG_FAIL));
 
 	private final WxPayService wxPayService;
+	private final WechatConfig config;
 
-	@Resource
-	private Configuration configuration;
-
-	public WechatPaymentGateway() {
-		WxPayConfig config = new WxPayConfig();
-		config.setAppId(APP_ID);
-		config.setMchId(MCH_ID);
-		config.setMchKey(MCH_KEY);
+	@Autowired
+	public WechatPaymentGateway(WechatConfig config) {
+		this.config = config;
+		WxPayConfig wxconfig = new WxPayConfig();
+		wxconfig.setAppId(config.getAppId());
+		wxconfig.setMchId(config.getMchId());
+		wxconfig.setMchKey(config.getMchKey());
 		wxPayService = new WxPayServiceImpl();
-		wxPayService.setConfig(config);
+		wxPayService.setConfig(wxconfig);
+	}
+
+	@PostConstruct
+	private void init() {
+		LOG.debug("Wechat config {}", config);
 	}
 
 	@Override
@@ -105,9 +108,9 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 			}
 			request.setSpbillCreateIp(ip);
 			// 接收微信支付异步通知回调地址，通知url必须为直接可访问的url，不能携带参数。 (必填)
-			request.setNotifyURL(configuration.getWechatNotifyUrl());
+			request.setNotifyURL(config.getNotifyUrl());
 			// 支付类型 (必填)
-			request.setTradeType("APP");
+			request.setTradeType(TRADE_TYPE);
 			WxPayUnifiedOrderResult paymentInfo = wxPayService.unifiedOrder(request);
 			return new PaymentRequest(paymentInfo.getXmlString());
 		}
@@ -139,8 +142,8 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 			if (RETURN_CODE_SUCCESS.equals(notifyResponse.getReturnCode())) {
 				if (RESULT_CODE_SUCCESS.equals(notifyResponse.getResultCode())) {
 					// 2) check APP_ID
-					if (!APP_ID.equals(notifyResponse.getAppid())) {
-						LOG.error("APP ID mismatch expected: {}, but was: {}, payment failed", APP_ID,
+					if (!config.getAppId().equals(notifyResponse.getAppid())) {
+						LOG.error("APP ID mismatch expected: {}, but was: {}, payment failed", config.getAppId(),
 								notifyResponse.getAppid());
 						return NOTIFICATION_RESPONSE_FAILURE;
 					}

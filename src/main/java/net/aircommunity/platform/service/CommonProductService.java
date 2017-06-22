@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.model.domain.ProductFaq;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.ProductFaq;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 
 /**
@@ -57,6 +57,16 @@ public interface CommonProductService {
 	 */
 	@Nonnull
 	Product updateProductRank(@Nonnull String productId, int newRank);
+
+	/**
+	 * Update product score.
+	 * 
+	 * @param productId the productId
+	 * @param score the new score
+	 * @return product update
+	 */
+	@Nonnull
+	Product updateProductScore(@Nonnull String productId, double score);
 
 	/**
 	 * Review a product to approve or not (by platform ADMIN only)

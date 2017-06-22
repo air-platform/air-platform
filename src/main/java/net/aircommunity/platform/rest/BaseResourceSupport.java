@@ -19,9 +19,11 @@ public abstract class BaseResourceSupport {
 
 	private static final String JSON_PROP_COUNT = "count";
 	private static final String JSON_PROP_REJECT_REASON = "reason";
+	private static final String JSON_PROP_CANCEL_REASON = "reason";
 	private static final String JSON_PROP_RANK = "rank";
 	private static final String JSON_PROP_AMOUNT = "amount";
-	private static final String JSON_PROP_TOTAL_AMOUNT = "totalAmount";
+	private static final String JSON_PROP_STATUS = "status";
+	private static final String JSON_PROP_FLEET_CANDIDATE = "candidate";
 
 	@Resource
 	protected CommonProductService commonProductService;
@@ -30,12 +32,18 @@ public abstract class BaseResourceSupport {
 		return Json.createObjectBuilder().add(JSON_PROP_COUNT, count).build();
 	}
 
-	protected BigDecimal getTotalAmount(JsonObject request) {
-		if (request != null) {
-			JsonNumber num = request.getJsonNumber(JSON_PROP_TOTAL_AMOUNT);
-			return num == null ? BigDecimal.ZERO : num.bigDecimalValue();
+	protected String getStatus(JsonObject request) {
+		if (request == null) {
+			return null;
 		}
-		return BigDecimal.ZERO;
+		return request.getString(JSON_PROP_STATUS);
+	}
+
+	protected String getFleetCandidate(JsonObject request) {
+		if (request == null) {
+			return null;
+		}
+		return request.getString(JSON_PROP_FLEET_CANDIDATE);
 	}
 
 	protected BigDecimal getAmount(JsonObject request) {
@@ -53,9 +61,16 @@ public abstract class BaseResourceSupport {
 		return Product.DEFAULT_RANK;
 	}
 
-	protected String getRejectedReason(JsonObject rejectedReason) {
-		if (rejectedReason != null) {
-			return rejectedReason.getString(JSON_PROP_REJECT_REASON);
+	protected String getRejectedReason(JsonObject request) {
+		if (request != null) {
+			return request.getString(JSON_PROP_REJECT_REASON);
+		}
+		return null;
+	}
+
+	protected String getCancelReason(JsonObject request) {
+		if (request != null) {
+			return request.getString(JSON_PROP_CANCEL_REASON);
 		}
 		return null;
 	}

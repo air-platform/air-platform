@@ -1,4 +1,4 @@
-package net.aircommunity.platform.service.internal.payment;
+package net.aircommunity.platform.service.internal.payment.alipay;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,16 +29,17 @@ import io.micro.common.DateFormats;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderPrices;
-import net.aircommunity.platform.model.domain.Order;
-import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.model.domain.Refund;
-import net.aircommunity.platform.model.domain.Payment.Method;
 import net.aircommunity.platform.model.PaymentNotification;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PaymentResponse;
 import net.aircommunity.platform.model.PaymentVerification;
 import net.aircommunity.platform.model.RefundResponse;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Payment.Method;
+import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.nls.M;
+import net.aircommunity.platform.service.internal.payment.AbstractPaymentGateway;
 
 /**
  * Alipay PaymentGateway
@@ -43,12 +47,14 @@ import net.aircommunity.platform.nls.M;
  * @author Bin.Zhang
  */
 @Service
+@Transactional
 public class AlipayPaymentGateway extends AbstractPaymentGateway {
-
-	private static final String APP_ID = "2017060907455116";
-	private static final String APP_PRIVATE_KEY = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCmD0tN9FnXpnbA7KbdxTKHOm1k+HKveD5skZQ/r2ZV43rQFHOtQQEY2sdvNgBeUKAnv15PDf6uFyD9VpqtDzhSR9uFDLF7Gz6BVNByEKno5on1FDT1loUHz0/yXMxfapYpk5SLgXowI0cmn2vIzhxeHF4zLK9oU39c4bpmtvIDA7NHS2LuQmuCoLVuwtsuMaqFuJ3pMG9oZywC8Z5EVd3ogjyyxDbKgY897jO0hhv71/SfZ9GOAgrFNBpGMZO3nUtrpk7H7Yx1E3EuzKryplf8EdUs/WgfmSfhRw6yIKMaW0hM9/GdG670SkwEwuvrpDdReiYROUDtbCihioi5y+2/AgMBAAECggEACvTPXyFUHCpbg3cZu2AbaVithw/tYS5pz/f69Ai6k8gifkAbMb8sN1uX9Pp3I8HmDzlNG6Isv4e/IXfpVKnAaY1cKncf7qNpiFb0OdJno3oyd/0RUXLQ7Cb9e1wsD8+UgMG/90Rfr3VkaGP0VJdkv8DXZkD4gcWgjZxHFCfV5+TnScLQqgWmByu5pJKPuQX4XnWajexM1nJQm2Go1OTC8zEChBc3whSZyYqnBAQU4rS7Pz83seTUDFmPAG7xWKnBLT/jy9TpwOyHpMsHFismLJXCZHF+aGq7Wyx+Xemv4r5a6UEBfHSY3eACl2mElYESyi6CQkoNH2PaGdtNSLOcQQKBgQDhpQ2wXl+q3w5G4UV6eSBX4frG3bSxiI5HM+xMsE+kQhu99wf3Ri8P8MhUBmtKnKl4j4KgEZt0kmxzlFlT8dQ7Tj7bO5x4auCZi2YmKq/37x0iFrUQiXfyego1FZxUeNTcKWiHHi5db3OCc+fwI8YnzdOJ2KKRDXdi6zhw7kuhWQKBgQC8ZjObionxX/mi3y4GvbrNSSkO9jzSUJ9nMeBcy1hpBC695gXoSoR5QQtRMdQxWtK4c6+8MgJMPdCwSUsAF4pvI0LrZPaFIUWEb9pUZkLY1+mhMf87xAFAa78CM5p2J25n5jq1t6PTn0+JbCRlsjgIsM5emecAx/rXX1NT8klM1wKBgC8OP5uPIr48g/quEdInnmIVYznDlGINizY4EsgvYHxtuOFVudiMT1YwrWYwbIGDyCe3LdN5uISH4Iv93N8PqGWxvJP1i3zlNO9wTZ4Z+tZmjBnGyH2pXVU4tBY76n0HMcSz8fNzjNG5Y0pKJ41BuJomZz3w6n37Y/FCAmQynZ0JAoGBALPkms6ggIr8a6/7j0VckSxH+W6R7Q2dcjflRikU+bx9A+zL4UQnM0tcsmO7QrRF1wPNYzY+QjdupwBNW9IgqEzqzJFcfJAubuTAsSb55kaMFEeZJ+93fwJ2X5LIl2rOx/tpuRGe4k3FxvqfSjnY7OxPdx6Zshvq2Dgii7ySky9NAoGBAMtDw4cQ+RLZxf9dAoJO6QmdmJKFgI+UZP/oLsNtqa3eqQU7W2/jS2pVm5bC3uebjCs+keKad9ESQ3ddiULThe1UfHelbpLSpSmTTxwcx29qtAgrQ+jlIoJmKfSMGR0Y6ahQaCCjXKsLs24TCOlbqJtT0Sk5aRiMffkX+A2X9nSb";
+	// private static final String APP_ID = "2017060907455116";
+	// private static final String APP_PRIVATE_KEY =
+	// "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCmD0tN9FnXpnbA7KbdxTKHOm1k+HKveD5skZQ/r2ZV43rQFHOtQQEY2sdvNgBeUKAnv15PDf6uFyD9VpqtDzhSR9uFDLF7Gz6BVNByEKno5on1FDT1loUHz0/yXMxfapYpk5SLgXowI0cmn2vIzhxeHF4zLK9oU39c4bpmtvIDA7NHS2LuQmuCoLVuwtsuMaqFuJ3pMG9oZywC8Z5EVd3ogjyyxDbKgY897jO0hhv71/SfZ9GOAgrFNBpGMZO3nUtrpk7H7Yx1E3EuzKryplf8EdUs/WgfmSfhRw6yIKMaW0hM9/GdG670SkwEwuvrpDdReiYROUDtbCihioi5y+2/AgMBAAECggEACvTPXyFUHCpbg3cZu2AbaVithw/tYS5pz/f69Ai6k8gifkAbMb8sN1uX9Pp3I8HmDzlNG6Isv4e/IXfpVKnAaY1cKncf7qNpiFb0OdJno3oyd/0RUXLQ7Cb9e1wsD8+UgMG/90Rfr3VkaGP0VJdkv8DXZkD4gcWgjZxHFCfV5+TnScLQqgWmByu5pJKPuQX4XnWajexM1nJQm2Go1OTC8zEChBc3whSZyYqnBAQU4rS7Pz83seTUDFmPAG7xWKnBLT/jy9TpwOyHpMsHFismLJXCZHF+aGq7Wyx+Xemv4r5a6UEBfHSY3eACl2mElYESyi6CQkoNH2PaGdtNSLOcQQKBgQDhpQ2wXl+q3w5G4UV6eSBX4frG3bSxiI5HM+xMsE+kQhu99wf3Ri8P8MhUBmtKnKl4j4KgEZt0kmxzlFlT8dQ7Tj7bO5x4auCZi2YmKq/37x0iFrUQiXfyego1FZxUeNTcKWiHHi5db3OCc+fwI8YnzdOJ2KKRDXdi6zhw7kuhWQKBgQC8ZjObionxX/mi3y4GvbrNSSkO9jzSUJ9nMeBcy1hpBC695gXoSoR5QQtRMdQxWtK4c6+8MgJMPdCwSUsAF4pvI0LrZPaFIUWEb9pUZkLY1+mhMf87xAFAa78CM5p2J25n5jq1t6PTn0+JbCRlsjgIsM5emecAx/rXX1NT8klM1wKBgC8OP5uPIr48g/quEdInnmIVYznDlGINizY4EsgvYHxtuOFVudiMT1YwrWYwbIGDyCe3LdN5uISH4Iv93N8PqGWxvJP1i3zlNO9wTZ4Z+tZmjBnGyH2pXVU4tBY76n0HMcSz8fNzjNG5Y0pKJ41BuJomZz3w6n37Y/FCAmQynZ0JAoGBALPkms6ggIr8a6/7j0VckSxH+W6R7Q2dcjflRikU+bx9A+zL4UQnM0tcsmO7QrRF1wPNYzY+QjdupwBNW9IgqEzqzJFcfJAubuTAsSb55kaMFEeZJ+93fwJ2X5LIl2rOx/tpuRGe4k3FxvqfSjnY7OxPdx6Zshvq2Dgii7ySky9NAoGBAMtDw4cQ+RLZxf9dAoJO6QmdmJKFgI+UZP/oLsNtqa3eqQU7W2/jS2pVm5bC3uebjCs+keKad9ESQ3ddiULThe1UfHelbpLSpSmTTxwcx29qtAgrQ+jlIoJmKfSMGR0Y6ahQaCCjXKsLs24TCOlbqJtT0Sk5aRiMffkX+A2X9nSb";
+	// private static final String ALIPAY_PUBLIC_KEY =
+	// "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAooqAPK0uB0LBA9RjaTNgD1NK5h/ZYbuVteNhVMyeUcJQUXrOWB8Fbpv/uhJoqjtZlXud4svJ8jJ9xx2H2LJqW4eGnAekyI848T/C99X6z67R0QBzyZHjFejUxvv6GbDyF80eMn4MJFslaS51iBhZQC3ilCzgBQ4jjBRwCMP3tPVgoMpYV0vo6QJ9pTFojs84fe23lNcd0fA5rfRWJsai4F7oBD0odG77SVPbohuPefj3BHYppItCSFdwmjLXdGFsi2X+KIvkDQCsHcwhbjJvp9A8SWU0vUAcpakE5dvp2zoN5mYQJDR/CePiEEe7i32CtwJ0Uni5eqIKsSmmMbOIEQIDAQAB";
 	private static final String ALIPAY_GATEWAY_URL = "https://openapi.alipay.com/gateway.do";
-	private static final String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAooqAPK0uB0LBA9RjaTNgD1NK5h/ZYbuVteNhVMyeUcJQUXrOWB8Fbpv/uhJoqjtZlXud4svJ8jJ9xx2H2LJqW4eGnAekyI848T/C99X6z67R0QBzyZHjFejUxvv6GbDyF80eMn4MJFslaS51iBhZQC3ilCzgBQ4jjBRwCMP3tPVgoMpYV0vo6QJ9pTFojs84fe23lNcd0fA5rfRWJsai4F7oBD0odG77SVPbohuPefj3BHYppItCSFdwmjLXdGFsi2X+KIvkDQCsHcwhbjJvp9A8SWU0vUAcpakE5dvp2zoN5mYQJDR/CePiEEe7i32CtwJ0Uni5eqIKsSmmMbOIEQIDAQAB";
 	private static final String ALIPAY_SIGN_TYPE = "RSA2";
 	private static final String ALIPAY_PAY_FORMAT = "json";
 	private static final String ALIPAY_PAY_CHARSET = "utf-8";
@@ -76,9 +82,18 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 
 	private final AlipayClient alipayClient;
 
-	public AlipayPaymentGateway() {
-		alipayClient = new DefaultAlipayClient(ALIPAY_GATEWAY_URL, APP_ID, APP_PRIVATE_KEY, ALIPAY_PAY_FORMAT,
-				ALIPAY_PAY_CHARSET, ALIPAY_PUBLIC_KEY, ALIPAY_SIGN_TYPE);
+	private AlipayConfig config;
+
+	@Autowired
+	public AlipayPaymentGateway(AlipayConfig alipayConfig) {
+		config = alipayConfig;
+		alipayClient = new DefaultAlipayClient(ALIPAY_GATEWAY_URL, config.getAppId(), config.getAppPrivateKey(),
+				ALIPAY_PAY_FORMAT, ALIPAY_PAY_CHARSET, config.getPublicKey(), ALIPAY_SIGN_TYPE);
+	}
+
+	@PostConstruct
+	private void init() {
+		LOG.debug("Alipay config {}", config);
 	}
 
 	@Override
@@ -111,8 +126,8 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 		model.setTotalAmount(String.valueOf(totalAmount));
 		model.setProductCode(ALIPAY_PRODUCT_CODE);
 		request.setBizModel(model);
-		request.setNotifyUrl(configuration.getAlipayNotifyUrl());
-		LOG.debug("notify url: {}", configuration.getAlipayNotifyUrl());
+		request.setNotifyUrl(config.getNotifyUrl());
+		LOG.debug("notify url: {}", config.getNotifyUrl());
 		try {
 			AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
 			// 就是orderString 可以直接给客户端请求，无需再做处理
@@ -186,7 +201,7 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 
 				// 2) check APP_ID
 				String appId = (String) tradePayResponse.get(NOTIFICATION_RESULT_APP_ID);
-				if (APP_ID.equals(appId)) {
+				if (config.getAppId().equals(appId)) {
 					String orderNo = response.getOutTradeNo();
 					BigDecimal totalAmount = new BigDecimal(response.getTotalAmount());
 					// 3) check orderNo existence
@@ -196,6 +211,7 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 						// 4) check total_amount matches the total price of the order and check order status?
 						if (OrderPrices.priceMatches(totalAmount, order.getTotalPrice()) && order.isProbablyPaid()) {
 							// it may still FAILURE because of async notification from payment system, just a guess
+							commonOrderService.updateOrderStatus(order.getId(), Order.Status.PAYMENT_IN_PROCESS);
 							return PaymentVerification.SUCCESS;
 						}
 					}
@@ -226,7 +242,7 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 			BigDecimal totalAmount = new BigDecimal(params.get(NOTIFICATION_RESULT_TOTAL_AMOUNT)); // 订单金额
 
 			// 1) verify sign
-			boolean signVerified = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, ALIPAY_PAY_CHARSET,
+			boolean signVerified = AlipaySignature.rsaCheckV1(params, config.getPublicKey(), ALIPAY_PAY_CHARSET,
 					ALIPAY_SIGN_TYPE);
 			if (!signVerified) {
 				LOG.error("Signature verification failure, payment failed");
@@ -234,8 +250,8 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 			}
 
 			// 2) check APP_ID
-			if (!APP_ID.equals(appId)) {
-				LOG.error("APP ID mismatch expected: {}, but was: {}, payment failed", APP_ID, appId);
+			if (!config.getAppId().equals(appId)) {
+				LOG.error("APP ID mismatch expected: {}, but was: {}, payment failed", config.getAppId(), appId);
 				return NOTIFICATION_RESPONSE_FAILURE;
 			}
 

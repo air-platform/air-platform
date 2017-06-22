@@ -1,15 +1,9 @@
 package net.aircommunity.platform.rest.tenant.order;
 
-import java.math.BigDecimal;
-
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.json.JsonObject;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -59,13 +53,14 @@ public class TenantCharterOrderResource extends TenantBaseOrderResource<CharterO
 	}
 
 	/**
-	 * Offer a fleet (only allow one to be offered)
+	 * Offer a fleet and provide a price (only allow one to be offered)
 	 */
-	@POST
-	@Path("{orderId}/offer")
-	public void offerFleet(@PathParam("orderId") String orderId,
-			@NotNull @QueryParam("candidate") String fleetCandidateId, @NotNull JsonObject request) {
-		BigDecimal totalAmount = getTotalAmount(request);
-		charterOrderService.offerFleetCandidate(orderId, fleetCandidateId, totalAmount);
-	}
+	// TODO REMOVE {@see TenantBaseOrderResource#updateOrderPrice) use this instead
+	// @POST
+	// @Path("{orderId}/offer")
+	// public void offerFleet(@PathParam("orderId") String orderId,
+	// @NotNull @QueryParam("candidate") String fleetCandidateId, @NotNull JsonObject request) {
+	// BigDecimal totalAmount = getAmount(request);
+	// charterOrderService.offerFleetCandidate(orderId, fleetCandidateId, totalAmount);
+	// }
 }

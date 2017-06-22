@@ -118,19 +118,19 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 			Comment savedComment = commentRepository.save(newComment);
 			// calculate score if comment from order
 			if (source == Source.BUYER) {
-				double score = product.getScore();
 				if (savedComment.getRate() > 0) {
+					double newScore = 0.0d;
 					double productScore = product.getScore();
 					if (productScore > 0) {
-						score = (score + savedComment.getRate()) / 2.0;
-						product.setScore(Maths.round(score, 2, BigDecimal.ROUND_HALF_UP));
+						newScore = (productScore + savedComment.getRate()) / 2.0;
+						newScore = Maths.round(newScore, 2, BigDecimal.ROUND_HALF_UP);
 					}
 					else {
-						product.setScore(savedComment.getRate());
+						newScore = savedComment.getRate();
 					}
+					commonProductService.updateProductScore(product.getId(), newScore);
 				}
-				order.setCommented(true);
-				commonOrderService.saveOrder(order);
+				commonOrderService.updateOrderCommented(order.getId());
 			}
 			return savedComment;
 		}

@@ -19,13 +19,17 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.CharterOrder;
+import net.aircommunity.platform.model.domain.FleetCandidate;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
+import net.aircommunity.platform.service.CharterOrderService;
 import net.aircommunity.platform.service.CommonOrderService;
 
 /**
@@ -39,6 +43,9 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 
 	@Resource
 	private CommonOrderService commonOrderService;
+
+	@Resource
+	private CharterOrderService charterOrderService;
 
 	// *****************
 	// ADMIN & TENANT
@@ -62,9 +69,45 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	@POST
 	@Path("{orderId}/price")
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
-	public void updateOrderPrice(@PathParam("orderId") String orderId, @NotNull JsonObject price) {
-		double newPrice = price.getJsonNumber("price").doubleValue();
-		commonOrderService.updateOrderPrice(orderId, newPrice);
+	public void updateOrderPrice(@PathParam("orderId") String orderId, @NotNull JsonObject request) {
+		BigDecimal totalAmount = getAmount(request);
+		Order order = commonOrderService.findOrder(orderId);
+		// specific case for charter (update price and also offer a fleetCandidate)
+		if (CharterOrder.class.isAssignableFrom(order.getClass())) {
+			updateCharterOrderPrice(order, totalAmount, request);
+		}
+		else {
+			commonOrderService.updateOrderTotalAmount(orderId, totalAmount);
+		}
+	}
+
+	private void updateCharterOrderPrice(Order order, BigDecimal totalAmount, JsonObject request) {
+		String fleetCandidateId = getFleetCandidate(request);
+		String status = getStatus(request);
+		String orderId = order.getId();
+		if (Strings.isBlank(fleetCandidateId)) {
+			commonOrderService.updateOrderTotalAmount(orderId, totalAmount);
+			return;
+		}
+		// offer or refuse
+		FleetCandidate.Status targetStatus = FleetCandidate.Status.fromString(status);
+		if (targetStatus == null) {
+			throw new AirException(Codes.CHARTERORDER_CANNOT_UPDATE_PRICE,
+					M.msg(M.CHARTERORDER_CANNOT_UPDATE_PRICE_INVALID_STATUS));
+		}
+		switch (targetStatus) {
+		case CANDIDATE:
+			charterOrderService.refuseFleetCandidate(orderId, fleetCandidateId);
+			break;
+
+		case OFFERED:
+			charterOrderService.offerFleetCandidate(orderId, fleetCandidateId, totalAmount);
+			break;
+
+		default:
+			throw new AirException(Codes.CHARTERORDER_CANNOT_UPDATE_PRICE,
+					M.msg(M.CHARTERORDER_CANNOT_UPDATE_PRICE_INVALID_STATUS));
+		}
 	}
 
 	/**

@@ -27,7 +27,9 @@ import net.aircommunity.platform.service.FerryFlightService;
 @Service
 @Transactional
 public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> implements FerryFlightService {
-	private static final String CACHE_NAME = "cache.ferryflight";
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.ferryflight";
 
 	@Resource
 	private FerryFlightRepository ferryFlightRepository;

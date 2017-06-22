@@ -1,5 +1,7 @@
 package net.aircommunity.platform.model.domain;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -25,6 +27,10 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FleetCandidate extends Persistable {
 	private static final long serialVersionUID = 1L;
+
+	// Order offered price of this fleet
+	@Column(name = "offered_Price", nullable = false)
+	private BigDecimal offeredPrice = BigDecimal.ZERO;
 
 	// can have only one SELECTED
 	@Column(name = "status", nullable = false)
@@ -53,6 +59,14 @@ public class FleetCandidate extends Persistable {
 		this.id = id;
 	}
 
+	public BigDecimal getOfferedPrice() {
+		return offeredPrice;
+	}
+
+	public void setOfferedPrice(BigDecimal offeredPrice) {
+		this.offeredPrice = offeredPrice;
+	}
+
 	public Status getStatus() {
 		return status;
 	}
@@ -76,6 +90,18 @@ public class FleetCandidate extends Persistable {
 	public void setFleet(Fleet fleet) {
 		this.fleet = fleet;
 		this.vendor = fleet.getVendor();
+	}
+
+	public boolean isOwnedByTenant(String tenantId) {
+		return fleet.getVendor().getId().equals(tenantId);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("FleetCandidate [offeredPrice=").append(offeredPrice).append(", status=").append(status)
+				.append(", order=").append(order).append("]");
+		return builder.toString();
 	}
 
 	/**

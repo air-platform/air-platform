@@ -11,7 +11,7 @@ import javax.persistence.metamodel.StaticMetamodel;
  */
 @Generated(value = "org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor")
 @StaticMetamodel(Course.class)
-public abstract class Course_ {
+public abstract class Course_ extends Product_ {
 
 	public static volatile SingularAttribute<Course, String> license;
 	public static volatile SingularAttribute<Course, String> aircraftType;

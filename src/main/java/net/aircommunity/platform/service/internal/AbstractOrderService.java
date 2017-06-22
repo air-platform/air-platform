@@ -50,6 +50,7 @@ import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.model.domain.SalesPackage;
 import net.aircommunity.platform.model.domain.StandardOrder;
+import net.aircommunity.platform.model.domain.StandardProduct;
 import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseOrderRepository;
@@ -68,7 +69,8 @@ import net.aircommunity.platform.service.PaymentService;
 abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractOrderService.class);
 
-	private static final SimpleDateFormat DEPARTURE_DATE_FORMATTER = DateFormats.simple("yyyy-MM-dd");
+	protected static final String CACHE_NAME = "cache.order";
+	protected static final SimpleDateFormat DEPARTURE_DATE_FORMATTER = DateFormats.simple("yyyy-MM-dd");
 
 	protected Class<T> type;
 
@@ -144,7 +146,15 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			LOG.debug("Product: {}", product);
 			order.setProduct(product);
 			newOrder.setProduct(product);
+			if (StandardProduct.class.isAssignableFrom(product.getClass())) {
+				newOrder.setCurrencyUnit(StandardProduct.class.cast(product).getCurrencyUnit());
+			}
 		}
+		// should be SalesPackageProduct
+		if (AircraftAwareOrder.class.isAssignableFrom(type)) {
+			newOrder.setCurrencyUnit(AircraftAwareOrder.class.cast(newOrder).getSalesPackage().getCurrencyUnit());
+		}
+
 		newOrder.setOwner(owner);
 
 		// set base properties
@@ -178,6 +188,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
 				// update total price
 				newOrder.setTotalPrice(updatedTotalPrice);
+				newOrder.setOriginalTotalPrice(newOrder.getTotalPrice());
 				User account = (User) accountService.updateUserPoints(owner.getId(), -pointsUsed.getPointsExchanged());
 				LOG.info(
 						"[Exchanged points] User[{}][{}]: order[{}], updated total price: {}, points used: {}, account points balance: {}",
@@ -203,9 +214,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return retryTemplate.execute(context -> {
 			return orderNoGenerator.next();
 		});
-	}
-
-	protected void copyProperties(T src, T tgt) {
 	}
 
 	private void copyCommonProperties(Order src, Order tgt) {
@@ -264,7 +272,17 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		LOG.debug("final unitPrice: {}, quantity: {}", unitPrice, tgt.getQuantity());
 		tgt.setTotalPrice(OrderPrices.normalizePrice(unitPrice.multiply(BigDecimal.valueOf(tgt.getQuantity()))));
-		LOG.debug("final totalPrice: {}", tgt.getTotalPrice());
+		tgt.setOriginalTotalPrice(tgt.getTotalPrice());
+		LOG.debug("final totalPrice: {}, OriginalTotalPrice: {}", tgt.getTotalPrice(), tgt.getOriginalTotalPrice());
+	}
+
+	/**
+	 * To be overridden by subclass
+	 * 
+	 * @param src source
+	 * @param tgt target
+	 */
+	protected void copyProperties(T src, T tgt) {
 	}
 
 	private void copyPropertiesAircraftAware(AircraftAwareOrder src, AircraftAwareOrder tgt) {
@@ -348,7 +366,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	protected T doUpdateOrder(String orderId, T newOrder) {
-		T order = doFindOrder(orderId); // FIXME findOrder is NOT cached?
+		T order = doFindOrder(orderId);
 		copyCommonProperties(newOrder, order);
 		copyProperties(newOrder, order);
 		order.setLastModifiedDate(new Date());
@@ -357,14 +375,31 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
+	 * Mark as commented
+	 */
+	protected T doUpdateOrderCommented(String orderId) {
+		T order = doFindOrder(orderId);
+		order.setCommented(true);
+		return safeExecute(() -> getOrderRepository().save(order), "Update %s: %s to commented failed",
+				type.getSimpleName(), orderId);
+	}
+
+	/**
 	 * Update total price of an order
 	 */
-	protected T doUpdateOrderPrice(String orderId, double newPrice) {
+	protected T doUpdateOrderTotalAmount(String orderId, BigDecimal newTotalAmount) {
+		ensureTotalAmount(newTotalAmount);
 		T order = doFindOrder(orderId);
 		order.setLastModifiedDate(new Date());
-		order.setTotalPrice(BigDecimal.valueOf(newPrice));
+		order.setTotalPrice(newTotalAmount);
 		return safeExecute(() -> getOrderRepository().save(order), "Update %s price: %s to %d failed",
-				type.getSimpleName(), orderId, newPrice);
+				type.getSimpleName(), orderId, newTotalAmount);
+	}
+
+	protected void ensureTotalAmount(BigDecimal totalAmount) {
+		if (totalAmount == null || totalAmount.compareTo(BigDecimal.ZERO) < 0) {
+			throw new AirException(Codes.ORDER_INVALID_TOTAL_AMOUNT, M.msg(M.ORDER_INVALID_OFFER_TOTAL_AMOUNT));
+		}
 	}
 
 	/**
@@ -450,6 +485,29 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	/**
 	 * Accept refund
 	 */
+	protected T doAcceptOrderRefund(String orderId, Refund refund) {
+		T orderRefund = null;
+		T order = doUpdateOrderStatus(orderId, Order.Status.REFUNDING);
+		if (StandardOrder.class.isAssignableFrom(order.getClass())) {
+			StandardOrder standardOrder = StandardOrder.class.cast(order);
+			refund.setVendor(standardOrder.getProduct().getVendor());
+			refund.setOwner(standardOrder.getOwner());
+			standardOrder.setRefund(refund);
+			standardOrder.setRefundFailureCause(null);
+			orderRefund = doUpdateOrderStatus(order, Order.Status.REFUNDED);
+			eventBus.post(new OrderEvent(OrderEvent.EventType.REFUNDED, orderRefund));
+		}
+		// TODO NOT IMPLED
+		// installment order
+		// if (InstalmentOrder.class.isAssignableFrom(order.getClass())) {
+		// InstalmentOrder instalmentOrder = InstalmentOrder.class.cast(order);
+		// }
+		return orderRefund;
+	}
+
+	/**
+	 * Accept refund
+	 */
 	protected T doAcceptOrderRefund(String orderId, BigDecimal refundAmount) {
 		// update to Order.Status.REFUNDING now
 		T order = doUpdateOrderStatus(orderId, Order.Status.REFUNDING);
@@ -459,7 +517,13 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			StandardOrder standardOrder = StandardOrder.class.cast(order);
 			Payment payment = standardOrder.getPayment();
 			RefundResponse refundResponse = paymentService.refundPayment(payment.getMethod(), order, refundAmount);
-			if (refundResponse.isSuccess()) {
+			int code = refundResponse.getCode();
+			switch (code) {
+			case RefundResponse.PENDING:
+				// just left order status as REFUNDING
+				break;
+
+			case RefundResponse.SUCCESS:
 				Refund refund = refundResponse.getRefund();
 				refund.setVendor(standardOrder.getProduct().getVendor());
 				refund.setOwner(standardOrder.getOwner());
@@ -467,11 +531,16 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				standardOrder.setRefundFailureCause(null);
 				orderRefund = doUpdateOrderStatus(order, Order.Status.REFUNDED);
 				eventBus.post(new OrderEvent(OrderEvent.EventType.REFUNDED, orderRefund));
-			}
-			else {
+				break;
+
+			case RefundResponse.FAILURE:
 				order.setRefundFailureCause(refundResponse.getFailureCause());
 				orderRefund = doUpdateOrderStatus(order, Order.Status.REFUND_FAILED);
 				eventBus.post(new OrderEvent(OrderEvent.EventType.REFUND_FAILED, orderRefund));
+				break;
+
+			default:
+				// noops
 			}
 		}
 		// TODO NOT IMPLED
@@ -503,6 +572,16 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
+	 * Cancel
+	 */
+	protected T doCancelOrder(String orderId, String cancelReason) {
+		// NOTE: not from cache, in case it's updated
+		T order = doFindOrder(orderId);
+		order.setCancelReason(cancelReason);
+		return doUpdateOrderStatus(order, Order.Status.CANCELLED);
+	}
+
+	/**
 	 * Update order status to new status
 	 */
 	protected T doUpdateOrderStatusByOrderNo(String orderNo, Order.Status newStatus) {
@@ -529,7 +608,14 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			LOG.debug("It's order initial status, cannot update status to {}", newStatus);
 			throw invalidOrderStatus(order, newStatus);
 
-			// AirJet, AirTravel
+			// AirJet
+		case CUSTOMER_CONFIRMED:
+			LOG.debug("Expect order intial statuss & confirmationRequired");
+			expectOrderStatusCondition(order.isInitialStatus());
+			expectOrderStatusCondition(order.confirmationRequired());
+			break;
+
+		// AirJet, AirTravel
 		case CONFIRMED:
 			LOG.debug("Expect order confirmationRequired");
 			expectOrderStatusCondition(order.confirmationRequired());
@@ -543,9 +629,18 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			expectOrderStatus(order, newStatus, Order.Status.CONFIRMED);
 			break;
 
-		//
+		case PAYMENT_IN_PROCESS:
+			// TODO check later
+			LOG.debug("TODO CHECK for {}", newStatus);
+			break;
+
 		case PARTIAL_PAID:
-			// TODO CHECK
+			// TODO check later
+			LOG.debug("TODO CHECK for {}", newStatus);
+			break;
+
+		case PAYMENT_FAILED:
+			// TODO check later
 			LOG.debug("TODO CHECK for {}", newStatus);
 			break;
 

@@ -16,20 +16,35 @@ import net.aircommunity.platform.model.domain.Refund;
 public final class RefundResponse implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	public static final int SUCCESS = 0;
+	// accept but waiting for confirmation
+	public static final int PENDING = 1;
+	public static final int FAILURE = 2;
+
 	private final String failureCause;
 	private final Refund refund;
+	private final int code;
 
 	public static RefundResponse success(Refund refund) {
-		return new RefundResponse(refund, null);
+		return new RefundResponse(SUCCESS, refund, null);
+	}
+
+	public static RefundResponse pending() {
+		return new RefundResponse(PENDING, null, null);
 	}
 
 	public static RefundResponse failure(String failureCause) {
-		return new RefundResponse(null, failureCause);
+		return new RefundResponse(FAILURE, null, failureCause);
 	}
 
-	private RefundResponse(Refund refund, String failureCause) {
+	private RefundResponse(int code, Refund refund, String failureCause) {
+		this.code = code;
 		this.refund = refund;
 		this.failureCause = failureCause;
+	}
+
+	public int getCode() {
+		return code;
 	}
 
 	public String getFailureCause() {
@@ -40,8 +55,16 @@ public final class RefundResponse implements Serializable {
 		return refund;
 	}
 
-	public boolean isSuccess() {
-		return refund != null;
+	public boolean isSuccessful() {
+		return SUCCESS == code;
+	}
+
+	public boolean isPending() {
+		return PENDING == code;
+	}
+
+	public boolean isFailed() {
+		return FAILURE == code;
 	}
 
 	@Override

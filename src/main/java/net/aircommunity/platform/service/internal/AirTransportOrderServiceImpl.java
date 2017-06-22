@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirTransportOrder;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
-import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.repository.AirTransportOrderRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.AirTransportOrderService;
@@ -29,7 +29,8 @@ import net.aircommunity.platform.service.FerryFlightService;
 @Transactional
 public class AirTransportOrderServiceImpl extends AbstractVendorAwareOrderService<AirTransportOrder>
 		implements AirTransportOrderService {
-	private static final String CACHE_NAME = "cache.airtransport-order";
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.airtransport-order";
 
 	@Resource
 	private AirTransportService airTransportService;
@@ -51,6 +52,7 @@ public class AirTransportOrderServiceImpl extends AbstractVendorAwareOrderServic
 		return doFindOrder(orderId);
 	}
 
+	// TODO REMOVE?
 	@Override
 	protected AirTransportOrder doFindOrder0(String orderId) {
 		return airTransportOrderRepository.findOne(orderId);

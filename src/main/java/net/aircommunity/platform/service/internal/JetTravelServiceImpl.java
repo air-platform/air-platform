@@ -26,7 +26,9 @@ import net.aircommunity.platform.service.JetTravelService;
 @Service
 @Transactional
 public class JetTravelServiceImpl extends AbstractProductService<JetTravel> implements JetTravelService {
-	private static final String CACHE_NAME = "cache.jettravel";
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.jettravel";
 
 	@Resource
 	private JetTravelRepository jetTravelRepository;

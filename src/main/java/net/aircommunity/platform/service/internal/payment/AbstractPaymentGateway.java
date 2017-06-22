@@ -29,6 +29,9 @@ import net.aircommunity.platform.service.spi.PaymentGateway;
 public abstract class AbstractPaymentGateway implements PaymentGateway {
 	protected static final Logger LOG = LoggerFactory.getLogger(PaymentService.LOGGER_NAME);
 
+	protected static final PaymentResponse NOTIFICATION_RESPONSE_FAILURE = new PaymentResponse("failure");
+	protected static final PaymentResponse NOTIFICATION_RESPONSE_SUCCESS = new PaymentResponse("success");
+
 	@Resource
 	protected Configuration configuration;
 
@@ -41,9 +44,13 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 	@Resource
 	protected ObjectMapper objectMapper;
 
-	protected abstract PaymentResponse getPaymentFailureResponse();
+	protected PaymentResponse getPaymentFailureResponse() {
+		return NOTIFICATION_RESPONSE_FAILURE;
+	}
 
-	protected abstract PaymentResponse getPaymentSuccessResponse();
+	protected PaymentResponse getPaymentSuccessResponse() {
+		return NOTIFICATION_RESPONSE_SUCCESS;
+	}
 
 	protected PaymentResponse doProcessPaymentNotification(BigDecimal totalAmount, String orderNo, String tradeNo,
 			Date paymentDate) {

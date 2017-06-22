@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.JetTravelOrder;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
-import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.repository.JetTravelOrderRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.JetTravelOrderService;
@@ -28,7 +28,9 @@ import net.aircommunity.platform.service.JetTravelService;
 @Transactional
 public class JetTravelOrderServiceImpl extends AbstractVendorAwareOrderService<JetTravelOrder>
 		implements JetTravelOrderService {
-	private static final String CACHE_NAME = "cache.jettravel-order";
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.jettravel-order";
 
 	@Resource
 	private JetTravelOrderRepository jetTravelOrderRepository;
