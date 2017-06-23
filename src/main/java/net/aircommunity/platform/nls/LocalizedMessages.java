@@ -21,6 +21,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String REFUND_SUCCESS;
 	public static String REFUND_FAILURE;
 	public static String REFUND_REQUEST_REJECTED;
+	public static String REFUND_REASON_MISSING;
 
 	// generic
 	public static String FORM_INVALID_FILE_INPUT;

@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
@@ -16,7 +17,7 @@ import net.aircommunity.platform.model.domain.Order.Type;
  * 
  * @author Bin.Zhang
  */
-public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, String> {
+public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, String>, JpaSpecificationExecutor<T> {
 
 	/**
 	 * Test if there is any order for user

@@ -33,8 +33,9 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 	private static final String CACHE_NAME = "cache.points";
 	private static final String CACHE_NAME_DAILY_SIGNIN = "cache.points_daily_signin";
 
+	private static final int DEFAULT_ACCOUNT_REGISTRATION_POINTS = 100;
 	private static final int DEFAULT_EXCHANGE_RATE = 10;
-	private static final int DEFAULT_FIRST_ORDER_PRICE_OFF = 100;
+	private static final int DEFAULT_FIRST_ORDER_PRICE_OFF = 0;
 	private static final String POINTS_EXCHANGE_RATE = "exchange_rate";
 	private static final String POINT_SETTING_CATEGORY = "points";
 	private static final String POINT_RULES_SETTING_CATEGORY = "points.rule";
@@ -45,17 +46,18 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 			setPointsExchangeRate(DEFAULT_EXCHANGE_RATE);
 		}
 		if (!hasSetting(Constants.PointRules.ACCOUNT_REGISTRATION)) {
-			setEarnPointsForRule(Constants.PointRules.ACCOUNT_REGISTRATION, 0);
+			setEarnPointsForRule(Constants.PointRules.ACCOUNT_REGISTRATION, DEFAULT_ACCOUNT_REGISTRATION_POINTS);
 		}
 		if (!hasSetting(Constants.PointRules.FIRST_ORDER_PRICE_OFF)) {
 			setEarnPointsForRule(Constants.PointRules.FIRST_ORDER_PRICE_OFF, DEFAULT_FIRST_ORDER_PRICE_OFF);
 		}
 		if (!hasSetting(Constants.PointRules.DAILY_SIGNIN_1)) {
 			setEarnPointsForRule(Constants.PointRules.ORDER_FINISHED, 0);
-			setEarnPointsForRule(Constants.PointRules.DAILY_SIGNIN_1, 1);
-			setEarnPointsForRule(Constants.PointRules.DAILY_SIGNIN_3, 3);
-			setEarnPointsForRule(Constants.PointRules.DAILY_SIGNIN_5, 5);
-			setEarnPointsForRule(Constants.PointRules.DAILY_SIGNIN_7, 7);
+			setEarnPointsForRule(Constants.PointRules.DAILY_SIGNIN_1, 5);
+			setEarnPointsForRule(Constants.PointRules.DAILY_SIGNIN_5, 10);
+			setEarnPointsForRule(Constants.PointRules.DAILY_SIGNIN_15, 15);
+			setEarnPointsForRule(Constants.PointRules.DAILY_SIGNIN_20, 20);
+			setEarnPointsForRule(Constants.PointRules.DAILY_SIGNIN_25, 25);
 		}
 	}
 

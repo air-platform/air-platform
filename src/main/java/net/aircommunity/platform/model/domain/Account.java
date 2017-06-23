@@ -28,8 +28,9 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Inheritance
 @Table(name = "air_platform_account")
+@Inheritance
+// @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Account extends Persistable {
 	private static final long serialVersionUID = 1L;
@@ -38,7 +39,7 @@ public class Account extends Persistable {
 	@Column(name = "nick_name")
 	protected String nickName;
 
-	// NOTE: may useful for role TENANT and ADMIN
+	// NOTE: may useful only for role TENANT and ADMIN
 	@XmlTransient
 	@Column(name = "api_key", nullable = false, unique = true)
 	protected String apiKey;
@@ -56,13 +57,18 @@ public class Account extends Persistable {
 	@Enumerated(EnumType.STRING)
 	protected Status status = Status.ENABLED;
 
+	@Column(name = "avatar")
+	protected String avatar;
+
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	protected Date creationDate;
 
-	@Column(name = "avatar")
-	protected String avatar;
+	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "last_accessed_date")
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	protected Date lastAccessedDate;
 
 	// last accessed IP regardless from which source (AUTH type)
 	// just duplicated AccountAuth lastAccessedIp for quick lookup
@@ -120,6 +126,14 @@ public class Account extends Persistable {
 		this.status = status;
 	}
 
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -128,12 +142,12 @@ public class Account extends Persistable {
 		this.creationDate = creationDate;
 	}
 
-	public String getAvatar() {
-		return avatar;
+	public Date getLastAccessedDate() {
+		return lastAccessedDate;
 	}
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
+	public void setLastAccessedDate(Date lastAccessedDate) {
+		this.lastAccessedDate = lastAccessedDate;
 	}
 
 	public String getLastAccessedIp() {
@@ -147,9 +161,11 @@ public class Account extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Account [nickName=").append(nickName).append(", apiKey=").append("*****").append(", role=")
-				.append(role).append(", status=").append(status).append(", creationDate=").append(creationDate)
-				.append(", avatar=").append(avatar).append(", id=").append(id).append("]");
+		builder.append("Account [id=").append(id).append(", nickName=").append(nickName).append(", apiKey=")
+				.append("******").append(", password=").append("******").append(", role=").append(role)
+				.append(", status=").append(status).append(", avatar=").append(avatar).append(", creationDate=")
+				.append(creationDate).append(", lastAccessedDate=").append(lastAccessedDate).append(", lastAccessedIp=")
+				.append(lastAccessedIp).append("]");
 		return builder.toString();
 	}
 

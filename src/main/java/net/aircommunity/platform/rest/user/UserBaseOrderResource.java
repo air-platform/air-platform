@@ -2,6 +2,7 @@ package net.aircommunity.platform.rest.user;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.json.JsonObject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.CharterOrderService;
 import net.aircommunity.platform.service.CommonOrderService;
 
@@ -25,13 +27,23 @@ import net.aircommunity.platform.service.CommonOrderService;
  * 
  * @author Bin.Zhang
  */
-public abstract class UserBaseOrderResource<T extends Order> {
+public abstract class UserBaseOrderResource<T extends Order> extends BaseResourceSupport {
 
 	@Resource
 	private CommonOrderService commonOrderService;
 
 	@Resource
 	private CharterOrderService charterOrderService;
+
+	/**
+	 * Detect order channel from UA.
+	 * 
+	 * @param userAgent UA
+	 * @return the order channel
+	 */
+	protected String detectOrderChannel(String userAgent) {
+		return null;
+	}
 
 	/**
 	 * Find order
@@ -67,8 +79,9 @@ public abstract class UserBaseOrderResource<T extends Order> {
 	@POST
 	@Path("{orderId}/cancel")
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
-	public void cancel(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.CANCELLED);
+	public void cancel(@PathParam("orderId") String orderId, JsonObject request) {
+		String reason = getCancelReason(request);
+		commonOrderService.cancelOrder(orderId, reason);
 	}
 
 	/**

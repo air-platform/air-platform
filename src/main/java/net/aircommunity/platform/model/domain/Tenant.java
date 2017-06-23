@@ -3,13 +3,15 @@ package net.aircommunity.platform.model.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 
 /**
- * Tenant (Jet service provider) profile.
+ * Tenant (Jet service provider).
  * 
  * @author Bin.Zhang
  */
 @Entity
+//@Table(name = "air_platform_tenant")
 public class Tenant extends Account {
 	private static final long serialVersionUID = 1L;
 

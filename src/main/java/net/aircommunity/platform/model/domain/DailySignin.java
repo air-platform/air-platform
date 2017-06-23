@@ -35,7 +35,7 @@ public class DailySignin extends Persistable {
 
 	// consecutive signin count
 	@Column(name = "consecutive_signins")
-	private int consecutiveSignins;
+	private int consecutiveSignins = 0;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "last_signin_date", nullable = false)
@@ -50,11 +50,6 @@ public class DailySignin extends Persistable {
 	@XmlTransient
 	@Transient
 	private boolean success;
-
-	public DailySignin() {
-		lastSigninDate = new Date();
-		consecutiveSignins = 0;
-	}
 
 	public int getConsecutiveSignins() {
 		return consecutiveSignins;
@@ -99,10 +94,14 @@ public class DailySignin extends Persistable {
 	/**
 	 * Test if it's already signin today.
 	 * 
-	 * @return signin status
+	 * @return signin status, true if it's ready signined today, false otherwise
 	 */
 	@XmlElement
 	public boolean isSignin() {
+		// mean never signined before
+		if (lastSigninDate == null) {
+			return false;
+		}
 		LocalDate lastSignin = lastSigninDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		return ChronoUnit.DAYS.between(lastSignin, LocalDate.now()) == 0;
 	}
@@ -114,6 +113,10 @@ public class DailySignin extends Persistable {
 	 */
 	@XmlTransient
 	public boolean isConsecutive() {
+		// mean never signined before
+		if (lastSigninDate == null) {
+			return false;
+		}
 		LocalDate lastSignin = lastSigninDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		return ChronoUnit.DAYS.between(lastSignin, LocalDate.now()) == 1;
 	}

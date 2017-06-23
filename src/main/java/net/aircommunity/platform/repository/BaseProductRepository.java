@@ -23,13 +23,12 @@ public interface BaseProductRepository<T extends Product>
 	/**
 	 * Find all products by review status. (For END USER mainly). Only show approved and published product.
 	 * 
-	 * @param reviewStatus the reviewStatus
 	 * @param published the published status
 	 * @param category the product category
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<T> findByPublishedAndCategoryOrderByRankAscScoreDesc(boolean published, Category category, Pageable pageable);
+	Page<T> findByCategoryAndPublishedOrderByRankAscScoreDesc(Category category, boolean published, Pageable pageable);
 
 	/**
 	 * Find all products by review status. (For END USER mainly). Only show approved and published product.
@@ -39,7 +38,8 @@ public interface BaseProductRepository<T extends Product>
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<T> findByPublishedOrderByRankAscScoreDesc(boolean published, Pageable pageable);
+	Page<T> findByPublishedTrueOrderByRankAscScoreDesc(Pageable pageable);
+	// Page<T> findByPublishedOrderByRankAscScoreDesc(boolean published, Pageable pageable);
 	// Page<T> findByReviewStatusAndPublishedOrderByRankAscScoreDesc(ReviewStatus reviewStatus, boolean published,
 	// Pageable pageable);
 

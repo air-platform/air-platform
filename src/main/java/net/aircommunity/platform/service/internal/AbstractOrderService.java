@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.retry.support.RetryTemplate;
 
 import io.micro.common.DateFormats;
+import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
@@ -174,47 +175,45 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		LOG.info("[Creating order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), order);
 		BigDecimal totalPrice = newOrder.getTotalPrice();
 
-		// 5.1) check if first order price off for this user
-		boolean existsOrder = getOrderRepository().existsByOwnerId(userId);
-		if (!existsOrder) {
-			long priceOff = memberPointsService.getPointsEarnedFromRule(Constants.PointRules.FIRST_ORDER_PRICE_OFF);
-			LOG.info("Offer first order price off [-{}] for user: {}", priceOff, userId);
-			BigDecimal newTotalPrice = totalPrice.subtract(BigDecimal.valueOf(priceOff));
-			if (newTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
-				newOrder.setTotalPrice(newTotalPrice);
-			}
-			LOG.info("Updated total price [{}] for user: {}", newTotalPrice, userId);
-		}
+		// 5.1) check if first order price off for this user (DISABLED)
+		// boolean existsOrder = getOrderRepository().existsByOwnerId(userId);
+		// if (!existsOrder) {
+		// long priceOff = memberPointsService.getPointsEarnedFromRule(Constants.PointRules.FIRST_ORDER_PRICE_OFF);
+		// LOG.info("Offer first order price off [-{}] for user: {}", priceOff, userId);
+		// BigDecimal newTotalPrice = totalPrice.subtract(BigDecimal.valueOf(priceOff));
+		// if (newTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
+		// newOrder.setTotalPrice(newTotalPrice);
+		// }
+		// LOG.info("Updated total price [{}] for user: {}", newTotalPrice, userId);
+		// }
+
 		// 5.2) Calculate points to exchange
-		else {
-			// max: 50% percent of totalPrice
-			long pointsMax = totalPrice.divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP).longValue();
-			long pointToExchange = order.getPointsUsed();
-			if (pointToExchange > 0) {
-				pointToExchange = Math.min(pointsMax, owner.getPoints());
-				PointsExchange pointsUsed = memberPointsService.exchangePoints(pointToExchange);
-				LOG.info("[Exchanging points] User[{}][{}]: order[{}], exchanged points {}", owner.getId(),
-						owner.getNickName(), newOrder.getOrderNo(), pointsUsed);
-				BigDecimal moneyExchanged = BigDecimal.valueOf(pointsUsed.getMoneyExchanged());
-				BigDecimal updatedTotalPrice = newOrder.getTotalPrice().subtract(moneyExchanged);
-				// cannot be less than 0 after points exchange, just ignore points exchange if less or equal than 0
-				if (updatedTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
-					newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
-					// update total price
-					newOrder.setTotalPrice(updatedTotalPrice);
-					newOrder.setOriginalTotalPrice(newOrder.getTotalPrice());
-					User account = (User) accountService.updateUserPoints(owner.getId(),
-							-pointsUsed.getPointsExchanged());
-					LOG.info(
-							"[Exchanged points] User[{}][{}]: order[{}], updated total price: {}, points used: {}, account points balance: {}",
-							owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice,
-							pointsUsed.getPointsExchanged(), account.getPoints());
-				}
-				else {
-					LOG.warn(
-							"[Exchange points] User[{}][{}]: order[{}]: update total price is: {} (less than 0), points exchange ignored.",
-							owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice);
-				}
+		// max: 50% percent of totalPrice
+		long pointsMax = totalPrice.divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP).longValue();
+		long pointToExchange = order.getPointsUsed();
+		if (pointToExchange > 0) {
+			pointToExchange = Math.min(pointsMax, owner.getPoints());
+			PointsExchange pointsUsed = memberPointsService.exchangePoints(pointToExchange);
+			LOG.info("[Exchanging points] User[{}][{}]: order[{}], exchanged points {}", owner.getId(),
+					owner.getNickName(), newOrder.getOrderNo(), pointsUsed);
+			BigDecimal moneyExchanged = BigDecimal.valueOf(pointsUsed.getMoneyExchanged());
+			BigDecimal updatedTotalPrice = newOrder.getTotalPrice().subtract(moneyExchanged);
+			// cannot be less than 0 after points exchange, just ignore points exchange if less or equal than 0
+			if (updatedTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
+				newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
+				// update total price
+				newOrder.setTotalPrice(updatedTotalPrice);
+				newOrder.setOriginalTotalPrice(newOrder.getTotalPrice());
+				User account = (User) accountService.updateUserPoints(owner.getId(), -pointsUsed.getPointsExchanged());
+				LOG.info(
+						"[Exchanged points] User[{}][{}]: order[{}], updated total price: {}, points used: {}, account points balance: {}",
+						owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice,
+						pointsUsed.getPointsExchanged(), account.getPoints());
+			}
+			else {
+				LOG.warn(
+						"[Exchange points] User[{}][{}]: order[{}]: update total price is: {} (less than 0), points exchange ignored.",
+						owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice);
 			}
 		}
 		// 6) perform save
@@ -234,6 +233,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	private void copyCommonProperties(Order src, Order tgt) {
+		tgt.setChannel(src.getChannel());
 		tgt.setQuantity(src.getQuantity());
 		tgt.setNote(src.getNote());
 		tgt.setContact(src.getContact());
@@ -485,7 +485,11 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 */
 	protected T doRequestOrderRefund(String orderId, RefundRequest request) {
 		T order = doFindOrder(orderId);
-		order.setRefundReason(request.getRefundReason());
+		String reason = request.getRefundReason();
+		if (Strings.isBlank(reason)) {
+			reason = M.msg(M.REFUND_REASON_MISSING);
+		}
+		order.setRefundReason(reason);
 		return doUpdateOrderStatus(order, Order.Status.REFUND_REQUESTED);
 	}
 
@@ -662,17 +666,20 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			break;
 
 		case PAID:
+			// we allow refund request to move back to paid status in case tenant rejected the refund request
 			// should be already contract signed (if contract sign is required)
 			if (order.signContractRequired()) {
 				LOG.debug("Order signContractRequired, expect contract signed before paid");
-				expectOrderStatus(order, newStatus, Order.Status.CONTRACT_SIGNED);
+				expectOrderStatus(order, newStatus,
+						EnumSet.of(Order.Status.CONTRACT_SIGNED, Order.Status.PAYMENT_IN_PROCESS,
+								Order.Status.PARTIAL_PAID, Order.Status.PAYMENT_FAILED, Order.Status.REFUND_REQUESTED));
 			}
 			// otherwise, should be in CREATED | PUBLISHED (XXX require confirmation? or just paid and then confirm)
-			// we allow refund request to move back to paid status in case tenant rejected the refund request
 			else {
 				// expectOrderStatusCondition(order.isInitialStatus());
 				expectOrderStatus(order, newStatus,
-						EnumSet.of(Order.Status.CREATED, Order.Status.PUBLISHED, Order.Status.REFUND_REQUESTED));
+						EnumSet.of(Order.Status.CREATED, Order.Status.PUBLISHED, Order.Status.PAYMENT_IN_PROCESS,
+								Order.Status.PARTIAL_PAID, Order.Status.PAYMENT_FAILED, Order.Status.REFUND_REQUESTED));
 			}
 			// already paid for REFUND_REQUESTED (cannot re-setPaymentDate)
 			if (order.getStatus() != Order.Status.REFUND_REQUESTED) {

@@ -3,6 +3,7 @@ package net.aircommunity.platform.model.domain;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
@@ -12,7 +13,12 @@ import javax.persistence.Table;
  * @author guankai
  */
 @Entity
-@Table(name = "air_platform_airtaxi")
+@Table(name = "air_platform_airtaxi", indexes = {
+		// @Index(name = "idx_category", columnList = "category"),
+		// @Index(name = "idx_published_category", columnList = "published, category")
+		@Index(name = "idx_category_published", columnList = "category,published")
+		//
+})
 public class AirTaxi extends SalesPackageProduct {
 	private static final long serialVersionUID = 1L;
 

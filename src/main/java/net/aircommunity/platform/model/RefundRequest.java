@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import io.micro.annotation.constraint.NotEmpty;
+
 /**
  * Refund request.
  * 
@@ -16,6 +18,7 @@ public final class RefundRequest implements Serializable {
 
 	// private String orderNo;
 
+	@NotEmpty
 	private String refundReason;
 
 	public String getRefundReason() {

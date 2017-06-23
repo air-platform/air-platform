@@ -214,7 +214,7 @@ public class AdminResource extends BaseResourceSupport {
 	@Resource
 	private AdminAircraftResource adminAircraftResource;
 
-	@Path("product/aircrafts")
+	@Path("aircrafts")
 	public AdminAircraftResource aircrafts() {
 		return adminAircraftResource;
 	}

@@ -239,6 +239,7 @@ public class UserResource extends BaseResourceSupport {
 
 	@POST
 	@Path("orders/{orderId}/cancel")
+	@Consumes(MediaType.APPLICATION_JSON)
 	public void cancelOrder(@PathParam("orderId") String orderId, JsonObject request) {
 		String reason = getCancelReason(request);
 		commonOrderService.cancelOrder(orderId, reason);

@@ -37,9 +37,10 @@ public final class Constants {
 		public static final String FIRST_ORDER_PRICE_OFF = "first_order_price_off";
 		public static final String DAILY_SIGNIN_PREFIX = "daily_signin_";
 		public static final String DAILY_SIGNIN_1 = DAILY_SIGNIN_PREFIX + "1";
-		public static final String DAILY_SIGNIN_3 = DAILY_SIGNIN_PREFIX + "3";
 		public static final String DAILY_SIGNIN_5 = DAILY_SIGNIN_PREFIX + "5";
-		public static final String DAILY_SIGNIN_7 = DAILY_SIGNIN_PREFIX + "7";
+		public static final String DAILY_SIGNIN_15 = DAILY_SIGNIN_PREFIX + "15";
+		public static final String DAILY_SIGNIN_20 = DAILY_SIGNIN_PREFIX + "20";
+		public static final String DAILY_SIGNIN_25 = DAILY_SIGNIN_PREFIX + "25";
 	}
 
 	// **************

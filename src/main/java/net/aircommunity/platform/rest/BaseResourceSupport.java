@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.json.Json;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.service.CommonProductService;
@@ -33,17 +34,19 @@ public abstract class BaseResourceSupport {
 	}
 
 	protected String getStatus(JsonObject request) {
-		if (request == null) {
-			return null;
-		}
-		return request.getString(JSON_PROP_STATUS);
+		return getJsonString(request, JSON_PROP_STATUS);
 	}
 
 	protected String getFleetCandidate(JsonObject request) {
-		if (request == null) {
-			return null;
-		}
-		return request.getString(JSON_PROP_FLEET_CANDIDATE);
+		return getJsonString(request, JSON_PROP_FLEET_CANDIDATE);
+	}
+
+	protected String getRejectedReason(JsonObject request) {
+		return getJsonString(request, JSON_PROP_REJECT_REASON);
+	}
+
+	protected String getCancelReason(JsonObject request) {
+		return getJsonString(request, JSON_PROP_CANCEL_REASON);
 	}
 
 	protected BigDecimal getAmount(JsonObject request) {
@@ -56,23 +59,23 @@ public abstract class BaseResourceSupport {
 
 	protected int getProductRank(JsonObject request) {
 		if (request != null) {
-			return request.getInt(JSON_PROP_RANK, Product.DEFAULT_RANK);
+			JsonNumber num = request.getJsonNumber(JSON_PROP_RANK);
+			return num == null ? Product.DEFAULT_RANK : num.intValue();
+			// NOTE: bad idea use this method (which uses Exception to control the logic)
+			// request.getInt(JSON_PROP_RANK, Product.DEFAULT_RANK);
 		}
 		return Product.DEFAULT_RANK;
 	}
 
-	protected String getRejectedReason(JsonObject request) {
-		if (request != null) {
-			return request.getString(JSON_PROP_REJECT_REASON);
+	private String getJsonString(JsonObject request, String name) {
+		if (request == null) {
+			return null;
 		}
-		return null;
-	}
-
-	protected String getCancelReason(JsonObject request) {
-		if (request != null) {
-			return request.getString(JSON_PROP_CANCEL_REASON);
+		JsonString str = request.getJsonString(name);
+		if (str == null) {
+			return null;
 		}
-		return null;
+		return str.getString();
 	}
 
 }

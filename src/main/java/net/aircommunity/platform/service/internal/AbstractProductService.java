@@ -232,8 +232,8 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 * For all users/anyone (only show approved and published product)
 	 */
 	protected final Page<T> doListProductsForUsers(int page, int pageSize) {
-		return Pages.adapt(getProductRepository().findByPublishedOrderByRankAscScoreDesc(true/* published */,
-				Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(getProductRepository()
+				.findByPublishedTrueOrderByRankAscScoreDesc(Pages.createPageRequest(page, pageSize)));
 	}
 
 	// ************

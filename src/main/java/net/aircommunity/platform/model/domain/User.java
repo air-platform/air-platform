@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -22,11 +23,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
- * User (customer) profile.
+ * User (customer) model.
  * 
  * @author Bin.Zhang
  */
 @Entity
+//@Table(name = "air_platform_user")
 public class User extends Account {
 	private static final long serialVersionUID = 1L;
 

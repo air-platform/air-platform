@@ -839,8 +839,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		DailySignin dailySignin = user.getDailySignin();
 		if (dailySignin == null) {
 			dailySignin = new DailySignin();
-			dailySignin.setConsecutiveSignins(1);
-			dailySignin.setSuccess(true);
 		}
 		// not signin yet
 		if (!dailySignin.isSignin()) {

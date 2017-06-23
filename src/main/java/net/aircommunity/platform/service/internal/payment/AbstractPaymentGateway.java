@@ -70,8 +70,8 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 		}
 
 		// 5) check order status
-		if (!order.isPayable()) {
-			LOG.error("Order status is {}, and it is NOT payable,  payment failed", order.getStatus());
+		if (!order.canFinishPayment()) {
+			LOG.error("Order status is {}, and it is NOT ready to finish,  payment failed", order.getStatus());
 			return getPaymentFailureResponse();
 		}
 

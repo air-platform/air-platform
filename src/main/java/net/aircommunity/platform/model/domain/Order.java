@@ -112,6 +112,12 @@ public abstract class Order extends Persistable {
 	@Enumerated(EnumType.STRING)
 	protected Status status;
 
+	// order is placed from which channel (Android, iPhone, PC, etc.)
+	@XmlElement
+	@Column(name = "channel")
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	protected String channel;
+
 	// only allow comment once per order
 	@XmlElement
 	@Column(name = "is_commented", nullable = false)
@@ -237,6 +243,14 @@ public abstract class Order extends Persistable {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
 	}
 
 	public int getQuantity() {
@@ -424,10 +438,26 @@ public abstract class Order extends Persistable {
 		return status == Order.Status.CREATED || status == Order.Status.PUBLISHED;
 	}
 
+	/**
+	 * It's ready to start a payment request.
+	 */
 	@XmlTransient
 	public boolean isPayable() {
 		return getProduct() != null && (status.ordinal() < Status.CONTRACT_SIGNED.ordinal()
 				|| status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
+	}
+
+	/**
+	 * Return true if the current order is ready to update to PAID. Order is updated to PAYMENT_IN_PROCESS after payment
+	 * is submitted, and this method is called when payment finished notification is received from 3rd payment gateway.
+	 * 
+	 * @return true if its ready to PAID
+	 */
+	@XmlTransient
+	public boolean canFinishPayment() {
+		return getProduct() != null && status.ordinal() < Status.PAID.ordinal();
+		// return getProduct() != null && (status.ordinal() < Status.CONTRACT_SIGNED.ordinal()
+		// || status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
 	}
 
 	@XmlTransient
@@ -537,7 +567,7 @@ public abstract class Order extends Persistable {
 		/**
 		 * Payment
 		 */
-		PAYMENT_IN_PROCESS, PARTIAL_PAID, PAID, PAYMENT_FAILED,
+		PAYMENT_IN_PROCESS, PARTIAL_PAID, PAYMENT_FAILED, PAID,
 
 		/**
 		 * Ticketing
@@ -548,7 +578,7 @@ public abstract class Order extends Persistable {
 		 * Refund
 		 */
 		// user request refund -> tenant accept request -> success
-		REFUND_REQUESTED, REFUNDING, REFUNDED, REFUND_FAILED,
+		REFUND_REQUESTED, REFUNDING, REFUND_FAILED, REFUNDED,
 
 		/**
 		 * Finished with success
