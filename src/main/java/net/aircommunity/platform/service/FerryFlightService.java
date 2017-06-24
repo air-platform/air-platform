@@ -100,7 +100,7 @@ public interface FerryFlightService {
 	 * @return a page of result
 	 */
 	@Nonnull
-	Page<FerryFlight> searchFerryFlightsByLocation(@Nonnull String location, int page, int pageSize);
+	Page<FerryFlight> listFerryFlightsByFuzzyLocation(@Nonnull String location, int page, int pageSize);
 
 	@Nonnull
 	List<FerryFlight> listTop3FerryFlights(@Nullable String departure);

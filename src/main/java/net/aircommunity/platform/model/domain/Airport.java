@@ -16,11 +16,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @Entity
 //@formatter:off
 @Table(name = "air_platform_airport", indexes = { 
-	@Index(name = "idx_name", columnList = "name"),
-	@Index(name = "idx_city_and_name", columnList = "city,name"),
-	@Index(name = "idx_icao4", columnList = "icao4", unique = true), 
-	@Index(name = "idx_iata3", columnList = "iata3"),
-	@Index(name = "idx_city", columnList = "city") 
+	@Index(name = "idx_name_city", columnList = "name,city"),
+	@Index(name = "idx_city", columnList = "city"),
+	@Index(name = "idx_iata3", columnList = "iata3") ,
+	@Index(name = "idx_icao4", columnList = "icao4", unique = true),
 })
 //@formatter:on
 @XmlAccessorType(XmlAccessType.FIELD)

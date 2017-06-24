@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -24,7 +25,10 @@ import net.aircommunity.platform.model.UnitProductPrice;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_charter_order")
+@Table(name = "air_platform_charter_order", indexes = {
+		@Index(name = "idx_user_id_status", columnList = "user_id,status,creation_date")
+		//
+})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CharterOrder extends StandardOrder implements Cloneable {
 	private static final long serialVersionUID = 1L;

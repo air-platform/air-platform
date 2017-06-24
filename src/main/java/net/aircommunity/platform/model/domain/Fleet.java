@@ -21,7 +21,11 @@ import io.micro.annotation.constraint.NotEmpty;
  */
 @Entity
 @XmlAccessorType(XmlAccessType.FIELD)
-@Table(name = "air_platform_fleet", indexes = { @Index(name = "idx_aircraft_type", columnList = "aircraft_type") })
+@Table(name = "air_platform_fleet", indexes = {
+		@Index(name = "idx_review_status_tenant_id", columnList = "review_status,tenant_id"),
+		@Index(name = "idx_published_rank_score", columnList = "published,rank,score")
+		//
+})
 public class Fleet extends StandardProduct {
 	private static final long serialVersionUID = 1L;
 
@@ -41,7 +45,7 @@ public class Fleet extends StandardProduct {
 
 	// Aircraft current status
 	@Enumerated(EnumType.STRING)
-	@Column(name = "status")
+	@Column(name = "status", nullable = false)
 	private Status status = Status.AVAILABLE;
 
 	// XXX should be int for a specific fleet with same aircaftType, e.g. G550 ?
@@ -196,7 +200,7 @@ public class Fleet extends StandardProduct {
 	 * Flight status
 	 */
 	public enum Status {
-		UNAVAILABLE, AVAILABLE;
+		UNAVAILABLE, AVAILABLE, UNKNOWN;
 
 		// According to JSR 311 spec, if used in @QueryParam, fromString is a naming conversion
 		public static Status fromString(String source) {

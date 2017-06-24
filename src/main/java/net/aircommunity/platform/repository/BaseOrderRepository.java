@@ -37,16 +37,17 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	Page<T> findByOwnerIdOrderByCreationDateDesc(String userId, Pageable pageable);
 
 	/**
-	 * Find all user orders not status
+	 * Find all user orders not status (XXX NOT GOOD, Using where; Using filesort) full table scan
 	 * 
 	 * @param userId the userId
 	 * @param pageable page request
 	 * @return a page of orders or empty if none
+	 * @deprecated use instead {@code #findByOwnerIdAndStatusInOrderByCreationDateDesc(String, Collection, Pageable)}
 	 */
 	Page<T> findByOwnerIdAndStatusNotOrderByCreationDateDesc(String userId, Status ignoredStatus, Pageable pageable);
 
 	/**
-	 * Find all user orders in status
+	 * Find all user orders in status (XXX NOT GOOD, Using where)
 	 * 
 	 * @param userId the userId
 	 * @param statuses the expected statuses
@@ -57,7 +58,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 			Pageable pageable);
 
 	/**
-	 * Find all user orders not in status
+	 * Find all user orders not in status (NOT YET USED, XXX NOT GOOD, Using where; Using filesort) full table scan
 	 * 
 	 * @param userId the userId
 	 * @param statuses the expected statuses
@@ -78,7 +79,8 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	Page<T> findByOwnerIdAndStatusOrderByCreationDateDesc(String userId, Status status, Pageable pageable);
 
 	/**
-	 * Find all user orders
+	 * Find all user orders (XXX USED RARE, less important) (XXX NOT GOOD, Using index condition; Using where; Using
+	 * filesort)
 	 * 
 	 * @param userId the userId
 	 * @param type the type
@@ -100,7 +102,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 			Pageable pageable);
 
 	/**
-	 * Find all orders
+	 * Find all orders (ADMIN) (XXX NOT GOOD) (Using filesort)
 	 * 
 	 * @param pageable page request
 	 * @return a page of orders or empty if none
@@ -108,7 +110,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	Page<T> findAllByOrderByCreationDateDesc(Pageable pageable);
 
 	/**
-	 * Find all orders filter by status
+	 * Find all orders filter by status (ADMIN) (XXX NOT GOOD) (Using where; Using filesort)
 	 * 
 	 * @param status the status
 	 * @param pageable page request
@@ -117,7 +119,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	Page<T> findByStatusOrderByCreationDateDesc(Status status, Pageable pageable);
 
 	/**
-	 * Find all orders filter by type
+	 * Find all orders filter by type (ADMIN) (XXX NOT GOOD) (Using where; Using filesort)
 	 * 
 	 * @param type the type
 	 * @param pageable page request
@@ -126,7 +128,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	Page<T> findByTypeOrderByCreationDateDesc(Type type, Pageable pageable);
 
 	/**
-	 * Find all orders filter by status and type
+	 * Find all orders filter by status and type (ADMIN) (XXX NOT GOOD) (Using where; Using filesort)
 	 * 
 	 * @param status the status
 	 * @param type the type

@@ -41,9 +41,10 @@ public interface CourseOrderService {
 	Page<CourseOrder> listCourseOrdersForTenant(@Nonnull String tenantId, @Nullable Order.Status status, int page,
 			int pageSize);
 
-	// TENANT
-	Page<CourseOrder> listCourseOrdersForTenantByCourse(@Nonnull String tenantId, @Nonnull String courseId,
-			@Nullable Order.Status status, int page, int pageSize);
+	// TENANT or ANONYMOUS
+	// List all orders placed on the given course (a course should belong to a tenant)
+	Page<CourseOrder> listCourseOrdersOfCourse(@Nonnull String courseId, @Nullable Order.Status status, int page,
+			int pageSize);
 
 	// ADMIN
 	void deleteCourseOrder(@Nonnull String courseOrderId);

@@ -43,6 +43,7 @@ import net.aircommunity.platform.model.domain.Account.Status;
 import net.aircommunity.platform.model.domain.AccountAuth;
 import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 import net.aircommunity.platform.model.domain.Address;
+import net.aircommunity.platform.model.domain.Admin;
 import net.aircommunity.platform.model.domain.DailySignin;
 import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.Tenant;
@@ -52,6 +53,8 @@ import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AccountAuthRepository;
 import net.aircommunity.platform.repository.AccountRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
+import net.aircommunity.platform.repository.TenantRepository;
+import net.aircommunity.platform.repository.UserRepository;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CommonOrderService;
 import net.aircommunity.platform.service.CommonProductService;
@@ -86,6 +89,12 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	@Resource
 	private AccountRepository accountRepository;
+
+	@Resource
+	private TenantRepository tenantRepository;
+
+	@Resource
+	private UserRepository userRepository;
 
 	@Resource
 	private PassengerRepository passengerRepository;
@@ -129,14 +138,14 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	private void init() {
 		AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(AuthType.USERNAME,
 				Constants.DEFAULT_ADMIN_USERNAME);
-		if (auth == null) {
-			try {
+		try {
+			if (auth == null) {
 				createAdminAccount(Constants.DEFAULT_ADMIN_USERNAME, Constants.DEFAULT_ADMIN_PASSWORD);
 				LOG.debug("Created default admin account");
 			}
-			catch (Exception e) {
-				LOG.warn(e.getMessage(), e);
-			}
+		}
+		catch (Exception e) {
+			LOG.warn(e.getMessage(), e);
 		}
 
 		boolean tls = configuration.getPublicPort() == 443;
@@ -293,7 +302,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		Account newAccount = null;
 		switch (role) {
 		case ADMIN:
-			newAccount = new Account();
+			newAccount = new Admin();
 			newAccount.setRole(Role.ADMIN);
 			break;
 
@@ -366,7 +375,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		case QQ:
 		case WEIBO:
 			verified = true;
-			// TODO later: leave it AS-IS for now
+			// TODO LATER: LEAVE IT AS-IS FOR NOW
 			break;
 
 		default:
@@ -639,7 +648,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return Pages.adapt(accountRepository.findByRole(role, Pages.createPageRequest(page, pageSize)));
 	}
 
-	// TODO list all/cleanup unconfirmed/expired accounts, need to resend email if confirm link expired
+	// TODO list all/cleanup unconfirmed/expired accounts, need to re-send email if confirm link expired
 
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
@@ -859,16 +868,23 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				// reset consecutive
 				dailySignin.resetConsecutiveSignins();
 			}
+			LOG.debug("Got points: {}", pointsEarned);
 			dailySignin.setLastSigninDate(new Date());
 			dailySignin.setPointsEarned(pointsEarned);
 			dailySignin.setSuccess(true);
+			LOG.debug("Success: {}", dailySignin.isSuccess());
 		}
 		else {
 			dailySignin.setSuccess(false);
 		}
 		user.setDailySignin(dailySignin);
 		user.setPoints(user.getPoints() + dailySignin.getPointsEarned());
-		return safeExecute(() -> accountRepository.save(user), "Update user %s for signin", accountId);
+		User updatedUser = safeExecute(() -> accountRepository.save(user), "Update user %s for signin", accountId);
+		// we need set success state, because it's NOT persisted
+		DailySignin updatedSignin = updatedUser.getDailySignin();
+		updatedSignin.setSuccess(dailySignin.isSuccess());
+		updatedSignin.setPointsEarned(dailySignin.getPointsEarned());
+		return updatedUser;
 	}
 
 	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_APIKEY }, key = "#accountId")

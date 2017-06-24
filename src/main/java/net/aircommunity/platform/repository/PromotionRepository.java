@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.domain.Promotion;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.Promotion;
 
 /**
  * Repository interface for {@link Promotion} instances. Provides basic CRUD operations due to the extension of
@@ -15,6 +15,9 @@ import net.aircommunity.platform.model.domain.Product.Category;
  */
 public interface PromotionRepository extends JpaRepository<Promotion, String> {
 
-	List<Promotion> findByCategory(Category category);
+	// use less frequently (full table scan)
+	List<Promotion> findAllByOrderByCreationDateDesc();
+
+	List<Promotion> findByCategoryOrderByCreationDateDesc(Category category);
 
 }

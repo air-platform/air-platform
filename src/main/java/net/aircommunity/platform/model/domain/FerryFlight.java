@@ -23,7 +23,11 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_ferryflight", indexes = { @Index(name = "idx_departure", columnList = "departure") })
+@Table(name = "air_platform_ferryflight", indexes = {
+		@Index(name = "idx_review_status_tenant_id", columnList = "review_status,tenant_id"),
+		@Index(name = "idx_published_rank_score", columnList = "published,rank,departure_date,score")
+		//
+})
 public class FerryFlight extends CharterableProduct {
 	private static final long serialVersionUID = 1L;
 

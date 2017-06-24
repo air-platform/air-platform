@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
@@ -23,12 +24,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
- * User (customer) model.
+ * User model (allow to login to APPs).
  * 
  * @author Bin.Zhang
  */
 @Entity
-//@Table(name = "air_platform_user")
+@Table(name = "air_platform_user", indexes = { @Index(name = "idx_role", columnList = "role") })
 public class User extends Account {
 	private static final long serialVersionUID = 1L;
 
@@ -85,10 +86,11 @@ public class User extends Account {
 	private DailySignin dailySignin;
 
 	public User() {
+		super();
 	}
 
 	public User(String id) {
-		this.id = id;
+		super(id);
 	}
 
 	public long getPoints() {

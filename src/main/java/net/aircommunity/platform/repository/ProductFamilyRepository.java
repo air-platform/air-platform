@@ -4,8 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.domain.ProductFamily;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.ProductFamily;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 
 /**
@@ -17,12 +17,12 @@ import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 public interface ProductFamilyRepository extends JpaRepository<ProductFamily, String> {
 
 	/**
-	 * Find all ProductFamilies. (For ADMIN ONLY)
+	 * Find all ProductFamilies. (For ADMIN ONLY) (REMOVE ORDER BY FOR PERFORMANCE)
 	 * 
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<ProductFamily> findAllByOrderByCreationDateDesc(Pageable pageable);
+	// Page<ProductFamily> findAllByOrderByCreationDateDesc(Pageable pageable);
 
 	/**
 	 * Find all ProductFamilies by review status. (For ADMIN ONLY)
@@ -31,7 +31,7 @@ public interface ProductFamilyRepository extends JpaRepository<ProductFamily, St
 	 * @param pageable the page request
 	 * @return @return page of products
 	 */
-	Page<ProductFamily> findByReviewStatusOrderByCreationDateDesc(ReviewStatus reviewStatus, Pageable pageable);
+	Page<ProductFamily> findByReviewStatus(ReviewStatus reviewStatus, Pageable pageable);
 
 	/**
 	 * Count all products by review status. (For ADMIN ONLY)
@@ -48,10 +48,9 @@ public interface ProductFamilyRepository extends JpaRepository<ProductFamily, St
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<ProductFamily> findByVendorIdOrderByCreationDateDesc(String tenantId, Pageable pageable);
+	Page<ProductFamily> findByVendorId(String tenantId, Pageable pageable);
 
-	Page<ProductFamily> findByVendorIdAndCategoryOrderByCreationDateDesc(String tenantId, Category category,
-			Pageable pageable);
+	Page<ProductFamily> findByVendorIdAndCategory(String tenantId, Category category, Pageable pageable);
 
 	/**
 	 * Find by products by vendor. (For TENANT)
@@ -61,11 +60,10 @@ public interface ProductFamilyRepository extends JpaRepository<ProductFamily, St
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<ProductFamily> findByVendorIdAndReviewStatusOrderByCreationDateDesc(String tenantId, ReviewStatus reviewStatus,
-			Pageable pageable);
+	Page<ProductFamily> findByVendorIdAndReviewStatus(String tenantId, ReviewStatus reviewStatus, Pageable pageable);
 
-	Page<ProductFamily> findByVendorIdAndReviewStatusAndCategoryOrderByCreationDateDesc(String tenantId,
-			ReviewStatus reviewStatus, Category category, Pageable pageable);
+	Page<ProductFamily> findByVendorIdAndReviewStatusAndCategory(String tenantId, ReviewStatus reviewStatus,
+			Category category, Pageable pageable);
 
 	/**
 	 * Count tenant products. (For TENANT)
@@ -92,8 +90,7 @@ public interface ProductFamilyRepository extends JpaRepository<ProductFamily, St
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<ProductFamily> findByReviewStatusAndCategoryOrderByCreationDateDesc(ReviewStatus reviewStatus,
-			Category category, Pageable pageable);
+	Page<ProductFamily> findByReviewStatusAndCategory(ReviewStatus reviewStatus, Category category, Pageable pageable);
 
 	long deleteByVendorId(String tenantId);
 

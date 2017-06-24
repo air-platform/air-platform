@@ -21,8 +21,14 @@ public interface ProductFaqRepository extends JpaRepository<ProductFaq, String> 
 	 * @param pageable the page request
 	 * @return page of ProductFAQ
 	 */
-	Page<ProductFaq> findByProductIdOrderByDateDesc(String productId, Pageable pageable);
+	Page<ProductFaq> findByProductIdOrderByCreationDateDesc(String productId, Pageable pageable);
 
+	/**
+	 * Delete all FAQs of a product.
+	 * 
+	 * @param productId the productId
+	 * @return the number of records deleted
+	 */
 	long deleteByProductId(String productId);
 
 }

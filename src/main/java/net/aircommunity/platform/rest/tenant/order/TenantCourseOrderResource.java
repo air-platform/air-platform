@@ -49,7 +49,8 @@ public class TenantCourseOrderResource extends TenantBaseOrderResource<CourseOrd
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		LOG.debug("List all CourseOrders tenantId: {}, course: {}", tenantId, courseId);
 		if (Strings.isNotBlank(courseId)) {
-			return courseOrderService.listCourseOrdersForTenantByCourse(tenantId, courseId, status, page, pageSize);
+			// TODO just check the courseId belongs to this tenant
+			return courseOrderService.listCourseOrdersOfCourse(courseId, status, page, pageSize);
 		}
 		return courseOrderService.listCourseOrdersForTenant(tenantId, status, page, pageSize);
 	}

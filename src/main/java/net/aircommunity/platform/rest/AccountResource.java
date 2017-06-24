@@ -230,6 +230,7 @@ public class AccountResource {
 		}
 		account = accountService.dailySignin(accountId);
 		DailySignin dailySignin = User.class.cast(account).getDailySignin();
+		LOG.debug("{} dailySignin: {}", account, dailySignin);
 		return Response.ok(new DailySigninResponse(dailySignin)).build();
 	}
 

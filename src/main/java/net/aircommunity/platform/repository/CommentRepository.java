@@ -1,7 +1,5 @@
 package net.aircommunity.platform.repository;
 
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,13 +16,13 @@ import net.aircommunity.platform.model.domain.Comment.Source;
 public interface CommentRepository extends JpaRepository<Comment, String> {
 
 	/**
-	 * Find by user comment on a product.
+	 * Find all comments a user on a product. (NOT USED, NO INDEX)
 	 * 
 	 * @param accountId the accountId
 	 * @param productId the productId
 	 * @return comment
 	 */
-	Optional<Comment> findByOwnerIdAndProductId(String accountId, String productId);
+	// Page<Comment> findByOwnerIdAndProductId(String accountId, String productId);
 
 	/**
 	 * Find by comments by product.

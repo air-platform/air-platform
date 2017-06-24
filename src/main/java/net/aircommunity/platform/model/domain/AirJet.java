@@ -2,7 +2,6 @@ package net.aircommunity.platform.model.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -17,7 +16,7 @@ import io.micro.annotation.constraint.NotEmpty;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_airjet", indexes = { @Index(name = "idx_type", columnList = "type") })
+@Table(name = "air_platform_airjet")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AirJet extends Persistable {
 	private static final long serialVersionUID = 1L;

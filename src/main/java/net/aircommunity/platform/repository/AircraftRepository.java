@@ -29,7 +29,9 @@ public interface AircraftRepository extends JpaRepository<Aircraft, String> {
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<Aircraft> findByVendorIdOrderByCreationDateDesc(String tenantId, Pageable pageable);
+	Page<Aircraft> findByVendorId(String tenantId, Pageable pageable);
+	// NOTE: without order by to improve performance, since order by creation is NOT that meaningful in this case
+	// Page<Aircraft> findByVendorIdOrderByCreationDateDesc(String tenantId, Pageable pageable);
 
 	/**
 	 * Delete all the Aircrafts of a vendor.

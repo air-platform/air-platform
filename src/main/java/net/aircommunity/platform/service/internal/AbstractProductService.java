@@ -233,7 +233,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 */
 	protected final Page<T> doListProductsForUsers(int page, int pageSize) {
 		return Pages.adapt(getProductRepository()
-				.findByPublishedTrueOrderByRankAscScoreDesc(Pages.createPageRequest(page, pageSize)));
+				.findByPublishedTrueOrderByRankDescScoreDesc(Pages.createPageRequest(page, pageSize)));
 	}
 
 	// ************
@@ -363,7 +363,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		Product product = doFindProduct(productId);
 		ProductFaq newFaq = new ProductFaq();
 		newFaq.setContent(faq.getContent());
-		newFaq.setDate(new Date());
+		newFaq.setCreationDate(new Date());
 		newFaq.setTitle(faq.getTitle());
 		newFaq.setProduct(product);
 		return safeExecute(() -> productFaqRepository.save(newFaq), "Create FAQ: %s for product %s failed", faq,
@@ -388,7 +388,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	}
 
 	protected final Page<ProductFaq> doListProductFaqs(String productId, int page, int pageSize) {
-		return Pages.adapt(productFaqRepository.findByProductIdOrderByDateDesc(productId,
+		return Pages.adapt(productFaqRepository.findByProductIdOrderByCreationDateDesc(productId,
 				Pages.createPageRequest(page, pageSize)));
 	}
 

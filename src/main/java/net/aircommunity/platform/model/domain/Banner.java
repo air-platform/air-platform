@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,7 +25,7 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_banner")
+@Table(name = "air_platform_banner", indexes = { @Index(name = "idx_category", columnList = "category") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Banner extends Persistable {
 	private static final long serialVersionUID = 1L;

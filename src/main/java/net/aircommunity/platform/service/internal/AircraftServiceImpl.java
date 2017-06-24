@@ -90,8 +90,7 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 
 	@Override
 	public Page<Aircraft> listAircrafts(String tenantId, int page, int pageSize) {
-		return Pages.adapt(aircraftRepository.findByVendorIdOrderByCreationDateDesc(tenantId,
-				Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(aircraftRepository.findByVendorId(tenantId, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override

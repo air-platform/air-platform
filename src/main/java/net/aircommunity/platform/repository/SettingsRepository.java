@@ -23,11 +23,19 @@ public interface SettingsRepository extends JpaRepository<Settings, String> {
 	Settings findByName(String name);
 
 	/**
-	 * Find a Settings by name starting with.
+	 * Find all Settings by name starting with.
 	 * 
 	 * @param name the name
 	 * @return an Settings or empty if none
 	 */
 	List<Settings> findByNameStartingWith(String name);
+
+	/**
+	 * Find all Settings with the given category
+	 * 
+	 * @param category the category
+	 * @return an Settings or empty if none
+	 */
+	List<Settings> findByCategory(String category);
 
 }

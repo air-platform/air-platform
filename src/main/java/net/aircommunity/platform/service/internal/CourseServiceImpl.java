@@ -125,9 +125,11 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 		return doCountTenantProducts(tenantId, reviewStatus);
 	}
 
+	// never called from REST
 	@Override
 	public Page<Course> listCourses(int page, int pageSize) {
-		return Pages.adapt(courseRepository.findAllForUser(Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseRepository
+				.findByPublishedTrueOrderByRankDescStartDateDescScoreDesc(Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
@@ -137,36 +139,34 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 
 	@Override
 	public Page<Course> listCoursesBySchool(String schoolId, int page, int pageSize) {
-		return Pages.adapt(courseRepository.findBySchoolId(schoolId, new Date()/* now */,
-				Pages.createPageRequest(page, pageSize)));
-	}
-
-	@Override
-	public Page<Course> listCoursesByAircraftType(String aircraftType, int page, int pageSize) {
-		Date now = new Date();
-		if (Strings.isBlank(aircraftType)) {
-			return Pages.adapt(courseRepository.findValidCourses(now, Pages.createPageRequest(page, pageSize)));
-		}
-		return Pages.adapt(courseRepository.findValidCoursesByAircraftType(aircraftType, now,
-				Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseRepository.findBySchoolId(schoolId, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<Course> listCoursesByLocation(String location, int page, int pageSize) {
-		Date now = new Date();
 		if (Strings.isBlank(location)) {
-			return Pages.adapt(courseRepository.findValidCourses(now, Pages.createPageRequest(page, pageSize)));
+			return Pages.adapt(courseRepository.findAllCourses(Pages.createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(
-				courseRepository.findValidCoursesByLocation(location, now, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseRepository.findByLocation(location, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<Course> listCoursesWithConditions(String location, String license, String aircraftType, int page,
 			int pageSize) {
-		return Pages.adapt(courseRepository.listCoursesWithConditions(location, license, aircraftType,
+		return Pages.adapt(courseRepository.findByConditions(location, aircraftType, license,
 				Pages.createPageRequest(page, pageSize)));
 	}
+
+	// TODO REMOVE
+	// @Override
+	// public Page<Course> listCoursesByAircraftType(String aircraftType, int page, int pageSize) {
+	// Date now = new Date();
+	// if (Strings.isBlank(aircraftType)) {
+	// return Pages.adapt(courseRepository.findValidCourses(now, Pages.createPageRequest(page, pageSize)));
+	// }
+	// return Pages.adapt(courseRepository.findValidCoursesByAircraftType(aircraftType, now,
+	// Pages.createPageRequest(page, pageSize)));
+	// }
 
 	@Caching(evict = { @CacheEvict(cacheNames = CACHE_NAME, key = "#courseId"),
 			@CacheEvict(cacheNames = { CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES }, allEntries = true) })

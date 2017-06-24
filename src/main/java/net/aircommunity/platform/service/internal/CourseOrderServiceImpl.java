@@ -66,7 +66,7 @@ public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<Cour
 
 	@Override
 	public Page<CourseOrder> listCourseOrders(Order.Status status, int page, int pageSize) {
-		return doListAllOrders(status, page, pageSize);
+		return doListAllOrders(status, page, pageSize); // OK, full table scan for ADMIN
 	}
 
 	@Override
@@ -77,26 +77,26 @@ public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<Cour
 
 	@Override
 	public Page<CourseOrder> listUserCourseOrders(String userId, Order.Status status, int page, int pageSize) {
-		return doListAllUserOrders(userId, status, page, pageSize);
+		return doListAllUserOrders(userId, status, page, pageSize); // OK
 	}
 
 	@Override
 	public Page<CourseOrder> listCourseOrdersForTenant(String tenantId, Order.Status status, int page, int pageSize) {
-		return doListTenantOrders(tenantId, status, page, pageSize);
+		return doListTenantOrders(tenantId, status, page, pageSize); // OK
 	}
 
+	// less important (for TENANT)
 	@Override
-	public Page<CourseOrder> listCourseOrdersForTenantByCourse(String tenantId, String courseId, Order.Status status,
-			int page, int pageSize) {
+	public Page<CourseOrder> listCourseOrdersOfCourse(String courseId, Order.Status status, int page, int pageSize) {
 		if (Order.Status.DELETED == status) {
 			return Page.emptyPage(page, pageSize);
 		}
 		if (status == null) {
-			return Pages.adapt(courseOrderRepository.findByVendorIdAndCourseIdAndStatusNotOrderByCreationDateDesc(
-					tenantId, courseId, Order.Status.DELETED, Pages.createPageRequest(page, pageSize)));
+			return Pages.adapt(courseOrderRepository.findByCourseIdAndStatusInOrderByCreationDateDesc(courseId,
+					Order.Status.visibleStatus(), Pages.createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(courseOrderRepository.findByVendorIdAndCourseIdAndStatusOrderByCreationDateDesc(tenantId,
-				courseId, status, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseOrderRepository.findByCourseIdAndStatusOrderByCreationDateDesc(courseId, status,
+				Pages.createPageRequest(page, pageSize))); // OK
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#courseOrderId")

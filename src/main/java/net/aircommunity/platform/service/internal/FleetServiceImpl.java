@@ -121,20 +121,20 @@ public class FleetServiceImpl extends AbstractProductService<Fleet> implements F
 
 	@Override
 	public Page<Fleet> listFleetsByType(String aircraftType, int page, int pageSize) {
-		return Pages.adapt(
-				fleetRepository.findByAircraftTypeForUser(aircraftType, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(fleetRepository.findByPublishedTrueAndAircraftTypeOrderByRankDescScoreDesc(aircraftType,
+				Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<Fleet> listFleetsByProvider(String provider, int page, int pageSize) {
-		return Pages.adapt(
-				fleetRepository.findByAircraftProviderForUser(provider, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(fleetRepository.findByPublishedTrueAndVendorIdOrderByRankDescScoreDesc(provider,
+				Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<Fleet> listFleets(String aircraftType, String provider, int page, int pageSize) {
-		return Pages.adapt(fleetRepository.findByAircraftTypeAndProviderForUser(aircraftType, provider,
-				Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(fleetRepository.findByPublishedTrueAndVendorIdAndAircraftTypeOrderByRankDescScoreDesc(
+				aircraftType, provider, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override

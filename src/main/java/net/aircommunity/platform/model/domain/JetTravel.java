@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
@@ -10,7 +11,11 @@ import javax.persistence.Table;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_jettravel")
+@Table(name = "air_platform_jettravel", indexes = {
+		@Index(name = "idx_review_status_tenant_id", columnList = "review_status,tenant_id"),
+		@Index(name = "idx_published_rank_score", columnList = "published,rank,score")
+		//
+})
 public class JetTravel extends StandardProduct {
 	private static final long serialVersionUID = 1L;
 

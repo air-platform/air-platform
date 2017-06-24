@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
@@ -13,7 +14,11 @@ import javax.validation.constraints.NotNull;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_airtransport_order")
+@Table(name = "air_platform_airtransport_order", indexes = {
+		@Index(name = "idx_user_id_status", columnList = "user_id,status,creation_date"),
+		@Index(name = "idx_tenant_id_status", columnList = "tenant_id,status,creation_date")
+		//
+})
 public class AirTransportOrder extends AircraftAwareOrder {
 	private static final long serialVersionUID = 1L;
 

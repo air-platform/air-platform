@@ -83,15 +83,16 @@ public interface CourseService {
 	Page<Course> listCoursesBySchool(@Nonnull String schoolId, int page, int pageSize);
 
 	@Nonnull
-	Page<Course> listCoursesByAircraftType(@Nonnull String aircraftType, int page, int pageSize);
-
-	@Nonnull
 	Page<Course> listCoursesByLocation(@Nonnull String location, int page, int pageSize);
 
 	@Nonnull
-	Page<Course> listCoursesWithConditions(@Nullable String location, @Nullable String license,
-			@Nullable String aircraftType, int page, int pageSize);
+	Page<Course> listCoursesWithConditions(@Nullable String location, @Nullable String aircraftType,
+			@Nullable String license, int page, int pageSize);
 
+	// TODO REMOVE
+	// @Nonnull
+	// Page<Course> listCoursesByAircraftType(@Nonnull String aircraftType, int page, int pageSize);
+	//
 	/**
 	 * delete a course
 	 *

@@ -29,13 +29,13 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
  * @author Bin.Zhang
  */
 @Entity
-//@formatter:off
-@Table(name = "air_platform_course", indexes = { 
-		@Index(name = "idx_aircraft_type", columnList = "aircraft_type"),
-		@Index(name = "idx_location", columnList = "location"), 
-		@Index(name = "idx_license", columnList = "license") 
+@Table(name = "air_platform_course", indexes = {
+		@Index(name = "idx_review_status_tenant_id", columnList = "review_status,tenant_id"),
+		@Index(name = "idx_published_rank_score", columnList = "published,rank,start_date,score"),
+		// XXX seems not selected, how to force
+		// @Index(name = "idx_idx_location_aircraft_type", columnList = "published,location,aircraft_type")
+		//
 })
-//@formatter:on
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Course extends StandardProduct {
 	private static final long serialVersionUID = 1L;

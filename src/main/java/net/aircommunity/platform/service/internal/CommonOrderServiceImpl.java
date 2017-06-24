@@ -49,7 +49,7 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 
 	@Override
 	public Optional<Payment> findPaymentByTradeNo(Payment.Method paymentMethod, String tradeNo) {
-		return paymentRepository.findByMethodAndTradeNo(paymentMethod, tradeNo);
+		return paymentRepository.findByTradeNoAndMethod(tradeNo, paymentMethod);
 	}
 
 	// XXX REMOVE we cannot cache by orderNo, need update cache
@@ -143,27 +143,27 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 
 	@Override
 	public Page<Order> listAllOrders(Order.Status status, Order.Type type, int page, int pageSize) {
-		return doListAllOrders(status, type, page, pageSize);
+		return doListAllOrders(status, type, page, pageSize); // ADMIN full scan
 	}
 
 	@Override
 	public Page<Order> listAllUserOrders(String userId, Order.Status status, Order.Type type, int page, int pageSize) {
-		return doListAllUserOrders(userId, status, type, page, pageSize);
+		return doListAllUserOrders(userId, status, type, page, pageSize); // ADMIN full scan
 	}
 
 	@Override
 	public Page<Order> listUserOrders(String userId, Order.Status status, int page, int pageSize) {
-		return doListUserOrders(userId, status, page, pageSize);
+		return doListUserOrders(userId, status, page, pageSize);// OK
 	}
 
 	@Override
 	public Page<Order> listUserOrdersInStatuses(String userId, Set<Order.Status> statuses, int page, int pageSize) {
-		return doListUserOrdersInStatuses(userId, statuses, page, pageSize);
+		return doListUserOrdersInStatuses(userId, statuses, page, pageSize); // OK
 	}
 
 	@Override
 	public Page<Order> listUserOrdersNotInStatuses(String userId, Set<Order.Status> statuses, int page, int pageSize) {
-		return doListUserOrdersNotInStatuses(userId, statuses, page, pageSize);
+		return doListUserOrdersNotInStatuses(userId, statuses, page, pageSize); // NOT USED
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#orderId")

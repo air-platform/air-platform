@@ -92,7 +92,7 @@ public interface JetTravelService {
 	 * @return a page of JetTravels or empty
 	 */
 	@Nonnull
-	Page<JetTravel> searchJetTravels(@Nullable String name, int page, int pageSize);
+	Page<JetTravel> listJetTravelsByFuzzyName(@Nullable String name, int page, int pageSize);
 
 	/**
 	 * Delete a JetTravel.

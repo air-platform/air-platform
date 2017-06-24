@@ -32,5 +32,7 @@ public interface AirTourRepository extends BaseProductRepository<AirTour> {
 	 * @param pageable
 	 * @return page of tour
 	 */
-	Page<AirTour> findByCityContainingIgnoreCase(String city, Pageable pageable);
+	Page<AirTour> findByCityStartingWithIgnoreCase(String city, Pageable pageable);
+	// just use starting with, and avoid using bellow that will perform full table scan
+	// Page<AirTour> findByCityContainingIgnoreCase(String city, Pageable pageable);
 }

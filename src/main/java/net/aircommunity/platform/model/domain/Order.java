@@ -3,6 +3,9 @@ package net.aircommunity.platform.model.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -607,6 +610,13 @@ public abstract class Order extends Persistable {
 				}
 			}
 			return null;
+		}
+
+		/**
+		 * All status except DELETED.
+		 */
+		public static Set<Status> visibleStatus() {
+			return Stream.of(values()).filter(status -> status != Status.DELETED).collect(Collectors.toSet());
 		}
 	}
 }

@@ -798,8 +798,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			return Page.emptyPage(page, pageSize);
 		}
 		if (status == null) {
-			return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusNotOrderByCreationDateDesc(userId,
-					Order.Status.DELETED, Pages.createPageRequest(page, pageSize)));
+			return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusInOrderByCreationDateDesc(userId,
+					Order.Status.visibleStatus(), Pages.createPageRequest(page, pageSize)));
+			// return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusNotOrderByCreationDateDesc(userId,
+			// Order.Status.DELETED, Pages.createPageRequest(page, pageSize)));
 		}
 		return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
 				Pages.createPageRequest(page, pageSize)));
@@ -861,7 +863,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
-	 * For ADMIN (orders in any status and type)
+	 * For ADMIN (orders in any status and type) (full table scan)
 	 */
 	protected Page<T> doListAllOrders(@Nullable Order.Status status, @Nullable Order.Type type, int page,
 			int pageSize) {

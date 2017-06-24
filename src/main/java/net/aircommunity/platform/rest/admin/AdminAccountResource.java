@@ -38,6 +38,7 @@ import net.aircommunity.platform.service.AccountService;
  * 
  * @author Bin.Zhang
  */
+// NOTE: @RolesAllowed is needed and not inherited from parent resource
 @RESTful
 @RolesAllowed(Roles.ROLE_ADMIN)
 public class AdminAccountResource {

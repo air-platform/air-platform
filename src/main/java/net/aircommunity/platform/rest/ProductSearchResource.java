@@ -100,12 +100,12 @@ public class ProductSearchResource {
 		result.put(PROP_TRANSPORTS, trans);
 
 		// ferryFlights
-		List<FerryFlight> ferryFlights = ferryFlightService.searchFerryFlightsByLocation(location, page, pageSize)
+		List<FerryFlight> ferryFlights = ferryFlightService.listFerryFlightsByFuzzyLocation(location, page, pageSize)
 				.getContent();
 		result.put(PROP_FERRYFLIGHTS, ferryFlights);
 
 		// jettravels
-		List<JetTravel> jettravels = jetTravelService.searchJetTravels(location, page, pageSize).getContent();
+		List<JetTravel> jettravels = jetTravelService.listJetTravelsByFuzzyName(location, page, pageSize).getContent();
 		result.put(PROP_JETTRAVELS, jettravels);
 
 		// courses

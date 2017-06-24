@@ -124,8 +124,9 @@ public class DailySignin extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UserSign [consecutiveSignins=").append(consecutiveSignins).append(", lastSigninDate=")
-				.append(lastSigninDate).append(", id=").append(id).append("]");
+		builder.append("DailySignin [consecutiveSignins=").append(consecutiveSignins).append(", lastSigninDate=")
+				.append(lastSigninDate).append(", pointsEarned=").append(pointsEarned).append(", success=")
+				.append(success).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

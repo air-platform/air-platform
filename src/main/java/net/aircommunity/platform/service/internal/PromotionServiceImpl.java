@@ -73,9 +73,9 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 	@Override
 	public List<Promotion> listPromotions(Category category) {
 		if (category == null) {
-			return promotionRepository.findAll();
+			return promotionRepository.findAllByOrderByCreationDateDesc();
 		}
-		return promotionRepository.findByCategory(category);
+		return promotionRepository.findByCategoryOrderByCreationDateDesc(category);
 	}
 
 	@Caching(evict = { @CacheEvict(cacheNames = CACHE_NAME, key = "#promotionId"),

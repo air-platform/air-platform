@@ -27,10 +27,13 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  */
 @Entity
 @Table(name = "air_platform_order_payment", indexes = {
-		@Index(name = "idx_method_trade_no", columnList = "method,trade_no", unique = true),
-		@Index(name = "idx_method_order_no", columnList = "method,order_no", unique = true),
-		@Index(name = "idx_user_order", columnList = "user_id,order_no"),
-		@Index(name = "idx_tenant_order", columnList = "tenant_id,order_no") })
+		//
+		@Index(name = "idx_method_trade_no", columnList = "trade_no,method", unique = true),
+		@Index(name = "idx_method_order_no", columnList = "order_no,method", unique = true),
+		@Index(name = "idx_user_id_method", columnList = "user_id,method,timestamp"),
+		@Index(name = "idx_tenant_id_method", columnList = "tenant_id,method,timestamp")
+		//
+})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Payment extends Persistable {
 	private static final long serialVersionUID = 1L;

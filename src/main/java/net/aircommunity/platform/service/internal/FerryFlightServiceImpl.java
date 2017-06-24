@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micro.common.Strings;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
@@ -86,31 +87,30 @@ public class FerryFlightServiceImpl extends AbstractProductService<FerryFlight> 
 	@Override
 	public Page<FerryFlight> listFerryFlights(int page, int pageSize) {
 		// return doListProductsForUsers(page, pageSize);
-		return Pages.adapt(ferryFlightRepository.findByPublishedOrderByRankAscDepartureDateDescScoreDesc(
-				true/* published */, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(ferryFlightRepository.findPublished(Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<FerryFlight> listFerryFlightsByDeparture(String departure, int page, int pageSize) {
 		return Pages.adapt(
-				ferryFlightRepository.listByDepartureForUser(departure, Pages.createPageRequest(page, pageSize)));
+				ferryFlightRepository.findPublishedByDeparture(departure, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<FerryFlight> listFerryFlightsByArrival(String arrival, int page, int pageSize) {
 		return Pages
-				.adapt(ferryFlightRepository.listByArrivalForUser(arrival, Pages.createPageRequest(page, pageSize)));
+				.adapt(ferryFlightRepository.findPublishedByArrival(arrival, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
-	public Page<FerryFlight> searchFerryFlightsByLocation(String location, int page, int pageSize) {
-		return Pages.adapt(
-				ferryFlightRepository.searchByLocationForUser(location, Pages.createPageRequest(page, pageSize)));
+	public Page<FerryFlight> listFerryFlightsByFuzzyLocation(String location, int page, int pageSize) {
+		return Pages
+				.adapt(ferryFlightRepository.findFuzzyByLocation(location, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public List<FerryFlight> listTop3FerryFlights(String departure) {
-		if (departure == null) {
+		if (Strings.isBlank(departure)) {
 			return ferryFlightRepository.findTop3();
 		}
 		return ferryFlightRepository.findTop3ByDeparture(departure);

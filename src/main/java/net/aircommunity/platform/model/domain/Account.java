@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
-import javax.persistence.Table;
+import javax.persistence.InheritanceType;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -23,23 +23,22 @@ import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
- * Account model of the platform.
+ * Basic account model of the platform. (need make it abstract, otherwise we cannot query via inheritance, find an given
+ * accountId, it will find the right model from {@code Account} subclasses)
  * 
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_account")
-@Inheritance
-// @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Account extends Persistable {
+public abstract class Account extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// display purpose
 	@Column(name = "nick_name")
 	protected String nickName;
 
-	// NOTE: may useful only for role TENANT and ADMIN
+	// XXX NOTE: useful only for role TENANT and ADMIN
 	@XmlTransient
 	@Column(name = "api_key", nullable = false, unique = true)
 	protected String apiKey;

@@ -14,10 +14,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "air_platform_airtaxi", indexes = {
-		// @Index(name = "idx_category", columnList = "category"),
-		// @Index(name = "idx_published_category", columnList = "published, category")
-		@Index(name = "idx_category_published", columnList = "category,published")
-		//
+		@Index(name = "idx_review_status_tenant_id", columnList = "review_status,tenant_id"),
+		@Index(name = "idx_published_rank_score", columnList = "published,rank,score")
+		// @Index(name = "idx_published_departure_arrval", columnList = "published,departure,arrival")
 })
 public class AirTaxi extends SalesPackageProduct {
 	private static final long serialVersionUID = 1L;

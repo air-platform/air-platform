@@ -76,12 +76,12 @@ public class JetTravelServiceImpl extends AbstractProductService<JetTravel> impl
 	}
 
 	@Override
-	public Page<JetTravel> searchJetTravels(String name, int page, int pageSize) {
+	public Page<JetTravel> listJetTravelsByFuzzyName(String name, int page, int pageSize) {
 		if (Strings.isBlank(name)) {
 			return listJetTravels(page, pageSize);
 		}
-		return Pages.adapt(jetTravelRepository.findByPublishedAndNameContainingIgnoreCaseOrderByRankAscScoreDesc(
-				true/* published */, name, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(jetTravelRepository.findByPublishedTrueAndNameStartingWithIgnoreCaseOrderByRankDescScoreDesc(
+				name, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#jetTravelId")

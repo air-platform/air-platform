@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -24,7 +25,8 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_product_faq")
+@Table(name = "air_platform_product_faq", indexes = {
+		@Index(name = "idx_product_id_date", columnList = "product_id,creation_date") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProductFaq extends Persistable {
 	private static final long serialVersionUID = 1L;
@@ -38,9 +40,9 @@ public class ProductFaq extends Persistable {
 	private String content;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
-	@Column(name = "date", nullable = false)
+	@Column(name = "creation_date", nullable = false)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
-	private Date date;
+	private Date creationDate;
 
 	// make comment on a product
 	@ManyToOne
@@ -71,6 +73,14 @@ public class ProductFaq extends Persistable {
 		this.content = content;
 	}
 
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
 	public Product getProduct() {
 		return product;
 	}
@@ -79,19 +89,12 @@ public class ProductFaq extends Persistable {
 		this.product = product;
 	}
 
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ProductFaq [title=").append(title).append(", content=").append(content).append(", date=")
-				.append(date).append(", product=").append(product).append(", id=").append(id).append("]");
+		builder.append("ProductFaq [title=").append(title).append(", content=").append(content)
+				.append(", creationDate=").append(creationDate).append(", product=").append(product).append(", id=")
+				.append(id).append("]");
 		return builder.toString();
 	}
 }

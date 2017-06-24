@@ -31,12 +31,13 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_promotion", indexes = { @Index(name = "idx_category", columnList = "category") })
+@Table(name = "air_platform_promotion", indexes = {
+		@Index(name = "idx_category_creation_date", columnList = "category,creation_date") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Promotion extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "category")
+	@Column(name = "category", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Category category;
 

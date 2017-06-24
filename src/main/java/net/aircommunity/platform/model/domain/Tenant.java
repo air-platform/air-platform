@@ -2,16 +2,17 @@ package net.aircommunity.platform.model.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**
- * Tenant (Jet service provider).
+ * Tenant (service provider).
  * 
  * @author Bin.Zhang
  */
 @Entity
-//@Table(name = "air_platform_tenant")
+@Table(name = "air_platform_tenant", indexes = { @Index(name = "idx_role", columnList = "role") })
 public class Tenant extends Account {
 	private static final long serialVersionUID = 1L;
 
@@ -19,7 +20,7 @@ public class Tenant extends Account {
 	@Column(name = "email")
 	private String email;
 
-	// contact email
+	// verification status
 	@Column(name = "verification")
 	private VerificationStatus verification = VerificationStatus.UNVERIFIED;
 
@@ -35,16 +36,17 @@ public class Tenant extends Account {
 	@Column(name = "hotline")
 	private String hotline;
 
-	// detail description
+	// details fo this tenant
 	@Lob
 	@Column(name = "description")
 	private String description;
 
 	public Tenant() {
+		super();
 	}
 
 	public Tenant(String id) {
-		this.id = id;
+		super(id);
 	}
 
 	public String getEmail() {

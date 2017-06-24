@@ -21,6 +21,10 @@ public interface JetTravelRepository extends BaseProductRepository<JetTravel> {
 	 * @param pageable
 	 * @return page of JetTravel
 	 */
-	Page<JetTravel> findByPublishedAndNameContainingIgnoreCaseOrderByRankAscScoreDesc(boolean published, String name,
+	Page<JetTravel> findByPublishedTrueAndNameStartingWithIgnoreCaseOrderByRankDescScoreDesc(String name,
 			Pageable pageable);
+
+	// NOTE: Containing -> full table scan
+	// Page<JetTravel> findByPublishedTrueAndNameContainingIgnoreCaseOrderByRankDescScoreDesc(String name,
+	// Pageable pageable);
 }

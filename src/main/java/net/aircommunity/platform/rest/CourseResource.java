@@ -51,11 +51,11 @@ public class CourseResource extends ProductResourceSupport<Course> {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
-	public Page<Course> list(@QueryParam("location") String location, @QueryParam("license") String license,
-			@QueryParam("aircraftType") String aircraftType, @QueryParam("page") @DefaultValue("1") int page,
+	public Page<Course> list(@QueryParam("location") String location, @QueryParam("aircraftType") String aircraftType,
+			@QueryParam("license") String license, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		LOG.debug("list all courses with location: {}, license: {}, aircraftType: {}", location, license, aircraftType);
-		return courseService.listCoursesWithConditions(location, license, aircraftType, page, pageSize);
+		return courseService.listCoursesWithConditions(location, aircraftType, license, page, pageSize);
 	}
 
 	/**

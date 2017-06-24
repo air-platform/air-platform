@@ -41,14 +41,14 @@ public interface AirTaxiRepository extends BaseProductRepository<AirTaxi> {
 				List<Expression<Boolean>> expressions = predicate.getExpressions();
 				query.orderBy(cb.desc(root.get(AirTaxi_.rank)), cb.desc(root.get(AirTaxi_.score)));
 				expressions.add(cb.equal(root.get(AirTaxi_.published), true)); // PUBLISHED
+				if (Strings.isNotBlank(tenantId)) {
+					expressions.add(cb.equal(root.get(AirTaxi_.vendor).get(Persistable_.id), tenantId));
+				}
 				if (Strings.isNotBlank(departure)) {
 					expressions.add(cb.equal(root.get(AirTaxi_.flightRoute).get(FlightRoute_.departure), departure));
 				}
 				if (Strings.isNotBlank(arrival)) {
 					expressions.add(cb.equal(root.get(AirTaxi_.flightRoute).get(FlightRoute_.arrival), arrival));
-				}
-				if (Strings.isNotBlank(tenantId)) {
-					expressions.add(cb.equal(root.get(AirTaxi_.vendor).get(Persistable_.id), tenantId));
 				}
 				return predicate;
 			}
@@ -64,9 +64,12 @@ public interface AirTaxiRepository extends BaseProductRepository<AirTaxi> {
 	 * @return page of taxi
 	 */
 	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND "
-			+ "( t.flightRoute.departure LIKE CONCAT('%',:location,'%') OR "
-			+ "t.flightRoute.arrival LIKE CONCAT('%',:location,'%') ) ORDER BY t.rank ASC, t.score DESC")
+			+ "( t.flightRoute.departure LIKE CONCAT(:location,'%') OR "
+			+ "t.flightRoute.arrival LIKE CONCAT(:location,'%') ) ORDER BY t.rank DESC, t.score DESC")
 	Page<AirTaxi> findFuzzyByLocation(@Param("location") String location, Pageable pageable);
+	// @Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND "
+	// + "( t.flightRoute.departure LIKE CONCAT('%',:location,'%') OR "
+	// + "t.flightRoute.arrival LIKE CONCAT('%',:location,'%') ) ORDER BY t.rank DESC, t.score DESC")
 	// Page<AirTaxi> findByFlightRouteDepartureContainingOrFlightRouteArrivalContainingOrderByRankAscScoreDesc(
 	// String location, Pageable pageable);
 

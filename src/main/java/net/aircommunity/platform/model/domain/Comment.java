@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -29,7 +30,8 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_product_comment")
+@Table(name = "air_platform_product_comment", indexes = {
+		@Index(name = "idx_product_id_date", columnList = "product_id,date,source") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Comment extends Persistable {
 	private static final long serialVersionUID = 1L;

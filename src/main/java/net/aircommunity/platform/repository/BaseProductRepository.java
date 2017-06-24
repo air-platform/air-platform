@@ -20,15 +20,21 @@ import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 public interface BaseProductRepository<T extends Product>
 		extends JpaRepository<T, String>, JpaSpecificationExecutor<T> {
 
+	// *****************
+	// USER
+	// *****************
 	/**
 	 * Find all products by review status. (For END USER mainly). Only show approved and published product.
+	 * 
+	 * (COMMENT OUT - NOT USED)
 	 * 
 	 * @param published the published status
 	 * @param category the product category
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<T> findByCategoryAndPublishedOrderByRankAscScoreDesc(Category category, boolean published, Pageable pageable);
+	// Page<T> findByCategoryAndPublishedOrderByRankAscScoreDesc(Category category, boolean published, Pageable
+	// pageable);
 
 	/**
 	 * Find all products by review status. (For END USER mainly). Only show approved and published product.
@@ -38,11 +44,14 @@ public interface BaseProductRepository<T extends Product>
 	 * @param pageable the page request
 	 * @return page of products
 	 */
-	Page<T> findByPublishedTrueOrderByRankAscScoreDesc(Pageable pageable);
+	Page<T> findByPublishedTrueOrderByRankDescScoreDesc(Pageable pageable);
 	// Page<T> findByPublishedOrderByRankAscScoreDesc(boolean published, Pageable pageable);
 	// Page<T> findByReviewStatusAndPublishedOrderByRankAscScoreDesc(ReviewStatus reviewStatus, boolean published,
 	// Pageable pageable);
 
+	// *****************
+	// ADMIN
+	// *****************
 	/**
 	 * Find all products. (For ADMIN ONLY)
 	 * 
@@ -88,6 +97,19 @@ public interface BaseProductRepository<T extends Product>
 	 */
 	long countByReviewStatus(ReviewStatus reviewStatus);
 
+	// iterator over products (For ADMIN ONLY)
+	Stream<T> findByVendorId(String tenantId);
+
+	/**
+	 * Delete all the products of a vendor. (For ADMIN ONLY)
+	 * @param tenantId the tenantId
+	 * @return the records deleted
+	 */
+	long deleteByVendorId(String tenantId);
+
+	// *****************
+	// TENANT
+	// *****************
 	/**
 	 * Count tenant products. (For TENANT)
 	 * 
@@ -124,15 +146,5 @@ public interface BaseProductRepository<T extends Product>
 	 */
 	Page<T> findByVendorIdAndReviewStatusOrderByCreationDateDesc(String tenantId, ReviewStatus reviewStatus,
 			Pageable pageable);
-
-	// iterator over products (For ADMIN ONLY)
-	Stream<T> findByVendorId(String tenantId);
-
-	/**
-	 * Delete all the products of a vendor. (For ADMIN ONLY)
-	 * @param tenantId the tenantId
-	 * @return the records deleted
-	 */
-	long deleteByVendorId(String tenantId);
 
 }
