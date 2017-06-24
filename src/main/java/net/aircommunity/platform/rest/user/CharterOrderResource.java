@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -54,9 +55,10 @@ public class CharterOrderResource extends UserBaseOrderResource<CharterOrder> {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
-	public Response create(@PathParam("userId") String userId, @NotNull @Valid CharterOrder order,
-			@Context UriInfo uriInfo) {
-		CharterOrder created = charterOrderService.createCharterOrder(userId, order);
+	public Response create(@HeaderParam("user-agent") String userAgent, @PathParam("userId") String userId,
+			@NotNull @Valid CharterOrder order, @Context UriInfo uriInfo) {
+		LOG.debug("[{}] Creating order {}", userAgent, order);
+		CharterOrder created = charterOrderService.createCharterOrder(userId, detectOrderChannel(userAgent, order));
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();

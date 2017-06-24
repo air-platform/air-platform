@@ -8,6 +8,7 @@ import java.util.Map;
  * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 public class Device {
+	public static final Device OTHER = new Device("Other");
 	public final String family;
 
 	public Device(String family) {
@@ -36,6 +37,8 @@ public class Device {
 
 	@Override
 	public String toString() {
-		return String.format("{\"family\": %s}", family == null ? Constants.EMPTY_STRING : '"' + family + '"');
+		StringBuilder builder = new StringBuilder();
+		builder.append("Device [family=").append(family).append("]");
+		return builder.toString();
 	}
 }

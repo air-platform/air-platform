@@ -39,6 +39,6 @@ public class Client {
 
 	@Override
 	public String toString() {
-		return String.format("{\"user_agent\": %s, \"os\": %s, \"device\": %s}", userAgent, os, device);
+		return String.format("{\"os\": %s, \"device\": %s}", userAgent, os, device);
 	}
 }

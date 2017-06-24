@@ -39,10 +39,13 @@ public abstract class UserBaseOrderResource<T extends Order> extends BaseResourc
 	 * Detect order channel from UA.
 	 * 
 	 * @param userAgent UA
+	 * @return
 	 * @return the order channel
 	 */
-	protected String detectOrderChannel(String userAgent) {
-		return null;
+	protected <ORDER extends Order> ORDER detectOrderChannel(String userAgent, ORDER order) {
+		// TODO parse userAgent for channel
+		order.setChannel(userAgent);
+		return order;
 	}
 
 	/**

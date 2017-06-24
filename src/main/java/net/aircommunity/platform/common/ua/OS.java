@@ -8,7 +8,13 @@ import java.util.Map;
  * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 public class OS {
-	public final String family, major, minor, patch, patchMinor;
+	public static final OS OTHER = new OS("Other", null, null, null, null);
+
+	public final String family;
+	public final String major;
+	public final String minor;
+	public final String patch;
+	public final String patchMinor;
 
 	public OS(String family, String major, String minor, String patch, String patchMinor) {
 		this.family = family;
@@ -50,11 +56,9 @@ public class OS {
 
 	@Override
 	public String toString() {
-		return String.format("{\"family\": %s, \"major\": %s, \"minor\": %s, \"patch\": %s, \"patch_minor\": %s}",
-				family == null ? Constants.EMPTY_STRING : '"' + family + '"',
-				major == null ? Constants.EMPTY_STRING : '"' + major + '"',
-				minor == null ? Constants.EMPTY_STRING : '"' + minor + '"',
-				patch == null ? Constants.EMPTY_STRING : '"' + patch + '"',
-				patchMinor == null ? Constants.EMPTY_STRING : '"' + patchMinor + '"');
+		StringBuilder builder = new StringBuilder();
+		builder.append("OS [family=").append(family).append(", major=").append(major).append(", minor=").append(minor)
+				.append(", patch=").append(patch).append(", patchMinor=").append(patchMinor).append("]");
+		return builder.toString();
 	}
 }

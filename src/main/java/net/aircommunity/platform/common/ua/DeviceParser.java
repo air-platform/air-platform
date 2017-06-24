@@ -11,31 +11,10 @@ import java.util.regex.Pattern;
  *
  * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
-public class DeviceParser {
-	List<DevicePattern> patterns;
+class DeviceParser {
+	private final List<DevicePattern> patterns;
 
-	public DeviceParser(List<DevicePattern> patterns) {
-		this.patterns = patterns;
-	}
-
-	public Device parse(String agentString) {
-		if (agentString == null) {
-			return null;
-		}
-
-		String device = null;
-		for (DevicePattern p : patterns) {
-			if ((device = p.match(agentString)) != null) {
-				break;
-			}
-		}
-		if (device == null)
-			device = "Other";
-
-		return new Device(device);
-	}
-
-	public static DeviceParser fromList(List<Map<String, String>> configList) {
+	static DeviceParser fromList(List<Map<String, String>> configList) {
 		List<DevicePattern> configPatterns = new ArrayList<DevicePattern>();
 		for (Map<String, String> configMap : configList) {
 			configPatterns.add(DeviceParser.patternFromMap(configMap));
@@ -43,7 +22,24 @@ public class DeviceParser {
 		return new DeviceParser(configPatterns);
 	}
 
-	protected static DevicePattern patternFromMap(Map<String, String> configMap) {
+	private DeviceParser(List<DevicePattern> patterns) {
+		this.patterns = patterns;
+	}
+
+	Device parse(String agentString) {
+		if (agentString == null) {
+			return null;
+		}
+		for (DevicePattern p : patterns) {
+			String device = p.match(agentString);
+			if (device != null) {
+				return new Device(device);
+			}
+		}
+		return Device.OTHER;
+	}
+
+	private static DevicePattern patternFromMap(Map<String, String> configMap) {
 		String regex = configMap.get("regex");
 		if (regex == null) {
 			throw new IllegalArgumentException("Device is missing regex");
@@ -53,17 +49,17 @@ public class DeviceParser {
 		return new DevicePattern(pattern, configMap.get("device_replacement"));
 	}
 
-	protected static class DevicePattern {
+	private static class DevicePattern {
 		private static final Pattern SUBSTITUTIONS_PATTERN = Pattern.compile("\\$\\d");
 		private final Pattern pattern;
 		private final String deviceReplacement;
 
-		public DevicePattern(Pattern pattern, String deviceReplacement) {
+		DevicePattern(Pattern pattern, String deviceReplacement) {
 			this.pattern = pattern;
 			this.deviceReplacement = deviceReplacement;
 		}
 
-		public String match(String agentString) {
+		private String match(String agentString) {
 			Matcher matcher = pattern.matcher(agentString);
 			if (!matcher.find()) {
 				return null;
@@ -87,7 +83,6 @@ public class DeviceParser {
 			else if (matcher.groupCount() >= 1) {
 				device = matcher.group(1);
 			}
-
 			return device;
 		}
 
@@ -99,7 +94,6 @@ public class DeviceParser {
 			}
 			return substitutions;
 		}
-
 	}
 
 }

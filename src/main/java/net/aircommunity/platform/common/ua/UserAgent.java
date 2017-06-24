@@ -24,7 +24,12 @@ import java.util.Map;
  * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 public class UserAgent {
-	public final String family, major, minor, patch;
+	public static final UserAgent OTHER = new UserAgent("Other", null, null, null);
+
+	public final String family;
+	public final String major;
+	public final String minor;
+	public final String patch;
 
 	public UserAgent(String family, String major, String minor, String patch) {
 		this.family = family;
@@ -62,11 +67,9 @@ public class UserAgent {
 
 	@Override
 	public String toString() {
-		return String.format("{\"family\": %s, \"major\": %s, \"minor\": %s, \"patch\": %s}",
-				family == null ? Constants.EMPTY_STRING : '"' + family + '"',
-				major == null ? Constants.EMPTY_STRING : '"' + major + '"',
-				minor == null ? Constants.EMPTY_STRING : '"' + minor + '"',
-				patch == null ? Constants.EMPTY_STRING : '"' + patch + '"');
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserAgent [family=").append(family).append(", major=").append(major).append(", minor=")
+				.append(minor).append(", patch=").append(patch).append("]");
+		return builder.toString();
 	}
-
 }

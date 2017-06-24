@@ -1,60 +1,60 @@
 package net.aircommunity.platform.common.ua;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Operating System parser using ua-parser. Extracts OS information from user agent strings.
  *
  * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
-public class OSParser {
+class OSParser {
 	private final List<OSPattern> patterns;
 
-	public OSParser(List<OSPattern> patterns) {
-		this.patterns = patterns;
-	}
-
-	public static OSParser fromList(List<Map<String, String>> configList) {
+	static OSParser fromList(List<Map<String, String>> configList) {
 		List<OSPattern> configPatterns = new ArrayList<OSPattern>();
-
 		for (Map<String, String> configMap : configList) {
 			configPatterns.add(OSParser.patternFromMap(configMap));
 		}
 		return new OSParser(configPatterns);
 	}
 
-	public OS parse(String agentString) {
+	private OSParser(List<OSPattern> patterns) {
+		this.patterns = patterns;
+	}
+
+	OS parse(String agentString) {
 		if (agentString == null) {
 			return null;
 		}
-
-		OS os;
 		for (OSPattern p : patterns) {
-			if ((os = p.match(agentString)) != null) {
+			OS os = p.match(agentString);
+			if (os != null) {
 				return os;
 			}
 		}
-		return new OS("Other", null, null, null, null);
+		return OS.OTHER;
 	}
 
-	protected static OSPattern patternFromMap(Map<String, String> configMap) {
+	private static OSPattern patternFromMap(Map<String, String> configMap) {
 		String regex = configMap.get("regex");
 		if (regex == null) {
 			throw new IllegalArgumentException("OS is missing regex");
 		}
-
-		return (new OSPattern(Pattern.compile(regex), configMap.get("os_replacement"),
+		return new OSPattern(Pattern.compile(regex), configMap.get("os_replacement"),
 				configMap.get("os_v1_replacement"), configMap.get("os_v2_replacement"),
-				configMap.get("os_v3_replacement")));
+				configMap.get("os_v3_replacement"));
 	}
 
-	protected static class OSPattern {
+	private static class OSPattern {
 		private final Pattern pattern;
-		private final String osReplacement, v1Replacement, v2Replacement, v3Replacement;
+		private final String osReplacement;
+		private final String v1Replacement;
+		private final String v2Replacement;
+		private final String v3Replacement;
 
 		public OSPattern(Pattern pattern, String osReplacement, String v1Replacement, String v2Replacement,
 				String v3Replacement) {
@@ -68,13 +68,10 @@ public class OSParser {
 		public OS match(String agentString) {
 			String family = null, v1 = null, v2 = null, v3 = null, v4 = null;
 			Matcher matcher = pattern.matcher(agentString);
-
 			if (!matcher.find()) {
 				return null;
 			}
-
 			int groupCount = matcher.groupCount();
-
 			if (osReplacement != null) {
 				if (groupCount >= 1) {
 					family = Pattern.compile("(" + Pattern.quote("$1") + ")").matcher(osReplacement)
@@ -109,7 +106,6 @@ public class OSParser {
 			if (groupCount >= 5) {
 				v4 = matcher.group(5);
 			}
-
 			return family == null ? null : new OS(family, v1, v2, v3, v4);
 		}
 	}

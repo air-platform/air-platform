@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -54,9 +55,10 @@ public class AirTaxiOrderResource extends UserBaseOrderResource<AirTaxiOrder> {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
-	public Response create(@PathParam("userId") String userId, @NotNull @Valid AirTaxiOrder order,
-			@Context UriInfo uriInfo) {
-		AirTaxiOrder created = airTaxiOrderService.createAirTaxiOrder(userId, order);
+	public Response create(@HeaderParam("user-agent") String userAgent, @PathParam("userId") String userId,
+			@NotNull @Valid AirTaxiOrder order, @Context UriInfo uriInfo) {
+		LOG.debug("[{}] Creating order {}", userAgent, order);
+		AirTaxiOrder created = airTaxiOrderService.createAirTaxiOrder(userId, detectOrderChannel(userAgent, order));
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
