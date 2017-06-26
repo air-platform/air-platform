@@ -131,6 +131,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 * Update
 	 */
 	protected final T doUpdateProduct(String productId, T newProduct) {
+		LOG.debug("Product {} updating: {}", productId, newProduct);
 		T product = doFindProduct(productId);
 		product.setName(newProduct.getName());
 		product.setImage(newProduct.getImage());

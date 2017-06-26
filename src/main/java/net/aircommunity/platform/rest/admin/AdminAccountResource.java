@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -31,6 +32,7 @@ import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.Tenant.VerificationStatus;
+import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.AccountService;
 
 /**
@@ -41,7 +43,7 @@ import net.aircommunity.platform.service.AccountService;
 // NOTE: @RolesAllowed is needed and not inherited from parent resource
 @RESTful
 @RolesAllowed(Roles.ROLE_ADMIN)
-public class AdminAccountResource {
+public class AdminAccountResource extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(AdminAccountResource.class);
 
 	@Resource
@@ -99,6 +101,17 @@ public class AdminAccountResource {
 	@Path("{accountId}/password/reset/default")
 	public void resetAccountPasswordTo(@PathParam("accountId") String accountId) {
 		accountService.resetPasswordTo(accountId, Constants.DEFAULT_PASSWORD);
+	}
+
+	/**
+	 * Increase/decrease user points
+	 */
+	@POST
+	@Path("{accountId}/points")
+	public void updateUserPoints(@PathParam("accountId") String accountId, JsonObject request) {
+		long deltaPoints = getPoints(request);
+		LOG.debug("Update user {} with point request: {}, deltaPoints: {}", accountId, request, deltaPoints);
+		accountService.updateUserPoints(accountId, deltaPoints);
 	}
 
 	/**

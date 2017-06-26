@@ -20,11 +20,13 @@ public interface FleetCandidateRepository extends JpaRepository<FleetCandidate, 
 	Page<FleetCandidate> findDistinctOrderByVendorId(String tenantId, Pageable pageable);
 
 	// NOTE: full table scan (used in TENANT admin console, DELETED status is filtered out)
-	Page<FleetCandidate> findDistinctOrderByVendorIdAndStatusNot(String tenantId, FleetCandidate.Status status,
-			Pageable pageable);
+	// TODO: NOT vs IN ? how to optimize ?
+	Page<FleetCandidate> findDistinctOrderByVendorIdAndStatusNotOrderByOrderCreationDateDesc(String tenantId,
+			FleetCandidate.Status status, Pageable pageable);
 
-	Page<FleetCandidate> findDistinctOrderByVendorIdAndOrderStatus(String tenantId, Order.Status status,
-			Pageable pageable);
+	// TODO: how to optimize ?
+	Page<FleetCandidate> findDistinctOrderByVendorIdAndOrderStatusOrderByOrderCreationDateDesc(String tenantId,
+			Order.Status status, Pageable pageable);
 
 	//
 	Page<FleetCandidate> findByVendorId(String tenantId, Pageable pageable);

@@ -73,6 +73,21 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 		return doCreateProduct(schoolId, course);
 	}
 
+	@Cacheable(cacheNames = CACHE_NAME)
+	@Override
+	public Course findCourse(String courseId) {
+		return doFindProduct(courseId);
+	}
+
+	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#courseId"), evict = @CacheEvict(cacheNames = {
+			CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES }, allEntries = true))
+	@Override
+	public Course updateCourse(String courseId, Course newCourse) {
+		School newSchool = schoolService.findSchool(newCourse.getSchool().getId());
+		newCourse.setSchool(newSchool);
+		return doUpdateProduct(courseId, newCourse);
+	}
+
 	@Override
 	protected void copyProperties(Course src, Course tgt) {
 		// just set school that find previously
@@ -86,23 +101,6 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 		tgt.setStartDate(src.getStartDate());
 		tgt.setEndDate(src.getEndDate());
 		tgt.setTotalNum(src.getTotalNum());
-	}
-
-	@Cacheable(cacheNames = CACHE_NAME)
-	@Override
-	public Course findCourse(String courseId) {
-		return doFindProduct(courseId);
-	}
-
-	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#courseId"), evict = @CacheEvict(cacheNames = {
-			CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES }, allEntries = true))
-	@Override
-	public Course updateCourse(String courseId, Course newCourse) {
-		Course course = findCourse(courseId);
-		copyProperties(newCourse, course);
-		School newSchool = schoolService.findSchool(newCourse.getSchool().getId());
-		course.setSchool(newSchool);
-		return doUpdateProduct(courseId, course);
 	}
 
 	@Override

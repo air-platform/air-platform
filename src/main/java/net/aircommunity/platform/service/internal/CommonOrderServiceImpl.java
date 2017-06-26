@@ -75,9 +75,6 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 		return doFindOrder(orderId);
 	}
 
-	// TODO REMOVE
-	// @CachePut(cacheNames = CACHE_NAME, key = "#orderId")
-
 	@Caching(put = { //
 			@CachePut(cacheNames = CACHE_NAME, key = "#orderId"),
 			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")

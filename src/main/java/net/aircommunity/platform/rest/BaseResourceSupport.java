@@ -18,6 +18,7 @@ import net.aircommunity.platform.service.CommonProductService;
  */
 public abstract class BaseResourceSupport {
 
+	private static final String JSON_PROP_POINTS = "points";
 	private static final String JSON_PROP_COUNT = "count";
 	private static final String JSON_PROP_REASON = "reason";
 	private static final String JSON_PROP_REJECT_REASON = "reason";
@@ -52,6 +53,14 @@ public abstract class BaseResourceSupport {
 
 	protected String getCancelReason(JsonObject request) {
 		return getJsonString(request, JSON_PROP_CANCEL_REASON);
+	}
+
+	protected long getPoints(JsonObject request) {
+		if (request != null) {
+			JsonNumber num = request.getJsonNumber(JSON_PROP_POINTS);
+			return num == null ? 0 : num.longValue();
+		}
+		return 0;
 	}
 
 	protected BigDecimal getAmount(JsonObject request) {

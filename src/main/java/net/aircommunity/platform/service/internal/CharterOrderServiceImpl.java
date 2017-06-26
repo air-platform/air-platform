@@ -1,7 +1,9 @@
 package net.aircommunity.platform.service.internal;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,7 +18,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.micro.common.collect.ImmutableCollectors;
+import com.google.common.collect.ImmutableList;
+
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
@@ -190,14 +193,18 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 		}
 		Page<FleetCandidate> data = null;
 		if (status == null) {
-			data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorIdAndStatusNot(tenantId,
-					FleetCandidate.Status.DELETED, Pages.createPageRequest(page, pageSize)));
+			data = Pages
+					.adapt(fleetCandidateRepository.findDistinctOrderByVendorIdAndStatusNotOrderByOrderCreationDateDesc(
+							tenantId, FleetCandidate.Status.DELETED, Pages.createPageRequest(page, pageSize)));
 		}
 		else {
-			data = Pages.adapt(fleetCandidateRepository.findDistinctOrderByVendorIdAndOrderStatus(tenantId, status,
-					Pages.createPageRequest(page, pageSize)));
+			data = Pages.adapt(
+					fleetCandidateRepository.findDistinctOrderByVendorIdAndOrderStatusOrderByOrderCreationDateDesc(
+							tenantId, status, Pages.createPageRequest(page, pageSize)));
 		}
-		List<CharterOrder> content = data.getContent().stream().map(fleetCandidate -> {
+		LOG.debug("Before filtering {} fleet candidate data: {}", tenantId, data);
+		Map<String, CharterOrder> result = new LinkedHashMap<>();
+		data.getContent().stream().forEach(fleetCandidate -> {
 			// make copy
 			CharterOrder order = fleetCandidate.getOrder().clone();
 			// remove FleetCandidate whose owner is NOT current tenant
@@ -205,9 +212,10 @@ public class CharterOrderServiceImpl extends AbstractOrderService<CharterOrder> 
 			Set<FleetCandidate> candidates = order.getFleetCandidates().stream()
 					.filter(candidate -> candidate.isOwnedByTenant(tenantId)).collect(Collectors.toSet());
 			order.setFleetCandidates(candidates);
-			return order;
-		}).distinct().collect(ImmutableCollectors.toList());
-		return Pages.createPage(page, pageSize, data.getTotalRecords(), content);
+			result.putIfAbsent(order.getId(), order);
+		});
+		LOG.debug("Final charter order: {}", result);
+		return Pages.createPage(page, pageSize, data.getTotalRecords(), ImmutableList.copyOf(result.values()));
 	}
 
 	@Override

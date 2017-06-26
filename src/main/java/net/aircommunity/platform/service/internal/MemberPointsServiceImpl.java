@@ -144,7 +144,7 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 
 	@Override
 	public int getPointsExchangePercent() {
-		Settings settings = settingsRepository.findByName(POINTS_EXCHANGE_RATE);
+		Settings settings = settingsRepository.findByName(POINTS_EXCHANGE_PERCENT);
 		if (settings == null) {
 			return DEFAULT_EXCHANGE_PERCENT;
 		}

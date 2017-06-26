@@ -1,6 +1,7 @@
 package net.aircommunity.platform.rest.filter;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Priority;
 import javax.annotation.Resource;
@@ -9,6 +10,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
@@ -50,6 +52,9 @@ public class ResourceOwnerAccessFilter implements ContainerRequestFilter {
 			// skip check for admin
 			return;
 		}
+
+		List<PathSegment> segs = info.getPathSegments();
+		LOG.debug("segs {}", segs); // [user, ferryflight, orders, a, 1]
 
 		MultivaluedMap<String, String> pathParams = info.getPathParameters();
 		// for tenant resource without tenantId passed from URI, but append it automatically

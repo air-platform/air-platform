@@ -189,10 +189,12 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 		// 5.2) Calculate points to exchange
 		// max: 50% percent of totalPrice
-		int percent = memberPointsService.getPointsExchangePercent();
-		LOG.debug("Point exchange percent: {}", percent);
-		long pointsMax = totalPrice.multiply(BigDecimal.valueOf(percent))
-				.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP).longValue();
+		int exchangePercent = memberPointsService.getPointsExchangePercent();
+		int exchangeRate = memberPointsService.getPointsExchangeRate();
+		LOG.debug("Point exchange percent: {},  exchange rate: {}", exchangePercent, exchangeRate);
+		long pointsMax = totalPrice.multiply(BigDecimal.valueOf(exchangePercent))
+				.multiply(BigDecimal.valueOf(exchangeRate)).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)
+				.longValue();
 		LOG.debug("Point exchange pointsMax: {} for order with total amount: {}", pointsMax, totalPrice);
 		long pointToExchange = order.getPointsUsed();
 		if (pointToExchange > 0) {
@@ -663,9 +665,13 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			expectOrderStatus(order, newStatus, Order.Status.CONFIRMED);
 			break;
 
+		// may called by client notification, ignored if already paid
 		case PAYMENT_IN_PROCESS:
+			if (order.getStatus() == Order.Status.PAID) {
+				LOG.warn("Ignored status update to: {}, because this order is already PAID", newStatus);
+				return order;
+			}
 			// TODO check later
-			LOG.debug("TODO CHECK for {}", newStatus);
 			break;
 
 		case PARTIAL_PAID:

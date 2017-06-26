@@ -101,7 +101,7 @@ public class FleetCandidate extends Persistable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("FleetCandidate [offeredPrice=").append(offeredPrice).append(", status=").append(status)
-				.append(", order=").append(order).append("]");
+				.append(", order=").append(order.getId()).append("]");
 		return builder.toString();
 	}
 
