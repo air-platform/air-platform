@@ -22,6 +22,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String REFUND_FAILURE;
 	public static String REFUND_REQUEST_REJECTED;
 	public static String REFUND_REASON_MISSING;
+	public static String REFUND_REASON_FORCE;
 
 	// generic
 	public static String FORM_INVALID_FILE_INPUT;
@@ -52,6 +53,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String ORDER_OPERATION_CANCEL;
 	public static String ORDER_NOT_FOUND;
 	public static String ORDER_INSTALMENT_NOT_FOUND;
+	public static String ORDER_ACCESS_DENIED;
 	public static String ORDER_ILLEGAL_STATUS;
 	public static String ORDER_NOT_PAYABLE;
 	public static String ORDER_REFUND_FAILURE;

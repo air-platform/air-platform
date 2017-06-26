@@ -6,6 +6,8 @@ import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -22,10 +24,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
 import io.swagger.annotations.Api;
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.RefundRequest;
@@ -34,6 +41,7 @@ import net.aircommunity.platform.model.domain.Address;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.AccountService;
 import net.aircommunity.platform.service.CharterOrderService;
@@ -152,8 +160,9 @@ public class UserResource extends BaseResourceSupport {
 	@GET
 	@Path("orders")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
 	public Page<Order> listAllOrders(@QueryParam("status") String status,
-			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize,
 			@Context SecurityContext context) {
 		String userId = context.getUserPrincipal().getName();
 		switch (status) {
@@ -183,6 +192,28 @@ public class UserResource extends BaseResourceSupport {
 	}
 
 	/**
+	 * Search (order within 6 months)
+	 */
+	@GET
+	@Path("orders/search")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
+	public Response searchOrders(@QueryParam("orderNo") String orderNo,
+			@Max(180) @Min(0) @DefaultValue("0") @QueryParam("days") int days,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize,
+			@Context SecurityContext context) {
+		String userId = context.getUserPrincipal().getName();
+		if (Strings.isNotBlank(orderNo)) {
+			Order order = commonOrderService.findByOrderNo(orderNo);
+			if (!order.isOwner(userId)) {
+				throw new AirException(Codes.ORDER_ACCESS_DENIED, M.msg(M.ORDER_ACCESS_DENIED));
+			}
+			return Response.ok(commonOrderService.findByOrderNo(orderNo)).build();
+		}
+		return Response.ok(commonOrderService.listUserOrders(userId, days, page, pageSize)).build();
+	}
+
+	/**
 	 * First Order or not
 	 */
 	@HEAD
@@ -200,8 +231,14 @@ public class UserResource extends BaseResourceSupport {
 	@GET
 	@Path("orders/{orderId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
 	public Order findOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
-		return commonOrderService.findOrder(orderId);
+		String userId = context.getUserPrincipal().getName();
+		Order order = commonOrderService.findOrder(orderId);
+		if (!order.isOwner(userId)) {
+			throw new AirException(Codes.ORDER_ACCESS_DENIED, M.msg(M.ORDER_ACCESS_DENIED));
+		}
+		return order;
 	}
 
 	/**
@@ -234,7 +271,7 @@ public class UserResource extends BaseResourceSupport {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void refundOrder(@PathParam("orderId") String orderId, @NotNull @Valid RefundRequest request) {
 		// TODO just replace RefundRequest --> JsonObject ( {reason: ""} )
-		commonOrderService.requestOrderRefund(orderId, request);
+		commonOrderService.requestOrderRefund(orderId, request.getRefundReason());
 	}
 
 	@POST

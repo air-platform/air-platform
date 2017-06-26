@@ -18,6 +18,7 @@ import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.retry.support.RetryTemplate;
@@ -27,15 +28,14 @@ import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.common.OrderPrices;
 import net.aircommunity.platform.model.OrderEvent;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PaymentRequest;
+import net.aircommunity.platform.model.PointRules;
 import net.aircommunity.platform.model.PointsExchange;
 import net.aircommunity.platform.model.PricePolicy;
-import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.model.UnitProductPrice;
 import net.aircommunity.platform.model.domain.Account;
@@ -189,7 +189,11 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 		// 5.2) Calculate points to exchange
 		// max: 50% percent of totalPrice
-		long pointsMax = totalPrice.divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP).longValue();
+		int percent = memberPointsService.getPointsExchangePercent();
+		LOG.debug("Point exchange percent: {}", percent);
+		long pointsMax = totalPrice.multiply(BigDecimal.valueOf(percent))
+				.divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP).longValue();
+		LOG.debug("Point exchange pointsMax: {} for order with total amount: {}", pointsMax, totalPrice);
 		long pointToExchange = order.getPointsUsed();
 		if (pointToExchange > 0) {
 			pointToExchange = Math.min(pointsMax, owner.getPoints());
@@ -483,9 +487,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	/**
 	 * Request refund
 	 */
-	protected T doRequestOrderRefund(String orderId, RefundRequest request) {
+	protected T doRequestOrderRefund(String orderId, String refundReason) {
 		T order = doFindOrder(orderId);
-		String reason = request.getRefundReason();
+		String reason = refundReason;
 		if (Strings.isBlank(reason)) {
 			reason = M.msg(M.REFUND_REASON_MISSING);
 		}
@@ -524,6 +528,15 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		// InstalmentOrder instalmentOrder = InstalmentOrder.class.cast(order);
 		// }
 		return orderRefund;
+	}
+
+	/**
+	 * Refund initiated from tenant and admin
+	 */
+	protected T doInitiateOrderRefund(String orderId, BigDecimal refundAmount, String refundReason) {
+		T order = doFindOrder(orderId);
+		order.setRefundReason(M.msg(M.REFUND_REASON_FORCE, refundReason));
+		return doAcceptOrderRefund(orderId, refundAmount);
 	}
 
 	/**
@@ -725,7 +738,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.PAID, Order.Status.TICKET_RELEASED));
 			order.setFinishedDate(new Date());
 			// update points earned
-			long pointsEarnedPercent = memberPointsService.getPointsEarnedFromRule(Constants.PointRules.ORDER_FINISHED);
+			long pointsEarnedPercent = memberPointsService
+					.getPointsEarnedFromRule(PointRules.getOrderFinishedRule(order.getProduct().getCategory()));
 			long pointsEarned = Math.round(
 					order.getTotalPrice().multiply(BigDecimal.valueOf(pointsEarnedPercent / 100d)).doubleValue());
 			LOG.info("User earned points {}({}%)", pointsEarned, pointsEarnedPercent);
@@ -815,6 +829,23 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		incudedStatuses.remove(Order.Status.DELETED);
 		return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusInOrderByCreationDateDesc(userId, incudedStatuses,
 				Pages.createPageRequest(page, pageSize)));
+	}
+
+	/**
+	 * For USER (Exclude orders in DELETED status)
+	 */
+	protected Page<T> doListUserOrdersOfRecentDays(String userId, int days, int page, int pageSize) {
+		if (days < 0) {
+			days = 0;
+		}
+		if (days > 6 * 30) {
+			days = 6 * 30; // max 6 months
+		}
+		Date creationDate = LocalDateTime.now().minusDays(days).toDate();
+		LOG.debug("List recent {} days({}) orders for user: {}", days, creationDate, userId);
+		return Pages.adapt(
+				getOrderRepository().findByOwnerIdAndStatusInAndCreationDateLessThanEqualOrderByCreationDateDesc(userId,
+						Order.Status.visibleStatus(), creationDate, Pages.createPageRequest(page, pageSize)));
 	}
 
 	/**

@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
@@ -33,13 +32,12 @@ import okhttp3.OkHttpClient;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
 public class NewpayPaymentGateway extends AbstractPaymentGateway {
 	// used to distinguish payment or refund notification. WTF!!!
 	// WHY not provide an official field, e.g. notificationType
 	private static final String PAY_KEYWORD = "payAmount";
 	private static final String REFUND_KEYWORD = "refundAmount";
-	private static final PaymentResponse NOTIFICATION_RESPONSE_FAILURE = new PaymentResponse(409, "failure");
+	private static final PaymentResponse NOTIFICATION_RESPONSE_FAILURE = new PaymentResponse(599, "failure");
 
 	private final NewpayClient client;
 	private final NewpayConfig config;

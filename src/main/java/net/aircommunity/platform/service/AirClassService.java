@@ -43,6 +43,15 @@ public interface AirClassService {
 	AirClass updateAirClass(@Nonnull String airClassId, @Nonnull AirClass newAirClass);
 
 	/**
+	 * Increase a AirClass views.
+	 * 
+	 * @param airClassId the airClassId
+	 * @return AirClass created
+	 */
+	@Nonnull
+	AirClass increaseAirClassViews(@Nonnull String airClassId);
+
+	/**
 	 * List all AirClasses by pagination.
 	 * 
 	 * @param page the page number

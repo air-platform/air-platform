@@ -136,6 +136,24 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		product.setImage(newProduct.getImage());
 		product.setClientManagers(newProduct.getClientManagers());
 		product.setDescription(newProduct.getDescription());
+		// standard
+		if (StandardProduct.class.isAssignableFrom(product.getClass())) {
+			StandardProduct newStandardProduct = (StandardProduct) newProduct;
+			StandardProduct standardProduct = (StandardProduct) product;
+			// update price
+			standardProduct.setPrice(newStandardProduct.getPrice());
+			// update currencyUnit
+			CurrencyUnit currencyUnit = newStandardProduct.getCurrencyUnit();
+			standardProduct.setCurrencyUnit(currencyUnit == null ? CurrencyUnit.RMB : currencyUnit);
+		}
+		if (CharterableProduct.class.isAssignableFrom(product.getClass())) {
+			CharterableProduct newCharterableProduct = (CharterableProduct) newProduct;
+			CharterableProduct charterableProduct = (CharterableProduct) product;
+			// update
+			charterableProduct.setSeatPrice(newCharterableProduct.getSeatPrice());
+			charterableProduct.setSeats(newCharterableProduct.getSeats());
+			charterableProduct.setMinPassengers(newCharterableProduct.getMinPassengers());
+		}
 		copyProperties(newProduct, product);
 		T updated = safeExecute(() -> getProductRepository().save(product), "Update %s: %s with %s failed",
 				type.getSimpleName(), productId, newProduct);

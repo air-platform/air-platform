@@ -16,12 +16,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import io.micro.annotation.constraint.NotEmpty;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
@@ -32,10 +36,20 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  */
 @Entity
 @Table(name = "air_platform_promotion", indexes = {
-		@Index(name = "idx_category_creation_date", columnList = "category,creation_date") })
+		@Index(name = "idx_category_rank_creation_date", columnList = "category,rank,creation_date") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Promotion extends Persistable {
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Lowest product rank
+	 */
+	public static final int LOWEST_RANK = 0;
+
+	/**
+	 * Default product rank
+	 */
+	public static final int DEFAULT_RANK = LOWEST_RANK;
 
 	@Column(name = "category", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -44,6 +58,12 @@ public class Promotion extends Persistable {
 	@Size(max = 255)
 	@Column(name = "name", length = 255)
 	private String name;
+
+	// product rank (high rank will considered as hot, sort by rank DESC, 0 will be the lowest rank)
+	@Min(LOWEST_RANK)
+	@Column(name = "rank", nullable = false)
+	@JsonView(JsonViews.Admin.class)
+	private int rank = DEFAULT_RANK;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
@@ -81,6 +101,14 @@ public class Promotion extends Persistable {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
 	}
 
 	public Date getCreationDate() {
@@ -132,9 +160,9 @@ public class Promotion extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Promotion [category=").append(category).append(", name=").append(name).append(", creationDate=")
-				.append(creationDate).append(", description=").append(description).append(", id=").append(id)
-				.append("]");
+		builder.append("Promotion [category=").append(category).append(", name=").append(name).append(", rank=")
+				.append(rank).append(", creationDate=").append(creationDate).append(", description=")
+				.append(description).append(", items=").append(items).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

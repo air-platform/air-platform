@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -59,8 +60,8 @@ public class AirTourResourse extends ProductResourceSupport<AirTour> {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
-	public Page<AirTour> listAll(@QueryParam("city") String city, @QueryParam("page") int page,
-			@QueryParam("pageSize") int pageSize) {
+	public Page<AirTour> listAll(@QueryParam("city") String city, @QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("list all air tours");
 		if (city == null) {
 			return airTourService.listAirTours(page, pageSize);

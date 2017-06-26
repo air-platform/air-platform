@@ -62,15 +62,15 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	}
 
 	/**
-	 * Update Rank
+	 * Update Rank (ADMIN)
 	 */
 	@POST
 	@Path("{productId}/rank")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
+	@RolesAllowed(Roles.ROLE_ADMIN)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Product rankProduct(@PathParam("productId") String productId, JsonObject request) {
-		int newRank = getProductRank(request);
+		int newRank = getRank(request);
 		return commonProductService.updateProductRank(productId, newRank);
 	}
 
@@ -103,7 +103,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	 */
 	@POST
 	@Path("{productId}/approve")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE })
+	@RolesAllowed(Roles.ROLE_ADMIN)
 	public void approveProduct(@PathParam("productId") String productId) {
 		commonProductService.reviewProduct(productId, ReviewStatus.APPROVED, null);
 	}
@@ -113,7 +113,7 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	 */
 	@POST
 	@Path("{productId}/disapprove")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE })
+	@RolesAllowed(Roles.ROLE_ADMIN)
 	public void disapproveProduct(@PathParam("productId") String productId, JsonObject rejectedReason) {
 		String reason = getRejectedReason(rejectedReason);
 		commonProductService.reviewProduct(productId, ReviewStatus.REJECTED, reason);

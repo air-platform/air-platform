@@ -39,6 +39,7 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 	public Promotion createPromotion(Promotion promotion) {
 		Promotion newPromotion = new Promotion();
 		newPromotion.setCreationDate(new Date());
+		newPromotion.setRank(Promotion.DEFAULT_RANK);
 		copyProperties(promotion, newPromotion);
 		return safeExecute(() -> promotionRepository.save(newPromotion), "Create promotion %s failed", promotion);
 	}
@@ -69,13 +70,24 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 		tgt.setItems(src.getItems());
 	}
 
+	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#promotionId"), evict = @CacheEvict(cacheNames = CACHE_NAME_CATEGORY, allEntries = true))
+	public Promotion updatePromotionRank(String promotionId, int rank) {
+		Promotion promotion = findPromotion(promotionId);
+		if (rank < 0) {
+			rank = Promotion.DEFAULT_RANK;
+		}
+		promotion.setRank(rank);
+		return safeExecute(() -> promotionRepository.save(promotion), "Update promotion %s rank to %d failed",
+				promotionId, rank);
+	}
+
 	@Cacheable(cacheNames = CACHE_NAME_CATEGORY)
 	@Override
 	public List<Promotion> listPromotions(Category category) {
 		if (category == null) {
-			return promotionRepository.findAllByOrderByCreationDateDesc();
+			return promotionRepository.findAllByOrderByRankDescCreationDateDesc();
 		}
-		return promotionRepository.findByCategoryOrderByCreationDateDesc(category);
+		return promotionRepository.findByCategoryOrderByRankDescCreationDateDesc(category);
 	}
 
 	@Caching(evict = { @CacheEvict(cacheNames = CACHE_NAME, key = "#promotionId"),

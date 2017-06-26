@@ -3,6 +3,8 @@ package net.aircommunity.platform.model.domain;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,14 +44,14 @@ public abstract class Product extends Reviewable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Highest product rank
+	 * Lowest product rank
 	 */
-	public static final int HIGHEST_RANK = 0;
+	public static final int LOWEST_RANK = 0;
 
 	/**
 	 * Default product rank
 	 */
-	public static final int DEFAULT_RANK = 100;
+	public static final int DEFAULT_RANK = LOWEST_RANK;
 
 	// product name
 	@NotEmpty
@@ -78,8 +80,8 @@ public abstract class Product extends Reviewable {
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected int totalSales = 0;
 
-	// product rank (low rank will considered as hot, sort by rank ASC, 0 will be the highest rank)
-	@Min(HIGHEST_RANK)
+	// product rank (high rank will considered as hot, sort by rank DESC, 0 will be the lowest rank)
+	@Min(LOWEST_RANK)
 	@Column(name = "rank")
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected int rank = DEFAULT_RANK;
@@ -220,6 +222,8 @@ public abstract class Product extends Reviewable {
 	public enum Category {
 		NONE, AIR_JET, AIR_TOUR, AIR_TAXI, AIR_TRANS, AIR_TRAINING;
 
+		private static Set<Category> categories;
+
 		public static Category fromString(String value) {
 			for (Category e : values()) {
 				if (e.name().equalsIgnoreCase(value)) {
@@ -228,5 +232,14 @@ public abstract class Product extends Reviewable {
 			}
 			return null;
 		}
+
+		public static Set<Category> categories() {
+			if (categories == null) {
+				categories = Stream.of(values()).filter(category -> category != Category.NONE)
+						.collect(Collectors.toSet());
+			}
+			return categories;
+		}
+
 	}
 }

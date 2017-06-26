@@ -10,7 +10,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
@@ -47,7 +46,6 @@ import net.aircommunity.platform.service.internal.payment.AbstractPaymentGateway
  * @author Bin.Zhang
  */
 @Service
-@Transactional
 public class AlipayPaymentGateway extends AbstractPaymentGateway {
 	// private static final String APP_ID = "2017060907455116";
 	// private static final String APP_PRIVATE_KEY =
@@ -228,7 +226,6 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 		return PaymentVerification.FAILURE;
 	}
 
-	@Transactional
 	@Override
 	@SuppressWarnings("unchecked")
 	public PaymentResponse processServerPaymentNotification(PaymentNotification notification) {

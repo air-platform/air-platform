@@ -1,6 +1,7 @@
 package net.aircommunity.platform.repository;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +38,19 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	Page<T> findByOwnerIdOrderByCreationDateDesc(String userId, Pageable pageable);
 
 	/**
+	 * Find all user orders in status (order in 1 month, 3 months, 6 months) (XXX NOT GOOD, full scan, because of status
+	 * in)
+	 * 
+	 * @param userId the userId
+	 * @param statuses the expected statuses (all except deleted status)
+	 * @param creationDate the creationDate
+	 * @param pageable page request
+	 * @return a page of orders or empty if none
+	 */
+	Page<T> findByOwnerIdAndStatusInAndCreationDateLessThanEqualOrderByCreationDateDesc(String userId,
+			Collection<Status> statuses, Date creationDate, Pageable pageable);
+
+	/**
 	 * Find all user orders not status (XXX NOT GOOD, Using where; Using filesort) full table scan
 	 * 
 	 * @param userId the userId
@@ -47,7 +61,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	Page<T> findByOwnerIdAndStatusNotOrderByCreationDateDesc(String userId, Status ignoredStatus, Pageable pageable);
 
 	/**
-	 * Find all user orders in status (XXX NOT GOOD, Using where)
+	 * Find all user orders in status (XXX NOT GOOD, full scan ?)
 	 * 
 	 * @param userId the userId
 	 * @param statuses the expected statuses

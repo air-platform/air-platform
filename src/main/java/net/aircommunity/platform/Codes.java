@@ -61,13 +61,14 @@ public final class Codes {
 	public static final Code PRODUCT_FAMILY_CANNOT_BE_DELETED = Code.illegalState(11_003_0008);
 
 	// order
-	public static final Code ORDER_NOT_PAYABLE = Code.illegalState(11_003_1001);
-	public static final Code ORDER_NOT_FOUND = Code.notFound(11_003_1002);
-	public static final Code ORDER_ILLEGAL_STATUS = Code.illegalAccess(11_003_1003);
-	public static final Code ORDER_INSTALMENT_NOT_FOUND = Code.illegalAccess(11_003_1004);
-	public static final Code ORDER_REFUND_FAILURE = Code.illegalState(11_003_1005);
-	public static final Code ORDER_INVALID_TOTAL_AMOUNT = Code.invalidArgument(11_003_1006);
-	public static final Code ORDER_CANNOT_BE_DELETED = Code.illegalState(11_003_1007);
+	public static final Code ORDER_ACCESS_DENIED = Code.notPerimitted(11_003_1001);
+	public static final Code ORDER_NOT_PAYABLE = Code.illegalState(11_003_1002);
+	public static final Code ORDER_NOT_FOUND = Code.notFound(11_003_1003);
+	public static final Code ORDER_ILLEGAL_STATUS = Code.illegalAccess(11_003_1004);
+	public static final Code ORDER_INSTALMENT_NOT_FOUND = Code.illegalAccess(11_003_1005);
+	public static final Code ORDER_REFUND_FAILURE = Code.illegalState(11_003_1006);
+	public static final Code ORDER_INVALID_TOTAL_AMOUNT = Code.invalidArgument(11_003_1007);
+	public static final Code ORDER_CANNOT_BE_DELETED = Code.illegalState(11_003_1008);
 
 	// common product related
 	public static final Code AIRJET_ALREADY_EXISTS = Code.alreadyExists(11_003_2001);

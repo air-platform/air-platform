@@ -16,8 +16,8 @@ import net.aircommunity.platform.model.domain.Promotion;
 public interface PromotionRepository extends JpaRepository<Promotion, String> {
 
 	// use less frequently (full table scan)
-	List<Promotion> findAllByOrderByCreationDateDesc();
+	List<Promotion> findAllByOrderByRankDescCreationDateDesc();
 
-	List<Promotion> findByCategoryOrderByCreationDateDesc(Category category);
+	List<Promotion> findByCategoryOrderByRankDescCreationDateDesc(Category category);
 
 }

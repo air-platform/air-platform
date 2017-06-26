@@ -50,6 +50,17 @@ public class FerryFlightOrderResource extends UserBaseOrderResource<FerryFlightO
 	private FerryFlightOrderService ferryFlightOrderService;
 
 	/**
+	 * Find order
+	 */
+	@GET
+	@Path("/a/{orderId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
+	public FerryFlightOrder find2(@PathParam("orderId") String orderId) {
+		return ferryFlightOrderService.findFerryFlightOrder(orderId);
+	}
+
+	/**
 	 * Create
 	 */
 	@POST

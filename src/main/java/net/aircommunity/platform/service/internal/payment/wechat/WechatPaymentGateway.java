@@ -7,7 +7,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.github.binarywang.wxpay.bean.WxPayOrderNotifyResponse;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
@@ -44,7 +43,6 @@ import net.aircommunity.platform.service.internal.payment.AbstractPaymentGateway
  * @author Bin.Zhang
  */
 @Service
-@Transactional
 public class WechatPaymentGateway extends AbstractPaymentGateway {
 	private static final String TRADE_TYPE = "APP";
 	private static final String RETURN_CODE_SUCCESS = "SUCCESS"; // SUCCESS/FAIL

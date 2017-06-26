@@ -76,7 +76,9 @@ public class AirClassResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public AirClass find(@PathParam("airClassId") String airClassId) {
-		return airClassService.findAirClass(airClassId);
+		AirClass airClass = airClassService.findAirClass(airClassId);
+		airClassService.increaseAirClassViews(airClassId);
+		return airClass;
 	}
 
 	// *************

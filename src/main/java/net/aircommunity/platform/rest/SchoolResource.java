@@ -47,8 +47,8 @@ public class SchoolResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
-	public Page<School> listAll(@QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+	public Page<School> listAll(@QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all schools");
 		return schoolService.listAllSchools(page, pageSize);
 	}

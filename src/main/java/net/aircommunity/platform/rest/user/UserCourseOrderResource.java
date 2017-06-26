@@ -69,7 +69,7 @@ public class UserCourseOrderResource extends UserBaseOrderResource<CourseOrder> 
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
 	public Page<CourseOrder> list(@PathParam("userId") String userId, @QueryParam("status") Order.Status status,
-			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return courseOrderService.listUserCourseOrders(userId, status, page, pageSize);
 	}
 }

@@ -52,8 +52,8 @@ public class CourseResource extends ProductResourceSupport<Course> {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Page<Course> list(@QueryParam("location") String location, @QueryParam("aircraftType") String aircraftType,
-			@QueryParam("license") String license, @QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+			@QueryParam("license") String license, @QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("list all courses with location: {}, license: {}, aircraftType: {}", location, license, aircraftType);
 		return courseService.listCoursesWithConditions(location, aircraftType, license, page, pageSize);
 	}
@@ -95,8 +95,7 @@ public class CourseResource extends ProductResourceSupport<Course> {
 	@Path("hot")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
-	public List<Course> top10Hot(@QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+	public List<Course> top10Hot() {
 		return courseService.listTop10HotCourses();
 	}
 
@@ -108,7 +107,7 @@ public class CourseResource extends ProductResourceSupport<Course> {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Page<Course> listBySchool(@NotNull @QueryParam("id") String schoolId,
-			@QueryParam("page") @DefaultValue("1") int page, @QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return courseService.listCoursesBySchool(schoolId, page, pageSize);
 	}
 

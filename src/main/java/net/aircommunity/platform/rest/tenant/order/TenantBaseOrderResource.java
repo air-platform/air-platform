@@ -141,6 +141,23 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	}
 
 	/**
+	 * Refund started from TENANT/ADMIN without user request
+	 */
+	@POST
+	@Path("{orderId}/refund/initiate")
+	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+	public void forceOrderRefund(@PathParam("orderId") String orderId, JsonObject request) {
+		LOG.debug("Initiate refund request: {}", request);
+		BigDecimal refundAmount = getAmount(request);
+		String refundReason = getReason(request);
+		LOG.debug("Refund amount original: {}", refundAmount);
+		Order order = commonOrderService.initiateOrderRefund(orderId, refundAmount, refundReason);
+		if (order.getStatus() == Order.Status.REFUND_FAILED) {
+			throw new AirException(Codes.ORDER_REFUND_FAILURE, M.msg(M.ORDER_REFUND_FAILURE, order.getOrderNo()));
+		}
+	}
+
+	/**
 	 * Mark order as refunding (accepted user refund request)
 	 */
 	@POST

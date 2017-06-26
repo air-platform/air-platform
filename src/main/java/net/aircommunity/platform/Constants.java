@@ -29,21 +29,6 @@ public final class Constants {
 	public static final Set<String> LOOPBACK_ADDRESSES = ImmutableSet.of("127.0.0.1", "0:0:0:0:0:0:0:1");
 
 	// **************
-	// User Points
-	// **************
-	public static class PointRules {
-		public static final String ACCOUNT_REGISTRATION = "account_registration";
-		public static final String ORDER_FINISHED = "order_finished_percent";
-		public static final String FIRST_ORDER_PRICE_OFF = "first_order_price_off";
-		public static final String DAILY_SIGNIN_PREFIX = "daily_signin_";
-		public static final String DAILY_SIGNIN_1 = DAILY_SIGNIN_PREFIX + "1";
-		public static final String DAILY_SIGNIN_5 = DAILY_SIGNIN_PREFIX + "5";
-		public static final String DAILY_SIGNIN_15 = DAILY_SIGNIN_PREFIX + "15";
-		public static final String DAILY_SIGNIN_20 = DAILY_SIGNIN_PREFIX + "20";
-		public static final String DAILY_SIGNIN_25 = DAILY_SIGNIN_PREFIX + "25";
-	}
-
-	// **************
 	// API metrics
 	// **************
 	public static final String COUNTER_API_REQUESTS = "api.requests";

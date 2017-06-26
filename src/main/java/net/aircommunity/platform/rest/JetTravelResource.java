@@ -47,8 +47,8 @@ public class JetTravelResource extends ProductResourceSupport<JetTravel> {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
-	public Page<JetTravel> listAll(@QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+	public Page<JetTravel> listAll(@QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all jet travels");
 		return jetTravelService.listJetTravels(page, pageSize);
 	}

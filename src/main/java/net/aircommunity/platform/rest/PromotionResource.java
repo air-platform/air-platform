@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -31,8 +32,8 @@ import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.model.domain.Promotion;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.Promotion;
 import net.aircommunity.platform.service.PromotionService;
 
 /**
@@ -43,7 +44,7 @@ import net.aircommunity.platform.service.PromotionService;
 @Api
 @RESTful
 @Path("promotions")
-public class PromotionResource {
+public class PromotionResource extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(PromotionResource.class);
 
 	@Resource
@@ -110,6 +111,19 @@ public class PromotionResource {
 	@JsonView(JsonViews.Admin.class)
 	public Promotion update(@PathParam("promotionId") String promotionId, @NotNull @Valid Promotion newPromotion) {
 		return promotionService.updatePromotion(promotionId, newPromotion);
+	}
+
+	/**
+	 * Update Rank
+	 */
+	@POST
+	@Path("{promotionId}/rank")
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(Roles.ROLE_ADMIN)
+	@JsonView(JsonViews.Admin.class)
+	public Promotion rank(@PathParam("promotionId") String promotionId, JsonObject request) {
+		int newRank = getRank(request);
+		return promotionService.updatePromotionRank(promotionId, newRank);
 	}
 
 	/**

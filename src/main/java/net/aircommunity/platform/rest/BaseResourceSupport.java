@@ -19,6 +19,7 @@ import net.aircommunity.platform.service.CommonProductService;
 public abstract class BaseResourceSupport {
 
 	private static final String JSON_PROP_COUNT = "count";
+	private static final String JSON_PROP_REASON = "reason";
 	private static final String JSON_PROP_REJECT_REASON = "reason";
 	private static final String JSON_PROP_CANCEL_REASON = "reason";
 	private static final String JSON_PROP_RANK = "rank";
@@ -41,6 +42,10 @@ public abstract class BaseResourceSupport {
 		return getJsonString(request, JSON_PROP_FLEET_CANDIDATE);
 	}
 
+	protected String getReason(JsonObject request) {
+		return getJsonString(request, JSON_PROP_REASON);
+	}
+
 	protected String getRejectedReason(JsonObject request) {
 		return getJsonString(request, JSON_PROP_REJECT_REASON);
 	}
@@ -57,7 +62,7 @@ public abstract class BaseResourceSupport {
 		return BigDecimal.ZERO;
 	}
 
-	protected int getProductRank(JsonObject request) {
+	protected int getRank(JsonObject request) {
 		if (request != null) {
 			JsonNumber num = request.getJsonNumber(JSON_PROP_RANK);
 			return num == null ? Product.DEFAULT_RANK : num.intValue();

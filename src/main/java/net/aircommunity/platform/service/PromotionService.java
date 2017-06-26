@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.model.domain.Promotion;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.Promotion;
 
 /**
  * Product Promotion Service.
@@ -40,10 +40,20 @@ public interface PromotionService {
 	 * 
 	 * @param promotionId the promotionId
 	 * @param newPromotion the Promotion to be updated
-	 * @return Promotion created
+	 * @return Promotion updated
 	 */
 	@Nonnull
 	Promotion updatePromotion(@Nonnull String promotionId, @Nonnull Promotion newPromotion);
+
+	/**
+	 * Update a Promotion Rank. (ADMIN)
+	 * 
+	 * @param promotionId the promotionId
+	 * @param rank the new rank
+	 * @return Promotion updated
+	 */
+	@Nonnull
+	Promotion updatePromotionRank(@Nonnull String promotionId, int rank);
 
 	/**
 	 * List all Promotions

@@ -416,6 +416,10 @@ public abstract class Order extends Persistable {
 		this.owner = owner;
 	}
 
+	public boolean isOwner(String userId) {
+		return owner.getId().equals(userId);
+	}
+
 	// XXX
 	// order type (used by for RESTful API, not persisted)
 	// @XmlElement(name = "type")

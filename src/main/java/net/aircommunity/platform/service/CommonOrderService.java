@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PaymentRequest;
-import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Refund;
@@ -92,7 +91,10 @@ public interface CommonOrderService {
 	Order payOrder(@Nonnull String orderId, @Nonnull Payment payment);
 
 	@Nonnull
-	Order requestOrderRefund(@Nonnull String orderId, @Nonnull RefundRequest request);
+	Order requestOrderRefund(@Nonnull String orderId, @Nonnull String refundReason);
+
+	@Nonnull
+	Order initiateOrderRefund(@Nonnull String orderId, @Nonnull BigDecimal refundAmount, @Nonnull String refundReason);
 
 	@Nonnull
 	Order acceptOrderRefund(@Nonnull String orderId, @Nonnull BigDecimal refundAmount);
@@ -133,8 +135,9 @@ public interface CommonOrderService {
 	 * Hard delete from DB
 	 * 
 	 * @param orderId the orderId
+	 * @return the order deleted
 	 */
-	void deleteOrder(@Nonnull String orderId);
+	Order deleteOrder(@Nonnull String orderId);
 
 	/**
 	 * Hard delete user orders from DB (deletion will fail, if user is commented on some products)
@@ -216,6 +219,9 @@ public interface CommonOrderService {
 	 */
 	@Nonnull
 	Page<Order> listUserOrders(@Nonnull String userId, @Nullable Order.Status status, int page, int pageSize);
+
+	// order within 6 months (days <= 6*30)
+	Page<Order> listUserOrders(@Nonnull String userId, int days, int page, int pageSize);
 
 	@Nonnull
 	Page<Order> listUserOrdersInStatuses(@Nonnull String userId, @Nonnull Set<Order.Status> statuses, int page,

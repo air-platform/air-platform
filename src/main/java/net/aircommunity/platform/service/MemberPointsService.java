@@ -28,6 +28,21 @@ public interface MemberPointsService {
 	int getPointsExchangeRate();
 
 	/**
+	 * Set points exchange rate in percent. The percent of points can be used when place on order. e.g. the
+	 * pointsCanBeUsed = percent/100 * totalPriceOfOrder
+	 * 
+	 * @param percent
+	 */
+	void setPointsExchangePercent(int percent);
+
+	/**
+	 * Returns the points exchange percent.
+	 * 
+	 * @return the points exchange Percent
+	 */
+	int getPointsExchangePercent();
+
+	/**
 	 * Set a point rule with the given points.
 	 * 
 	 * @param pointRule point rule name

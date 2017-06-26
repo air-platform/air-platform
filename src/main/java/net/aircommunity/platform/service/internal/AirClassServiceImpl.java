@@ -68,6 +68,15 @@ public class AirClassServiceImpl extends AbstractServiceSupport implements AirCl
 		tgt.setContent(src.getContent());
 	}
 
+	@CachePut(cacheNames = CACHE_NAME, key = "#airClassId")
+	@Override
+	public AirClass increaseAirClassViews(String airClassId) {
+		AirClass airClass = findAirClass(airClassId);
+		airClass.increaseViews();
+		return safeExecute(() -> airClassRepository.save(airClass), "Increase airClass %s to %d failed", airClassId,
+				airClass.getViews());
+	}
+
 	@Override
 	public Page<AirClass> listAirClasses(int page, int pageSize) {
 		return Pages.adapt(airClassRepository.findAll(Pages.createPageRequest(page, pageSize)));

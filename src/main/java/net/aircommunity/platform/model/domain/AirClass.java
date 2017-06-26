@@ -34,6 +34,10 @@ public class AirClass extends Persistable {
 	@Column(name = "content")
 	private String content;
 
+	// the number of views
+	@Column(name = "views", nullable = false)
+	private int views = 0;
+
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
@@ -55,6 +59,18 @@ public class AirClass extends Persistable {
 		this.content = content;
 	}
 
+	public int getViews() {
+		return views;
+	}
+
+	public void increaseViews() {
+		views = views + 1;
+	}
+
+	public void setViews(int views) {
+		this.views = views;
+	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -66,8 +82,8 @@ public class AirClass extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AirClass [title=").append(title).append(", content=").append(content).append(", creationDate=")
-				.append(creationDate).append(", id=").append(id).append("]");
+		builder.append("AirClass [title=").append(title).append(", content=").append(content).append(", views=")
+				.append(views).append(", creationDate=").append(creationDate).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

@@ -37,6 +37,7 @@ import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.AuthContext;
 import net.aircommunity.platform.model.IdCardInfo;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.PointRules;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.Account.Status;
@@ -316,8 +317,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			newAccount = new User();
 			newAccount.setRole(role);
 			User u = (User) newAccount;
-			u.setPoints(memberPointsService.getPointsEarnedFromRule(Constants.PointRules.ACCOUNT_REGISTRATION));
-			u.setDailySignin(new DailySignin());
+			u.setPoints(memberPointsService.getPointsEarnedFromRule(PointRules.ACCOUNT_REGISTRATION));
 			break;
 
 		default: // noop
