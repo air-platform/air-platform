@@ -180,6 +180,11 @@ public class Fleet extends StandardProduct {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.FLEET;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Fleet [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)

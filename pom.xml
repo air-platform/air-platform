@@ -187,6 +187,12 @@
 		</dependency>
 		<!-- END DEPENDENCY -->
 
+		<!-- metrics -->
+		<dependency>
+			<groupId>io.dropwizard.metrics</groupId>
+			<artifactId>metrics-core</artifactId>
+		</dependency>
+
 		<!-- utils -->
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>

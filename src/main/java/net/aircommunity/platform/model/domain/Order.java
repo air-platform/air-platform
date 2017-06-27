@@ -33,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.UnitProductPrice;
+import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
@@ -67,18 +68,18 @@ public abstract class Order extends Persistable {
 
 	// allow cancel
 	private static final EnumSet<Status> CANCELLABLE_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
-			Status.CONFIRMED, Status.CONTRACT_SIGNED);
+			Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.PAYMENT_FAILED);
 
 	// finished, closed, cancelled, payment failed or refunded, FIXME: Status.PAYMENT_FAILED also termination??
 	private static final EnumSet<Status> TERMINATION_STATUSES = EnumSet.of(Status.FINISHED, Status.CANCELLED,
-			Status.PAYMENT_FAILED, Status.REFUNDED, Status.CLOSED);
+			Status.REFUNDED, Status.CLOSED);
 
 	// Order Number
 	@XmlElement
 	@Column(name = "order_no", nullable = false, unique = true)
 	protected String orderNo;
 
-	// Order type
+	// Order type (product type)
 	@XmlElement
 	@Column(name = "type", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -515,27 +516,6 @@ public abstract class Order extends Persistable {
 	@XmlTransient
 	@Nonnull
 	public abstract UnitProductPrice getUnitProductPrice();
-
-	/**
-	 * Order product type
-	 */
-	public enum Type {
-		FLEET, FERRYFLIGHT, JETTRAVEL, AIRTAXI, AIRTOUR, AIRTRANSPORT, COURSE;
-
-		public static Type fromString(String value) {
-			for (Type e : values()) {
-				if (e.name().equalsIgnoreCase(value)) {
-					return e;
-				}
-			}
-			return null;
-		}
-
-		// @JsonValue
-		// public String toString() {
-		// return super.toString().toLowerCase();
-		// }
-	}
 
 	/**
 	 * Order status, (NOTE: the status order matters before status PAID)

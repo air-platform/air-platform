@@ -58,7 +58,8 @@ public final class Codes {
 	public static final Code PRODUCT_FAMILY_NOT_APPROVED = Code.notFound(11_003_0005);
 	public static final Code PRODUCT_INVALID_DEPARTURE_DATE = Code.notFound(11_003_0006);
 	public static final Code PRODUCT_CANNOT_BE_DELETED = Code.illegalState(11_003_0007);
-	public static final Code PRODUCT_FAMILY_CANNOT_BE_DELETED = Code.illegalState(11_003_0008);
+	public static final Code PRODUCT_CANNOT_BE_UPDATED = Code.illegalState(11_003_0008);
+	public static final Code PRODUCT_FAMILY_CANNOT_BE_DELETED = Code.illegalState(11_003_0009);
 
 	// order
 	public static final Code ORDER_ACCESS_DENIED = Code.notPerimitted(11_003_1001);
@@ -77,6 +78,7 @@ public final class Codes {
 	public static final Code BANNER_INVALID_LINK_CATEGORY = Code.invalidArgument(11_003_2004);
 
 	public static final Code AIRCRAFT_ALREADY_EXISTS = Code.alreadyExists(11_003_2005);
+	public static final Code AIRCRAFT_CANNOT_BE_DELETED = Code.illegalState(11_003_2005);
 	public static final Code AIRCRAFT_NOT_FOUND = Code.notFound(11_003_2006);
 	public static final Code SALESPACKAGE_NOT_FOUND = Code.notFound(11_003_2007);
 	public static final Code PASSENGER_NOT_FOUND = Code.notFound(11_003_2008);

@@ -70,8 +70,8 @@ public class AccessLoggingFilter implements ContainerRequestFilter {
 			ip = Constants.LOOPBACK_LOCALHOST;
 		}
 		counterService.increment(Constants.COUNTER_API_REQUESTS);
-		LOG.info("[{}] [{}] [{}] {} {}", ip, username, role, requestContext.getMethod(),
-				requestContext.getUriInfo().getRequestUri().getPath());
+		LOG.info("[{}] [{}] [{}] {} {} {}", ip, username, role, requestContext.getMethod(),
+				requestContext.getUriInfo().getRequestUri().getPath(), requestContext.getMediaType());
 	}
 
 }

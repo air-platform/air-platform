@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.retry.support.RetryTemplate;
 
+import com.codahale.metrics.Timer;
+
 import io.micro.common.DateFormats;
 import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
@@ -44,7 +46,6 @@ import net.aircommunity.platform.model.domain.CharterableOrder;
 import net.aircommunity.platform.model.domain.Instalment;
 import net.aircommunity.platform.model.domain.InstalmentOrder;
 import net.aircommunity.platform.model.domain.Order;
-import net.aircommunity.platform.model.domain.Order.Type;
 import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.PassengerItem;
 import net.aircommunity.platform.model.domain.Payment;
@@ -122,114 +123,127 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	protected T doCreateOrder(String userId, T order, Order.Status status) {
-		User owner = findAccount(userId, User.class);
-		if (owner.getStatus() == Account.Status.LOCKED) {
-			LOG.warn("Account {} is locked, cannot place orders", owner);
-			throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.ACCOUNT_PERMISSION_DENIED_LOCKED));
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = orderOperationTimer(type, ORDER_ACTION_CREATE);
+			timerContext = timer.time();
 		}
-		T newOrder = null;
 		try {
-			newOrder = type.newInstance();
-		}
-		catch (Exception unexpected) {
-			LOG.error(String.format("Failed to create instance %s for user %s, cause: %s", type, userId,
-					unexpected.getMessage()), unexpected);
-			throw newInternalException();
-		}
-		// 1) retrieve product related to this order
-		// fleet product is set in FleetCandidate, ignored
-		if (order.getType() != Type.FLEET) {
-			Product product = order.getProduct();
-			if (product == null) {
-				LOG.error("Failed to create order {} for user {}, cause: product is not set", order, userId);
+			User owner = findAccount(userId, User.class);
+			if (owner.getStatus() == Account.Status.LOCKED) {
+				LOG.warn("Account {} is locked, cannot place orders", owner);
+				throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.ACCOUNT_PERMISSION_DENIED_LOCKED));
+			}
+			T newOrder = null;
+			try {
+				newOrder = type.newInstance();
+			}
+			catch (Exception unexpected) {
+				LOG.error(String.format("Failed to create instance %s for user %s, cause: %s", type, userId,
+						unexpected.getMessage()), unexpected);
 				throw newInternalException();
 			}
-			product = commonProductService.findProduct(product.getId());
-			LOG.debug("Product: {}", product);
-			order.setProduct(product);
-			newOrder.setProduct(product);
-			if (StandardProduct.class.isAssignableFrom(product.getClass())) {
-				newOrder.setCurrencyUnit(StandardProduct.class.cast(product).getCurrencyUnit());
+			// 1) retrieve product related to this order
+			// fleet product is set in FleetCandidate, ignored
+			if (order.getType() != Product.Type.FLEET) {
+				Product product = order.getProduct();
+				if (product == null) {
+					LOG.error("Failed to create order {} for user {}, cause: product is not set", order, userId);
+					throw newInternalException();
+				}
+				product = commonProductService.findProduct(product.getId());
+				LOG.debug("Product: {}", product);
+				order.setProduct(product);
+				newOrder.setProduct(product);
+				if (StandardProduct.class.isAssignableFrom(product.getClass())) {
+					newOrder.setCurrencyUnit(StandardProduct.class.cast(product).getCurrencyUnit());
+				}
+			}
+			// 2) set currency unit
+			// should be SalesPackageProduct
+			if (AircraftAwareOrder.class.isAssignableFrom(type)) {
+				newOrder.setCurrencyUnit(AircraftAwareOrder.class.cast(order).getSalesPackage().getCurrencyUnit());
+			}
+
+			// 3) set basic properties
+			newOrder.setOwner(owner);
+			newOrder.setOrderNo(nextOrderNo());
+			newOrder.setStatus(status);
+			newOrder.setCreationDate(new Date());
+			newOrder.setLastModifiedDate(newOrder.getCreationDate());
+			newOrder.setCommented(false);
+			// actually set when @PrePersist
+			newOrder.setType(order.getType());
+
+			// 4) copy common properties & copy order specific properties
+			copyCommonProperties(order, newOrder);
+			copyProperties(order, newOrder);
+
+			LOG.info("[Creating order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), order);
+			BigDecimal totalPrice = newOrder.getTotalPrice();
+
+			// 5.1) check if first order price off for this user (DISABLED)
+			// boolean existsOrder = getOrderRepository().existsByOwnerId(userId);
+			// if (!existsOrder) {
+			// long priceOff = memberPointsService.getPointsEarnedFromRule(Constants.PointRules.FIRST_ORDER_PRICE_OFF);
+			// LOG.info("Offer first order price off [-{}] for user: {}", priceOff, userId);
+			// BigDecimal newTotalPrice = totalPrice.subtract(BigDecimal.valueOf(priceOff));
+			// if (newTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
+			// newOrder.setTotalPrice(newTotalPrice);
+			// }
+			// LOG.info("Updated total price [{}] for user: {}", newTotalPrice, userId);
+			// }
+
+			// 5.2) Calculate points to exchange
+			// max: 50% percent of totalPrice
+			int exchangePercent = memberPointsService.getPointsExchangePercent();
+			int exchangeRate = memberPointsService.getPointsExchangeRate();
+			LOG.debug("Point exchange percent: {},  exchange rate: {}", exchangePercent, exchangeRate);
+			long pointsMax = totalPrice.multiply(BigDecimal.valueOf(exchangePercent))
+					.multiply(BigDecimal.valueOf(exchangeRate)).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)
+					.longValue();
+			LOG.debug("Point exchange pointsMax: {} for order with total amount: {}", pointsMax, totalPrice);
+			long pointToExchange = order.getPointsUsed();
+			if (pointToExchange > 0) {
+				pointToExchange = Math.min(pointsMax, owner.getPoints());
+				PointsExchange pointsUsed = memberPointsService.exchangePoints(pointToExchange);
+				LOG.info("[Exchanging points] User[{}][{}]: order[{}], exchanged points {}", owner.getId(),
+						owner.getNickName(), newOrder.getOrderNo(), pointsUsed);
+				BigDecimal moneyExchanged = BigDecimal.valueOf(pointsUsed.getMoneyExchanged());
+				BigDecimal updatedTotalPrice = newOrder.getTotalPrice().subtract(moneyExchanged);
+				// cannot be less than 0 after points exchange, just ignore points exchange if less or equal than 0
+				if (updatedTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
+					newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
+					// update total price
+					newOrder.setTotalPrice(updatedTotalPrice);
+					newOrder.setOriginalTotalPrice(newOrder.getTotalPrice());
+					User account = (User) accountService.updateUserPoints(owner.getId(),
+							-pointsUsed.getPointsExchanged());
+					LOG.info(
+							"[Exchanged points] User[{}][{}]: order[{}], updated total price: {}, points used: {}, account points balance: {}",
+							owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice,
+							pointsUsed.getPointsExchanged(), account.getPoints());
+				}
+				else {
+					LOG.warn(
+							"[Exchange points] User[{}][{}]: order[{}]: update total price is: {} (less than 0), points exchange ignored.",
+							owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice);
+				}
+			}
+			// 6) perform save
+			final T orderToSave = newOrder;
+			return safeExecute(() -> {
+				T orderSaved = getOrderRepository().save(orderToSave);
+				LOG.info("[Created order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), orderSaved);
+				eventBus.post(new OrderEvent(OrderEvent.EventType.CREATION, orderSaved));
+				return orderSaved;
+			}, "Create %s: %s for user %s failed", type.getSimpleName(), order, userId);
+		} // metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
 			}
 		}
-		// 2) set currency unit
-		// should be SalesPackageProduct
-		if (AircraftAwareOrder.class.isAssignableFrom(type)) {
-			newOrder.setCurrencyUnit(AircraftAwareOrder.class.cast(order).getSalesPackage().getCurrencyUnit());
-		}
-
-		// 3) set basic properties
-		newOrder.setOwner(owner);
-		newOrder.setOrderNo(nextOrderNo());
-		newOrder.setStatus(status);
-		newOrder.setCreationDate(new Date());
-		newOrder.setLastModifiedDate(newOrder.getCreationDate());
-		newOrder.setCommented(false);
-		// actually set when @PrePersist
-		newOrder.setType(order.getType());
-
-		// 4) copy common properties & copy order specific properties
-		copyCommonProperties(order, newOrder);
-		copyProperties(order, newOrder);
-
-		LOG.info("[Creating order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), order);
-		BigDecimal totalPrice = newOrder.getTotalPrice();
-
-		// 5.1) check if first order price off for this user (DISABLED)
-		// boolean existsOrder = getOrderRepository().existsByOwnerId(userId);
-		// if (!existsOrder) {
-		// long priceOff = memberPointsService.getPointsEarnedFromRule(Constants.PointRules.FIRST_ORDER_PRICE_OFF);
-		// LOG.info("Offer first order price off [-{}] for user: {}", priceOff, userId);
-		// BigDecimal newTotalPrice = totalPrice.subtract(BigDecimal.valueOf(priceOff));
-		// if (newTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
-		// newOrder.setTotalPrice(newTotalPrice);
-		// }
-		// LOG.info("Updated total price [{}] for user: {}", newTotalPrice, userId);
-		// }
-
-		// 5.2) Calculate points to exchange
-		// max: 50% percent of totalPrice
-		int exchangePercent = memberPointsService.getPointsExchangePercent();
-		int exchangeRate = memberPointsService.getPointsExchangeRate();
-		LOG.debug("Point exchange percent: {},  exchange rate: {}", exchangePercent, exchangeRate);
-		long pointsMax = totalPrice.multiply(BigDecimal.valueOf(exchangePercent))
-				.multiply(BigDecimal.valueOf(exchangeRate)).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)
-				.longValue();
-		LOG.debug("Point exchange pointsMax: {} for order with total amount: {}", pointsMax, totalPrice);
-		long pointToExchange = order.getPointsUsed();
-		if (pointToExchange > 0) {
-			pointToExchange = Math.min(pointsMax, owner.getPoints());
-			PointsExchange pointsUsed = memberPointsService.exchangePoints(pointToExchange);
-			LOG.info("[Exchanging points] User[{}][{}]: order[{}], exchanged points {}", owner.getId(),
-					owner.getNickName(), newOrder.getOrderNo(), pointsUsed);
-			BigDecimal moneyExchanged = BigDecimal.valueOf(pointsUsed.getMoneyExchanged());
-			BigDecimal updatedTotalPrice = newOrder.getTotalPrice().subtract(moneyExchanged);
-			// cannot be less than 0 after points exchange, just ignore points exchange if less or equal than 0
-			if (updatedTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
-				newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
-				// update total price
-				newOrder.setTotalPrice(updatedTotalPrice);
-				newOrder.setOriginalTotalPrice(newOrder.getTotalPrice());
-				User account = (User) accountService.updateUserPoints(owner.getId(), -pointsUsed.getPointsExchanged());
-				LOG.info(
-						"[Exchanged points] User[{}][{}]: order[{}], updated total price: {}, points used: {}, account points balance: {}",
-						owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice,
-						pointsUsed.getPointsExchanged(), account.getPoints());
-			}
-			else {
-				LOG.warn(
-						"[Exchange points] User[{}][{}]: order[{}]: update total price is: {} (less than 0), points exchange ignored.",
-						owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice);
-			}
-		}
-		// 6) perform save
-		final T orderToSave = newOrder;
-		return safeExecute(() -> {
-			T orderSaved = getOrderRepository().save(orderToSave);
-			LOG.info("[Created order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), orderSaved);
-			eventBus.post(new OrderEvent(OrderEvent.EventType.CREATION, orderSaved));
-			return orderSaved;
-		}, "Create %s: %s for user %s failed", type.getSimpleName(), order, userId);
 	}
 
 	private String nextOrderNo() {
@@ -361,13 +375,26 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	protected T doFindOrder(String orderId) {
-		T order = doFindOrder0(orderId);
-		// XXX CANNOT load all passengers for tour, taxi , trans
-		if (order == null || order.getStatus() == Order.Status.DELETED) {
-			LOG.error("{}: {} is not found", type.getSimpleName(), orderId);
-			throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderId));
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = orderOperationTimer(type, ORDER_ACTION_READ);
+			timerContext = timer.time();
 		}
-		return order;
+		try {
+			T order = doFindOrder0(orderId);
+			// XXX CANNOT load all passengers for tour, taxi , trans
+			if (order == null || order.getStatus() == Order.Status.DELETED) {
+				LOG.error("{}: {} is not found", type.getSimpleName(), orderId);
+				throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderId));
+			}
+			return order;
+		}
+		// metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
+		}
 	}
 
 	protected T doFindOrderByOrderNo(String orderNo) {
@@ -389,12 +416,25 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	protected T doUpdateOrder(String orderId, T newOrder) {
-		T order = doFindOrder(orderId);
-		copyCommonProperties(newOrder, order);
-		copyProperties(newOrder, order);
-		order.setLastModifiedDate(new Date());
-		return safeExecute(() -> getOrderRepository().save(order), "Update %s: %s with %s failed", type.getSimpleName(),
-				orderId, newOrder);
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = orderOperationTimer(type, ORDER_ACTION_UPDATE);
+			timerContext = timer.time();
+		}
+		try {
+			T order = doFindOrder(orderId);
+			copyCommonProperties(newOrder, order);
+			copyProperties(newOrder, order);
+			order.setLastModifiedDate(new Date());
+			return safeExecute(() -> getOrderRepository().save(order), "Update %s: %s with %s failed",
+					type.getSimpleName(), orderId, newOrder);
+		}
+		// metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
+		}
 	}
 
 	/**
@@ -444,46 +484,59 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * Pay order
 	 */
 	protected T doPayOrder(String orderId, String instalmentId, Payment payment) {
-		T order = doFindOrder(orderId);
-		Payment newPayment = new Payment();
-		newPayment.setAmount(payment.getAmount());
-		newPayment.setMethod(payment.getMethod());
-		newPayment.setOrderNo(payment.getOrderNo());
-		newPayment.setTimestamp(payment.getTimestamp());
-		newPayment.setTradeNo(payment.getTradeNo());
-		newPayment.setOwner(order.getOwner());
-		newPayment.setVendor(order.getProduct().getVendor());
-
-		T orderPaid = null;
-		// standard order
-		if (StandardOrder.class.isAssignableFrom(order.getClass())) {
-			StandardOrder standardOrder = StandardOrder.class.cast(order);
-			standardOrder.setPayment(newPayment);
-			orderPaid = doUpdateOrderStatus(order, Order.Status.PAID);
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = orderOperationTimer(type, ORDER_ACTION_PAYMENT);
+			timerContext = timer.time();
 		}
+		try {
+			T order = doFindOrder(orderId);
+			Payment newPayment = new Payment();
+			newPayment.setAmount(payment.getAmount());
+			newPayment.setMethod(payment.getMethod());
+			newPayment.setOrderNo(payment.getOrderNo());
+			newPayment.setTimestamp(payment.getTimestamp());
+			newPayment.setTradeNo(payment.getTradeNo());
+			newPayment.setOwner(order.getOwner());
+			newPayment.setVendor(order.getProduct().getVendor());
 
-		// TODO CHECK if works (NOT USED ATM)
-		// installment order
-		if (InstalmentOrder.class.isAssignableFrom(order.getClass())) {
-			InstalmentOrder instalmentOrder = InstalmentOrder.class.cast(order);
-			// XXX NOTE: we can also check the Instalment payment in order of stage sequence if needed here
-			// e.g. stage1 should be paid before stage2
-			// Instalment instalment = instalmentRepository.findOne(instalmentId);
-			Optional<Instalment> instalment = instalmentOrder.findInstalment(instalmentId);
-			if (!instalment.isPresent()) {
-				LOG.error("Order {} instalment {} not found", orderId, instalmentId);
-				throw new AirException(Codes.ORDER_INSTALMENT_NOT_FOUND, M.msg(M.ORDER_INSTALMENT_NOT_FOUND));
-			}
-			instalment.get().setPayment(newPayment);
-			if (instalmentOrder.isPaidFully()) {
+			T orderPaid = null;
+			// standard order
+			if (StandardOrder.class.isAssignableFrom(order.getClass())) {
+				StandardOrder standardOrder = StandardOrder.class.cast(order);
+				standardOrder.setPayment(newPayment);
 				orderPaid = doUpdateOrderStatus(order, Order.Status.PAID);
 			}
-			else {
-				orderPaid = doUpdateOrderStatus(order, Order.Status.PARTIAL_PAID);
+
+			// TODO CHECK if works (NOT USED ATM)
+			// installment order
+			if (InstalmentOrder.class.isAssignableFrom(order.getClass())) {
+				InstalmentOrder instalmentOrder = InstalmentOrder.class.cast(order);
+				// XXX NOTE: we can also check the Instalment payment in order of stage sequence if needed here
+				// e.g. stage1 should be paid before stage2
+				// Instalment instalment = instalmentRepository.findOne(instalmentId);
+				Optional<Instalment> instalment = instalmentOrder.findInstalment(instalmentId);
+				if (!instalment.isPresent()) {
+					LOG.error("Order {} instalment {} not found", orderId, instalmentId);
+					throw new AirException(Codes.ORDER_INSTALMENT_NOT_FOUND, M.msg(M.ORDER_INSTALMENT_NOT_FOUND));
+				}
+				instalment.get().setPayment(newPayment);
+				if (instalmentOrder.isPaidFully()) {
+					orderPaid = doUpdateOrderStatus(order, Order.Status.PAID);
+				}
+				else {
+					orderPaid = doUpdateOrderStatus(order, Order.Status.PARTIAL_PAID);
+				}
+			}
+			eventBus.post(new OrderEvent(OrderEvent.EventType.PAYMENT, orderPaid));
+			return orderPaid;
+		}
+		// metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
 			}
 		}
-		eventBus.post(new OrderEvent(OrderEvent.EventType.PAYMENT, orderPaid));
-		return orderPaid;
 	}
 
 	/**
@@ -545,46 +598,59 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * Accept refund
 	 */
 	protected T doAcceptOrderRefund(String orderId, BigDecimal refundAmount) {
-		// update to Order.Status.REFUNDING now
-		T order = doUpdateOrderStatus(orderId, Order.Status.REFUNDING);
-		T orderRefund = order;
-		// standard order
-		if (StandardOrder.class.isAssignableFrom(order.getClass())) {
-			StandardOrder standardOrder = StandardOrder.class.cast(order);
-			Payment payment = standardOrder.getPayment();
-			RefundResponse refundResponse = paymentService.refundPayment(payment.getMethod(), order, refundAmount);
-			int code = refundResponse.getCode();
-			switch (code) {
-			case RefundResponse.PENDING:
-				// just left order status as REFUNDING
-				break;
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = orderOperationTimer(type, ORDER_ACTION_REFUND);
+			timerContext = timer.time();
+		}
+		try {
+			// update to Order.Status.REFUNDING now
+			T order = doUpdateOrderStatus(orderId, Order.Status.REFUNDING);
+			T orderRefund = order;
+			// standard order
+			if (StandardOrder.class.isAssignableFrom(order.getClass())) {
+				StandardOrder standardOrder = StandardOrder.class.cast(order);
+				Payment payment = standardOrder.getPayment();
+				RefundResponse refundResponse = paymentService.refundPayment(payment.getMethod(), order, refundAmount);
+				int code = refundResponse.getCode();
+				switch (code) {
+				case RefundResponse.PENDING:
+					// just left order status as REFUNDING
+					break;
 
-			case RefundResponse.SUCCESS:
-				Refund refund = refundResponse.getRefund();
-				refund.setVendor(standardOrder.getProduct().getVendor());
-				refund.setOwner(standardOrder.getOwner());
-				standardOrder.setRefund(refund);
-				standardOrder.setRefundFailureCause(null);
-				orderRefund = doUpdateOrderStatus(order, Order.Status.REFUNDED);
-				eventBus.post(new OrderEvent(OrderEvent.EventType.REFUNDED, orderRefund));
-				break;
+				case RefundResponse.SUCCESS:
+					Refund refund = refundResponse.getRefund();
+					refund.setVendor(standardOrder.getProduct().getVendor());
+					refund.setOwner(standardOrder.getOwner());
+					standardOrder.setRefund(refund);
+					standardOrder.setRefundFailureCause(null);
+					orderRefund = doUpdateOrderStatus(order, Order.Status.REFUNDED);
+					eventBus.post(new OrderEvent(OrderEvent.EventType.REFUNDED, orderRefund));
+					break;
 
-			case RefundResponse.FAILURE:
-				order.setRefundFailureCause(refundResponse.getFailureCause());
-				orderRefund = doUpdateOrderStatus(order, Order.Status.REFUND_FAILED);
-				eventBus.post(new OrderEvent(OrderEvent.EventType.REFUND_FAILED, orderRefund));
-				break;
+				case RefundResponse.FAILURE:
+					order.setRefundFailureCause(refundResponse.getFailureCause());
+					orderRefund = doUpdateOrderStatus(order, Order.Status.REFUND_FAILED);
+					eventBus.post(new OrderEvent(OrderEvent.EventType.REFUND_FAILED, orderRefund));
+					break;
 
-			default:
-				// noops
+				default:
+					// noops
+				}
+			}
+			// TODO NOT IMPLED
+			// installment order
+			// if (InstalmentOrder.class.isAssignableFrom(order.getClass())) {
+			// InstalmentOrder instalmentOrder = InstalmentOrder.class.cast(order);
+			// }
+			return orderRefund;
+		}
+		// metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
 			}
 		}
-		// TODO NOT IMPLED
-		// installment order
-		// if (InstalmentOrder.class.isAssignableFrom(order.getClass())) {
-		// InstalmentOrder instalmentOrder = InstalmentOrder.class.cast(order);
-		// }
-		return orderRefund;
 	}
 
 	/**
@@ -598,16 +664,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
-	 * Close
-	 */
-	protected T doCloseOrder(String orderId, String closedReason) {
-		// NOTE: not from cache, in case it's updated
-		T order = doFindOrder(orderId);
-		order.setClosedReason(closedReason);
-		return doUpdateOrderStatus(order, Order.Status.CLOSED);
-	}
-
-	/**
 	 * Cancel
 	 */
 	protected T doCancelOrder(String orderId, String cancelReason) {
@@ -615,6 +671,15 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		T order = doFindOrder(orderId);
 		order.setCancelReason(cancelReason);
 		return doUpdateOrderStatus(order, Order.Status.CANCELLED);
+	}
+
+	/**
+	 * Close
+	 */
+	protected T doCloseOrder(String orderId, String closedReason) {
+		T order = doFindOrder(orderId);
+		order.setClosedReason(closedReason);
+		return doUpdateOrderStatus(order, Order.Status.CLOSED);
 	}
 
 	/**
@@ -724,10 +789,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			// should be already refunding in progress
 			expectOrderStatus(order, newStatus, Order.Status.REFUNDING);
 			order.setRefundedDate(new Date());
-			// add points back to the account
-			accountService.updateUserPoints(order.getOwner().getId(), order.getPointsUsed());
-			LOG.info("Refund success, add used points: {} back to account: {}", order.getPointsUsed(),
-					order.getOwner());
+			returnBackPoints(order, newStatus);
 			break;
 
 		//
@@ -759,11 +821,14 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			LOG.debug("Expect order isCancellable");
 			expectOrderStatusCondition(order.isCancellable());
 			order.setCancelledDate(new Date());
+			returnBackPoints(order, newStatus);
 			break;
 
 		case CLOSED:
 			LOG.debug("Expect order isCloseable");
+			expectOrderStatusCondition(order.isCloseable());
 			order.setClosedDate(new Date());
+			returnBackPoints(order, newStatus);
 			break;
 
 		case DELETED:
@@ -785,6 +850,16 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			}
 			return orderUpdated;
 		}, "Update %s: %s to status %s failed", type.getSimpleName(), order.getId(), newStatus);
+	}
+
+	private void returnBackPoints(Order order, Order.Status status) {
+		long pointsUsed = order.getPointsUsed();
+		if (pointsUsed > 0) {
+			// add points back to the account
+			accountService.updateUserPoints(order.getOwner().getId(), pointsUsed);
+			order.setPointsUsed(0);
+			LOG.info("Return points: {} back to account: {} on order action: {}", pointsUsed, order.getOwner(), status);
+		}
 	}
 
 	private void expectOrderStatusCondition(boolean expectCondition) {
@@ -811,51 +886,90 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
-	 * For USER (Exclude orders in DELETED status)
+	 * For USER (Exclude orders in DELETED status) (all)
 	 */
 	protected Page<T> doListUserOrders(String userId, Order.Status status, int page, int pageSize) {
-		if (Order.Status.DELETED == status) {
-			return Page.emptyPage(page, pageSize);
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = orderOperationTimer(type, ORDER_ACTION_USER_LIST);
+			timerContext = timer.time();
 		}
-		if (status == null) {
-			return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusInOrderByCreationDateDesc(userId,
-					Order.Status.visibleStatus(), Pages.createPageRequest(page, pageSize)));
-			// return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusNotOrderByCreationDateDesc(userId,
-			// Order.Status.DELETED, Pages.createPageRequest(page, pageSize)));
+		try {
+			if (Order.Status.DELETED == status) {
+				return Page.emptyPage(page, pageSize);
+			}
+			if (status == null) {
+				return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusInOrderByCreationDateDesc(userId,
+						Order.Status.visibleStatus(), Pages.createPageRequest(page, pageSize)));
+				// return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusNotOrderByCreationDateDesc(userId,
+				// Order.Status.DELETED, Pages.createPageRequest(page, pageSize)));
+			}
+			return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
+					Pages.createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
-				Pages.createPageRequest(page, pageSize)));
+		// metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
+		}
 	}
 
 	/**
-	 * For USER (Exclude orders in DELETED status), IN statuses.
+	 * For USER (Exclude orders in DELETED status), IN statuses (different status group).
 	 */
 	protected Page<T> doListUserOrdersInStatuses(String userId, Set<Order.Status> statuses, int page, int pageSize) {
-		Set<Order.Status> incudedStatuses = new HashSet<>(statuses);
-		incudedStatuses.remove(Order.Status.DELETED);
-		return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusInOrderByCreationDateDesc(userId, incudedStatuses,
-				Pages.createPageRequest(page, pageSize)));
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = orderOperationTimer(type, ORDER_ACTION_USER_LIST_GROUPED);
+			timerContext = timer.time();
+		}
+		try {
+			Set<Order.Status> incudedStatuses = new HashSet<>(statuses);
+			incudedStatuses.remove(Order.Status.DELETED);
+			return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusInOrderByCreationDateDesc(userId,
+					incudedStatuses, Pages.createPageRequest(page, pageSize)));
+		}
+		// metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
+		}
 	}
 
 	/**
 	 * For USER (Exclude orders in DELETED status)
 	 */
 	protected Page<T> doListUserOrdersOfRecentDays(String userId, int days, int page, int pageSize) {
-		if (days < 0) {
-			days = 0;
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = orderOperationTimer(type, ORDER_ACTION_USER_LIST_NDAYS);
+			timerContext = timer.time();
 		}
-		if (days > 6 * 30) {
-			days = 6 * 30; // max 6 months
+		try {
+			if (days < 0) {
+				days = 0;
+			}
+			if (days > 6 * 30) {
+				days = 6 * 30; // max 6 months
+			}
+			Date creationDate = LocalDateTime.now().minusDays(days).toDate();
+			LOG.debug("List recent {} days({}) orders for user: {}", days, creationDate, userId);
+			return Pages.adapt(getOrderRepository()
+					.findByOwnerIdAndStatusInAndCreationDateLessThanEqualOrderByCreationDateDesc(userId,
+							Order.Status.visibleStatus(), creationDate, Pages.createPageRequest(page, pageSize)));
 		}
-		Date creationDate = LocalDateTime.now().minusDays(days).toDate();
-		LOG.debug("List recent {} days({}) orders for user: {}", days, creationDate, userId);
-		return Pages.adapt(
-				getOrderRepository().findByOwnerIdAndStatusInAndCreationDateLessThanEqualOrderByCreationDateDesc(userId,
-						Order.Status.visibleStatus(), creationDate, Pages.createPageRequest(page, pageSize)));
+		// metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
+		}
 	}
 
 	/**
-	 * For USER (Exclude orders in DELETED status), NOT IN statuses.
+	 * For USER (Exclude orders in DELETED status), NOT IN statuses. (XXX NOT USED YET)
 	 */
 	protected Page<T> doListUserOrdersNotInStatuses(String userId, Set<Order.Status> statuses, int page, int pageSize) {
 		Set<Order.Status> excludedStatuses = new HashSet<>(statuses);
@@ -872,24 +986,37 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
-	 * For ADMIN for a user (orders in any status and type)
+	 * For ADMIN for a user (orders in any status and type), list all of a user
 	 */
-	protected Page<T> doListAllUserOrders(String userId, @Nullable Order.Status status, @Nullable Order.Type type,
+	protected Page<T> doListAllUserOrders(String userId, @Nullable Order.Status status, @Nullable Product.Type type,
 			int page, int pageSize) {
-		if (status != null) {
-			if (type != null) {
-				return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusAndTypeOrderByCreationDateDesc(userId,
-						status, type, Pages.createPageRequest(page, pageSize)));
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = orderOperationTimer(this.type, ORDER_ACTION_ADMIN_LIST_USER);
+			timerContext = timer.time();
+		}
+		try {
+			if (status != null) {
+				if (type != null) {
+					return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusAndTypeOrderByCreationDateDesc(userId,
+							status, type, Pages.createPageRequest(page, pageSize)));
+				}
+				return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
+						Pages.createPageRequest(page, pageSize)));
 			}
-			return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
+			if (type != null) {
+				return Pages.adapt(getOrderRepository().findByOwnerIdAndTypeOrderByCreationDateDesc(userId, type,
+						Pages.createPageRequest(page, pageSize)));
+			}
+			return Pages.adapt(getOrderRepository().findByOwnerIdOrderByCreationDateDesc(userId,
 					Pages.createPageRequest(page, pageSize)));
 		}
-		if (type != null) {
-			return Pages.adapt(getOrderRepository().findByOwnerIdAndTypeOrderByCreationDateDesc(userId, type,
-					Pages.createPageRequest(page, pageSize)));
+		// metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
 		}
-		return Pages.adapt(getOrderRepository().findByOwnerIdOrderByCreationDateDesc(userId,
-				Pages.createPageRequest(page, pageSize)));
 	}
 
 	/**
@@ -902,22 +1029,35 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	/**
 	 * For ADMIN (orders in any status and type) (full table scan)
 	 */
-	protected Page<T> doListAllOrders(@Nullable Order.Status status, @Nullable Order.Type type, int page,
+	protected Page<T> doListAllOrders(@Nullable Order.Status status, @Nullable Product.Type type, int page,
 			int pageSize) {
-		if (status != null) {
-			if (type != null) {
-				return Pages.adapt(getOrderRepository().findByStatusAndTypeOrderByCreationDateDesc(status, type,
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = orderOperationTimer(this.type, ORDER_ACTION_ADMIN_LIST);
+			timerContext = timer.time();
+		}
+		try {
+			if (status != null) {
+				if (type != null) {
+					return Pages.adapt(getOrderRepository().findByStatusAndTypeOrderByCreationDateDesc(status, type,
+							Pages.createPageRequest(page, pageSize)));
+				}
+				return Pages.adapt(getOrderRepository().findByStatusOrderByCreationDateDesc(status,
 						Pages.createPageRequest(page, pageSize)));
 			}
-			return Pages.adapt(getOrderRepository().findByStatusOrderByCreationDateDesc(status,
-					Pages.createPageRequest(page, pageSize)));
+			if (type != null) {
+				return Pages.adapt(getOrderRepository().findByTypeOrderByCreationDateDesc(type,
+						Pages.createPageRequest(page, pageSize)));
+			}
+			return Pages.adapt(
+					getOrderRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
 		}
-		if (type != null) {
-			return Pages.adapt(getOrderRepository().findByTypeOrderByCreationDateDesc(type,
-					Pages.createPageRequest(page, pageSize)));
+		// metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
 		}
-		return Pages
-				.adapt(getOrderRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
 	}
 
 	/**

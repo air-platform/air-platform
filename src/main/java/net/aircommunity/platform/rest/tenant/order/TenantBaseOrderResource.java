@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -68,6 +69,7 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@POST
 	@Path("{orderId}/price")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void updateOrderPrice(@PathParam("orderId") String orderId, @NotNull JsonObject request) {
 		BigDecimal totalAmount = getAmount(request);
@@ -145,6 +147,7 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@POST
 	@Path("{orderId}/refund/initiate")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void forceOrderRefund(@PathParam("orderId") String orderId, JsonObject request) {
 		LOG.debug("Initiate refund request: {}", request);
@@ -162,6 +165,7 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@POST
 	@Path("{orderId}/refund/accept")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void acceptOrderRefund(@PathParam("orderId") String orderId, JsonObject request) {
 		LOG.debug("Refund request: {}", request);
@@ -178,6 +182,7 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@POST
 	@Path("{orderId}/refund/reject")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void rejectOrderRefund(@PathParam("orderId") String orderId, JsonObject rejectedReason) {
 		String reason = getRejectedReason(rejectedReason);
@@ -209,9 +214,11 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@POST
 	@Path("{orderId}/cancel")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
-	public void cancel(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.CANCELLED);
+	public void cancel(@PathParam("orderId") String orderId, JsonObject request) {
+		String reason = getCancelReason(request);
+		commonOrderService.cancelOrder(orderId, reason);
 	}
 
 	/**
@@ -219,9 +226,11 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@POST
 	@Path("{orderId}/close")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
-	public void closeOrder(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.CLOSED);
+	public void closeOrder(@PathParam("orderId") String orderId, JsonObject closeReason) {
+		String reason = getReason(closeReason);
+		commonOrderService.closeOrder(orderId, reason);
 	}
 
 	/**
@@ -231,7 +240,7 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	@Path("{orderId}")
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void delete(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
+		commonOrderService.softDeleteOrder(orderId);
 	}
 
 	// **************

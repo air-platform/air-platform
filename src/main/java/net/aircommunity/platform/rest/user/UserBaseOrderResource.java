@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -27,6 +28,7 @@ import net.aircommunity.platform.service.CommonOrderService;
  * 
  * @author Bin.Zhang
  */
+@SuppressWarnings("unchecked")
 public abstract class UserBaseOrderResource<T extends Order> extends BaseResourceSupport {
 
 	@Resource
@@ -54,7 +56,6 @@ public abstract class UserBaseOrderResource<T extends Order> extends BaseResourc
 	@GET
 	@Path("{orderId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@SuppressWarnings("unchecked")
 	@JsonView(JsonViews.User.class)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
 	public T find(@PathParam("orderId") String orderId) {
@@ -81,6 +82,7 @@ public abstract class UserBaseOrderResource<T extends Order> extends BaseResourc
 	 */
 	@POST
 	@Path("{orderId}/cancel")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
 	public void cancel(@PathParam("orderId") String orderId, JsonObject request) {
 		String reason = getCancelReason(request);
@@ -94,7 +96,7 @@ public abstract class UserBaseOrderResource<T extends Order> extends BaseResourc
 	@Path("{orderId}")
 	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
 	public void delete(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
+		commonOrderService.softDeleteOrder(orderId);
 	}
 
 }

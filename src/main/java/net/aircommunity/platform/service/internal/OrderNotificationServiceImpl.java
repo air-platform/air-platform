@@ -33,8 +33,8 @@ import net.aircommunity.platform.model.domain.FleetCandidate;
 import net.aircommunity.platform.model.domain.JetTravelOrder;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.FleetService;
 import net.aircommunity.platform.service.MailService;
@@ -52,7 +52,7 @@ import net.aircommunity.platform.service.TemplateService;
 public class OrderNotificationServiceImpl implements OrderNotificationService {
 	private static final Logger LOG = LoggerFactory.getLogger(OrderNotificationServiceImpl.class);
 
-	private static final Map<Order.Type, String> orderTypeMapping = new HashMap<>();
+	private static final Map<Product.Type, String> orderTypeMapping = new HashMap<>();
 	private static final Map<Order.Status, String> orderOperationsMapping = new HashMap<>();
 
 	@Resource
@@ -86,13 +86,13 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 		String airtrans = normalizeProductCategory(Category.AIR_TRANS);
 		String airtour = normalizeProductCategory(Category.AIR_TOUR);
 		String airtraining = normalizeProductCategory(Category.AIR_TRAINING);
-		orderTypeMapping.put(Order.Type.FLEET, airjet);
-		orderTypeMapping.put(Order.Type.FERRYFLIGHT, airjet);
-		orderTypeMapping.put(Order.Type.JETTRAVEL, airjet);
-		orderTypeMapping.put(Order.Type.AIRTAXI, airtaxi);
-		orderTypeMapping.put(Order.Type.AIRTOUR, airtour);
-		orderTypeMapping.put(Order.Type.AIRTRANSPORT, airtrans);
-		orderTypeMapping.put(Order.Type.COURSE, airtraining);
+		orderTypeMapping.put(Product.Type.FLEET, airjet);
+		orderTypeMapping.put(Product.Type.FERRYFLIGHT, airjet);
+		orderTypeMapping.put(Product.Type.JETTRAVEL, airjet);
+		orderTypeMapping.put(Product.Type.AIRTAXI, airtaxi);
+		orderTypeMapping.put(Product.Type.AIRTOUR, airtour);
+		orderTypeMapping.put(Product.Type.AIRTRANSPORT, airtrans);
+		orderTypeMapping.put(Product.Type.COURSE, airtraining);
 		eventBus.register(this);
 	}
 

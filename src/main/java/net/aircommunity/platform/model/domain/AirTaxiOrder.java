@@ -8,6 +8,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import net.aircommunity.platform.model.domain.Product.Type;
+
 /**
  * AirTaxi Order.
  * 

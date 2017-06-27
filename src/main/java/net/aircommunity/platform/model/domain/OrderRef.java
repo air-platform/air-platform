@@ -11,7 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import net.aircommunity.platform.model.domain.Order.Type;
+import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**

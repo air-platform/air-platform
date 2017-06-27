@@ -12,6 +12,9 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import com.codahale.metrics.Timer;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
@@ -67,48 +70,74 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 * Create
 	 */
 	protected final T doCreateProduct(String tenantId, T product) {
-		Tenant vendor = doGetVendor(tenantId);
-		T newProduct = null;
+		// metrics
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = productOperationTimer(type, PRODUCT_ACTION_CREATE);
+			timerContext = timer.time();
+		}
 		try {
-			newProduct = type.newInstance();
+			Tenant vendor = doGetVendor(tenantId);
+			T newProduct = null;
+			try {
+				newProduct = type.newInstance();
+			}
+			catch (Exception unexpected) {
+				LOG.error(String.format("Failed to create instance %s for user %s, cause: %s", type, vendor.getId(),
+						unexpected.getMessage()), unexpected);
+				throw newInternalException();
+			}
+			newProduct.setName(product.getName());
+			newProduct.setImage(product.getImage());
+			newProduct.setClientManagers(product.getClientManagers());
+			newProduct.setDescription(product.getDescription());
+			newProduct.setRank(Product.DEFAULT_RANK);
+			newProduct.setTotalSales(0);
+			newProduct.setPublished(false);
+			// actually set when @PrePersist
+			newProduct.setCategory(product.getCategory());
+			newProduct.setReviewStatus(ReviewStatus.PENDING);
+			// standard
+			if (StandardProduct.class.isAssignableFrom(product.getClass())) {
+				StandardProduct newStandardProduct = (StandardProduct) newProduct;
+				StandardProduct standardProduct = (StandardProduct) product;
+				newStandardProduct.setPrice(standardProduct.getPrice());
+				CurrencyUnit currencyUnit = standardProduct.getCurrencyUnit();
+				newStandardProduct.setCurrencyUnit(currencyUnit == null ? CurrencyUnit.RMB : currencyUnit);
+			}
+			if (CharterableProduct.class.isAssignableFrom(product.getClass())) {
+				CharterableProduct newCharterableProduct = (CharterableProduct) newProduct;
+				CharterableProduct charterableProduct = (CharterableProduct) product;
+				newCharterableProduct.setSeatPrice(charterableProduct.getSeatPrice());
+				newCharterableProduct.setSeats(charterableProduct.getSeats());
+				newCharterableProduct.setMinPassengers(charterableProduct.getMinPassengers());
+			}
+			copyProperties(product, newProduct);
+			// set props cannot be overridden by subclass
+			newProduct.setCreationDate(new Date());
+			newProduct.setVendor(vendor);
+			try {
+				T productedSaved = getProductRepository().saveAndFlush(newProduct);
+				getProductRepository().flush();
+				return productedSaved;
+			}
+			catch (DataIntegrityViolationException e) {
+				LOG.error(String.format("Create %s: %s for tenant %s DataIntegrityViolation, casue: %s",
+						type.getSimpleName(), product, vendor.getId(), e.getMessage()), e);
+				throw new AirException(Codes.PRODUCT_CANNOT_BE_UPDATED, M.msg(M.PRODUCT_UPDATED_FAILED));
+			}
+			catch (Exception e) {
+				LOG.error(String.format("Create %s: %s for tenant %s failed, casue: %s", type.getSimpleName(), product,
+						vendor.getId(), e.getMessage()), e);
+				throw newInternalException();
+			}
 		}
-		catch (Exception unexpected) {
-			LOG.error(String.format("Failed to create instance %s for user %s, cause: %s", type, vendor.getId(),
-					unexpected.getMessage()), unexpected);
-			throw newInternalException();
+		finally {
+			// metrics
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
 		}
-		newProduct.setName(product.getName());
-		newProduct.setImage(product.getImage());
-		newProduct.setClientManagers(product.getClientManagers());
-		newProduct.setDescription(product.getDescription());
-		newProduct.setRank(Product.DEFAULT_RANK);
-		newProduct.setTotalSales(0);
-		newProduct.setPublished(false);
-		// actually set when @PrePersist
-		newProduct.setCategory(product.getCategory());
-		newProduct.setReviewStatus(ReviewStatus.PENDING);
-		// standard
-		if (StandardProduct.class.isAssignableFrom(product.getClass())) {
-			StandardProduct newStandardProduct = (StandardProduct) newProduct;
-			StandardProduct standardProduct = (StandardProduct) product;
-			newStandardProduct.setPrice(standardProduct.getPrice());
-			CurrencyUnit currencyUnit = standardProduct.getCurrencyUnit();
-			newStandardProduct.setCurrencyUnit(currencyUnit == null ? CurrencyUnit.RMB : currencyUnit);
-		}
-		if (CharterableProduct.class.isAssignableFrom(product.getClass())) {
-			CharterableProduct newCharterableProduct = (CharterableProduct) newProduct;
-			CharterableProduct charterableProduct = (CharterableProduct) product;
-			newCharterableProduct.setSeatPrice(charterableProduct.getSeatPrice());
-			newCharterableProduct.setSeats(charterableProduct.getSeats());
-			newCharterableProduct.setMinPassengers(charterableProduct.getMinPassengers());
-		}
-		copyProperties(product, newProduct);
-		// set props cannot be overridden by subclass
-		newProduct.setCreationDate(new Date());
-		newProduct.setVendor(vendor);
-		final T productToSaved = newProduct;
-		return safeExecute(() -> getProductRepository().save(productToSaved), "Create %s: %s for tenant %s failed",
-				type.getSimpleName(), product, vendor.getId());
 	}
 
 	protected Tenant doGetVendor(String tenantId) {
@@ -119,12 +148,25 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 * Find
 	 */
 	protected final T doFindProduct(String productId) {
-		T product = getProductRepository().findOne(productId);
-		if (product == null) {
-			LOG.error("{}: {} is not found", type.getSimpleName(), productId);
-			throw new AirException(productNotFoundCode(), M.msg(M.PRODUCT_NOT_FOUND));
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = productOperationTimer(type, PRODUCT_ACTION_READ);
+			timerContext = timer.time();
 		}
-		return product;
+		try {
+			T product = getProductRepository().findOne(productId);
+			if (product == null) {
+				LOG.error("{}: {} is not found", type.getSimpleName(), productId);
+				throw new AirException(productNotFoundCode(), M.msg(M.PRODUCT_NOT_FOUND));
+			}
+			return product;
+		}
+		// metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
+		}
 	}
 
 	/**
@@ -132,34 +174,47 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 */
 	protected final T doUpdateProduct(String productId, T newProduct) {
 		LOG.debug("Product {} updating: {}", productId, newProduct);
-		T product = doFindProduct(productId);
-		product.setName(newProduct.getName());
-		product.setImage(newProduct.getImage());
-		product.setClientManagers(newProduct.getClientManagers());
-		product.setDescription(newProduct.getDescription());
-		// standard
-		if (StandardProduct.class.isAssignableFrom(product.getClass())) {
-			StandardProduct newStandardProduct = (StandardProduct) newProduct;
-			StandardProduct standardProduct = (StandardProduct) product;
-			// update price
-			standardProduct.setPrice(newStandardProduct.getPrice());
-			// update currencyUnit
-			CurrencyUnit currencyUnit = newStandardProduct.getCurrencyUnit();
-			standardProduct.setCurrencyUnit(currencyUnit == null ? CurrencyUnit.RMB : currencyUnit);
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = productOperationTimer(type, PRODUCT_ACTION_UPDATE);
+			timerContext = timer.time();
 		}
-		if (CharterableProduct.class.isAssignableFrom(product.getClass())) {
-			CharterableProduct newCharterableProduct = (CharterableProduct) newProduct;
-			CharterableProduct charterableProduct = (CharterableProduct) product;
-			// update
-			charterableProduct.setSeatPrice(newCharterableProduct.getSeatPrice());
-			charterableProduct.setSeats(newCharterableProduct.getSeats());
-			charterableProduct.setMinPassengers(newCharterableProduct.getMinPassengers());
+		try {
+			T product = doFindProduct(productId);
+			product.setName(newProduct.getName());
+			product.setImage(newProduct.getImage());
+			product.setClientManagers(newProduct.getClientManagers());
+			product.setDescription(newProduct.getDescription());
+			// standard
+			if (StandardProduct.class.isAssignableFrom(product.getClass())) {
+				StandardProduct newStandardProduct = (StandardProduct) newProduct;
+				StandardProduct standardProduct = (StandardProduct) product;
+				// update price
+				standardProduct.setPrice(newStandardProduct.getPrice());
+				// update currencyUnit
+				CurrencyUnit currencyUnit = newStandardProduct.getCurrencyUnit();
+				standardProduct.setCurrencyUnit(currencyUnit == null ? CurrencyUnit.RMB : currencyUnit);
+			}
+			if (CharterableProduct.class.isAssignableFrom(product.getClass())) {
+				CharterableProduct newCharterableProduct = (CharterableProduct) newProduct;
+				CharterableProduct charterableProduct = (CharterableProduct) product;
+				// update
+				charterableProduct.setSeatPrice(newCharterableProduct.getSeatPrice());
+				charterableProduct.setSeats(newCharterableProduct.getSeats());
+				charterableProduct.setMinPassengers(newCharterableProduct.getMinPassengers());
+			}
+			copyProperties(newProduct, product);
+			// T updated = safeExecute(() -> getProductRepository().save(product), "Update %s: %s with %s failed",
+			// type.getSimpleName(), productId, newProduct);
+			// LOG.debug("Product updated: {}", updated);
+			// return updated;
+			return product;
 		}
-		copyProperties(newProduct, product);
-		T updated = safeExecute(() -> getProductRepository().save(product), "Update %s: %s with %s failed",
-				type.getSimpleName(), productId, newProduct);
-		LOG.debug("Product updated: {}", updated);
-		return updated;
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
+		}
 	}
 
 	/**
@@ -251,8 +306,20 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 * For all users/anyone (only show approved and published product)
 	 */
 	protected final Page<T> doListProductsForUsers(int page, int pageSize) {
-		return Pages.adapt(getProductRepository()
-				.findByPublishedTrueOrderByRankDescScoreDesc(Pages.createPageRequest(page, pageSize)));
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = productOperationTimer(type, PRODUCT_ACTION_LIST);
+			timerContext = timer.time();
+		}
+		try {
+			return Pages.adapt(getProductRepository()
+					.findByPublishedTrueOrderByRankDescScoreDesc(Pages.createPageRequest(page, pageSize)));
+		} // metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
+		}
 	}
 
 	// ************
@@ -265,12 +332,24 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	@Nonnull
 	protected final Page<T> doListTenantProducts(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus,
 			int page, int pageSize) {
-		if (reviewStatus == null) {
-			return Pages.adapt(getProductRepository().findByVendorIdOrderByCreationDateDesc(tenantId,
-					Pages.createPageRequest(page, pageSize)));
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = productOperationTimer(type, PRODUCT_ACTION_TENANT_LIST);
+			timerContext = timer.time();
 		}
-		return Pages.adapt(getProductRepository().findByVendorIdAndReviewStatusOrderByCreationDateDesc(tenantId,
-				reviewStatus, Pages.createPageRequest(page, pageSize)));
+		try {
+			if (reviewStatus == null) {
+				return Pages.adapt(getProductRepository().findByVendorIdOrderByCreationDateDesc(tenantId,
+						Pages.createPageRequest(page, pageSize)));
+			}
+			return Pages.adapt(getProductRepository().findByVendorIdAndReviewStatusOrderByCreationDateDesc(tenantId,
+					reviewStatus, Pages.createPageRequest(page, pageSize)));
+		} // metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
+		}
 	}
 
 	/**
@@ -296,24 +375,36 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 
 	protected final Page<T> doListAllProducts(@Nullable ReviewStatus reviewStatus, @Nullable Category category,
 			int page, int pageSize) {
-		if (reviewStatus != null) {
-			// reviewStatus + category
-			if (category != null) {
-				return Pages.adapt(getProductRepository().findByReviewStatusAndCategoryOrderByCreationDateDesc(
-						reviewStatus, category, Pages.createPageRequest(page, pageSize)));
+		Timer.Context timerContext = null;
+		if (isMetricsEnabled()) {
+			Timer timer = productOperationTimer(type, PRODUCT_ACTION_AMDIN_LIST);
+			timerContext = timer.time();
+		}
+		try {
+			if (reviewStatus != null) {
+				// reviewStatus + category
+				if (category != null) {
+					return Pages.adapt(getProductRepository().findByReviewStatusAndCategoryOrderByCreationDateDesc(
+							reviewStatus, category, Pages.createPageRequest(page, pageSize)));
+				}
+				// reviewStatus
+				return Pages.adapt(getProductRepository().findByReviewStatusOrderByCreationDateDesc(reviewStatus,
+						Pages.createPageRequest(page, pageSize)));
 			}
-			// reviewStatus
-			return Pages.adapt(getProductRepository().findByReviewStatusOrderByCreationDateDesc(reviewStatus,
-					Pages.createPageRequest(page, pageSize)));
+			// category
+			if (category != null) {
+				return Pages.adapt(getProductRepository().findByCategoryOrderByCreationDateDesc(category,
+						Pages.createPageRequest(page, pageSize)));
+			}
+			// both null
+			return Pages.adapt(
+					getProductRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+		} // metrics
+		finally {
+			if (isMetricsEnabled()) {
+				timerContext.stop();
+			}
 		}
-		// category
-		if (category != null) {
-			return Pages.adapt(getProductRepository().findByCategoryOrderByCreationDateDesc(category,
-					Pages.createPageRequest(page, pageSize)));
-		}
-		// both null
-		return Pages.adapt(
-				getProductRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
 	}
 
 	/**

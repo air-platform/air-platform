@@ -143,6 +143,11 @@ public class FerryFlight extends CharterableProduct {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.FERRYFLIGHT;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("FerryFlight [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)

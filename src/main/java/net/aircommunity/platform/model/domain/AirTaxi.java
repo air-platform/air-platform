@@ -67,6 +67,11 @@ public class AirTaxi extends SalesPackageProduct {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.AIRTAXI;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTaxi [flightRoute=").append(flightRoute).append(", distance=").append(distance)
@@ -78,4 +83,5 @@ public class AirTaxi extends SalesPackageProduct {
 				.append(", id=").append(id).append("]");
 		return builder.toString();
 	}
+
 }

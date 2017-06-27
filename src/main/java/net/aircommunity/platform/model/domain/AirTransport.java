@@ -72,6 +72,11 @@ public class AirTransport extends SalesPackageProduct {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.AIRTRANSPORT;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTransport [family=").append(family).append(", timeEstimation=").append(timeEstimation)

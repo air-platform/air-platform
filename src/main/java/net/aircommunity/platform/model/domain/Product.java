@@ -216,6 +216,30 @@ public abstract class Product extends Reviewable {
 		this.vendor = vendor;
 	}
 
+	// product type
+	public abstract Type getType();
+
+	/**
+	 * Product type
+	 */
+	public enum Type {
+		FLEET, FERRYFLIGHT, JETTRAVEL, AIRTAXI, AIRTOUR, AIRTRANSPORT, COURSE;
+
+		public static Type fromString(String value) {
+			for (Type e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
+
+		// @JsonValue
+		// public String toString() {
+		// return super.toString().toLowerCase();
+		// }
+	}
+
 	/**
 	 * Product Category
 	 */

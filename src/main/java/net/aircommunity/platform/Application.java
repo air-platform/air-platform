@@ -63,7 +63,7 @@ import okhttp3.OkHttpClient;
 public class Application {
 	private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
-	private static final String KEY_ID = "air.access_token_key";
+	private static final String KEY_ID = "access_token_key";
 	private static final String ISSUER = "AIR_PLATFORM_ISSUER";
 	private static final String AUDIENCE = "AIR_PLATFORM_AUDIENCE";
 	private static final String KEY_ID_PASSWORD = "AIR_PLATFORM_SECUREKEY_PASSWORD_9D8DD4ECBB9341D6BB364A053B058A34";
@@ -154,7 +154,6 @@ public class Application {
 		retryPolicy.setMaxAttempts(5);
 		FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
 		backOffPolicy.setBackOffPeriod(1000); // 1 seconds
-
 		RetryTemplate template = new RetryTemplate();
 		template.setRetryPolicy(retryPolicy);
 		template.setBackOffPolicy(backOffPolicy);

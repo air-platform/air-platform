@@ -13,6 +13,7 @@ import io.micro.common.Strings;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.rest.tenant.order.TenantBaseOrderResource;
 import net.aircommunity.platform.service.CommonOrderService;
 
@@ -34,7 +35,7 @@ public class AdminOrderResource extends TenantBaseOrderResource<Order> {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<Order> listAllOrders(@QueryParam("user") String userId, @QueryParam("status") Order.Status status,
-			@QueryParam("status") Order.Type type, @QueryParam("page") @DefaultValue("1") int page,
+			@QueryParam("status") Product.Type type, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		if (Strings.isBlank(userId)) {
 			return commonOrderService.listAllOrders(status, type, page, pageSize);

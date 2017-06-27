@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.PricePolicy;
 import net.aircommunity.platform.model.UnitProductPrice;
+import net.aircommunity.platform.model.domain.Product.Type;
 
 /**
  * Charter Order on a {@code Fleet}.

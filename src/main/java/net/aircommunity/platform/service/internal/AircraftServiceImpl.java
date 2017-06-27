@@ -101,13 +101,15 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#aircraftId")
 	@Override
 	public void deleteAircraft(String aircraftId) {
-		aircraftRepository.delete(aircraftId);
+		safeDeletion(aircraftRepository, aircraftId, Codes.AIRCRAFT_CANNOT_BE_DELETED,
+				M.msg(M.AIRCRAFT_CANNOT_BE_DELETED));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAircrafts(String tenantId) {
-		aircraftRepository.deleteByVendorId(tenantId);
+		safeDeletion(aircraftRepository, () -> aircraftRepository.deleteByVendorId(tenantId),
+				Codes.AIRCRAFT_CANNOT_BE_DELETED, M.msg(M.AIRCRAFTS_CANNOT_BE_DELETED));
 	}
 
 }

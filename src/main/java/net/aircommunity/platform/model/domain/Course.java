@@ -184,6 +184,11 @@ public class Course extends StandardProduct {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.COURSE;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Course [aircraftType=").append(aircraftType).append(", location=").append(location)

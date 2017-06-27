@@ -32,6 +32,11 @@ public class JetTravel extends StandardProduct {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.JETTRAVEL;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("JetTravel [price=").append(price).append(", currencyUnit=").append(currencyUnit)

@@ -123,6 +123,11 @@ public class AirTour extends SalesPackageProduct {
 	}
 
 	@Override
+	public Type getType() {
+		return Type.AIRTOUR;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AirTour [city=").append(city).append(", tourDistance=").append(tourDistance)

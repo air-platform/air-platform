@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
-import net.aircommunity.platform.model.domain.Order.Type;
+import net.aircommunity.platform.model.domain.Product.Type;
 
 /**
  * Repository interface for {@link Order} instances. Provides basic CRUD operations due to the extension of

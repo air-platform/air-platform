@@ -285,7 +285,7 @@ public class UserResource extends BaseResourceSupport {
 	@DELETE
 	@Path("orders/{orderId}")
 	public void deleteOrder(@PathParam("orderId") String orderId, @Context SecurityContext context) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.DELETED);
+		commonOrderService.softDeleteOrder(orderId);
 	}
 
 	// ****************************

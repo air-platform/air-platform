@@ -18,6 +18,7 @@ import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.PaymentRepository;
@@ -167,6 +168,16 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	}
 
 	@Caching(put = { //
+			@CachePut(cacheNames = CACHE_NAME, key = "#orderId"),
+			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")
+			//
+	})
+	@Override
+	public Order closeOrder(String orderId, String closeReason) {
+		return doCloseOrder(orderId, closeReason);
+	}
+
+	@Caching(put = { //
 			@CachePut(cacheNames = CACHE_NAME, key = "#result.id"),
 			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")
 			//
@@ -197,12 +208,13 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	}
 
 	@Override
-	public Page<Order> listAllOrders(Order.Status status, Order.Type type, int page, int pageSize) {
+	public Page<Order> listAllOrders(Order.Status status, Product.Type type, int page, int pageSize) {
 		return doListAllOrders(status, type, page, pageSize); // ADMIN full scan
 	}
 
 	@Override
-	public Page<Order> listAllUserOrders(String userId, Order.Status status, Order.Type type, int page, int pageSize) {
+	public Page<Order> listAllUserOrders(String userId, Order.Status status, Product.Type type, int page,
+			int pageSize) {
 		return doListAllUserOrders(userId, status, type, page, pageSize); // ADMIN full scan
 	}
 
@@ -226,12 +238,21 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 		return doListUserOrdersNotInStatuses(userId, statuses, page, pageSize); // NOT USED
 	}
 
+	@Caching(put = { //
+			@CachePut(cacheNames = CACHE_NAME, key = "#orderId"),
+			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")
+			//
+	})
+	@Override
+	public Order softDeleteOrder(String orderId) {
+		return doUpdateOrderStatus(orderId, Order.Status.DELETED);
+	}
+
 	@Caching(evict = { //
 			@CacheEvict(cacheNames = CACHE_NAME, key = "#orderId"),
 			@CacheEvict(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")
 			//
 	})
-	@CacheEvict(cacheNames = CACHE_NAME, key = "#orderId")
 	@Override
 	public Order deleteOrder(String orderId) {
 		Order order = doFindOrder(orderId);

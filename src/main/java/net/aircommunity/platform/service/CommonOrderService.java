@@ -11,6 +11,7 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
 
 /**
@@ -111,6 +112,9 @@ public interface CommonOrderService {
 	@Nonnull
 	Order cancelOrder(@Nonnull String orderId, @Nonnull String cancelReason);
 
+	@Nonnull
+	Order closeOrder(@Nonnull String orderId, @Nonnull String closeReason);
+
 	/**
 	 * Update order status
 	 * 
@@ -130,6 +134,14 @@ public interface CommonOrderService {
 	 */
 	@Nonnull
 	Order updateOrderTotalAmount(@Nonnull String orderId, BigDecimal newTotalAmount);
+
+	/**
+	 * Soft delete just marked as DELETED
+	 * 
+	 * @param orderId the orderId
+	 * @return the order deleted
+	 */
+	Order softDeleteOrder(@Nonnull String orderId);
 
 	/**
 	 * Hard delete from DB
@@ -177,7 +189,7 @@ public interface CommonOrderService {
 	 * @return a page of orders
 	 */
 	@Nonnull
-	Page<Order> listAllOrders(@Nullable Order.Status status, @Nullable Order.Type type, int page, int pageSize);
+	Page<Order> listAllOrders(@Nullable Order.Status status, @Nullable Product.Type type, int page, int pageSize);
 
 	/**
 	 * List all orders of a user with all status. (for ADMIN)
@@ -205,7 +217,7 @@ public interface CommonOrderService {
 	 * @return a page of orders
 	 */
 	@Nonnull
-	Page<Order> listAllUserOrders(@Nonnull String userId, @Nullable Order.Status status, @Nullable Order.Type type,
+	Page<Order> listAllUserOrders(@Nonnull String userId, @Nullable Order.Status status, @Nullable Product.Type type,
 			int page, int pageSize);
 
 	/**

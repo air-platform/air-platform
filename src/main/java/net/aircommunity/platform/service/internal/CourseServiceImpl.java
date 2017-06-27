@@ -149,7 +149,7 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 	}
 
 	@Override
-	public Page<Course> listCoursesWithConditions(String location, String license, String aircraftType, int page,
+	public Page<Course> listCoursesWithConditions(String location, String aircraftType, String license, int page,
 			int pageSize) {
 		return Pages.adapt(courseRepository.findByConditions(location, aircraftType, license,
 				Pages.createPageRequest(page, pageSize)));

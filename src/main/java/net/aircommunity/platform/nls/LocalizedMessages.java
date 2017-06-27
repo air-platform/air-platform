@@ -35,12 +35,15 @@ public class LocalizedMessages extends NLSResource {
 	public static String PRODUCT_FAMILY_NOT_APPROVED;
 	public static String PRODUCT_INVALID_DEPARTURE_DATE;
 	public static String PRODUCT_CANNOT_BE_DELETED;
+	public static String PRODUCT_UPDATED_FAILED;
 	public static String PRODUCT_FAMILY_CANNOT_BE_DELETED;
 	public static String TENANT_PRODUCT_FAMILIES_CANNOT_BE_DELETED;
 	public static String TENANT_PRODUCTS_CANNOT_BE_DELETED;
 	public static String SCHOOL_COURSES_CANNOT_BE_DELETED;
 	public static String SCHOOL_CANNOT_BE_DELETED;
 	public static String TENANT_SCHOOLS_CANNOT_BE_DELETED;
+	public static String AIRCRAFT_CANNOT_BE_DELETED;
+	public static String AIRCRAFTS_CANNOT_BE_DELETED;
 
 	// banner & promotion & airclass
 	public static String BANNER_NOT_FOUND;
