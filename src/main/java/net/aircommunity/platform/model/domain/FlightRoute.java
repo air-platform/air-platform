@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -21,6 +22,7 @@ public class FlightRoute implements Serializable {
 
 	// departure city
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "departure", nullable = false)
 	private String departure;
 
@@ -32,6 +34,7 @@ public class FlightRoute implements Serializable {
 
 	// arrival city
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "arrival", nullable = false)
 	private String arrival;
 

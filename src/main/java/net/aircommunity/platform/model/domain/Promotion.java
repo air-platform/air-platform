@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -51,12 +52,14 @@ public class Promotion extends Persistable {
 	 */
 	public static final int DEFAULT_RANK = LOWEST_RANK;
 
-	@Column(name = "category", nullable = false)
+	@NotNull
+	@Column(name = "category", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Category category;
 
+	@NotEmpty
 	@Size(max = 255)
-	@Column(name = "name", length = 255)
+	@Column(name = "name", length = 255, nullable = false)
 	private String name;
 
 	// product rank (high rank will considered as hot, sort by rank DESC, 0 will be the lowest rank)

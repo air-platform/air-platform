@@ -46,7 +46,7 @@ PIDFILE=${AIR_PLATFORM_HOME}/@pidfile@
 
 if [[ -f ${PIDFILE} ]]
 then
-   echo "AIR Platform is already running with PID: `cat ${PIDFILE}`"
+   echo "AirCommunity Platform is already running with PID: `cat ${PIDFILE}`"
    echo ""
    exit 1
 fi
@@ -57,6 +57,7 @@ then
    java ${JAVA_OPTIONS} -jar ${AIR_PLATFORM_JAR}
 else
    nohup java ${JAVA_OPTIONS}  -jar ${AIR_PLATFORM_JAR} > /dev/null 2>&1 &
-   echo  "AIR Platform will be started in background in [@activeProfile@] mode."
+   echo  "AirCommunity Platform will be started in background in [@activeProfile@] mode."
+   echo  "Check logs at ${AIR_PLATFORM_LOG} for details."
 fi
 echo ""

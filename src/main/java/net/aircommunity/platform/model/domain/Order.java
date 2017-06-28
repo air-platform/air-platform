@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -76,17 +77,18 @@ public abstract class Order extends Persistable {
 
 	// Order Number
 	@XmlElement
-	@Column(name = "order_no", nullable = false, unique = true)
+	@Column(name = "order_no", length = 32, nullable = false, unique = true)
 	protected String orderNo;
 
 	// Order type (product type)
 	@XmlElement
-	@Column(name = "type", nullable = false)
+	@Column(name = "type", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
 	protected Type type;
 
 	// points used in this order
 	@XmlElement
+	@Min(0)
 	@Column(name = "points_used")
 	protected long pointsUsed;
 
@@ -106,18 +108,20 @@ public abstract class Order extends Persistable {
 	protected BigDecimal originalTotalPrice = BigDecimal.ZERO;
 
 	// Order price CurrencyUnit
-	@Column(name = "currency_unit", nullable = false)
+	// https://en.wikipedia.org/wiki/ISO_4217 (3 chars)
+	@Column(name = "currency_unit", length = 3, nullable = false)
 	@Enumerated(EnumType.STRING)
 	protected CurrencyUnit currencyUnit = CurrencyUnit.RMB;
 
 	// TODO add tradeStatus? PENDING/IN_PROGRESS/FINISHED/CLOSED?
 	@XmlElement
-	@Column(name = "status", nullable = false)
+	@Column(name = "status", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
 	protected Status status;
 
 	// order is placed from which channel (Android, iPhone, PC, etc.)
 	@XmlElement
+	@Size(max = 255)
 	@Column(name = "channel")
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected String channel;

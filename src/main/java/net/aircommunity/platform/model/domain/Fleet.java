@@ -9,6 +9,8 @@ import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -31,11 +33,13 @@ public class Fleet extends StandardProduct {
 
 	// Flight NO. is global unique for all air company
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "flight_no", nullable = false, unique = true)
 	private String flightNo;
 
 	// e.g. Gulfstream 450 (should select from a predefined list)
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "aircraft_type", nullable = false)
 	private String aircraftType;
 
@@ -45,23 +49,27 @@ public class Fleet extends StandardProduct {
 
 	// Aircraft current status
 	@Enumerated(EnumType.STRING)
-	@Column(name = "status", nullable = false)
+	@Column(name = "status", length = 20, nullable = false)
 	private Status status = Status.AVAILABLE;
 
-	// XXX should be int for a specific fleet with same aircaftType, e.g. G550 ?
+	// XXX better be int for a specific fleet with same aircaftType, e.g. G550 ?
 	// e.g. 11 - 14 guests
+	@Size(max = 255)
 	@Column(name = "capacity")
 	private String capacity;
 
 	// e.g. 2 divans can be made as beds
+	@Min(0)
 	@Column(name = "beds")
-	private int beds;
+	private int beds = 0;
 
 	// e.g. 430 kilograms of baggage
+	@Min(0)
 	@Column(name = "weight")
-	private int weight;
+	private int weight = 0;
 
 	// e.g. Full-load range of about 8061 kilometers, amount to the distance from Beijing to Kuala Lumpur.
+	@Min(0)
 	@Column(name = "fullload_range")
 	private int fullloadRange;
 
@@ -76,6 +84,7 @@ public class Fleet extends StandardProduct {
 	private String appearances;
 
 	// interior 360 of this Aircraft, 360view.html
+	@Size(max = 255)
 	@Column(name = "interior")
 	private String interior;
 

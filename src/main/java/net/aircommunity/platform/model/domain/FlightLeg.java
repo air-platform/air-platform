@@ -11,6 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -32,11 +33,13 @@ public class FlightLeg extends Persistable {
 
 	// departure city
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "departure", nullable = false)
 	private String departure;
 
 	// arrival city
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "arrival", nullable = false)
 	private String arrival;
 

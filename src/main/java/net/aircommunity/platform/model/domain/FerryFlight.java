@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -33,19 +34,25 @@ public class FerryFlight extends CharterableProduct {
 
 	// Flight NO. cannot be unique, because it can be different date
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "flight_no", nullable = false)
 	private String flightNo;
 
 	// e.g. Gulfstream 450
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "aircraft_type", nullable = false)
 	private String aircraftType;
 
 	// departure city
+	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "departure", nullable = false)
 	private String departure;
 
 	// arrival city
+	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "arrival", nullable = false)
 	private String arrival;
 
@@ -57,6 +64,8 @@ public class FerryFlight extends CharterableProduct {
 	private Date departureDate;
 
 	// departure timeSlot, e.g. 8:00-9:00
+	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "time_slot", nullable = false)
 	private String timeSlot;
 

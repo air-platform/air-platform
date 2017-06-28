@@ -10,11 +10,13 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.LinkType;
 import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
@@ -30,8 +32,9 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 public class Banner extends Persistable {
 	private static final long serialVersionUID = 1L;
 
+	@NotEmpty
 	@Size(max = 255)
-	@Column(name = "title", length = 255)
+	@Column(name = "title", nullable = false)
 	private String title;
 
 	@Size(max = 255)
@@ -44,17 +47,20 @@ public class Banner extends Persistable {
 	private String link;
 
 	// link type
-	@Column(name = "link_type", nullable = false)
+	@NotNull
+	@Column(name = "link_type", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private LinkType linkType = LinkType.PRODUCT;
 
 	// the banner link is which category (should NEVER be NONE)
-	@Column(name = "link_category", nullable = false)
+	@NotNull
+	@Column(name = "link_category", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Category linkCategory = Category.NONE;
 
 	// the banner link is which category
-	@Column(name = "category", nullable = false)
+	@NotNull
+	@Column(name = "category", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Category category = Category.NONE;
 

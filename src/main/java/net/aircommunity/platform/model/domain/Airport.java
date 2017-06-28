@@ -4,9 +4,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+
+import io.micro.annotation.constraint.NotEmpty;
 
 /**
  * Airport information managed by ADMIN.
@@ -27,26 +29,32 @@ public class Airport extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// airport name
-	@NotNull
+	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "name", nullable = false)
 	private String name;
 
 	// of which city
-	@NotNull
+	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "city", nullable = false)
 	private String city;
 
 	// of which country
-	@NotNull
+	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "country", nullable = false)
 	private String country;
 
 	// IATA 3-Letter Code
-	@Column(name = "iata3")
+	@Size(max = 3)
+	@Column(name = "iata3", length = 3)
 	private String iata3;
 
 	// ICAO 4-Letter Code
-	@Column(name = "icao4", nullable = false, unique = true)
+	@NotEmpty
+	@Size(max = 4)
+	@Column(name = "icao4", length = 4, nullable = false, unique = true)
 	private String icao4;
 
 	// Decimal degrees, usually to six significant digits. Negative is South, positive is North.
@@ -58,7 +66,9 @@ public class Airport extends Persistable {
 	private double longitude;
 
 	// Hours offset from UTC. Fractional hours are expressed as decimals, eg. India is 5.5.
-	@Column(name = "timezone")
+	// current max time zone string length is: 32, just make it a bit longer
+	@Size(max = 50)
+	@Column(name = "timezone", length = 50)
 	private String timezone;
 
 	public Airport() {

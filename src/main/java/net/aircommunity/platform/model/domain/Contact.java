@@ -8,10 +8,13 @@ import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.Size;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 
+import io.micro.annotation.constraint.Email;
+import io.micro.annotation.constraint.Mobile;
 import io.micro.common.Strings;
 import net.aircommunity.platform.Constants;
 
@@ -24,12 +27,16 @@ import net.aircommunity.platform.Constants;
 public class Contact implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Size(max = 255)
 	@Column(name = "contact_person")
 	private String person;
 
+	@Mobile
 	@Column(name = "contact_mobile")
 	private String mobile;
 
+	@Email
+	@Size(max = 255)
 	@Column(name = "contact_email")
 	private String email;
 

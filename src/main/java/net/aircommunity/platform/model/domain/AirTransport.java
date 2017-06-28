@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -29,6 +30,7 @@ public class AirTransport extends SalesPackageProduct {
 	private ProductFamily family;
 
 	// in minutes
+	@Min(1)
 	@Column(name = "time_estimation", nullable = false)
 	private int timeEstimation;
 

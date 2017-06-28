@@ -1,0 +1,5471 @@
+[ {
+  
+  "name" : "阿伯丁机场",
+  "city" : "阿伯丁",
+  "country" : "英国",
+  "iata3" : "LUN",
+  "icao4" : "EGPD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "阿德莱德国际机场",
+  "city" : "阿德莱德",
+  "country" : "澳大利亚",
+  "iata3" : "ADL",
+  "icao4" : "YPAD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "阿尔伯克基国际机场",
+  "city" : "阿尔伯克基",
+  "country" : "美国",
+  "iata3" : "BOS",
+  "icao4" : "KABQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "阿格拉机场",
+  "city" : "阿格拉",
+  "country" : "印度",
+  "iata3" : "DPS",
+  "icao4" : "VIAG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "阿加尔塔拉机场",
+  "city" : "阿加尔塔拉",
+  "country" : "印度",
+  "iata3" : "BPN",
+  "icao4" : "VEAT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "阿马里洛机场",
+  "city" : "阿马里洛",
+  "country" : "美国",
+  "iata3" : "PDX",
+  "icao4" : "KAMA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "阿姆利则机场",
+  "city" : "阿姆利则",
+  "country" : "印度",
+  "iata3" : "BTJ",
+  "icao4" : "VIAR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "期希普霍尔机场",
+  "city" : "阿姆斯特丹",
+  "country" : "荷兰",
+  "iata3" : "YXY",
+  "icao4" : "EHAM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "阿纳西机场",
+  "city" : "阿讷西",
+  "country" : "法国",
+  "iata3" : "BZR",
+  "icao4" : "LFLP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "阿普雷顿机场",
+  "city" : "阿普雷顿",
+  "country" : "美国",
+  "iata3" : "PWM",
+  "icao4" : "KATW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "阿斯彭机场",
+  "city" : "阿斯彭",
+  "country" : "美国",
+  "iata3" : "BUR",
+  "icao4" : "KASE",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "科蒙机场",
+  "city" : "阿维尼翁",
+  "country" : "法国",
+  "iata3" : "BIQ",
+  "icao4" : "LFMV",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "康波代尔奥罗机场",
+  "city" : "阿雅克肖",
+  "country" : "法国",
+  "iata3" : "PUF",
+  "icao4" : "LFKJ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "埃尔福特-魏玛机场",
+  "city" : "埃尔福特",
+  "country" : "德国",
+  "iata3" : "BWE",
+  "icao4" : "EDDE",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "埃默拉尔德机场",
+  "city" : "埃默拉尔德",
+  "country" : "澳大利亚",
+  "iata3" : "EMD",
+  "icao4" : "YEML",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "米尔库机场",
+  "city" : "挨皮纳勒",
+  "country" : "法国",
+  "iata3" : "BOD",
+  "icao4" : "LFSG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "艾尔蒙顿机场",
+  "city" : "艾尔蒙顿",
+  "country" : "加拿大",
+  "iata3" : "YVR",
+  "icao4" : "CYEG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "艾尔帕索机场",
+  "city" : "艾尔帕索",
+  "country" : "美国",
+  "iata3" : "BTV",
+  "icao4" : "KELP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "艾尔斯罗尔机场",
+  "city" : "艾尔斯罗尔",
+  "country" : "澳大利亚",
+  "iata3" : "AYQ",
+  "icao4" : "YAYE",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "艾哈迈达巴德机场",
+  "city" : "艾哈迈达巴德",
+  "country" : "印度",
+  "iata3" : "BIK",
+  "icao4" : "VAAH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "艾丽斯斯普林斯机场",
+  "city" : "艾丽斯斯普林斯",
+  "country" : "澳大利亚",
+  "iata3" : "ASP",
+  "icao4" : "YBAS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "爱丁堡机场",
+  "city" : "爱丁堡",
+  "country" : "英国",
+  "iata3" : "MFU",
+  "icao4" : "EGPH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "安大略机场",
+  "city" : "安大略",
+  "country" : "美国",
+  "iata3" : "BZN",
+  "icao4" : "KONT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "法尔科纳拉机场",
+  "city" : "安科纳",
+  "country" : "意大利",
+  "iata3" : "DMU",
+  "icao4" : "LIPY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "安克雷奇国际机场",
+  "city" : "安克雷奇",
+  "country" : "美国",
+  "iata3" : "BUF",
+  "icao4" : "PANC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "安庆机场",
+  "city" : "安庆",
+  "country" : "中国",
+  "iata3" : "FUG",
+  "icao4" : "ZSAQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "黄果树机场",
+  "city" : "安顺",
+  "country" : "中国",
+  "iata3" : "FYN",
+  "icao4" : "ZUAS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "安阳机场",
+  "city" : "安阳",
+  "country" : "中国",
+  "iata3" : "GXH",
+  "icao4" : "ZHAY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "腾鳌机场",
+  "city" : "鞍山",
+  "country" : "中国",
+  "iata3" : "KOW",
+  "icao4" : "ZYAS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥尔巴尼国际机场",
+  "city" : "奥尔巴尼",
+  "country" : "美国",
+  "iata3" : "CHS",
+  "icao4" : "KALB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥尔比亚机场",
+  "city" : "奥尔比亚",
+  "country" : "意大利",
+  "iata3" : "TRZ",
+  "icao4" : "LIEO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "布里西机场",
+  "city" : "奥尔良",
+  "country" : "法国",
+  "iata3" : "BVA",
+  "icao4" : "LFOJ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥格斯堡机场",
+  "city" : "奥格斯堡",
+  "country" : "德国",
+  "iata3" : "DUS",
+  "icao4" : "EDMA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥古斯塔机场",
+  "city" : "奥古斯塔",
+  "country" : "美国",
+  "iata3" : "CHA",
+  "icao4" : "KAGS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥克兰大都会国际机场",
+  "city" : "奥克兰",
+  "country" : "美国",
+  "iata3" : "DHT",
+  "icao4" : "KOAK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥克兰国际机场",
+  "city" : "奥克兰",
+  "country" : "新西兰",
+  "iata3" : "BRI",
+  "icao4" : "NZAA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥兰多机场",
+  "city" : "奥兰多",
+  "country" : "美国",
+  "iata3" : "ADS",
+  "icao4" : "KMCO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥兰多机场",
+  "city" : "奥兰多",
+  "country" : "美国",
+  "iata3" : "DAL",
+  "icao4" : "KORL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥兰加巴德机场",
+  "city" : "奥兰加巴德",
+  "country" : "印度",
+  "iata3" : "PGK",
+  "icao4" : "VAAU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "埃普利机场",
+  "city" : "奥马哈",
+  "country" : "美国",
+  "iata3" : "DFW",
+  "icao4" : "KOMA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥斯汀机场",
+  "city" : "奥斯汀",
+  "country" : "美国",
+  "iata3" : "RDU",
+  "icao4" : "KAUS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "澳门机场",
+  "city" : "澳门",
+  "country" : "澳门",
+  "iata3" : "BGI",
+  "icao4" : "VMMC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "巴多格拉机场",
+  "city" : "巴多格拉",
+  "country" : "印度",
+  "iata3" : "DJJ",
+  "icao4" : "VEBD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "华盛顿机场",
+  "city" : "巴尔的摩",
+  "country" : "美国",
+  "iata3" : "GTF",
+  "icao4" : "KBWI",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "拉伊西角机场",
+  "city" : "巴勒莫",
+  "country" : "意大利",
+  "iata3" : "GOP",
+  "icao4" : "LICJ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "巴黎奥利机场",
+  "city" : "巴黎奥利",
+  "country" : "法国",
+  "iata3" : "BES",
+  "icao4" : "LFPO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "巴黎布尔歇机场",
+  "city" : "巴黎布尔歇",
+  "country" : "法国",
+  "iata3" : "DNR",
+  "icao4" : "LFPB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "巴黎戴高乐机场",
+  "city" : "巴黎戴高乐",
+  "country" : "法国",
+  "iata3" : "DIJ",
+  "icao4" : "LFPG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "帕莱塞机场",
+  "city" : "巴里",
+  "country" : "意大利",
+  "iata3" : "CJB",
+  "icao4" : "LIBD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "马尼塞斯国际机场",
+  "city" : "巴伦西亚",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "ROT",
+  "icao4" : "LEVC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "巴塞罗那机场",
+  "city" : "巴塞罗那",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "NPE",
+  "icao4" : "LEBL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "波雷塔机场",
+  "city" : "巴斯蒂亚",
+  "country" : "法国",
+  "iata3" : "DOL",
+  "icao4" : "LFKB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "巴特那机场",
+  "city" : "巴特那",
+  "country" : "印度",
+  "iata3" : "TNJ",
+  "icao4" : "VEPT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "长安机场",
+  "city" : "白城",
+  "country" : "中国",
+  "iata3" : "GYU",
+  "icao4" : "ZYBA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "巴马机场",
+  "city" : "百色",
+  "country" : "中国",
+  "iata3" : "GHN",
+  "icao4" : "ZGBS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "申费尔德机场",
+  "city" : "柏林",
+  "country" : "德国",
+  "iata3" : "FRA",
+  "icao4" : "EDDB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "泰格尔机场",
+  "city" : "柏林",
+  "country" : "德国",
+  "iata3" : "FDH",
+  "icao4" : "EDDT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "班戈国际机场",
+  "city" : "班戈",
+  "country" : "美国",
+  "iata3" : "ILG",
+  "icao4" : "KBGR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "班加罗尔国际机场",
+  "city" : "班加罗尔",
+  "country" : "印度",
+  "iata3" : "TJQ",
+  "icao4" : "VOBL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "班加罗尔机场",
+  "city" : "班加罗尔",
+  "country" : "印度",
+  "iata3" : "TIM",
+  "icao4" : "VOBG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "蚌埠机场",
+  "city" : "蚌埠",
+  "country" : "中国",
+  "iata3" : "GYS",
+  "icao4" : "ZSBB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "包头机场",
+  "city" : "包头",
+  "country" : "中国",
+  "iata3" : "CAN",
+  "icao4" : "ZBOW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "保山机场",
+  "city" : "保山",
+  "country" : "中国",
+  "iata3" : "KWE",
+  "icao4" : "ZPBS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "福成机场",
+  "city" : "北海",
+  "country" : "中国",
+  "iata3" : "KWL",
+  "icao4" : "ZGBH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "首都国际机场",
+  "city" : "北京",
+  "country" : "中国",
+  "iata3" : "HRB",
+  "icao4" : "ZBAA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "北九州机场",
+  "city" : "北九州",
+  "country" : "日本",
+  "iata3" : "TTJ",
+  "icao4" : "RJFR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "北特内里费机场",
+  "city" : "北特内里费",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "TUO",
+  "icao4" : "GCXO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "劳伦斯G 汉斯科姆机场",
+  "city" : "贝德福德",
+  "country" : "美国",
+  "iata3" : "ACY",
+  "icao4" : "KBED",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥德格鲁夫机场",
+  "city" : "贝尔法斯特",
+  "country" : "英国",
+  "iata3" : "IQQ",
+  "icao4" : "EGAA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "维亚机场",
+  "city" : "贝济耶",
+  "country" : "法国",
+  "iata3" : "FSC",
+  "icao4" : "LFMU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "比灵斯国际机场",
+  "city" : "比灵斯",
+  "country" : "美国",
+  "iata3" : "GCN",
+  "icao4" : "KBIL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣基斯托机场",
+  "city" : "比萨",
+  "country" : "意大利",
+  "iata3" : "GAY",
+  "icao4" : "LIRP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "毕尔巴鄂机场",
+  "city" : "毕尔巴鄂",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "BUD",
+  "icao4" : "LEBB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "梅里尼亚克机场",
+  "city" : "波尔多",
+  "country" : "法国",
+  "iata3" : "CCF",
+  "icao4" : "LFBD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "罗甘国际机场",
+  "city" : "波士顿",
+  "country" : "美国",
+  "iata3" : "CLL",
+  "icao4" : "KBOS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "波特兰国际机场",
+  "city" : "波特兰",
+  "country" : "美国",
+  "iata3" : "GJT",
+  "icao4" : "KPDX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "波特兰机场",
+  "city" : "波特兰",
+  "country" : "美国",
+  "iata3" : "DAY",
+  "icao4" : "KPWM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "伯班克机场",
+  "city" : "伯班克",
+  "country" : "美国",
+  "iata3" : "DAB",
+  "icao4" : "KBUR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "贝尔普机场",
+  "city" : "伯尔尼",
+  "country" : "瑞士",
+  "iata3" : "HRI",
+  "icao4" : "LSZB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "伯灵顿机场",
+  "city" : "伯灵顿",
+  "country" : "美国",
+  "iata3" : "APA",
+  "icao4" : "KBTV",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "伯明翰机场",
+  "city" : "伯明翰",
+  "country" : "英国",
+  "iata3" : "IPC",
+  "icao4" : "EGBB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "博洛尼亚机场",
+  "city" : "博洛尼亚",
+  "country" : "意大利",
+  "iata3" : "GOI",
+  "icao4" : "LIPE",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "博帕尔机场",
+  "city" : "博帕尔",
+  "country" : "印度",
+  "iata3" : "PLM",
+  "icao4" : "VABP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "蒂耶机场",
+  "city" : "博韦",
+  "country" : "法国",
+  "iata3" : "CLY",
+  "icao4" : "LFOB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "博兹曼黄石国际机场",
+  "city" : "博兹曼",
+  "country" : "美国",
+  "iata3" : "DEN",
+  "icao4" : "KBZN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "不莱梅机场",
+  "city" : "不莱梅",
+  "country" : "德国",
+  "iata3" : "HAM",
+  "icao4" : "EDDW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "布法罗机场",
+  "city" : "布法罗",
+  "country" : "美国",
+  "iata3" : "dsm",
+  "icao4" : "KBUF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "吉帕瓦机场",
+  "city" : "布雷斯特",
+  "country" : "法国",
+  "iata3" : "UIP",
+  "icao4" : "LFRB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "布里斯班国际机场",
+  "city" : "布里斯班",
+  "country" : "澳大利亚",
+  "iata3" : "BNE",
+  "icao4" : "YBBN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卡萨莱机场",
+  "city" : "布林迪西",
+  "country" : "意大利",
+  "iata3" : "BPM",
+  "icao4" : "LIBR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "布鲁姆机场",
+  "city" : "布鲁姆",
+  "country" : "澳大利亚",
+  "iata3" : "BME",
+  "icao4" : "YBRM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "查尔斯顿国际机场",
+  "city" : "查尔斯顿",
+  "country" : "美国",
+  "iata3" : "DEC",
+  "icao4" : "KCHS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "查塔姆-肯特机场",
+  "city" : "查塔姆",
+  "country" : "加拿大",
+  "iata3" : "YWG",
+  "icao4" : "CYCK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "洛弗尔机场",
+  "city" : "查塔努加",
+  "country" : "美国",
+  "iata3" : "DTW",
+  "icao4" : "KCHA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "桃花源机场",
+  "city" : "常德",
+  "country" : "中国",
+  "iata3" : "HTT",
+  "icao4" : "ZGCD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奔牛机场",
+  "city" : "常州",
+  "country" : "中国",
+  "iata3" : "HDG",
+  "icao4" : "ZSCG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "朝阳机场",
+  "city" : "朝阳",
+  "country" : "中国",
+  "iata3" : "HZG",
+  "icao4" : "ZYCY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "双流机场",
+  "city" : "成都",
+  "country" : "中国",
+  "iata3" : "HGH",
+  "icao4" : "ZUUU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "中文名",
+  "city" : "城市中文名",
+  "country" : "国家中文名",
+  "iata3" : "三字代码",
+  "icao4" : "四字代码",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "出云机场",
+  "city" : "出云",
+  "country" : "日本",
+  "iata3" : "MMB",
+  "icao4" : "RJOC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "钏路机场",
+  "city" : "钏路",
+  "country" : "日本",
+  "iata3" : "AOJ",
+  "icao4" : "RJCK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "达尔哈特机场",
+  "city" : "达尔哈特市",
+  "country" : "美国",
+  "iata3" : "OKC",
+  "icao4" : "KDHT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "达尔文国际机场",
+  "city" : "达尔文",
+  "country" : "澳大利亚",
+  "iata3" : "DRW",
+  "icao4" : "YPDN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "艾迪生机场",
+  "city" : "达拉斯",
+  "country" : "美国",
+  "iata3" : "FRG",
+  "icao4" : "KADS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "达拉斯-拉夫机场",
+  "city" : "达拉斯",
+  "country" : "美国",
+  "iata3" : "PHX",
+  "icao4" : "KDAL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "达拉斯-沃思堡国际机场",
+  "city" : "达拉斯",
+  "country" : "美国",
+  "iata3" : "PHL",
+  "icao4" : "KDFW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "莱利都林国际机场",
+  "city" : "达勒姆",
+  "country" : "美国",
+  "iata3" : "FAI",
+  "icao4" : "KRDU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "达尼丁机场",
+  "city" : "达尼丁",
+  "country" : "新西兰",
+  "iata3" : "PSA",
+  "icao4" : "NZDN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "大阪国际机场",
+  "city" : "大阪",
+  "country" : "日本",
+  "iata3" : "HBJ",
+  "icao4" : "RJOO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "关西机场",
+  "city" : "大阪",
+  "country" : "日本",
+  "iata3" : "GAJ",
+  "icao4" : "RJBB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "大岛机场",
+  "city" : "大岛",
+  "country" : "日本",
+  "iata3" : "UKB",
+  "icao4" : "RJTO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "大分机场",
+  "city" : "大分",
+  "country" : "日本",
+  "iata3" : "ISG",
+  "icao4" : "RJFO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "大加那利国际机场",
+  "city" : "大加那利岛",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "ALP",
+  "icao4" : "GCLP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "荒草坝机场",
+  "city" : "大理",
+  "country" : "中国",
+  "iata3" : "HEK",
+  "icao4" : "ZPDL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "周水子机场",
+  "city" : "大连",
+  "country" : "中国",
+  "iata3" : "HNY",
+  "icao4" : "ZYTL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "大瀑布城国际机场",
+  "city" : "大瀑布城",
+  "country" : "美国",
+  "iata3" : "RSW",
+  "icao4" : "KGTF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "萨尔图机场",
+  "city" : "大庆",
+  "country" : "中国",
+  "iata3" : "HET",
+  "icao4" : "ZYDQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "大邱机场",
+  "city" : "大邱",
+  "country" : "韩国",
+  "iata3" : "RTM",
+  "icao4" : "RKTN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "云冈机场",
+  "city" : "大同",
+  "country" : "中国",
+  "iata3" : "HJJ",
+  "icao4" : "ZBDT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "纽卡斯尔机场",
+  "city" : "大威尔明顿",
+  "country" : "美国",
+  "iata3" : "CAE",
+  "icao4" : "KILG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "大西洋城国际机场",
+  "city" : "大西洋城",
+  "country" : "美国",
+  "iata3" : "CMH",
+  "icao4" : "KACY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "大峡谷国家公园机场",
+  "city" : "大峡谷",
+  "country" : "美国",
+  "iata3" : "GSO",
+  "icao4" : "KGCN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "伊斯特伍德机场",
+  "city" : "大学城",
+  "country" : "美国",
+  "iata3" : "GUM",
+  "icao4" : "KCLL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "大章克兴机场",
+  "city" : "大章克兴",
+  "country" : "美国",
+  "iata3" : "INL",
+  "icao4" : "KGJT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "代顿机场",
+  "city" : "代顿",
+  "country" : "美国",
+  "iata3" : "IAD",
+  "icao4" : "KDAY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "代托纳比奇国际机场",
+  "city" : "代托纳比奇",
+  "country" : "美国",
+  "iata3" : "DCA",
+  "icao4" : "KDAB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "带广机场",
+  "city" : "带广",
+  "country" : "日本",
+  "iata3" : "MMJ",
+  "icao4" : "RJCB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "浪头机场",
+  "city" : "丹东",
+  "country" : "中国",
+  "iata3" : "HIA",
+  "icao4" : "ZYDD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "百年机场",
+  "city" : "丹佛",
+  "country" : "美国",
+  "iata3" : "HPN",
+  "icao4" : "KAPA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "丹佛机场",
+  "city" : "丹佛",
+  "country" : "美国",
+  "iata3" : "HNL",
+  "icao4" : "KDEN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "亚丁机场",
+  "city" : "稻城",
+  "country" : "中国",
+  "iata3" : "TXN",
+  "icao4" : "ZUDC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "得梅因市机场",
+  "city" : "得梅因市",
+  "country" : "美国",
+  "iata3" : "JAC",
+  "icao4" : "KDSM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "德岛机场",
+  "city" : "德岛",
+  "country" : "日本",
+  "iata3" : "MYJ",
+  "icao4" : "RJOS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "芒市机场",
+  "city" : "德宏",
+  "country" : "中国",
+  "iata3" : "HUZ",
+  "icao4" : "ZPMS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "英迪拉甘地国际机场",
+  "city" : "德里",
+  "country" : "印度",
+  "iata3" : "PNK",
+  "icao4" : "VIDP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "德文波特机场",
+  "city" : "德文波特",
+  "country" : "澳大利亚",
+  "iata3" : "DPO",
+  "icao4" : "YDPO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "龙基德尔莱焦纳里机场",
+  "city" : "的里雅斯特",
+  "country" : "意大利",
+  "iata3" : "CCU",
+  "icao4" : "LIPQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "迪凯特机场",
+  "city" : "迪凯特",
+  "country" : "美国",
+  "iata3" : "SFO",
+  "icao4" : "KDEC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "迪马布尔机场",
+  "city" : "迪马布尔",
+  "country" : "印度",
+  "iata3" : "MKQ",
+  "icao4" : "VEMR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "普勒尔蒂-圣马洛机场",
+  "city" : "迪纳尔",
+  "country" : "法国",
+  "iata3" : "CFE",
+  "icao4" : "LFRD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "香格里拉机场",
+  "city" : "迪庆",
+  "country" : "中国",
+  "iata3" : "JXA",
+  "icao4" : "ZPDQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "底特律机场",
+  "city" : "底特律",
+  "country" : "美国",
+  "iata3" : "OGG",
+  "icao4" : "KDTW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "隆维克机场",
+  "city" : "第戎",
+  "country" : "法国",
+  "iata3" : "RHE",
+  "icao4" : "LFSD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "蒂鲁吉拉帕利机场",
+  "city" : "蒂鲁吉拉帕利",
+  "country" : "印度",
+  "iata3" : "MOF",
+  "icao4" : "VOTR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "鼎新机场",
+  "city" : "鼎新",
+  "country" : "中国",
+  "iata3" : "TNA",
+  "icao4" : "ZLDX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "东京成田机场",
+  "city" : "东京成田",
+  "country" : "日本",
+  "iata3" : "SDJ",
+  "icao4" : "RJAA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "东京羽田机场",
+  "city" : "东京羽田",
+  "country" : "日本",
+  "iata3" : "KMQ",
+  "icao4" : "RJTT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "东米德兰兹机场",
+  "city" : "东米德兰兹",
+  "country" : "英国",
+  "iata3" : "PUQ",
+  "icao4" : "EGNX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "东营机场",
+  "city" : "东营",
+  "country" : "中国",
+  "iata3" : "JNG",
+  "icao4" : "ZSDY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "杜塞尔多夫机场",
+  "city" : "杜塞尔多夫",
+  "country" : "德国",
+  "iata3" : "CGN",
+  "icao4" : "EDDL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "敦煌机场",
+  "city" : "敦煌",
+  "country" : "中国",
+  "iata3" : "JGD",
+  "icao4" : "ZLDH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "塔沃机场",
+  "city" : "多勒",
+  "country" : "法国",
+  "iata3" : "CTT",
+  "icao4" : "LFGJ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "多伦多.皮尔森国际机场",
+  "city" : "多伦多",
+  "country" : "加拿大",
+  "iata3" : "YOW",
+  "icao4" : "CYYZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣加蒂安机场",
+  "city" : "多维尔",
+  "country" : "法国",
+  "iata3" : "RNS",
+  "icao4" : "LFRG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "威尔·罗杰斯世界机场",
+  "city" : "俄克拉荷马市",
+  "country" : "美国",
+  "iata3" : "KOA",
+  "icao4" : "KOKC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "法恩伯勒机场",
+  "city" : "法恩伯勒",
+  "country" : "英国",
+  "iata3" : "SCL",
+  "icao4" : "EGLF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "哈恩机场",
+  "city" : "法兰克福",
+  "country" : "德国",
+  "iata3" : "LEJ",
+  "icao4" : "EDFH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "美因国际机场",
+  "city" : "法兰克福",
+  "country" : "德国",
+  "iata3" : "FMM",
+  "icao4" : "EDDF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "共和机场",
+  "city" : "法名代尔，纽约州",
+  "country" : "美国",
+  "iata3" : "KTN",
+  "icao4" : "KFRG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "斯凯哈伯机场",
+  "city" : "菲尼克斯",
+  "country" : "美国",
+  "iata3" : "MCI",
+  "icao4" : "KPHX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "腓特烈港机场",
+  "city" : "腓特烈港",
+  "country" : "德国",
+  "iata3" : "MUC",
+  "icao4" : "EDNY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "费城国际机场",
+  "city" : "费城",
+  "country" : "美国",
+  "iata3" : "CDB",
+  "icao4" : "KPHL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "费尔班克斯国际机场",
+  "city" : "费尔班克斯",
+  "country" : "美国",
+  "iata3" : "CRP",
+  "icao4" : "PAFA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "佩雷托拉机场",
+  "city" : "佛罗伦萨",
+  "country" : "意大利",
+  "iata3" : "GAU",
+  "icao4" : "LIRQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "沙堤机场",
+  "city" : "佛山",
+  "country" : "中国",
+  "iata3" : "JNZ",
+  "icao4" : "ZGFS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "福岛机场",
+  "city" : "福岛",
+  "country" : "日本",
+  "iata3" : "KIJ",
+  "icao4" : "RJSF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "福冈机场",
+  "city" : "福冈",
+  "country" : "日本",
+  "iata3" : "KMJ",
+  "icao4" : "RJFF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "西南佛罗里达国际机场",
+  "city" : "福特迈耶斯",
+  "country" : "美国",
+  "iata3" : "LRD",
+  "icao4" : "KRSW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "长乐机场",
+  "city" : "福州",
+  "country" : "中国",
+  "iata3" : "JGS",
+  "icao4" : "ZSFZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "东极机场",
+  "city" : "抚远",
+  "country" : "中国",
+  "iata3" : "JDZ",
+  "icao4" : "ZYFY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "金海国际机场",
+  "city" : "釜山",
+  "country" : "韩国",
+  "iata3" : "TIV",
+  "icao4" : "RKPK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "阜阳机场",
+  "city" : "阜阳",
+  "country" : "中国",
+  "iata3" : "JIU",
+  "icao4" : "ZSFY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "富埃特文图拉岛机场",
+  "city" : "富埃特文图拉岛",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "DAM",
+  "icao4" : "GCFV",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "富山机场",
+  "city" : "富山",
+  "country" : "日本",
+  "iata3" : "AKJ",
+  "icao4" : "RJNT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "甘岛机场",
+  "city" : "甘岛",
+  "country" : "马尔代夫",
+  "iata3" : "LBU",
+  "icao4" : "VRMG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "甘德国际机场",
+  "city" : "甘德",
+  "country" : "加拿大",
+  "iata3" : "YYG",
+  "icao4" : "CYQX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "夏河机场",
+  "city" : "甘南",
+  "country" : "中国",
+  "iata3" : "CHW",
+  "icao4" : "ZLXH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "黄金机场",
+  "city" : "赣州",
+  "country" : "中国",
+  "iata3" : "KHG",
+  "icao4" : "ZSGZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "冈山机场",
+  "city" : "冈山",
+  "country" : "日本",
+  "iata3" : "IWJ",
+  "icao4" : "RJOB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "高松机场",
+  "city" : "高松",
+  "country" : "日本",
+  "iata3" : "CTS",
+  "icao4" : "RJOT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "高知机场",
+  "city" : "高知",
+  "country" : "日本",
+  "iata3" : "NGS",
+  "icao4" : "RJOK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "戈勒克布尔空军基地机场",
+  "city" : "戈勒克布尔",
+  "country" : "印度",
+  "iata3" : "MES",
+  "icao4" : "VEGK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "哥德堡机场",
+  "city" : "哥德堡",
+  "country" : "瑞典",
+  "iata3" : "UVF",
+  "icao4" : "ESGP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "兰德维特机场",
+  "city" : "哥德堡",
+  "country" : "瑞典",
+  "iata3" : "SXM",
+  "icao4" : "ESGG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "哥伦比亚大都会机场",
+  "city" : "哥伦比亚",
+  "country" : "美国",
+  "iata3" : "LNY",
+  "icao4" : "KCAE",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "哥伦布港国际机场",
+  "city" : "哥伦布",
+  "country" : "美国",
+  "iata3" : "HSH",
+  "icao4" : "KCMH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "哥印拜陀机场",
+  "city" : "哥印拜陀",
+  "country" : "印度",
+  "iata3" : "PKU",
+  "icao4" : "VOCB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "格拉纳达机场",
+  "city" : "格拉纳达",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "KIN",
+  "icao4" : "LEGR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "格里菲斯机场",
+  "city" : "格里菲斯",
+  "country" : "澳大利亚",
+  "iata3" : "GFF",
+  "icao4" : "YGTH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "特利亚德国际机场",
+  "city" : "格林斯伯勒",
+  "country" : "美国",
+  "iata3" : "LAS",
+  "icao4" : "KGSO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "格雅机场",
+  "city" : "格雅",
+  "country" : "印度",
+  "iata3" : "JOG",
+  "icao4" : "VEGY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "根西机场",
+  "city" : "根西",
+  "country" : "英国",
+  "iata3" : "BGF",
+  "icao4" : "EGJB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "宫崎机场",
+  "city" : "宫崎",
+  "country" : "日本",
+  "iata3" : "HSG",
+  "icao4" : "RJFM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "关岛国际机场",
+  "city" : "关岛",
+  "country" : "美国",
+  "iata3" : "LAN",
+  "icao4" : "PGUM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "光州机场",
+  "city" : "光州",
+  "country" : "韩国",
+  "iata3" : "TRW",
+  "icao4" : "RKJJ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "广岛机场",
+  "city" : "广岛",
+  "country" : "日本",
+  "iata3" : "GSE",
+  "icao4" : "RJOA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "白云机场",
+  "city" : "广州",
+  "country" : "中国",
+  "iata3" : "KMG",
+  "icao4" : "ZGGG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "龙洞堡机场",
+  "city" : "贵阳",
+  "country" : "中国",
+  "iata3" : "LXA",
+  "icao4" : "ZUGY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "两江机场",
+  "city" : "桂林",
+  "country" : "中国",
+  "iata3" : "ZGC",
+  "icao4" : "ZGKL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "国际瀑布城机场",
+  "city" : "国际瀑布城",
+  "country" : "美国",
+  "iata3" : "FLL",
+  "icao4" : "KINL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "达波林国际机场",
+  "city" : "果阿",
+  "country" : "印度",
+  "iata3" : "SRG",
+  "icao4" : "VOGO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "太平机场",
+  "city" : "哈尔滨",
+  "country" : "中国",
+  "iata3" : "HZH",
+  "icao4" : "ZYHB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "哈利法克斯机场",
+  "city" : "哈利法克斯",
+  "country" : "加拿大",
+  "iata3" : "YZF",
+  "icao4" : "CYHZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "哈密尔顿机场",
+  "city" : "哈密尔顿",
+  "country" : "加拿大",
+  "iata3" : "ACC",
+  "icao4" : "CYHM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "哈密尔顿机场",
+  "city" : "哈密尔顿",
+  "country" : "新西兰",
+  "iata3" : "BLQ",
+  "icao4" : "NZHN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "哈密尔顿岛机场",
+  "city" : "哈密尔顿岛",
+  "country" : "澳大利亚",
+  "iata3" : "HTI",
+  "icao4" : "YBHM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "海得拉巴机场",
+  "city" : "海得拉巴",
+  "country" : "印度",
+  "iata3" : "SOQ",
+  "icao4" : "VOHY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "美兰机场",
+  "city" : "海口",
+  "country" : "中国",
+  "iata3" : "LLB",
+  "icao4" : "ZJHK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "呼伦贝尔机场",
+  "city" : "海拉尔",
+  "country" : "中国",
+  "iata3" : "LCX",
+  "icao4" : "ZBLA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "邯郸机场",
+  "city" : "邯郸",
+  "country" : "中国",
+  "iata3" : "LNJ",
+  "icao4" : "ZBHD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "函馆机场",
+  "city" : "函馆",
+  "country" : "日本",
+  "iata3" : "GOT",
+  "icao4" : "RJCH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "汉堡机场",
+  "city" : "汉堡",
+  "country" : "德国",
+  "iata3" : "NUE",
+  "icao4" : "EDDH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "朗根哈根机场",
+  "city" : "汉诺威尔",
+  "country" : "德国",
+  "iata3" : "STR",
+  "icao4" : "EDDV",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "城固机场",
+  "city" : "汉中",
+  "country" : "中国",
+  "iata3" : "LFQ",
+  "icao4" : "ZLCG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "萧山机场",
+  "city" : "杭州",
+  "country" : "中国",
+  "iata3" : "LZH",
+  "icao4" : "ZSHC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "新桥机场",
+  "city" : "合肥",
+  "country" : "中国",
+  "iata3" : "LPF",
+  "icao4" : "ZSOF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "黑德兰国际机场",
+  "city" : "黑德兰",
+  "country" : "澳大利亚",
+  "iata3" : "PHE",
+  "icao4" : "YPPD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "横田机场",
+  "city" : "横田",
+  "country" : "日本",
+  "iata3" : "KRN",
+  "icao4" : "RJTY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "南岳机场",
+  "city" : "衡阳",
+  "country" : "中国",
+  "iata3" : "LLV",
+  "icao4" : "ZGHY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "白塔机场",
+  "city" : "呼和浩特",
+  "country" : "中国",
+  "iata3" : "NZH",
+  "icao4" : "ZBHH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "杜勒斯国际机场",
+  "city" : "华盛顿",
+  "country" : "美国",
+  "iata3" : "RNO",
+  "icao4" : "KIAD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "罗纳德·里根华盛顿机场",
+  "city" : "华盛顿",
+  "country" : "美国",
+  "iata3" : "RIC",
+  "icao4" : "KDCA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "怀特霍斯机场",
+  "city" : "怀特霍斯",
+  "country" : "加拿大",
+  "iata3" : "MVB",
+  "icao4" : "CYXY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "维斯特切斯特县机场",
+  "city" : "怀特普莱恩斯",
+  "country" : "美国",
+  "iata3" : "LIH",
+  "icao4" : "KHPN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "皇后镇机场",
+  "city" : "皇后镇",
+  "country" : "新西兰",
+  "iata3" : "BDS",
+  "icao4" : "NZQN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "黄金海岸机场",
+  "city" : "黄金海岸",
+  "country" : "澳大利亚",
+  "iata3" : "OOL",
+  "icao4" : "YBCG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "惠灵顿国际机场",
+  "city" : "惠灵顿",
+  "country" : "新西兰",
+  "iata3" : "TRS",
+  "icao4" : "NZWN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "火奴鲁鲁国际机场",
+  "city" : "火奴鲁鲁",
+  "country" : "美国",
+  "iata3" : "LEX",
+  "icao4" : "PHNL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "霍巴特机场",
+  "city" : "霍巴特",
+  "country" : "澳大利亚",
+  "iata3" : "HBA",
+  "icao4" : "YMHB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "克赖斯特彻奇国际机场",
+  "city" : "基督城",
+  "country" : "新西兰",
+  "iata3" : "FLR",
+  "icao4" : "NZCH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "基律纳机场",
+  "city" : "基律纳",
+  "country" : "瑞典",
+  "iata3" : "JAF",
+  "icao4" : "ESNQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "遥墙机场",
+  "city" : "济南",
+  "country" : "中国",
+  "iata3" : "KHN",
+  "icao4" : "ZSJN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "济州国际机场",
+  "city" : "济州",
+  "country" : "韩国",
+  "iata3" : "JIB",
+  "icao4" : "RKPC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "内塔吉 苏博哈斯 钱德拉机场",
+  "city" : "加尔各答",
+  "country" : "印度",
+  "iata3" : "MDC",
+  "icao4" : "VECC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "加瓦哈蒂机场",
+  "city" : "加瓦哈蒂",
+  "country" : "印度",
+  "iata3" : "UPG",
+  "icao4" : "VEGT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "嘉手纳机场",
+  "city" : "嘉手纳",
+  "country" : "日本",
+  "iata3" : "ARN",
+  "icao4" : "RODN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "焦特布尔机场",
+  "city" : "焦特布尔",
+  "country" : "印度",
+  "iata3" : "CGK",
+  "icao4" : "VIJO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "杰克逊谷地机场",
+  "city" : "杰克逊",
+  "country" : "美国",
+  "iata3" : "SDF",
+  "icao4" : "KJAC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "金奈机场",
+  "city" : "金奈",
+  "country" : "印度",
+  "iata3" : "HLP",
+  "icao4" : "VOMM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "锦州湾机场",
+  "city" : "锦州",
+  "country" : "中国",
+  "iata3" : "NLH",
+  "icao4" : "ZYJZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "井冈山机场",
+  "city" : "井冈山",
+  "country" : "中国",
+  "iata3" : "PZI",
+  "icao4" : "ZSGS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "罗家机场",
+  "city" : "景德镇",
+  "country" : "中国",
+  "iata3" : "SYM",
+  "icao4" : "ZSJD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "静冈机场",
+  "city" : "静冈",
+  "country" : "日本",
+  "iata3" : "VBY",
+  "icao4" : "RJNS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "庐山机场",
+  "city" : "九江",
+  "country" : "中国",
+  "iata3" : "NDG",
+  "icao4" : "ZSJJ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "黄龙机场",
+  "city" : "九寨",
+  "country" : "中国",
+  "iata3" : "JIQ",
+  "icao4" : "ZUJZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "下河清机场",
+  "city" : "酒泉",
+  "country" : "中国",
+  "iata3" : "IQM",
+  "icao4" : "ZLJN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "旧金山国际机场",
+  "city" : "旧金山",
+  "country" : "美国",
+  "iata3" : "RST",
+  "icao4" : "KSFO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "喀什机场",
+  "city" : "喀什",
+  "country" : "中国",
+  "iata3" : "BPE",
+  "icao4" : "ZWSH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卡皮盖机场",
+  "city" : "卡昂",
+  "country" : "法国",
+  "iata3" : "LIL",
+  "icao4" : "LFRK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卡尔古利机场",
+  "city" : "卡尔古利",
+  "country" : "澳大利亚",
+  "iata3" : "KGI",
+  "icao4" : "YPKG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卡尔加里机场",
+  "city" : "卡尔加里",
+  "country" : "加拿大",
+  "iata3" : "LBV",
+  "icao4" : "CYYC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "萨尔瓦扎机场",
+  "city" : "卡尔卡松",
+  "country" : "法国",
+  "iata3" : "LIG",
+  "icao4" : "LFMK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣凯瑟琳机场",
+  "city" : "卡尔维",
+  "country" : "法国",
+  "iata3" : "RCO",
+  "icao4" : "LFKC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卡胡卢伊机场",
+  "city" : "卡胡卢伊",
+  "country" : "美国",
+  "iata3" : "VNY",
+  "icao4" : "PHOG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卡拉萨机场",
+  "city" : "卡拉萨",
+  "country" : "澳大利亚",
+  "iata3" : "KTA",
+  "icao4" : "YPKA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "埃尔玛斯机场",
+  "city" : "卡利亚里",
+  "country" : "意大利",
+  "iata3" : "JDH",
+  "icao4" : "LIEE",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卡塔尼亚机场",
+  "city" : "卡塔尼亚",
+  "country" : "意大利",
+  "iata3" : "MAA",
+  "icao4" : "LICC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "开封机场",
+  "city" : "开封",
+  "country" : "中国",
+  "iata3" : "TAO",
+  "icao4" : "ZHKF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "科纳国际机场",
+  "city" : "凯阿霍莱",
+  "country" : "美国",
+  "iata3" : "LAX",
+  "icao4" : "PHKO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "凯恩斯国际机场",
+  "city" : "凯恩斯",
+  "country" : "澳大利亚",
+  "iata3" : "CNS",
+  "icao4" : "YBCS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "凯奇坎国际机场",
+  "city" : "凯奇坎",
+  "country" : "美国",
+  "iata3" : "OPF",
+  "icao4" : "PAKT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "堪培拉机场",
+  "city" : "堪培拉",
+  "country" : "澳大利亚",
+  "iata3" : "CBR",
+  "icao4" : "YSCB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "堪萨斯城机场",
+  "city" : "堪萨斯城",
+  "country" : "美国",
+  "iata3" : "MIA",
+  "icao4" : "KMCI",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "普吕居方机场",
+  "city" : "坎佩尔",
+  "country" : "法国",
+  "iata3" : "LRT",
+  "icao4" : "LFRQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "考文垂机场",
+  "city" : "考文垂",
+  "country" : "英国",
+  "iata3" : "AHJ",
+  "icao4" : "EGBE",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "科巴机场",
+  "city" : "科巴",
+  "country" : "澳大利亚",
+  "iata3" : "CAZ",
+  "icao4" : "YCBA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "科尔德湾机场",
+  "city" : "科尔德湾",
+  "country" : "美国",
+  "iata3" : "MSN",
+  "icao4" : "PACD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "科灵伍德机场",
+  "city" : "科灵伍德",
+  "country" : "加拿大",
+  "iata3" : "PNH",
+  "icao4" : "CNY3",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "科隆-波恩机场",
+  "city" : "科隆-波恩",
+  "country" : "德国",
+  "iata3" : "BCH",
+  "icao4" : "EDDK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "科珀斯克里斯蒂机场",
+  "city" : "科珀斯克里斯蒂",
+  "country" : "美国",
+  "iata3" : "MHT",
+  "icao4" : "KCRP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "科钦机场",
+  "city" : "科钦",
+  "country" : "印度",
+  "iata3" : "ABZ",
+  "icao4" : "VOCI",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "科斯港机场",
+  "city" : "科斯港",
+  "country" : "澳大利亚",
+  "iata3" : "CFS",
+  "icao4" : "YCFS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "克兰菲尔德机场",
+  "city" : "克兰菲尔德",
+  "country" : "英国",
+  "iata3" : "YIE",
+  "icao4" : "EGTC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "库玛机场",
+  "city" : "库玛",
+  "country" : "澳大利亚",
+  "iata3" : "OOM",
+  "icao4" : "YCOM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "魁北克/勒萨热国际机场",
+  "city" : "魁北克",
+  "country" : "加拿大",
+  "iata3" : "KOS",
+  "icao4" : "CYQB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "长水机场",
+  "city" : "昆明",
+  "country" : "中国",
+  "iata3" : "RIZ",
+  "icao4" : "ZPPP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "拉雷多机场",
+  "city" : "拉雷多",
+  "country" : "美国",
+  "iata3" : "MFR",
+  "icao4" : "KLRD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "拉奈机场",
+  "city" : "拉奈",
+  "country" : "美国",
+  "iata3" : "MRY",
+  "icao4" : "PHNY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "贡嘎机场",
+  "city" : "拉萨",
+  "country" : "中国",
+  "iata3" : "SQJ",
+  "icao4" : "ZULS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "亨德森机场",
+  "city" : "拉斯维加斯",
+  "country" : "美国",
+  "iata3" : "MEM",
+  "icao4" : "KHND",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "麦卡伦机场",
+  "city" : "拉斯维加斯",
+  "country" : "美国",
+  "iata3" : "MKE",
+  "icao4" : "KLAS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "莱比锡哈雷机场",
+  "city" : "莱比锡",
+  "country" : "德国",
+  "iata3" : "DIL",
+  "icao4" : "EDDP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "香槟机场",
+  "city" : "兰斯",
+  "country" : "法国",
+  "iata3" : "ETZ",
+  "icao4" : "LFSR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "兰辛首都地区国际机场",
+  "city" : "兰辛",
+  "country" : "美国",
+  "iata3" : "MSP",
+  "icao4" : "KLAN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "中川机场",
+  "city" : "兰州",
+  "country" : "中国",
+  "iata3" : "SYX",
+  "icao4" : "ZLLL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "朗塞斯顿机场",
+  "city" : "朗塞斯顿",
+  "country" : "澳大利亚",
+  "iata3" : "LST",
+  "icao4" : "YMLT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "好莱坞国际机场",
+  "city" : "劳德代尔堡",
+  "country" : "美国",
+  "iata3" : "MWH",
+  "icao4" : "KFLL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "勒卡斯泰莱机场",
+  "city" : "勒卡斯泰莱",
+  "country" : "法国",
+  "iata3" : "MPL",
+  "icao4" : "LFMQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "乔杜里查兰·辛格机场",
+  "city" : "勒克瑙",
+  "country" : "印度",
+  "iata3" : "EDI",
+  "icao4" : "VILK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣雅克机场",
+  "city" : "雷恩",
+  "country" : "法国",
+  "iata3" : "NTE",
+  "icao4" : "LFRN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "里昂机场",
+  "city" : "里昂",
+  "country" : "法国",
+  "iata3" : "FNI",
+  "icao4" : "LFLY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "里昂萨托拉斯机场",
+  "city" : "里昂",
+  "country" : "法国",
+  "iata3" : "NCE",
+  "icao4" : "LFLL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "莱斯坎机场",
+  "city" : "里尔",
+  "country" : "法国",
+  "iata3" : "NOU",
+  "icao4" : "LFQQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "里米尼机场",
+  "city" : "里米尼",
+  "country" : "意大利",
+  "iata3" : "COK",
+  "icao4" : "LIPR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "里诺机场",
+  "city" : "里诺",
+  "country" : "美国",
+  "iata3" : "CNY",
+  "icao4" : "KRNO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "里士满机场",
+  "city" : "里士满",
+  "country" : "澳大利亚",
+  "iata3" : null,
+  "icao4" : "YSRI",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "里士满国际机场",
+  "city" : "里士满",
+  "country" : "美国",
+  "iata3" : "BFM",
+  "icao4" : "KRIC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "三义机场",
+  "city" : "丽江",
+  "country" : "中国",
+  "iata3" : "PVG",
+  "icao4" : "ZPLJ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "丽水机场",
+  "city" : "丽水",
+  "country" : "韩国",
+  "iata3" : "OSS",
+  "icao4" : "RKJY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "利胡埃机场",
+  "city" : "利胡埃",
+  "country" : "美国",
+  "iata3" : "MMU",
+  "icao4" : "PHLI",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "贝勒加德机场",
+  "city" : "利摩日",
+  "country" : "法国",
+  "iata3" : "PGF",
+  "icao4" : "LFBL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "利物浦机场",
+  "city" : "利物浦",
+  "country" : "英国",
+  "iata3" : "AKU",
+  "icao4" : "EGGP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "布拉德福德机场",
+  "city" : "利兹",
+  "country" : "英国",
+  "iata3" : "RHT",
+  "icao4" : "EGNM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "白塔埠机场",
+  "city" : "连云港",
+  "country" : "中国",
+  "iata3" : "SHE",
+  "icao4" : "ZSLG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "蓝草机场",
+  "city" : "列克星敦",
+  "country" : "美国",
+  "iata3" : "APC",
+  "icao4" : "KLEX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "米林机场",
+  "city" : "林芝",
+  "country" : "中国",
+  "iata3" : "WDS",
+  "icao4" : "ZUNZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "鹿儿岛机场",
+  "city" : "鹿儿岛",
+  "country" : "日本",
+  "iata3" : "BRN",
+  "icao4" : "RJFK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "鹿特丹机场",
+  "city" : "鹿特丹",
+  "country" : "荷兰",
+  "iata3" : "YYC",
+  "icao4" : "EHRD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "路易维尔国际机场",
+  "city" : "路易斯维尔",
+  "country" : "美国",
+  "iata3" : "BNA",
+  "icao4" : "KSDF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "盖特威克机场",
+  "city" : "伦敦",
+  "country" : "英国",
+  "iata3" : "AXF",
+  "icao4" : "EGKK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "剑桥机场",
+  "city" : "伦敦",
+  "country" : "英国",
+  "iata3" : "AAT",
+  "icao4" : "EGSC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "希斯罗机场",
+  "city" : "伦敦",
+  "country" : "英国",
+  "iata3" : "AQG",
+  "icao4" : "EGLL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "比金山机场",
+  "city" : "伦敦",
+  "country" : "英国",
+  "iata3" : "AVA",
+  "icao4" : "EGKB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "诺素尔特机场",
+  "city" : "伦敦",
+  "country" : "英国",
+  "iata3" : "BAV",
+  "icao4" : "EGWU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "斯坦斯特德机场",
+  "city" : "伦敦 ",
+  "country" : "英国",
+  "iata3" : "NGQ",
+  "icao4" : "EGSS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卢顿机场",
+  "city" : "伦敦卢顿",
+  "country" : "英国",
+  "iata3" : "AOG",
+  "icao4" : "EGGW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "罗克汉普顿机场",
+  "city" : "罗克汉普顿",
+  "country" : "澳大利亚",
+  "iata3" : "ROK",
+  "icao4" : "YBRK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "菲乌米奇诺机场",
+  "city" : "罗马",
+  "country" : "意大利",
+  "iata3" : "LKO",
+  "icao4" : "LIRF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "钱皮诺机场",
+  "city" : "罗马",
+  "country" : "意大利",
+  "iata3" : "BOM",
+  "icao4" : "LIRA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "罗切斯特机场",
+  "city" : "罗切斯特",
+  "country" : "美国",
+  "iata3" : "LNK",
+  "icao4" : "KRST",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣-阿尼昂机场",
+  "city" : "罗什福尔",
+  "country" : "法国",
+  "iata3" : "PIS",
+  "icao4" : "LFDN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "罗托鲁瓦机场",
+  "city" : "罗托鲁瓦",
+  "country" : "新西兰",
+  "iata3" : "CAG",
+  "icao4" : "NZRO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "朗比韦机场",
+  "city" : "洛里昂",
+  "country" : "法国",
+  "iata3" : "CER",
+  "icao4" : "LFRH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "凡奈斯机场",
+  "city" : "洛杉矶",
+  "country" : "美国",
+  "iata3" : "IAG",
+  "icao4" : "KVNY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "洛杉矶国际机场",
+  "city" : "洛杉矶",
+  "country" : "美国",
+  "iata3" : "JFK",
+  "icao4" : "KLAX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "马德里机场",
+  "city" : "马德里",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "MBJ",
+  "icao4" : "LEMD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "马恩岛机场",
+  "city" : "马恩岛",
+  "country" : "英国",
+  "iata3" : "RLK",
+  "icao4" : "EGNS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "马拉加机场",
+  "city" : "马拉加",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "EVN",
+  "icao4" : "LEMG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "马累机场",
+  "city" : "马累",
+  "country" : "马尔代夫",
+  "iata3" : "SDK",
+  "icao4" : "VRMM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥帕洛卡机场",
+  "city" : "迈阿密",
+  "country" : "美国",
+  "iata3" : "LGA",
+  "icao4" : "KOPF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "迈阿密机场",
+  "city" : "迈阿密",
+  "country" : "美国",
+  "iata3" : "EWR",
+  "icao4" : "KMIA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "麦迪逊机场",
+  "city" : "麦迪逊",
+  "country" : "美国",
+  "iata3" : "OME",
+  "icao4" : "KMSN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "麦凯机场",
+  "city" : "麦凯",
+  "country" : "澳大利亚",
+  "iata3" : "MKY",
+  "icao4" : "YBMK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "麦夸港机场",
+  "city" : "麦夸港",
+  "country" : "澳大利亚",
+  "iata3" : "PQQ",
+  "icao4" : "YPMQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "西郊机场",
+  "city" : "满洲里",
+  "country" : "中国",
+  "iata3" : "THQ",
+  "icao4" : "ZGMX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "曼彻斯特机场",
+  "city" : "曼彻斯特",
+  "country" : "美国",
+  "iata3" : "PGA",
+  "icao4" : "KMHT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "曼彻斯特机场",
+  "city" : "曼彻斯特",
+  "country" : "英国",
+  "iata3" : "DBC",
+  "icao4" : "EGCC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "罗格谷机场",
+  "city" : "梅德福",
+  "country" : "美国",
+  "iata3" : "PTK",
+  "icao4" : "KMFR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "梅明根机场",
+  "city" : "梅明根",
+  "country" : "德国",
+  "iata3" : "LFW",
+  "icao4" : "EDJA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "梅明根机场",
+  "city" : "梅明根",
+  "country" : "德国",
+  "iata3" : "LRL",
+  "icao4" : "ODJA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "蒙蒂基亚里机场",
+  "city" : "蒙蒂基亚里",
+  "country" : "意大利",
+  "iata3" : "NAG",
+  "icao4" : "LIPO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "蒙特里机场",
+  "city" : "蒙特里",
+  "country" : "美国",
+  "iata3" : "PIT",
+  "icao4" : "KMRY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "特鲁多机场",
+  "city" : "蒙特利尔",
+  "country" : "加拿大",
+  "iata3" : "REP",
+  "icao4" : "CYUL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "孟菲斯国际机场",
+  "city" : "孟菲斯",
+  "country" : "美国",
+  "iata3" : "PBG",
+  "icao4" : "KMEM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "孟买机场",
+  "city" : "孟买",
+  "country" : "印度",
+  "iata3" : "BFS",
+  "icao4" : "VABB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "利纳泰机场",
+  "city" : "米兰",
+  "country" : "意大利",
+  "iata3" : "DED",
+  "icao4" : "LIML",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "马尔彭萨机场",
+  "city" : "米兰",
+  "country" : "意大利",
+  "iata3" : "TRV",
+  "icao4" : "LIMC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "美保机场",
+  "city" : "米子",
+  "country" : "日本",
+  "iata3" : "GVA",
+  "icao4" : "RJOH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "密切尔将军国际机场",
+  "city" : "密尔沃基",
+  "country" : "美国",
+  "iata3" : "SAV",
+  "icao4" : "KMKE",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "名古屋机场",
+  "city" : "名古屋",
+  "country" : "日本",
+  "iata3" : "ACH",
+  "icao4" : "RJNA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "中部国际机场",
+  "city" : "名古屋",
+  "country" : "日本",
+  "iata3" : "ZRH",
+  "icao4" : "RJGG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣保罗国际机场",
+  "city" : "明尼阿波利斯",
+  "country" : "美国",
+  "iata3" : "SNA",
+  "icao4" : "KMSP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "摩西莱克机场",
+  "city" : "摩西莱克",
+  "country" : "美国",
+  "iata3" : "NUQ",
+  "icao4" : "KMWH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "峡谷场机场",
+  "city" : "莫阿布",
+  "country" : "美国",
+  "iata3" : "SAT",
+  "icao4" : "KCNY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "莫比尔机场",
+  "city" : "莫比尔",
+  "country" : "美国",
+  "iata3" : "PIE",
+  "icao4" : "KBFM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "莫利斯顿机场",
+  "city" : "莫利斯顿",
+  "country" : "美国",
+  "iata3" : "SAN",
+  "icao4" : "KMMU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "墨尔本国际机场",
+  "city" : "墨尔本",
+  "country" : "澳大利亚",
+  "iata3" : "MEL",
+  "icao4" : "YMML",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "墨尔本机场",
+  "city" : "墨尔本",
+  "country" : "澳大利亚",
+  "iata3" : "MEB",
+  "icao4" : "YMEN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "慕尼黑机场",
+  "city" : "慕尼黑",
+  "country" : "德国",
+  "iata3" : "DOM",
+  "icao4" : "EDDM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "那霸机场",
+  "city" : "那霸",
+  "country" : "日本",
+  "iata3" : "SIR",
+  "icao4" : "ROAH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卡波迪基诺机场",
+  "city" : "那不勒斯",
+  "country" : "意大利",
+  "iata3" : "BDQ",
+  "icao4" : "LIRN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "那格浦尔机场",
+  "city" : "那格浦尔",
+  "country" : "印度",
+  "iata3" : "BHX",
+  "icao4" : "VANP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "纳兰德拉机场",
+  "city" : "纳兰德拉",
+  "country" : "澳大利亚",
+  "iata3" : "NRA",
+  "icao4" : "YNAR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "纳奈莫机场",
+  "city" : "纳奈莫",
+  "country" : "加拿大",
+  "iata3" : "BRQ",
+  "icao4" : "CYCD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "纳帕机场",
+  "city" : "纳帕",
+  "country" : "美国",
+  "iata3" : "SDM",
+  "icao4" : "KAPC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "纳皮尔机场",
+  "city" : "纳皮尔",
+  "country" : "新西兰",
+  "iata3" : "CTA",
+  "icao4" : "NZNR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "纳什维尔国际机场",
+  "city" : "纳什维尔",
+  "country" : "美国",
+  "iata3" : "SJC",
+  "icao4" : "KBNA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "南安普敦机场",
+  "city" : "南安普敦",
+  "country" : "英国",
+  "iata3" : "AEB",
+  "icao4" : "EGHI",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "南纪白滨机场",
+  "city" : "南纪白滨",
+  "country" : "日本",
+  "iata3" : "SAL",
+  "icao4" : "RJBD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "禄口机场",
+  "city" : "南京",
+  "country" : "中国",
+  "iata3" : "WNZ",
+  "icao4" : "ZGNN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "吴圩机场",
+  "city" : "南宁",
+  "country" : "中国",
+  "iata3" : "WNH",
+  "icao4" : "ZSNT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "雷纳索菲亚机场",
+  "city" : "南特内里费",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "EBL",
+  "icao4" : "GCTS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "兴东机场",
+  "city" : "南通",
+  "country" : "中国",
+  "iata3" : "WUA",
+  "icao4" : "ZHNY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "姜营机场",
+  "city" : "南阳",
+  "country" : "中国",
+  "iata3" : "UCB",
+  "icao4" : "ZSNB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "林肯机场",
+  "city" : "内布拉斯加州",
+  "country" : "美国",
+  "iata3" : "GEG",
+  "icao4" : "KLNK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "加隆机场",
+  "city" : "尼姆",
+  "country" : "法国",
+  "iata3" : "SNR",
+  "icao4" : "LFTW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "鸟取机场",
+  "city" : "鸟取",
+  "country" : "日本",
+  "iata3" : "APW",
+  "icao4" : "RJOR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "栎社机场",
+  "city" : "宁波",
+  "country" : "中国",
+  "iata3" : "HLH",
+  "icao4" : "ZPNL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "基德灵顿机场",
+  "city" : "牛津",
+  "country" : "英国",
+  "iata3" : "BFU",
+  "icao4" : "EGTK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "纽伦堡机场",
+  "city" : "纽伦堡",
+  "country" : "德国",
+  "iata3" : "PUJ",
+  "icao4" : "EDDN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "肯尼迪机场",
+  "city" : "纽约",
+  "country" : "美国",
+  "iata3" : "TLH",
+  "icao4" : "KJFK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "拉瓜迪亚机场",
+  "city" : "纽约",
+  "country" : "美国",
+  "iata3" : "TEB",
+  "icao4" : "KLGA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "纽瓦克机场",
+  "city" : "纽约",
+  "country" : "美国",
+  "iata3" : "TPA",
+  "icao4" : "KEWR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "拉唐图塔机场",
+  "city" : "努美阿",
+  "country" : "法国",
+  "iata3" : "LDE",
+  "icao4" : "NWWW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "诺姆机场",
+  "city" : "诺姆",
+  "country" : "美国",
+  "iata3" : "TIQ",
+  "icao4" : "PAOM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "女满别机场",
+  "city" : "女满别",
+  "country" : "日本",
+  "iata3" : "PPG",
+  "icao4" : "RJCM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "德马利奥尔卡机场",
+  "city" : "帕尔马",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "BGW",
+  "icao4" : "LEPA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "帕尔马机场",
+  "city" : "帕尔马",
+  "country" : "意大利",
+  "iata3" : "VNS",
+  "icao4" : "LIMP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "帕吉机场",
+  "city" : "帕吉",
+  "country" : "美国",
+  "iata3" : "AXX",
+  "icao4" : "KPGA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥克兰机场",
+  "city" : "庞蒂亚克",
+  "country" : "美国",
+  "iata3" : "UTM",
+  "icao4" : "KPTK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣埃吉迪奥机场",
+  "city" : "佩鲁贾",
+  "country" : "意大利",
+  "iata3" : "VTZ",
+  "icao4" : "LIRZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "里沃萨尔特机场",
+  "city" : "佩皮尼昂",
+  "country" : "法国",
+  "iata3" : "PPT",
+  "icao4" : "LFMP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "皮尔随机场",
+  "city" : "皮尔随",
+  "country" : "澳大利亚",
+  "iata3" : "PER",
+  "icao4" : "YPEA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "匹兹堡机场",
+  "city" : "匹兹堡",
+  "country" : "美国",
+  "iata3" : "TUS",
+  "icao4" : "KPIT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "珀斯国际机场",
+  "city" : "珀斯",
+  "country" : "澳大利亚",
+  "iata3" : "PPP",
+  "icao4" : "YPPH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "浦项机场",
+  "city" : "浦项",
+  "country" : "韩国",
+  "iata3" : "FRU",
+  "icao4" : "RKTH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "普拉茨堡机场",
+  "city" : "普拉茨堡",
+  "country" : "美国",
+  "iata3" : "TOL",
+  "icao4" : "KPBG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣灵海岸机场",
+  "city" : "普罗瑟派恩",
+  "country" : "澳大利亚",
+  "iata3" : "XCH",
+  "icao4" : "YBPN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "比亚德机场",
+  "city" : "普瓦提",
+  "country" : "法国",
+  "iata3" : "TUF",
+  "icao4" : "LFBI",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "北戴河机场",
+  "city" : "秦皇岛",
+  "country" : "中国",
+  "iata3" : "XIC",
+  "icao4" : "ZSQD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "流亭机场",
+  "city" : "青岛",
+  "country" : "中国",
+  "iata3" : "XNN",
+  "icao4" : "ZLQY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "青森机场",
+  "city" : "青森",
+  "country" : "日本",
+  "iata3" : "INI",
+  "icao4" : "RJSA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "清州机场",
+  "city" : "清州",
+  "country" : "韩国",
+  "iata3" : "CKY",
+  "icao4" : "RKTU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "丘吉尔机场",
+  "city" : "丘吉尔",
+  "country" : "加拿大",
+  "iata3" : "PRG",
+  "icao4" : "CYYQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "热内亚机场",
+  "city" : "热内亚",
+  "country" : "意大利",
+  "iata3" : "UDR",
+  "icao4" : "LIMJ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "山字河机场",
+  "city" : "日照",
+  "country" : "中国",
+  "iata3" : "ACX",
+  "icao4" : "ZSSM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "萨凡纳机场",
+  "city" : "萨凡纳",
+  "country" : "美国",
+  "iata3" : "ICT",
+  "icao4" : "KSAV",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "塞维利亚机场",
+  "city" : "塞维利亚",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "BSR",
+  "icao4" : "LEZL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "凤凰机场",
+  "city" : "三亚",
+  "country" : "中国",
+  "iata3" : "YNT",
+  "icao4" : "ZSAM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "桑塔阿那风机场",
+  "city" : "桑塔阿那风",
+  "country" : "美国",
+  "iata3" : "VCV",
+  "icao4" : "KSNA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "莫佩蒂机场",
+  "city" : "瑟堡",
+  "country" : "法国",
+  "iata3" : "TLS",
+  "icao4" : "LFRC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "瓦特里机场",
+  "city" : "沙隆",
+  "country" : "法国",
+  "iata3" : "VHY",
+  "icao4" : "LFOK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "高崎机场",
+  "city" : "厦门",
+  "country" : "中国",
+  "iata3" : "ENY",
+  "icao4" : "ZSSL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "墨菲特联邦机场",
+  "city" : "山景城",
+  "country" : "美国",
+  "iata3" : "VIS",
+  "icao4" : "KNUQ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "山口宇部机场",
+  "city" : "山口宇部",
+  "country" : "日本",
+  "iata3" : "BEG",
+  "icao4" : "RJDC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "山形机场",
+  "city" : "山形",
+  "country" : "日本",
+  "iata3" : "FNA",
+  "icao4" : "RJSC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "龙华机场",
+  "city" : "上海",
+  "country" : "中国",
+  "iata3" : "YNJ",
+  "icao4" : "ZSSS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "虹桥机场",
+  "city" : "上海",
+  "country" : "中国",
+  "iata3" : "YNZ",
+  "icao4" : "ZSPD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "浦东机场",
+  "city" : "上海",
+  "country" : "中国",
+  "iata3" : "YTY",
+  "icao4" : "ZGSZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "艾克斯莱班机场",
+  "city" : "尚贝里",
+  "country" : "法国",
+  "iata3" : "BOB",
+  "icao4" : "LFLB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "宝安机场",
+  "city" : "深圳",
+  "country" : "中国",
+  "iata3" : "LDS",
+  "icao4" : "ZHSN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "神户机场",
+  "city" : "神户",
+  "country" : "日本",
+  "iata3" : "DKR",
+  "icao4" : "RJBE",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "红坪机场",
+  "city" : "神农架",
+  "country" : "中国",
+  "iata3" : "YIN",
+  "icao4" : "ZYTX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "桃仙机场",
+  "city" : "沈阳",
+  "country" : "中国",
+  "iata3" : "YBP",
+  "icao4" : "ZHSY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "布泰翁机场",
+  "city" : "圣艾蒂安",
+  "country" : "法国",
+  "iata3" : "DVO",
+  "icao4" : "LFMH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣安东尼奥国际机场",
+  "city" : "圣安东尼奥",
+  "country" : "美国",
+  "iata3" : "MVY",
+  "icao4" : "KSAT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "克利尔沃特国际机场",
+  "city" : "圣彼得斯堡",
+  "country" : "美国",
+  "iata3" : "AFW",
+  "icao4" : "KPIE",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣诞岛机场",
+  "city" : "圣诞岛",
+  "country" : "澳大利亚",
+  "iata3" : "TSV",
+  "icao4" : "YPXM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣地亚哥机场",
+  "city" : "圣地亚哥",
+  "country" : "美国",
+  "iata3" : "WYS",
+  "icao4" : "KSAN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣地亚哥机场",
+  "city" : "圣地亚哥",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "ISU",
+  "icao4" : "LEST",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "布朗机场",
+  "city" : "圣迭戈",
+  "country" : "美国",
+  "iata3" : "BFI",
+  "icao4" : "KSDM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣何塞机场",
+  "city" : "圣何塞",
+  "country" : "美国",
+  "iata3" : "SEA",
+  "icao4" : "KSJC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "蒙图瓦尔机场",
+  "city" : "圣纳泽尔",
+  "country" : "法国",
+  "iata3" : "DGT",
+  "icao4" : "LFRZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣塞瓦斯蒂安机场",
+  "city" : "圣塞瓦斯蒂安",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "BXR",
+  "icao4" : "LESO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣约翰斯机场",
+  "city" : "圣约翰斯",
+  "country" : "加拿大",
+  "iata3" : "OSR",
+  "icao4" : "CYYT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "正定机场",
+  "city" : "石家庄",
+  "country" : "中国",
+  "iata3" : "INC",
+  "icao4" : "ZYSF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "石狩湾机场",
+  "city" : "石垣岛",
+  "country" : "日本",
+  "iata3" : "AKT",
+  "icao4" : "ROIG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "金浦机场",
+  "city" : "首尔 金浦",
+  "country" : "韩国",
+  "iata3" : "SSG",
+  "icao4" : "RKSS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "仁川机场",
+  "city" : "首尔 仁川",
+  "country" : "韩国",
+  "iata3" : "YEG",
+  "icao4" : "RKSI",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "斯波坎国际机场",
+  "city" : "斯波坎",
+  "country" : "美国",
+  "iata3" : "PBI",
+  "icao4" : "KGEG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "阿兰达机场",
+  "city" : "斯德哥尔摩",
+  "country" : "瑞典",
+  "iata3" : "CMB",
+  "icao4" : "ESSA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "昂泽姆机场",
+  "city" : "斯特拉斯堡",
+  "country" : "法国",
+  "iata3" : "KLO",
+  "icao4" : "LFST",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "斯图加特机场",
+  "city" : "斯图加特",
+  "country" : "德国",
+  "iata3" : "POP",
+  "icao4" : "EDDS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "泗川机场",
+  "city" : "泗川",
+  "country" : "韩国",
+  "iata3" : "XCM",
+  "icao4" : "RKPS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "松本机场",
+  "city" : "松本",
+  "country" : "日本",
+  "iata3" : "LCA",
+  "icao4" : "RJAF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "松山机场",
+  "city" : "松山",
+  "country" : "日本",
+  "iata3" : "PFO",
+  "icao4" : "RJOM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "光福机场",
+  "city" : "苏州",
+  "country" : "中国",
+  "iata3" : "YKH",
+  "icao4" : "ZUSN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卢尔德机场",
+  "city" : "塔布",
+  "country" : "法国",
+  "iata3" : "CEB",
+  "icao4" : "LFBT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "塔尔萨机场",
+  "city" : "塔尔萨",
+  "country" : "美国",
+  "iata3" : "ITO",
+  "icao4" : "KTUL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "塔拉哈西机场",
+  "city" : "塔拉哈西",
+  "country" : "美国",
+  "iata3" : "SYR",
+  "icao4" : "KTLH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "法阿机场",
+  "city" : "塔希提岛",
+  "country" : "法国",
+  "iata3" : "LAO",
+  "icao4" : "NTAA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "台拉登机场",
+  "city" : "台拉登",
+  "country" : "印度",
+  "iata3" : "EMA",
+  "icao4" : "VIDN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "新泰机场",
+  "city" : "泰安",
+  "country" : "中国",
+  "iata3" : "ZHA",
+  "icao4" : "ZPTC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "泰德搏罗机场",
+  "city" : "泰德搏罗",
+  "country" : "美国",
+  "iata3" : "CLT",
+  "icao4" : "KTEB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "坦帕国际机场",
+  "city" : "坦帕",
+  "country" : "美国",
+  "iata3" : "LIT",
+  "icao4" : "KTPA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "汤斯维尔机场",
+  "city" : "汤斯维尔",
+  "country" : "澳大利亚",
+  "iata3" : "NTL",
+  "icao4" : "YBTL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "三女河机场",
+  "city" : "唐山",
+  "country" : "中国",
+  "iata3" : "DYG",
+  "icao4" : "ZBTJ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "陶波机场",
+  "city" : "陶波",
+  "country" : "新西兰",
+  "iata3" : "RMI",
+  "icao4" : "NZAP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣安杰洛机场",
+  "city" : "特雷维索",
+  "country" : "意大利",
+  "iata3" : "JAI",
+  "icao4" : "LIPH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "特里凡得琅机场",
+  "city" : "特里凡得琅",
+  "country" : "印度",
+  "iata3" : "FAB",
+  "icao4" : "VOTV",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "特伦顿机场",
+  "city" : "特伦顿",
+  "country" : "加拿大",
+  "iata3" : "KLV",
+  "icao4" : "CYTR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "驼峰机场",
+  "city" : "腾冲",
+  "country" : "中国",
+  "iata3" : "ZQZ",
+  "icao4" : "ZLTS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "提尼安国际机场",
+  "city" : "提尼安",
+  "country" : "美国",
+  "iata3" : "MSY",
+  "icao4" : "PGWT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "滨海机场",
+  "city" : "天津",
+  "country" : "中国",
+  "iata3" : "YZY",
+  "icao4" : "ZYTN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "天使火机场",
+  "city" : "天使火",
+  "country" : "美国",
+  "iata3" : "HVN",
+  "icao4" : "KAXX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "图埃勒谷机场",
+  "city" : "图埃勒",
+  "country" : "美国",
+  "iata3" : "SWF",
+  "icao4" : "KTVY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "圣桑福里安机场",
+  "city" : "图尔",
+  "country" : "法国",
+  "iata3" : "LGP",
+  "icao4" : "LFOT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "布拉尼亚克机场",
+  "city" : "图卢兹",
+  "country" : "法国",
+  "iata3" : "CGY",
+  "icao4" : "LFBO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "图尼卡机场",
+  "city" : "图尼卡",
+  "country" : "美国",
+  "iata3" : "HOU",
+  "icao4" : "KUTA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "图森机场",
+  "city" : "图森",
+  "country" : "美国",
+  "iata3" : "IAH",
+  "icao4" : "KTUS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "交河机场",
+  "city" : "吐鲁番",
+  "country" : "中国",
+  "iata3" : "CIH",
+  "icao4" : "ZSWH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "托莱多/捷运公司机场",
+  "city" : "托莱多",
+  "country" : "美国",
+  "iata3" : "ATL",
+  "icao4" : "KTOL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卡塞莱机场",
+  "city" : "托里诺-都灵",
+  "country" : "意大利",
+  "iata3" : "SOC",
+  "icao4" : "LIMF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "瓦多达拉机场",
+  "city" : "瓦多达拉",
+  "country" : "印度",
+  "iata3" : "GCI",
+  "icao4" : "VABO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "瓦拉纳西机场",
+  "city" : "瓦拉纳西",
+  "country" : "印度",
+  "iata3" : "CVT",
+  "icao4" : "VEBN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "五桥机场",
+  "city" : "万州",
+  "country" : "中国",
+  "iata3" : "ZAT",
+  "icao4" : "ZSWF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "大水泊机场",
+  "city" : "威海",
+  "country" : "中国",
+  "iata3" : "CGO",
+  "icao4" : "ZSWZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "威廉城机场",
+  "city" : "威廉城",
+  "country" : "澳大利亚",
+  "iata3" : "WGA",
+  "icao4" : "YWLM",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "特塞拉机场",
+  "city" : "威尼斯",
+  "country" : "意大利",
+  "iata3" : "AMQ",
+  "icao4" : "LIPZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "威奇托中大陆机场",
+  "city" : "威奇托",
+  "country" : "美国",
+  "iata3" : "SLC",
+  "icao4" : "KICT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "维多利亚机场",
+  "city" : "维多利亚",
+  "country" : "加拿大",
+  "iata3" : "UHE",
+  "icao4" : "CYYJ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "维克多维尔机场",
+  "city" : "维克多维尔",
+  "country" : "美国",
+  "iata3" : "ITH",
+  "icao4" : "KVCV",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "维罗那机场",
+  "city" : "维罗那",
+  "country" : "意大利",
+  "iata3" : "BTH",
+  "icao4" : "LIPX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "维塞利亚机场",
+  "city" : "维塞利亚",
+  "country" : "美国",
+  "iata3" : "IND",
+  "icao4" : "KVIS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "维沙卡帕特南机场",
+  "city" : "维沙卡帕特南",
+  "country" : "印度",
+  "iata3" : "LPL",
+  "icao4" : "VEVZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "维斯比机场",
+  "city" : "维斯比",
+  "country" : "瑞典",
+  "iata3" : "RML",
+  "icao4" : "ESSV",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "沙尔梅伊机场",
+  "city" : "维希",
+  "country" : "法国",
+  "iata3" : "MPH",
+  "icao4" : "LFLV",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "蔚山机场",
+  "city" : "蔚山",
+  "country" : "韩国",
+  "iata3" : "YYZ",
+  "icao4" : "RKPU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "温哥华国际机场",
+  "city" : "温哥华",
+  "country" : "加拿大",
+  "iata3" : "PRV",
+  "icao4" : "CYVR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "理查森国际机场",
+  "city" : "温尼伯",
+  "country" : "加拿大",
+  "iata3" : "HRE",
+  "icao4" : "CYWG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "马萨葡萄园岛机场",
+  "city" : "温亚德港",
+  "country" : "美国",
+  "iata3" : "EUG",
+  "icao4" : "KMVY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "沃加沃加机场",
+  "city" : "沃加沃加",
+  "country" : "澳大利亚",
+  "iata3" : "SYD",
+  "icao4" : "YSWG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "沃思堡联盟机场",
+  "city" : "沃思堡",
+  "country" : "美国",
+  "iata3" : "LGB",
+  "icao4" : "KAFW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "卡蒂埃国际机场",
+  "city" : "渥太华",
+  "country" : "加拿大",
+  "iata3" : "VFA",
+  "icao4" : "CYOW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "乌代普尔机场",
+  "city" : "乌代普尔",
+  "country" : "印度",
+  "iata3" : "LBA",
+  "icao4" : "VAUD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "伊勒力特机场",
+  "city" : "乌兰浩特",
+  "country" : "中国",
+  "iata3" : "KHH",
+  "icao4" : "ZSWX",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "地窝堡机场",
+  "city" : "乌鲁木齐",
+  "country" : "中国",
+  "iata3" : "HUN",
+  "icao4" : "ZSWU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "乌山机场",
+  "city" : "乌山",
+  "country" : "韩国",
+  "iata3" : "YQX",
+  "icao4" : "RKSO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "硕放机场",
+  "city" : "无锡",
+  "country" : "中国",
+  "iata3" : "KNH",
+  "icao4" : "ZGWZ",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "芜湖机场",
+  "city" : "芜湖",
+  "country" : "中国",
+  "iata3" : "MZG",
+  "icao4" : "ZHHH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "梧州机场",
+  "city" : "梧州",
+  "country" : "中国",
+  "iata3" : "LZN",
+  "icao4" : "ZLWW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "天河机场",
+  "city" : "武汉",
+  "country" : "中国",
+  "iata3" : "TSA",
+  "icao4" : "ZSWY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "武威机场",
+  "city" : "武威",
+  "country" : "中国",
+  "iata3" : "TPE",
+  "icao4" : "ZLXY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "武夷山机场",
+  "city" : "武夷山",
+  "country" : "中国",
+  "iata3" : "TTT",
+  "icao4" : "ZUXC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "务安国际机场",
+  "city" : "务安郡",
+  "country" : "韩国",
+  "iata3" : "YHZ",
+  "icao4" : "RKJB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "咸阳机场",
+  "city" : "西安",
+  "country" : "中国",
+  "iata3" : "TNN",
+  "icao4" : "ZLXN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "青山机场",
+  "city" : "西昌",
+  "country" : "中国",
+  "iata3" : "RMQ",
+  "icao4" : "ZPJH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "黄石机场",
+  "city" : "西黄石",
+  "country" : "美国",
+  "iata3" : "ORD",
+  "icao4" : "KWYS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "金镇国际机场",
+  "city" : "西雅图",
+  "country" : "美国",
+  "iata3" : "MDW",
+  "icao4" : "KBFI",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "塔科马国际机场",
+  "city" : "西雅图",
+  "country" : "美国",
+  "iata3" : "JNU",
+  "icao4" : "KSEA",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "西棕榈滩国际机场",
+  "city" : "西棕榈滩",
+  "country" : "美国",
+  "iata3" : "UDD",
+  "icao4" : "KPBI",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "希洛机场",
+  "city" : "希洛",
+  "country" : "美国",
+  "iata3" : "BYN",
+  "icao4" : "PHTO",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "悉尼机场",
+  "city" : "悉尼",
+  "country" : "澳大利亚",
+  "iata3" : "MCY",
+  "icao4" : "YSSY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "锡拉丘兹国际机场",
+  "city" : "锡拉丘兹",
+  "country" : "美国",
+  "iata3" : "ULN",
+  "icao4" : "KSYR",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "道格拉斯机场",
+  "city" : "夏洛特",
+  "country" : "美国",
+  "iata3" : "DAC",
+  "icao4" : "KCLT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "夏洛特敦机场",
+  "city" : "夏洛特敦",
+  "country" : "加拿大",
+  "iata3" : "GOU",
+  "icao4" : "CYYG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "仙台机场",
+  "city" : "仙台",
+  "country" : "日本",
+  "iata3" : "SEZ",
+  "icao4" : "RJSS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "亚当斯机场",
+  "city" : "小石城",
+  "country" : "美国",
+  "iata3" : "CGP",
+  "icao4" : "KLIT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "小松机场",
+  "city" : "小松",
+  "country" : "日本",
+  "iata3" : "AHB",
+  "icao4" : "RJNK",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "新奥尔良机场",
+  "city" : "新奥尔良",
+  "country" : "美国",
+  "iata3" : "AQP",
+  "icao4" : "KMSY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "特维德机场",
+  "city" : "新黑文",
+  "country" : "美国",
+  "iata3" : "CUZ",
+  "icao4" : "KHVN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "斯图尔特国际机场",
+  "city" : "新温莎",
+  "country" : "美国",
+  "iata3" : "LIM",
+  "icao4" : "KSWF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "新泻机场",
+  "city" : "新泻",
+  "country" : "日本",
+  "iata3" : "RAE",
+  "icao4" : "RJSN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "熊本机场",
+  "city" : "熊本",
+  "country" : "日本",
+  "iata3" : "DMM",
+  "icao4" : "RJFT",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "霍比机场",
+  "city" : "休斯敦",
+  "country" : "美国",
+  "iata3" : "CIX",
+  "icao4" : "KHOU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "乔治布什机场",
+  "city" : "休斯敦",
+  "country" : "美国",
+  "iata3" : "TCQ",
+  "icao4" : "KIAH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "旭川机场",
+  "city" : "旭川",
+  "country" : "日本",
+  "iata3" : "JED",
+  "icao4" : "RJEC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "杰克逊国际机场",
+  "city" : "亚特兰大",
+  "country" : "美国",
+  "iata3" : "IQT",
+  "icao4" : "KATL",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "岩美机场",
+  "city" : "岩美",
+  "country" : "日本",
+  "iata3" : "GIZ",
+  "icao4" : "RJOW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "盐湖城机场",
+  "city" : "盐湖城",
+  "country" : "美国",
+  "iata3" : "PNI",
+  "icao4" : "KSLC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "马鲁奇多雷机场",
+  "city" : "阳光海岸",
+  "country" : "澳大利亚",
+  "iata3" : "MFM",
+  "icao4" : "YBSU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "杨口机场",
+  "city" : "杨口",
+  "country" : "韩国",
+  "iata3" : "YHM",
+  "icao4" : "RKNY",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "勒帕里维斯特机场",
+  "city" : "耶尔",
+  "country" : "法国",
+  "iata3" : "MNL",
+  "icao4" : "LFTH",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "耶洛奈夫机场",
+  "city" : "耶洛奈夫",
+  "country" : "加拿大",
+  "iata3" : "NSI",
+  "icao4" : "CYZF",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "勒土贝机场",
+  "city" : "伊斯特尔",
+  "country" : "法国",
+  "iata3" : "PPS",
+  "icao4" : "LFMI",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "伊维萨岛机场",
+  "city" : "伊维萨岛",
+  "country" : "西班牙和加那利群岛",
+  "iata3" : "BUZ",
+  "icao4" : "LEIB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "印第安纳波利斯机场",
+  "city" : "印第安纳波利斯",
+  "country" : "美国",
+  "iata3" : "TKK",
+  "icao4" : "KIND",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "尤金机场",
+  "city" : "尤金",
+  "country" : "美国",
+  "iata3" : "YAP",
+  "icao4" : "KEUG",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "新千岁机场",
+  "city" : "札幌",
+  "country" : "日本",
+  "iata3" : "MED",
+  "icao4" : "RJCC",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "斋浦尔机场",
+  "city" : "斋浦尔",
+  "country" : "印度",
+  "iata3" : "LGW",
+  "icao4" : "VIJP",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "长崎机场",
+  "city" : "长崎",
+  "country" : "日本",
+  "iata3" : "DHA",
+  "icao4" : "RJFU",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "道希尔蒂机场",
+  "city" : "长滩",
+  "country" : "美国",
+  "iata3" : "NYU",
+  "icao4" : "KLGB",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "奥黑尔机场",
+  "city" : "芝加哥",
+  "country" : "美国",
+  "iata3" : "THL",
+  "icao4" : "KORD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "芝加哥米德韦机场",
+  "city" : "芝加哥",
+  "country" : "美国",
+  "iata3" : "SNW",
+  "icao4" : "KMDW",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "朱诺机场",
+  "city" : "朱诺",
+  "country" : "美国",
+  "iata3" : "HEH",
+  "icao4" : "PAJN",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "百慕大沙丘机场",
+  "city" : "棕榈泉",
+  "country" : "美国",
+  "iata3" : "KYP",
+  "icao4" : "KUDD",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+}, {
+  
+  "name" : "佐贺机场",
+  "city" : "佐贺",
+  "country" : "日本",
+  "iata3" : "SKB",
+  "icao4" : "RJFS",
+  "latitude" : 0.0,
+  "longitude" : 0.0,
+  "timezone" : null
+} ]

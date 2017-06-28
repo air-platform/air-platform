@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
@@ -34,11 +35,12 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
 public class ProductFamily extends Reviewable {
 	private static final long serialVersionUID = 1L;
 
+	@NotEmpty
 	@Size(max = 255)
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "category")
+	@Column(name = "category", length = 20)
 	@Enumerated(EnumType.STRING)
 	private Category category;
 

@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
@@ -26,8 +27,9 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 public class AirClass extends Persistable {
 	private static final long serialVersionUID = 1L;
 
+	@NotEmpty
 	@Size(max = 255)
-	@Column(name = "title", nullable = false, length = 255)
+	@Column(name = "title", nullable = false)
 	private String title;
 
 	@Lob

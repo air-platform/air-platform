@@ -5,10 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.micro.annotation.constraint.Mobile;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
@@ -23,15 +25,18 @@ public class Address extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// contact person
+	@Size(max = 255)
 	@Column(name = "contact")
 	private String contact;
 
 	// contact person mobile
+	@Mobile
 	@Column(name = "mobile")
 	private String mobile;
 
 	// detailed address
-	@Column(name = "address")
+	@Size(max = 1024)
+	@Column(name = "address", length = 1024)
 	private String address;
 
 	@Column(name = "is_default")

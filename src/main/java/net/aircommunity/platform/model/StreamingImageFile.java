@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
+import javax.annotation.concurrent.Immutable;
 import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -12,7 +13,7 @@ import io.micro.annotation.multipart.MultipartFilename;
 import io.micro.annotation.multipart.MultipartType;
 
 /**
- * Streaming input file model, must have input name <tt>file</tt>
+ * Streaming input file model, must have input name <tt>file</tt> (for Markdown editor)
  * 
  * <pre>
  * <input type="file" name="file" />
@@ -20,6 +21,7 @@ import io.micro.annotation.multipart.MultipartType;
  * 
  * @author Bin.Zhang
  */
+@Immutable
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StreamingImageFile implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -8,6 +8,7 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,17 +29,20 @@ public class PassengerItem extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// Passenger name
-	@Column(name = "name")
 	@XmlTransient
+	@Size(max = 255)
+	@Column(name = "name")
 	private String name;
 
 	// Passenger mobile
 	@XmlTransient
+	@Size(max = 255)
 	@Column(name = "mobile")
 	private String mobile;
 
 	// e.g. ID Card number
 	@XmlTransient
+	@Size(max = 255)
 	@Column(name = "identity")
 	private String identity;
 

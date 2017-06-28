@@ -2,9 +2,12 @@ package net.aircommunity.platform.model.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 /**
  * Tenant (service provider).
@@ -17,22 +20,27 @@ public class Tenant extends Account {
 	private static final long serialVersionUID = 1L;
 
 	// contact email
+	@Size(max = 255)
 	@Column(name = "email")
 	private String email;
 
 	// verification status
-	@Column(name = "verification")
+	@Column(name = "verification", nullable = false, length = 15)
+	@Enumerated(EnumType.STRING)
 	private VerificationStatus verification = VerificationStatus.UNVERIFIED;
 
 	// vender website
+	@Size(max = 255)
 	@Column(name = "website")
 	private String website;
 
 	// contact address
-	@Column(name = "address")
+	@Size(max = 1024)
+	@Column(name = "address", length = 1024)
 	private String address;
 
 	// contact hot-line
+	@Size(max = 255)
 	@Column(name = "hotline")
 	private String hotline;
 

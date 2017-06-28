@@ -6,6 +6,8 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * Unit product price model.
@@ -13,6 +15,7 @@ import javax.annotation.concurrent.Immutable;
  * @author Bin.Zhang
  */
 @Immutable
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UnitProductPrice implements Serializable {
 	private static final long serialVersionUID = 1L;
 

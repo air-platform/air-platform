@@ -41,6 +41,7 @@
 				<include>*.properties</include>
 				<include>*.jks</include>
 			</includes>
+			<fileMode>0640</fileMode>
 		</fileSet>
 		<fileSet>
 			<directory>${project.build.directory}/scripts</directory>

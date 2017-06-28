@@ -19,6 +19,7 @@ import javax.persistence.PostLoad;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -55,15 +56,17 @@ public abstract class Product extends Reviewable {
 
 	// product name
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "name", nullable = false)
 	protected String name;
 
 	// product category
-	@Column(name = "category", nullable = false)
+	@Column(name = "category", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
 	protected Category category;
 
 	// product image
+	@Size(max = 255)
 	@Column(name = "image")
 	protected String image;
 

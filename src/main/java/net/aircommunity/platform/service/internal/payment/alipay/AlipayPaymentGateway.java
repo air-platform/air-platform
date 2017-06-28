@@ -232,12 +232,6 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 		try {
 			Map<String, String> params = (Map<String, String>) notification.getData();
 			LOG.info("server notificaion: {}", params);
-			String orderNo = params.get(NOTIFICATION_RESULT_OUT_TRADE_NO); // 商户订单号
-			String tradeNo = params.get(NOTIFICATION_RESULT_TRADE_NO); // 流水号
-			String tradeStatus = params.get(NOTIFICATION_RESULT_TRADE_STATUS); // 交易状态
-			String appId = params.get(NOTIFICATION_RESULT_APP_ID); // 支付宝分配给开发者的应用Id
-			BigDecimal totalAmount = new BigDecimal(params.get(NOTIFICATION_RESULT_TOTAL_AMOUNT)); // 订单金额
-
 			// 1) verify sign
 			boolean signVerified = AlipaySignature.rsaCheckV1(params, config.getPublicKey(), ALIPAY_PAY_CHARSET,
 					ALIPAY_SIGN_TYPE);
@@ -245,6 +239,12 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 				LOG.error("Signature verification failure, payment failed");
 				return NOTIFICATION_RESPONSE_FAILURE;
 			}
+
+			String orderNo = params.get(NOTIFICATION_RESULT_OUT_TRADE_NO); // 商户订单号
+			String tradeNo = params.get(NOTIFICATION_RESULT_TRADE_NO); // 流水号
+			String tradeStatus = params.get(NOTIFICATION_RESULT_TRADE_STATUS); // 交易状态
+			String appId = params.get(NOTIFICATION_RESULT_APP_ID); // 支付宝分配给开发者的应用Id
+			BigDecimal totalAmount = new BigDecimal(params.get(NOTIFICATION_RESULT_TOTAL_AMOUNT)); // 订单金额
 
 			// 2) check APP_ID
 			if (!config.getAppId().equals(appId)) {

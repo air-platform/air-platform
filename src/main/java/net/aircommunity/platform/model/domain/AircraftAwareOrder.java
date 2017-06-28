@@ -12,11 +12,12 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -38,11 +39,12 @@ public abstract class AircraftAwareOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull
-	@ManyToOne
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "salespackage_id", nullable = false)
-	protected SalesPackage salesPackage;
+	protected OrderSalesPackage salesPackage;
 
 	// calculated on order creation
+	@NotNull
 	@Column(name = "salespackage_price", nullable = false)
 	protected BigDecimal salesPackagePrice = BigDecimal.ZERO;
 
@@ -55,6 +57,7 @@ public abstract class AircraftAwareOrder extends VendorAwareOrder {
 
 	// e.g. 8:00-9:00
 	@NotEmpty
+	@Size(max = 255) // not restricted to time for now, just make it max of column length
 	@Column(name = "time_slot", nullable = false)
 	protected String timeSlot;
 
@@ -63,11 +66,11 @@ public abstract class AircraftAwareOrder extends VendorAwareOrder {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	protected Set<PassengerItem> passengers = new HashSet<>();
 
-	public SalesPackage getSalesPackage() {
+	public OrderSalesPackage getSalesPackage() {
 		return salesPackage;
 	}
 
-	public void setSalesPackage(SalesPackage salesPackage) {
+	public void setSalesPackage(OrderSalesPackage salesPackage) {
 		this.salesPackage = salesPackage;
 	}
 

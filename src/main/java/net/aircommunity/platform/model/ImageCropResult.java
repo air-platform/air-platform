@@ -2,6 +2,7 @@ package net.aircommunity.platform.model;
 
 import java.io.Serializable;
 
+import javax.annotation.concurrent.Immutable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -10,6 +11,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * 
  * @author Bin.Zhang
  */
+@Immutable
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ImageCropResult implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -46,16 +47,19 @@ public class Course extends StandardProduct {
 
 	// aircraft type
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "aircraft_type", nullable = false)
 	private String aircraftType;
 
 	// which city
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "location", nullable = false)
 	private String location;
 
 	// air driving license
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "license", nullable = false)
 	private String license;
 

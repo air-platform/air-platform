@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -40,26 +42,36 @@ public class Refund extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// trade No. of payment system
+	@NotNull
+	@Size(max = 255)
 	@Column(name = "trade_no", nullable = false)
 	private String tradeNo;
 
 	// alipay, wechat etc.
-	@Column(name = "order_no", nullable = false)
+	@NotNull
+	@Size(max = 32)
+	@Column(name = "order_no", length = 32, nullable = false)
 	private String orderNo;
 
+	@NotNull
+	@Size(max = 255)
 	@Column(name = "refund_reason", nullable = false)
 	private String refundReason;
 
 	// refund result note
+	@NotNull
+	@Size(max = 255)
 	@Column(name = "refund_result", nullable = false)
 	private String refundResult;
 
 	// amount of payment
+	@NotNull
 	@Column(name = "amount", nullable = false)
 	private BigDecimal amount = BigDecimal.ZERO;
 
 	// payment method: alipay, wechat etc.
-	@Column(name = "method", nullable = false)
+	@NotNull
+	@Column(name = "method", length = 10, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Method method;
 

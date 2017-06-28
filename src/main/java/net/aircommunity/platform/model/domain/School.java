@@ -6,6 +6,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -25,17 +26,21 @@ public class School extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@Size(max = 255)
 	@Column(name = "image")
 	private String image;
 
 	@NotEmpty
-	@Column(name = "address")
+	@Size(max = 1024)
+	@Column(name = "address", length = 1024)
 	private String address;
 
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "contact")
 	private String contact;
 

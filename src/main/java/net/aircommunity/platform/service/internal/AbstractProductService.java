@@ -117,8 +117,9 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			newProduct.setCreationDate(new Date());
 			newProduct.setVendor(vendor);
 			try {
-				T productedSaved = getProductRepository().saveAndFlush(newProduct);
-				getProductRepository().flush();
+				T productedSaved = getProductRepository().save(newProduct);
+				// FIXME cannot catch DataIntegrityViolationException, event flush, but works for delete, WTF?
+				// getProductRepository().flush();
 				return productedSaved;
 			}
 			catch (DataIntegrityViolationException e) {

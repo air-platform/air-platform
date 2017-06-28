@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 /**
  * AirTaxi Model.
@@ -24,9 +25,11 @@ public class AirTaxi extends SalesPackageProduct {
 	@Embedded
 	private FlightRoute flightRoute;
 
+	@Size(max = 255)
 	@Column(name = "distance")
 	private String distance;
 
+	@Size(max = 255)
 	@Column(name = "duration")
 	private String duration;
 

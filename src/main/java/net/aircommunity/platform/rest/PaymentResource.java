@@ -31,10 +31,8 @@ import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.PaymentNotification;
-import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PaymentResponse;
 import net.aircommunity.platform.model.PaymentVerification;
-import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.service.CommonOrderService;
 import net.aircommunity.platform.service.PaymentService;
@@ -48,9 +46,8 @@ import net.aircommunity.platform.service.PaymentService;
 @RESTful
 @Path("payment")
 public class PaymentResource {
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentResource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PaymentService.LOGGER_NAME);
 
-	// TODO refine payment logging
 	private static final String PAYMENT_CONFIRMATION_STATUS = "status";
 
 	@Resource
@@ -60,27 +57,9 @@ public class PaymentResource {
 	private CommonOrderService commonOrderService;
 
 	/**
-	 * Create payment request for a given gateway.
-	 */
-	@POST
-	@Authenticated
-	@Path("{paymentMethod}/sign/{orderNo}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public PaymentRequest createPaymentRequest(@PathParam("paymentMethod") Payment.Method paymentMethod,
-			@PathParam("orderNo") String orderNo) {
-		Order order = commonOrderService.findByOrderNo(orderNo);
-		return paymentService.createPaymentRequest(paymentMethod, order);
-	}
-
-	/**
-	 * On payment success, payment notification from client APP.
+	 * Client notification JSON (APP). On payment success, payment notification from client APP.
 	 * 
 	 * (e.g. Alipay, https://doc.open.alipay.com/doc2/detail.htm?treeId=204&articleId=105302&docType=1)
-	 */
-
-	/**
-	 * Client notification JSON (APP)
 	 */
 	@POST
 	@Path("{paymentMethod}/client/notify")
@@ -89,10 +68,10 @@ public class PaymentResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject notifyPaymentFromClient(@PathParam("paymentMethod") Payment.Method paymentMethod,
 			@NotNull Map<String, Object> result) throws Exception {
-		LOG.debug("[{}] payment notification(JSON) from client: {}", paymentMethod, result);
+		LOG.info("Payment notification(JSON) from client: {}", result);
 		PaymentVerification verification = paymentService.verifyClientPaymentNotification(paymentMethod,
 				new PaymentNotification(result));
-		LOG.debug("[{}] payment notification result verification result: {}", paymentMethod, verification);
+		LOG.info("Payment notification verification result: {}", verification);
 		return Json.createObjectBuilder()
 				.add(PAYMENT_CONFIRMATION_STATUS, verification.name().toLowerCase(Locale.ENGLISH)).build();
 	}
@@ -106,29 +85,14 @@ public class PaymentResource {
 	public void notifyPaymentFromClient(@PathParam("paymentMethod") Payment.Method paymentMethod,
 			@Context HttpServletRequest request, @Context HttpServletResponse response) throws Exception {
 		Map<String, String> params = extractRequestParams(request);
-		LOG.debug("[{}] payment notification(RAW) from client: {}", paymentMethod, params);
+		LOG.debug("Payment notification(RAW) from client: {}", params);
 		PaymentVerification verification = paymentService.verifyClientPaymentNotification(paymentMethod,
 				new PaymentNotification(params));
-		LOG.debug("[{}] payment notification result verification result: {}", paymentMethod, verification);
-		response.getWriter().write(verification.name());
-		response.getWriter().flush();
-	}
-
-	/**
-	 * On payment success, server notification from payment gateway (JSON)
-	 */
-	@POST
-	@PermitAll
-	@Path("{paymentMethod}/notify2")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
-	public String notifyPaymentJson(@PathParam("paymentMethod") Payment.Method paymentMethod,
-			Map<String, Object> result) throws Exception {
-		LOG.debug("[{}] payment notification(JSON) from server: {}", paymentMethod, result);
-		PaymentResponse paymentResponse = paymentService.processServerPaymentNotification(paymentMethod,
-				new PaymentNotification(result));
-		LOG.debug("[{}] payment response to server: {}", paymentMethod, paymentResponse);
-		return paymentResponse.getBody();
+		LOG.debug("Payment notification verification result: {}", verification);
+		PrintWriter out = response.getWriter();
+		out.write(verification.name());
+		out.flush();
+		out.close();
 	}
 
 	/**
@@ -140,10 +104,10 @@ public class PaymentResource {
 	public void notifyPaymentPlainText(@PathParam("paymentMethod") Payment.Method paymentMethod,
 			@Context HttpServletRequest request, @Context HttpServletResponse response) throws Exception {
 		Map<String, String> params = extractRequestParams(request);
-		LOG.debug("[{}] payment notification(RAW) from server: {}", paymentMethod, params);
+		LOG.debug("Payment notification(RAW) from server: {}", params);
 		PaymentResponse paymentResponse = paymentService.processServerPaymentNotification(paymentMethod,
 				new PaymentNotification(params));
-		LOG.debug("[{}] payment response to server: {}", paymentMethod, paymentResponse);
+		LOG.debug("Payment response to server: {}", paymentResponse);
 		response.setStatus(paymentResponse.getCode());
 		PrintWriter out = response.getWriter();
 		String body = paymentResponse.getBody();
@@ -152,6 +116,23 @@ public class PaymentResource {
 		}
 		out.flush();
 		out.close();
+	}
+
+	/**
+	 * On payment success, server notification from payment gateway (JSON) (XXX NOT USED)
+	 */
+	@POST
+	@PermitAll
+	@Path("{paymentMethod}/notify2")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String notifyPaymentJson(@PathParam("paymentMethod") Payment.Method paymentMethod,
+			Map<String, Object> result) throws Exception {
+		LOG.debug("Payment notification(JSON) from server: {}", result);
+		PaymentResponse paymentResponse = paymentService.processServerPaymentNotification(paymentMethod,
+				new PaymentNotification(result));
+		LOG.debug("Payment response to server: {}", paymentResponse);
+		return paymentResponse.getBody();
 	}
 
 	private Map<String, String> extractRequestParams(HttpServletRequest request) {
@@ -171,5 +152,19 @@ public class PaymentResource {
 		}
 		return params;
 	}
+
+	/**
+	 * Create payment request for a given gateway. (NOTE: for testing purpose)
+	 */
+	// @POST
+	// @Authenticated
+	// @Path("{paymentMethod}/sign/{orderNo}")
+	// @Consumes(MediaType.APPLICATION_JSON)
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public PaymentRequest createPaymentRequest(@PathParam("paymentMethod") Payment.Method paymentMethod,
+	// @PathParam("orderNo") String orderNo) {
+	// Order order = commonOrderService.findByOrderNo(orderNo);
+	// return paymentService.createPaymentRequest(paymentMethod, order);
+	// }
 
 }

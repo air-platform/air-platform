@@ -18,6 +18,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -34,22 +36,25 @@ public class User extends Account {
 	private static final long serialVersionUID = 1L;
 
 	// membership points
+	@Min(0)
 	@Column(name = "points")
 	private long points = 0;
 
 	// membership level: e.g. member, silver, gold, platinum, diamond
-	@Column(name = "rank")
+	@Column(name = "rank", length = 10)
 	@Enumerated(EnumType.STRING)
 	private Rank rank = Rank.MEMBER;
 
+	@Size(max = 255)
 	@Column(name = "real_name")
 	private String realName;
 
 	// ID card
+	@Size(max = 255)
 	@Column(name = "identity")
 	private String identity;
 
-	@Column(name = "gender")
+	@Column(name = "gender", length = 8)
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
@@ -58,11 +63,16 @@ public class User extends Account {
 	@Column(name = "birthday")
 	private Date birthday;
 
+	@Size(max = 255)
+	@Column(name = "country")
 	private String country;
 
 	// state or province
+	@Size(max = 255)
+	@Column(name = "province")
 	private String province;
 
+	@Size(max = 255)
 	@Column(name = "city")
 	private String city;
 
@@ -259,7 +269,7 @@ public class User extends Account {
 	 * User {@code Gender}.
 	 */
 	public enum Gender {
-		MALE, FEMALE;
+		MALE, FEMALE, OTHER;
 
 		public static Gender fromString(String value) {
 			for (Gender e : values()) {

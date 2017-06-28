@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -23,21 +24,25 @@ public class AirJet extends Persistable {
 
 	// e.g. G550
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "type", nullable = false, unique = true)
 	private String type;
 
 	// human friendly name
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "name", nullable = false)
 	private String name;
 
 	// product image
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "image", nullable = false)
 	private String image;
 
 	// e.g. 11 - 14 guests
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "capacity", nullable = false)
 	private String capacity;
 

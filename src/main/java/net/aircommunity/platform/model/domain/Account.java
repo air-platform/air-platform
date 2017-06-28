@@ -11,6 +11,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -35,27 +36,31 @@ public abstract class Account extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// display purpose
+	@Size(max = 255)
 	@Column(name = "nick_name")
 	protected String nickName;
 
 	// XXX NOTE: useful only for role TENANT and ADMIN
 	@XmlTransient
+	@Size(max = 255)
 	@Column(name = "api_key", nullable = false, unique = true)
 	protected String apiKey;
 
 	@XmlTransient
+	@Size(max = 255)
 	@Column(name = "password", nullable = false)
 	protected String password;
 
 	@NotNull
-	@Column(name = "role", nullable = false)
+	@Column(name = "role", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
 	protected Role role;
 
-	@Column(name = "status", nullable = false)
+	@Column(name = "status", length = 8, nullable = false)
 	@Enumerated(EnumType.STRING)
 	protected Status status = Status.ENABLED;
 
+	@Size(max = 255)
 	@Column(name = "avatar")
 	protected String avatar;
 
@@ -71,8 +76,9 @@ public abstract class Account extends Persistable {
 
 	// last accessed IP regardless from which source (AUTH type)
 	// just duplicated AccountAuth lastAccessedIp for quick lookup
+	@Size(max = 255)
 	@Column(name = "last_accessed_ip")
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView(JsonViews.Admin.class)
 	protected String lastAccessedIp;
 
 	// @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

@@ -38,10 +38,10 @@ PIDFILE=${AIR_PLATFORM_HOME}/@pidfile@
 
 if [[ ! -f ${PIDFILE} ]]
 then
-   echo "AIR Platform is already stopped."
+   echo "AirCommunity Platform is already stopped."
    echo ""
    exit 1
 fi
 
 kill -s TERM `cat ${PIDFILE}`
-echo "AIR Platform stopped."
+echo "AirCommunity Platform is stopped successfully."

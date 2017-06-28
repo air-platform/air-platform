@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -31,24 +32,29 @@ public class Aircraft extends Persistable {
 
 	// Flight NO. global unique, e.g. 353252
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "flight_no", nullable = false, unique = true)
 	private String flightNo;
 
 	// Flight name
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@Size(max = 255)
 	@Column(name = "image")
 	private String image;
 
 	// e.g. G550
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "type", nullable = false)
 	private String type;
 
 	// e.g. fixed-wing / helicopter / balloon
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "category", nullable = false)
 	private String category;
 

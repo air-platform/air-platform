@@ -6,10 +6,12 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.micro.annotation.constraint.Mobile;
 import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
@@ -27,16 +29,19 @@ public class Passenger extends Persistable implements Cloneable {
 
 	// Passenger name
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "name", nullable = false)
 	private String name;
 
 	// Passenger mobile
+	@Mobile
 	@NotEmpty
 	@Column(name = "mobile")
 	private String mobile;
 
-	// e.g. ID Card number
+	// e.g. ID Card number (not limited to 18, may be other identity)
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "identity", nullable = false)
 	private String identity;
 

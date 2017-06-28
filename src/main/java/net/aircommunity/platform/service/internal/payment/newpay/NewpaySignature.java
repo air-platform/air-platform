@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.internal.payment.newpay;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -18,7 +20,16 @@ final class NewpaySignature {
 	NewpaySignature(NewpayConfig config) {
 		this.config = config;
 		try {
-			InputStream in = NewpaySignature.class.getClassLoader().getResourceAsStream(config.getKeystorePath());
+			InputStream in = null;
+			// read from config directory if exists
+			File keystoreFile = new File(System.getProperty("user.dir"), config.getKeystorePath());
+			if (keystoreFile.exists()) {
+				in = new FileInputStream(keystoreFile);
+			}
+			// read from classpath
+			else {
+				in = NewpaySignature.class.getClassLoader().getResourceAsStream(config.getKeystorePath());
+			}
 			KeyStore ks = KeyStore.getInstance(KEYSTORE_TYPE);
 			ks.load(in, config.getKeystorePassword().toCharArray());
 			// Certificate certificate = ks.getCertificate(config.getCertificateEntryAlias());
@@ -29,7 +40,6 @@ final class NewpaySignature {
 		catch (Exception e) {
 			throw new NewpayException("Failed init RSA signature signer:" + e.getMessage(), e);
 		}
-
 	}
 
 	public String signWithRSA(String src, NewpayCharset charset) {

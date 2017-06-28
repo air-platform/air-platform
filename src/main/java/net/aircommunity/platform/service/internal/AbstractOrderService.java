@@ -46,6 +46,7 @@ import net.aircommunity.platform.model.domain.CharterableOrder;
 import net.aircommunity.platform.model.domain.Instalment;
 import net.aircommunity.platform.model.domain.InstalmentOrder;
 import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.OrderSalesPackage;
 import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.PassengerItem;
 import net.aircommunity.platform.model.domain.Payment;
@@ -338,7 +339,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 					M.msg(M.PRODUCT_INVALID_DEPARTURE_DATE, DEPARTURE_DATE_FORMATTER.format(date)));
 		}
 		tgt.setSalesPackagePrice(salesPackage.getPrice(days));
-		tgt.setSalesPackage(salesPackage);
+		tgt.setSalesPackage(new OrderSalesPackage(salesPackage));
 		tgt.setTimeSlot(src.getTimeSlot());
 		tgt.setDepartureDate(src.getDepartureDate());
 		Set<PassengerItem> passengers = src.getPassengers();

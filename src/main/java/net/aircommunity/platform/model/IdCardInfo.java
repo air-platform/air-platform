@@ -3,13 +3,16 @@ package net.aircommunity.platform.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.annotation.concurrent.Immutable;
+
 import net.aircommunity.platform.model.domain.User.Gender;
 
 /**
- * ID Card info
+ * ID Card information holder.
  * 
  * @author Bin.Zhang
  */
+@Immutable
 public class IdCardInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 

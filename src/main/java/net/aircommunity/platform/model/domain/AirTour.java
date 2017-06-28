@@ -6,6 +6,10 @@ import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
+import io.micro.annotation.constraint.NotEmpty;
 
 /**
  * AirTour Model.
@@ -17,13 +21,17 @@ import javax.persistence.Table;
 public class AirTour extends SalesPackageProduct {
 	private static final long serialVersionUID = 1L;
 
+	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "city", nullable = false)
 	private String city;
 
+	@Size(max = 255)
 	@Column(name = "tour_distance")
 	private String tourDistance;
 
 	// e.g. time in minutes
+	@Min(0)
 	@Column(name = "tour_time")
 	private int tourTime;
 
@@ -35,6 +43,7 @@ public class AirTour extends SalesPackageProduct {
 	@Column(name = "tour_show")
 	private String tourShow;
 
+	@Size(max = 255)
 	@Column(name = "boarding_location")
 	private String boardingLocation;
 

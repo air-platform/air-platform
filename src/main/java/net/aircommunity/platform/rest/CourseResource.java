@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
@@ -51,10 +52,19 @@ public class CourseResource extends ProductResourceSupport<Course> {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
-	public Page<Course> list(@QueryParam("location") String location, @QueryParam("aircraftType") String aircraftType,
-			@QueryParam("license") String license, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		LOG.debug("list all courses with location: {}, license: {}, aircraftType: {}", location, license, aircraftType);
+	public Page<Course> list(
+			// 1) query by school
+			@QueryParam("school") String school,
+			// 2) query by combined conditions
+			@QueryParam("location") String location, @QueryParam("aircraftType") String aircraftType,
+			@QueryParam("license") String license,
+			// pagination
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		LOG.debug("list all courses with school: {}, location: {}, license: {}, aircraftType: {}", school, location,
+				license, aircraftType);
+		if (Strings.isNotBlank(school)) {
+			return courseService.listCoursesBySchool(school, page, pageSize);
+		}
 		return courseService.listCoursesWithConditions(location, aircraftType, license, page, pageSize);
 	}
 
@@ -101,6 +111,7 @@ public class CourseResource extends ProductResourceSupport<Course> {
 
 	/**
 	 * List courses of a school
+	 * @deprecated use instead {@see #list(String, String, String, String, int, int)}
 	 */
 	@GET
 	@Path("school")

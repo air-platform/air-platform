@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -45,15 +47,20 @@ public class AccountAuth extends Persistable {
 	public static final long EXPIRES_IN_ONE_DAY = 24 * 60 * 60;
 
 	// e.g. username/email/mobile/wechat/qq/weibo etc.
-	@Column(name = "type", nullable = false)
+	@NotNull
+	@Column(name = "type", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private AuthType type;
 
+	@NotNull
+	@Size(max = 255)
 	@Column(name = "principal", nullable = false)
 	private String principal;
 
+	// store OAuth access token, just in case its longer than 255
 	@XmlTransient
-	@Column(name = "credential")
+	@Size(max = 512)
+	@Column(name = "credential", length = 512)
 	private String credential;
 
 	// expires in seconds, define the lifespan of this auth
@@ -74,13 +81,15 @@ public class AccountAuth extends Persistable {
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private Date lastAccessedDate;
 
+	@Size(max = 255)
 	@Column(name = "last_accessed_ip")
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView(JsonViews.Admin.class)
 	private String lastAccessedIp;
 
 	// user-agent, from which source: app, browser etc.
+	@Size(max = 255)
 	@Column(name = "last_accessed_source")
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView(JsonViews.Admin.class)
 	private String lastAccessedSource;
 
 	@ManyToOne

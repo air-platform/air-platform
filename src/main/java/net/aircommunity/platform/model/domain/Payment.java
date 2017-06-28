@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -39,11 +40,13 @@ public class Payment extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// trade No. of payment system
+	@Size(max = 255)
 	@Column(name = "trade_no", nullable = false)
 	private String tradeNo;
 
-	// alipay, wechat etc.
-	@Column(name = "order_no", nullable = false)
+	// order no
+	@Size(max = 32)
+	@Column(name = "order_no", length = 32, nullable = false)
 	private String orderNo;
 
 	// amount of payment
@@ -51,7 +54,7 @@ public class Payment extends Persistable {
 	private BigDecimal amount = BigDecimal.ZERO;
 
 	// payment method: alipay, wechat etc.
-	@Column(name = "method", nullable = false)
+	@Column(name = "method", length = 10, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Method method;
 

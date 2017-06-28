@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * Charterable Product of an {@code Tenant} with single price(full price), seat price and seats.
@@ -16,6 +17,7 @@ public abstract class CharterableProduct extends StandardProduct {
 	private static final long serialVersionUID = 1L;
 
 	// single seat price
+	@NotNull
 	@Column(name = "seat_price")
 	protected BigDecimal seatPrice = BigDecimal.ZERO;
 

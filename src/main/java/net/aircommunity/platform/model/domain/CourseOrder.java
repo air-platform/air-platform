@@ -8,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -31,14 +32,17 @@ public class CourseOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "aircraft_type", nullable = false)
 	private String aircraftType;
 
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "license", nullable = false)
 	private String license;
 
 	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "location", nullable = false)
 	private String location;
 

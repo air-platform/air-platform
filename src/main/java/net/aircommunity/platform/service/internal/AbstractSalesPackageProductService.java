@@ -18,8 +18,8 @@ import net.aircommunity.platform.service.AircraftService;
  * 
  * @author Bin.Zhang
  */
-abstract class SalesPackageProductService<T extends SalesPackageProduct> extends AbstractProductService<T> {
-	private static final Logger LOG = LoggerFactory.getLogger(SalesPackageProductService.class);
+abstract class AbstractSalesPackageProductService<T extends SalesPackageProduct> extends AbstractProductService<T> {
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractSalesPackageProductService.class);
 
 	@Resource
 	protected SalesPackageRepository salesPackageRepository;
@@ -29,17 +29,10 @@ abstract class SalesPackageProductService<T extends SalesPackageProduct> extends
 
 	@Override
 	protected final void copyProperties(T src, T tgt) {
-		Set<SalesPackage> tgtSalesPackages = tgt.getSalesPackages();
-		LOG.debug("tgtSalesPackages original: {}", tgtSalesPackages);
-		// TODO REMOVE
-		// for (SalesPackage sp : tgtSalesPackages) {
-		// sp.setProduct(null);
-		// sp.setAircraft(null);
-		// salesPackageRepository.delete(sp);
-		// LOG.debug("Find sp: {}, {}", sp.getId(), salesPackageRepository.findOne(sp.getId()));
-		// }
 		LOG.debug("Copy properties src: {}", src);
 		LOG.debug("Copy properties tgt: {}", tgt);
+		Set<SalesPackage> tgtSalesPackages = tgt.getSalesPackages();
+		LOG.debug("tgtSalesPackages original: {}", tgtSalesPackages);
 		Set<SalesPackage> srcSalesPackages = src.getSalesPackages();
 		LOG.debug("srcSalesPackages: {}", srcSalesPackages);
 		tgt.setSalesPackages(applySalesPackages(srcSalesPackages));
@@ -57,6 +50,11 @@ abstract class SalesPackageProductService<T extends SalesPackageProduct> extends
 				}
 				// set to normalize
 				salesPackage.setPrices(salesPackage.getPrices());
+				// NOTE: need to clean id to make it brand new, since we just fully replace old ones with new ones
+				// otherwise we will got the following exception:
+				// nested exception is org.hibernate.PersistentObjectException: detached entity passed to persist:
+				// net.aircommunity.platform.model.domain.SalesPackage
+				salesPackage.setId(null);
 			});
 		}
 		return srcSalesPackages;

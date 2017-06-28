@@ -7,8 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+
+import io.micro.annotation.constraint.NotEmpty;
 
 /**
  * Database based configuration for AIR platform
@@ -25,10 +28,14 @@ public class Settings extends Persistable {
 	public static final String CATEGORY_USER = "user";
 
 	// configuration name
+	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "name", nullable = false, unique = true)
 	private String name;
 
 	// configuration category
+	@NotEmpty
+	@Size(max = 255)
 	@Column(name = "category", nullable = false)
 	private String category;
 

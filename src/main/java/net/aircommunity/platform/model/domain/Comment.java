@@ -40,7 +40,7 @@ public class Comment extends Persistable {
 	// 0 - 5
 	@Min(0)
 	@Max(5)
-	private int rate;
+	private int rate = 0;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "date", nullable = false)
@@ -49,7 +49,7 @@ public class Comment extends Persistable {
 
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	@Column(name = "source")
+	@Column(name = "source", length = 8)
 	private Source source = Source.USER;
 
 	@Lob

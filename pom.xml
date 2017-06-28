@@ -350,7 +350,7 @@
 						<directory>src/main/resources</directory>
 						<filtering>false</filtering>
 						<includes>
-							<include>**/*.jks</include>
+							<include>**/*-dev.jks</include>
 						</includes>
 					</resource>
 				</resources>
@@ -385,7 +385,7 @@
 						<directory>src/main/resources</directory>
 						<filtering>false</filtering>
 						<includes>
-							<include>**/*.jks</include>
+							<include>**/*-prd.jks</include>
 						</includes>
 					</resource>
 				</resources>

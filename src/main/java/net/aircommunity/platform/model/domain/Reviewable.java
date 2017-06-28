@@ -23,14 +23,14 @@ public class Reviewable extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// whether a product is approved or not by platform ADMIN
-	@Column(name = "review_status", nullable = false)
+	@Column(name = "review_status", length = 10, nullable = false)
 	@Enumerated(EnumType.STRING)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected ReviewStatus reviewStatus = ReviewStatus.PENDING;
 
 	// reason when it's rejected by platform ADMIN
-	@Size(max = 1000)
-	@Column(name = "rejected_reason", length = 1000)
+	@Size(max = 1024)
+	@Column(name = "rejected_reason", length = 1024)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected String rejectedReason;
 

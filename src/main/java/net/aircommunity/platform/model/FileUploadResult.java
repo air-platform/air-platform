@@ -2,14 +2,16 @@ package net.aircommunity.platform.model;
 
 import java.io.Serializable;
 
+import javax.annotation.concurrent.Immutable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * FileUpload Result
+ * FileUpload Result (not well modeled, just required by a Markdown editor)
  * 
  * @author Bin.Zhang
  */
+@Immutable
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FileUploadResult implements Serializable {
 	private static final long serialVersionUID = 1L;

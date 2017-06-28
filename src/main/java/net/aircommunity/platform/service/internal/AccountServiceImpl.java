@@ -210,6 +210,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			valid = passwordEncoder.matches(credential, account.getPassword());
 		}
 		if (!valid) {
+			LOG.debug("Invalid credential for account: {}, when using auth: {}", principal, auth);
 			throw new AirException(Codes.ACCOUNT_UNAUTHORIZED, M.msg(M.ACCOUNT_UNAUTHORIZED));
 		}
 		return auth;
@@ -309,6 +310,8 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 		case TENANT:
 			newAccount = new Tenant();
+			// TODO: make it UNVERIFIED by default later
+			((Tenant) newAccount).setVerification(VerificationStatus.VERIFIED);
 			newAccount.setRole(Role.TENANT);
 			break;
 

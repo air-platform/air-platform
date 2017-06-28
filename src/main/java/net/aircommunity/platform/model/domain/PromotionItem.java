@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.LinkType;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 import net.aircommunity.platform.model.jaxb.PromotionAdapter;
@@ -32,8 +33,9 @@ import net.aircommunity.platform.model.jaxb.PromotionAdapter;
 public class PromotionItem extends Persistable {
 	private static final long serialVersionUID = 1L;
 
+	@NotEmpty
 	@Size(max = 255)
-	@Column(name = "title", length = 255)
+	@Column(name = "title", nullable = false)
 	private String title;
 
 	@Size(max = 255)
@@ -46,7 +48,7 @@ public class PromotionItem extends Persistable {
 	private String link;
 
 	// link type
-	@Column(name = "link_type", nullable = false)
+	@Column(name = "link_type", length = 10, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private LinkType linkType = LinkType.PRODUCT;
 

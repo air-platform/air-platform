@@ -26,7 +26,7 @@ public abstract class StandardProduct extends Product {
 	protected BigDecimal price = BigDecimal.ZERO;
 
 	// product price CurrencyUnit
-	@Column(name = "currency_unit", nullable = false)
+	@Column(name = "currency_unit", length = 3, nullable = false)
 	@Enumerated(EnumType.STRING)
 	protected CurrencyUnit currencyUnit = CurrencyUnit.RMB;
 

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -25,8 +26,9 @@ public abstract class CharterableOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	// true: charter, false: not-chartered
+	@NotNull
 	@Column(name = "chartered", nullable = false)
-	protected boolean chartered;
+	protected boolean chartered = false;
 
 	// the number of passengers,
 	// if charter=true, the passengers is ignored
