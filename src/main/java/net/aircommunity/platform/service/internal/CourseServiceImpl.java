@@ -145,7 +145,7 @@ public class CourseServiceImpl extends AbstractProductService<Course> implements
 		if (Strings.isBlank(location)) {
 			return Pages.adapt(courseRepository.findAllCourses(Pages.createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(courseRepository.findByLocation(location, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseRepository.findByFuzzyLocation(location, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override

@@ -97,8 +97,8 @@ public interface AirTransportRepository extends BaseProductRepository<AirTranspo
 	 * @return page of trans
 	 */
 	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND "
-			+ "( t.flightRoute.departure LIKE CONCAT(:location,'%') OR "
-			+ "t.flightRoute.arrival LIKE CONCAT(:location,'%') ) ORDER BY t.rank ASC, t.score DESC")
+			+ "( t.flightRoute.departure LIKE CONCAT('%',:location,'%') OR "
+			+ "t.flightRoute.arrival LIKE CONCAT('%',:location,'%') ) ORDER BY t.rank ASC, t.score DESC")
 	Page<AirTransport> findFuzzyByLocation(@Param("location") String location, Pageable pageable);
 	// @Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND "
 	// + "( t.flightRoute.departure LIKE CONCAT('%',:location,'%') OR "

@@ -80,7 +80,11 @@ public class JetTravelServiceImpl extends AbstractProductService<JetTravel> impl
 		if (Strings.isBlank(name)) {
 			return listJetTravels(page, pageSize);
 		}
-		return Pages.adapt(jetTravelRepository.findByPublishedTrueAndNameStartingWithIgnoreCaseOrderByRankDescScoreDesc(
+		// NOTE: the first 1 has better performance, but less match result
+		// return
+		// Pages.adapt(jetTravelRepository.findByPublishedTrueAndNameStartingWithIgnoreCaseOrderByRankDescScoreDesc(
+		// name, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(jetTravelRepository.findByPublishedTrueAndNameContainingIgnoreCaseOrderByRankDescScoreDesc(
 				name, Pages.createPageRequest(page, pageSize)));
 	}
 

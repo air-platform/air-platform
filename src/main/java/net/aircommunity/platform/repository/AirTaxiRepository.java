@@ -57,15 +57,15 @@ public interface AirTaxiRepository extends BaseProductRepository<AirTaxi> {
 	}
 
 	/**
-	 * Find air taxi by departure or arrival (Fuzzy) (PUBLISHED product only)
+	 * Find air taxi by departure or arrival (Fuzzy) (PUBLISHED product only) (full table scan with %xxx%)
 	 * 
 	 * @param location departure or arrival
 	 * @param pageable the page request
 	 * @return page of taxi
 	 */
 	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND "
-			+ "( t.flightRoute.departure LIKE CONCAT(:location,'%') OR "
-			+ "t.flightRoute.arrival LIKE CONCAT(:location,'%') ) ORDER BY t.rank DESC, t.score DESC")
+			+ "( t.flightRoute.departure LIKE CONCAT('%',:location,'%') OR "
+			+ "t.flightRoute.arrival LIKE CONCAT('%',:location,'%') ) ORDER BY t.rank DESC, t.score DESC")
 	Page<AirTaxi> findFuzzyByLocation(@Param("location") String location, Pageable pageable);
 	// @Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND "
 	// + "( t.flightRoute.departure LIKE CONCAT('%',:location,'%') OR "

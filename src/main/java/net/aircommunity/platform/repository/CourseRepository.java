@@ -39,12 +39,17 @@ public interface CourseRepository extends BaseProductRepository<Course> {
 		return findWithConditions(null, null, schoolId, null, pageable);
 	}
 
-	default Page<Course> findByLocation(String location, Pageable pageable) {
-		return findByConditions(location, null, null, pageable);
+	default Page<Course> findByFuzzyLocation(String location, Pageable pageable) {
+		return findWithConditions(location, null, null, null, true/* fuzzyMatch */ , pageable);
 	}
 
 	default Page<Course> findByConditions(String location, String aircraftType, String license, Pageable pageable) {
 		return findWithConditions(location, aircraftType, null, license, pageable);
+	}
+
+	default Page<Course> findWithConditions(String location, String aircraftType, String schoolId, String license,
+			Pageable pageable) {
+		return findWithConditions(location, aircraftType, schoolId, license, false, pageable);
 	}
 
 	/**
@@ -52,7 +57,7 @@ public interface CourseRepository extends BaseProductRepository<Course> {
 	 * where)
 	 */
 	default Page<Course> findWithConditions(String location, String aircraftType, String schoolId, String license,
-			Pageable pageable) {
+			boolean fuzzyMatch, Pageable pageable) {
 		Specification<Course> spec = new Specification<Course>() {
 			@Override
 			public Predicate toPredicate(Root<Course> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -66,8 +71,12 @@ public interface CourseRepository extends BaseProductRepository<Course> {
 				}
 				if (Strings.isNotBlank(location)) {
 					// XXX for fuzzy match if needed
-					// expressions.add(cb.like(root.get(Course_.location), "%" + location + "%"));
-					expressions.add(cb.equal(root.get(Course_.location), location));
+					if (fuzzyMatch) {
+						expressions.add(cb.like(root.get(Course_.location), "%" + location + "%"));
+					}
+					else {
+						expressions.add(cb.equal(root.get(Course_.location), location));
+					}
 				}
 				if (Strings.isNotBlank(aircraftType)) {
 					expressions.add(cb.equal(root.get(Course_.aircraftType), aircraftType));

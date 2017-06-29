@@ -17,7 +17,6 @@ Air Community Platform.
 * **SHOULD** follow [Java Coding Conventions](http://www.oracle.com/technetwork/java/codeconventions-150003.pdf) and [Java Style Guide](https://google.github.io/styleguide/javaguide.html) if you haven't to improve code quality.
 
 
-
 #### Run in Eclipse
 
 * Project Properties > Maven > Active Maven Profiles: dev
@@ -32,3 +31,22 @@ Air Community Platform.
 #### Build for Production
 
 `mvn clean package -P prd`
+
+ 
+#### Deployment
+
+* Update `/etc/mysql/my.cnf`, and `service mysql restart`
+
+	[mysqld]
+	skip-character-set-client-handshake
+	collation-server=utf8_unicode_ci
+	character-set-server=utf8
+	
+	
+* Create database
+
+	CREATE USER 'airadmin' IDENTIFIED BY 'air@p0o9i8u7';
+	GRANT ALL PRIVILEGES ON *.* TO 'airadmin'@'%' IDENTIFIED BY 'air@p0o9i8u7' WITH GRANT OPTION;
+	GRANT ALL PRIVILEGES ON *.* TO 'airadmin'@'localhost' IDENTIFIED BY 'air@p0o9i8u7' WITH GRANT OPTION;
+	FLUSH PRIVILEGES;
+	CREATE DATABASE air_platform CHARACTER SET utf8 COLLATE utf8_general_ci;

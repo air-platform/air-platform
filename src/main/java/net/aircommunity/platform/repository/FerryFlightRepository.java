@@ -85,8 +85,8 @@ public interface FerryFlightRepository extends BaseProductRepository<FerryFlight
 	 * @return page of trans
 	 */
 	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND "
-			+ "( t.departure LIKE CONCAT(:location,'%') OR "
-			+ "t.arrival LIKE CONCAT(:location,'%') ) ORDER BY t.rank DESC, t.departureDate DESC, t.score DESC")
+			+ "( t.departure LIKE CONCAT('%',:location,'%') OR "
+			+ "t.arrival LIKE CONCAT('%',:location,'%') ) ORDER BY t.rank DESC, t.departureDate DESC, t.score DESC")
 	Page<FerryFlight> findFuzzyByLocation(@Param("location") String location, Pageable pageable);
 	// @Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND "
 	// + "( t.departure LIKE CONCAT('%',:location,'%') OR "

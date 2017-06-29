@@ -98,8 +98,11 @@ public class AirTourServiceImpl extends AbstractSalesPackageProductService<AirTo
 
 	@Override
 	public Page<AirTour> listAirToursByCity(String city, int page, int pageSize) {
-		return Pages.adapt(
-				airTourRepository.findByCityStartingWithIgnoreCase(city, Pages.createPageRequest(page, pageSize)));
+		// NOTE: the first 1 has better performance, but less match result
+		// return Pages.adapt(
+		// airTourRepository.findByCityStartingWithIgnoreCase(city, Pages.createPageRequest(page, pageSize)));
+		return Pages
+				.adapt(airTourRepository.findByCityContainingIgnoreCase(city, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airTourId")
