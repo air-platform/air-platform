@@ -111,8 +111,8 @@ public class PaymentResource {
 		response.setStatus(paymentResponse.getCode());
 		PrintWriter out = response.getWriter();
 		String body = paymentResponse.getBody();
-		if (Strings.isBlank(body)) {
-			out.write(body);
+		if (Strings.isNotBlank(body)) {
+			out.println(body);
 		}
 		out.flush();
 		out.close();

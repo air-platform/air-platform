@@ -25,6 +25,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.micro.common.DateFormats;
+import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderPrices;
@@ -91,7 +92,14 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 
 	@PostConstruct
 	private void init() {
-		LOG.debug("Alipay config {}", config);
+		LOG.debug("Alipay config original {}", config);
+		if (Strings.isBlank(config.getNotifyUrl())) {
+			config.setNotifyUrl(getServerNotifyUrl());
+		}
+		if (Strings.isBlank(config.getReturnUrl())) {
+			config.setReturnUrl(getClientReturnUrl());
+		}
+		LOG.debug("Alipay config final: {}", config);
 	}
 
 	@Override
@@ -125,7 +133,9 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 		model.setProductCode(ALIPAY_PRODUCT_CODE);
 		request.setBizModel(model);
 		request.setNotifyUrl(config.getNotifyUrl());
-		LOG.debug("notify url: {}", config.getNotifyUrl());
+		request.setReturnUrl(config.getReturnUrl());
+		LOG.debug("notify url: {}", request.getNotifyUrl());
+		LOG.debug("return url: {}", request.getReturnUrl());
 		try {
 			AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
 			// 就是orderString 可以直接给客户端请求，无需再做处理

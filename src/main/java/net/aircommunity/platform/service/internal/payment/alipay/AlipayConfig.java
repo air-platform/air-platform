@@ -19,10 +19,8 @@ public class AlipayConfig {
 	@NotEmpty
 	private String appId;
 
-	@NotEmpty
 	private String notifyUrl;
 
-	@NotEmpty
 	private String returnUrl;
 
 	@NotEmpty

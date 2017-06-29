@@ -58,6 +58,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String ORDER_INSTALMENT_NOT_FOUND;
 	public static String ORDER_ACCESS_DENIED;
 	public static String ORDER_ILLEGAL_STATUS;
+	public static String ORDER_PAYMENT_NOT_FOUND;
 	public static String ORDER_NOT_PAYABLE;
 	public static String ORDER_REFUND_FAILURE;
 	public static String ORDER_INVALID_OFFER_TOTAL_AMOUNT;

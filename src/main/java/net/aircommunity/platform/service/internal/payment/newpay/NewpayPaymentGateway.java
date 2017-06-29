@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderPrices;
@@ -50,7 +51,14 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 
 	@PostConstruct
 	private void init() {
-		LOG.debug("Newpay config {}", config);
+		LOG.debug("Newpay config original {}", config);
+		if (Strings.isBlank(config.getNotifyUrl())) {
+			config.setNotifyUrl(getServerNotifyUrl());
+		}
+		if (Strings.isBlank(config.getReturnUrl())) {
+			config.setReturnUrl(getClientReturnUrl());
+		}
+		LOG.debug("Newpay config final: {}", config);
 	}
 
 	@Override
@@ -72,6 +80,8 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 			int totalAmount = OrderPrices.convertPrice(order.getTotalPrice());
 			model.setTotalAmount(totalAmount);
 			NewpayPayRequest orderInfo = client.createPayRequest(model);
+			orderInfo.setNotifyUrl(getServerNotifyUrl());
+			orderInfo.setReturnUrl(getClientReturnUrl());
 			LOG.info("orderInfo: {}", orderInfo);
 			return new PaymentRequest(orderInfo);
 		}

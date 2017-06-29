@@ -20,10 +20,8 @@ public class NewpayConfig {
 	@NotEmpty
 	private String partnerId;
 
-	@NotEmpty
 	private String notifyUrl;
 
-	@NotEmpty
 	private String returnUrl;
 
 	// hnapay.partner.kayPath

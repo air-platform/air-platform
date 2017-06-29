@@ -71,7 +71,14 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 
 	@PostConstruct
 	private void init() {
-		LOG.debug("Wechat config {}", config);
+		LOG.debug("Wechat config original {}", config);
+		if (Strings.isBlank(config.getNotifyUrl())) {
+			config.setNotifyUrl(getServerNotifyUrl());
+		}
+		if (Strings.isBlank(config.getReturnUrl())) {
+			config.setReturnUrl(getClientReturnUrl());
+		}
+		LOG.debug("Wechat config final: {}", config);
 	}
 
 	@Override
@@ -110,6 +117,7 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 			// 支付类型 (必填)
 			request.setTradeType(TRADE_TYPE);
 			WxPayUnifiedOrderResult paymentInfo = wxPayService.unifiedOrder(request);
+			LOG.info("orderInfo: {}", paymentInfo.getXmlString());
 			return new PaymentRequest(paymentInfo.getXmlString());
 		}
 		catch (Exception e) {

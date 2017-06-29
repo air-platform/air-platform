@@ -612,6 +612,11 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			if (StandardOrder.class.isAssignableFrom(order.getClass())) {
 				StandardOrder standardOrder = StandardOrder.class.cast(order);
 				Payment payment = standardOrder.getPayment();
+				LOG.debug("Order {} payment: {}", order, payment);
+				if (payment == null) {
+					throw new AirException(Codes.ORDER_ILLEGAL_STATUS,
+							M.msg(M.ORDER_PAYMENT_NOT_FOUND, order.getOrderNo()));
+				}
 				RefundResponse refundResponse = paymentService.refundPayment(payment.getMethod(), order, refundAmount);
 				int code = refundResponse.getCode();
 				switch (code) {

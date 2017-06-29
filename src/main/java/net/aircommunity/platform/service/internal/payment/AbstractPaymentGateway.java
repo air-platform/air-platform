@@ -2,6 +2,7 @@ package net.aircommunity.platform.service.internal.payment;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -29,6 +30,11 @@ import net.aircommunity.platform.service.spi.PaymentGateway;
 public abstract class AbstractPaymentGateway implements PaymentGateway {
 	protected static final Logger LOG = LoggerFactory.getLogger(PaymentService.LOGGER_NAME);
 
+	// .e.g http://aircommunity.net/api/v2/payment/alipay/notify
+	private static final String PAYMENT_BASE_URI = "/payment/";
+	private static final String PAYMENT_SERVER_NOTIFY_URI = "/notify";
+	private static final String PAYMENT_CLIENT_NOTIFY_URI = "/client/notify";
+	private static final String PAYMENT_CLIENT_RETURN_URI = "/client/return";
 	protected static final PaymentResponse NOTIFICATION_RESPONSE_FAILURE = new PaymentResponse("failure");
 	protected static final PaymentResponse NOTIFICATION_RESPONSE_SUCCESS = new PaymentResponse("success");
 
@@ -50,6 +56,27 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 
 	protected PaymentResponse getPaymentSuccessResponse() {
 		return NOTIFICATION_RESPONSE_SUCCESS;
+	}
+
+	// server async notification
+	protected String getServerNotifyUrl() {
+		StringBuilder builder = new StringBuilder().append(configuration.getApiBaseUrl()).append(PAYMENT_BASE_URI)
+				.append(getPaymentMethod().name().toLowerCase(Locale.ENGLISH)).append(PAYMENT_SERVER_NOTIFY_URI);
+		return builder.toString();
+	}
+
+	// client post sync notification result to this URL
+	protected String getClientNotifyUrl() {
+		StringBuilder builder = new StringBuilder().append(configuration.getApiBaseUrl()).append(PAYMENT_BASE_URI)
+				.append(getPaymentMethod().name().toLowerCase(Locale.ENGLISH)).append(PAYMENT_CLIENT_NOTIFY_URI);
+		return builder.toString();
+	}
+
+	// client redirect
+	protected String getClientReturnUrl() {
+		StringBuilder builder = new StringBuilder().append(configuration.getApiBaseUrl()).append(PAYMENT_BASE_URI)
+				.append(getPaymentMethod().name().toLowerCase(Locale.ENGLISH)).append(PAYMENT_CLIENT_RETURN_URI);
+		return builder.toString();
 	}
 
 	protected PaymentResponse doProcessPaymentNotification(BigDecimal totalAmount, String orderNo, String tradeNo,

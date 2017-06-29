@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 public class Configuration {
 
 	// REST
+	private String apiBaseUrl;
+
 	@Value("${micro.rest.context-path}")
 	private String contextPath;
 
@@ -27,6 +29,9 @@ public class Configuration {
 
 	@Value("${air.website}")
 	private String website;
+
+	@Value("${air.use-tls}")
+	private boolean useTls;
 
 	@Value("${air.public-host}")
 	private String publicHost;
@@ -135,6 +140,10 @@ public class Configuration {
 		return tokenRefreshTimeSeconds;
 	}
 
+	public boolean isUseTls() {
+		return useTls;
+	}
+
 	public String getPublicHost() {
 		return publicHost;
 	}
@@ -149,6 +158,30 @@ public class Configuration {
 
 	public String getApiVersion() {
 		return apiVersion;
+	}
+
+	public String getApiBaseUrl() {
+		if (apiBaseUrl == null) {
+			boolean useTls = isUseTls();
+			String host = getPublicHost();
+			int port = getPublicPort();
+			String apiVersion = getApiVersion();
+			String contextPath = getContextPath();
+			//
+			StringBuilder builder = new StringBuilder().append(useTls ? "https://" : "http://").append(host);
+			if (port != 80 && port != 443) {
+				builder.append(":").append(port);
+			}
+			if (!contextPath.startsWith("/")) {
+				contextPath = "/" + contextPath;
+			}
+			if (!contextPath.endsWith("/")) {
+				contextPath += "/";
+			}
+			// it should be now: contextPath=/path/
+			apiBaseUrl = builder.append(contextPath).append(apiVersion).toString();
+		}
+		return apiBaseUrl;
 	}
 
 	public String getDefaultAvatar() {
@@ -254,5 +287,4 @@ public class Configuration {
 	// return Stream.of(authMethods.split(AUTH_METHODS_SEP)).filter(auth -> Strings.isNotBlank(auth)).map(String::trim)
 	// .collect(ImmutableCollectors.toSet());
 	// }
-
 }

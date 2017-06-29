@@ -216,9 +216,9 @@ public class NewpayRefundRequest extends NewpayRequest {
 				"30819f300d06092a864886f70d010101050003818d00308189028181009fdb5cc9a3de547fd28a3cbc5a82acda4fe2f47efb0ab8b1b9716e6bcf31cac207def13914dbf6672364f40e8c11bf3ef0f7c91f2812b1bb4abf555f10576d548bf03139775fadb40443f415497b45f0db42a5a5ea71239d35017d743369c7f56b0e969aaefeb1a7fe277db78095ffade8875491fa3c473d0d7b97e2869b12470203010001");
 		config.setKeystorePath("config/newpay-rsa.jks");
 		config.setKeystorePassword("jSB3vr");
-		config.setNotifyUrl("http://innertest.aircommunity.cn/api/v2/payment/newpay/notify");
+		// config.setNotifyUrl("http://innertest.aircommunity.cn/api/v2/payment/newpay/notify");
 		config.setPartnerId("11000002981");
-		config.setReturnUrl("http://innertest.aircommunity.cn/api/v2/payment/newpay/return");
+		// config.setReturnUrl("http://innertest.aircommunity.cn/api/v2/payment/newpay/return");
 		NewpaySignature signature = new NewpaySignature(config);
 		String signMsg = signature.signWithRSA(msg, NewpayCharset.UTF8);
 		System.out.println(signMsg);
