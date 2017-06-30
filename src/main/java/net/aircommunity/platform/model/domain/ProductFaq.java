@@ -33,13 +33,17 @@ public class ProductFaq extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "title")
+	@Size(max = PRODUCT_FAQ_TITLE_LEN)
+	@Column(name = "title", length = PRODUCT_FAQ_TITLE_LEN, nullable = false)
 	private String title;
 
 	@Lob
 	@Column(name = "content")
 	private String content;
+
+	// the number of views
+	@Column(name = "views", nullable = false)
+	private int views = 0;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "creation_date", nullable = false)
@@ -75,6 +79,18 @@ public class ProductFaq extends Persistable {
 		this.content = content;
 	}
 
+	public void increaseViews() {
+		views = views + 1;
+	}
+
+	public int getViews() {
+		return views;
+	}
+
+	public void setViews(int views) {
+		this.views = views;
+	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -94,9 +110,9 @@ public class ProductFaq extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("ProductFaq [title=").append(title).append(", content=").append(content)
-				.append(", creationDate=").append(creationDate).append(", product=").append(product).append(", id=")
-				.append(id).append("]");
+		builder.append("ProductFaq [id=").append(id).append(", title=").append(title).append(", content=")
+				.append(content).append(", views=").append(views).append(", creationDate=").append(creationDate)
+				.append(", product=").append(product).append("]");
 		return builder.toString();
 	}
 }

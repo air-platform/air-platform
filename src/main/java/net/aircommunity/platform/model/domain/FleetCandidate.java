@@ -34,8 +34,8 @@ public class FleetCandidate extends Persistable {
 	private BigDecimal offeredPrice = BigDecimal.ZERO;
 
 	// can have only one SELECTED
-	@Column(name = "status", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "status", length = FLEET_CANDIDATE_STATUS_LEN, nullable = false)
 	private Status status = Status.CANDIDATE;
 
 	@ManyToOne

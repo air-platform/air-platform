@@ -26,22 +26,22 @@ public class School extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "name", nullable = false)
+	@Size(max = SCHOOL_NAME_LEN)
+	@Column(name = "name", length = SCHOOL_NAME_LEN, nullable = false)
 	private String name;
 
-	@Size(max = 255)
-	@Column(name = "image")
+	@Size(max = IMAGE_URL_LEN)
+	@Column(name = "image", length = IMAGE_URL_LEN)
 	private String image;
 
 	@NotEmpty
-	@Size(max = 1024)
-	@Column(name = "address", length = 1024)
+	@Size(max = ADDRESS_LEN)
+	@Column(name = "address", length = ADDRESS_LEN)
 	private String address;
 
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "contact")
+	@Size(max = CONTACT_LEN)
+	@Column(name = "contact", length = CONTACT_LEN)
 	private String contact;
 
 	@Lob

@@ -20,27 +20,27 @@ public class Tenant extends Account {
 	private static final long serialVersionUID = 1L;
 
 	// contact email
-	@Size(max = 255)
-	@Column(name = "email")
+	@Size(max = EMAIL_LEN)
+	@Column(name = "email", length = EMAIL_LEN)
 	private String email;
 
 	// verification status
-	@Column(name = "verification", nullable = false, length = 15)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "verification", nullable = false, length = TENANT_VERIFICATION_STATUS_LEN)
 	private VerificationStatus verification = VerificationStatus.UNVERIFIED;
 
 	// vender website
-	@Size(max = 255)
-	@Column(name = "website")
+	@Size(max = DOMAIN_NAME_LEN)
+	@Column(name = "website", length = DOMAIN_NAME_LEN)
 	private String website;
 
 	// contact address
-	@Size(max = 1024)
-	@Column(name = "address", length = 1024)
+	@Size(max = ADDRESS_LEN)
+	@Column(name = "address", length = ADDRESS_LEN)
 	private String address;
 
 	// contact hot-line
-	@Size(max = 255)
+	@Size(max = DEFAULT_FIELD_LEN)
 	@Column(name = "hotline")
 	private String hotline;
 

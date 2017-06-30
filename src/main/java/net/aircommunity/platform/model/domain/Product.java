@@ -45,6 +45,11 @@ public abstract class Product extends Reviewable {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * Unlimited product stock
+	 */
+	public static final int UNLIMITED_STOCK = -1;
+
+	/**
 	 * Lowest product rank
 	 */
 	public static final int LOWEST_RANK = 0;
@@ -56,19 +61,24 @@ public abstract class Product extends Reviewable {
 
 	// product name
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "name", nullable = false)
+	@Size(max = PRODUCT_NAME_LEN)
+	@Column(name = "name", length = PRODUCT_NAME_LEN, nullable = false)
 	protected String name;
 
 	// product category
-	@Column(name = "category", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "category", length = PRODUCT_CATEGORY_LEN, nullable = false)
 	protected Category category;
 
 	// product image
-	@Size(max = 255)
-	@Column(name = "image")
+	@Size(max = IMAGE_URL_LEN)
+	@Column(name = "image", length = IMAGE_URL_LEN)
 	protected String image;
+
+	// product stock
+	@Min(UNLIMITED_STOCK)
+	@Column(name = "stock", nullable = false)
+	protected int stock = UNLIMITED_STOCK;
 
 	// product score
 	@Column(name = "score", nullable = false)
@@ -154,6 +164,14 @@ public abstract class Product extends Reviewable {
 
 	public void setScore(double score) {
 		this.score = score;
+	}
+
+	public int getStock() {
+		return stock;
+	}
+
+	public void setStock(int stock) {
+		this.stock = stock;
 	}
 
 	public int getTotalSales() {
@@ -249,7 +267,11 @@ public abstract class Product extends Reviewable {
 	public enum Category {
 		NONE, AIR_JET, AIR_TOUR, AIR_TAXI, AIR_TRANS, AIR_TRAINING;
 
-		private static Set<Category> categories;
+		/**
+		 * All categories except none which is meaning less
+		 */
+		public static Set<Category> ALL = Stream.of(values()).filter(category -> category != Category.NONE)
+				.collect(Collectors.toSet());
 
 		public static Category fromString(String value) {
 			for (Category e : values()) {
@@ -259,14 +281,5 @@ public abstract class Product extends Reviewable {
 			}
 			return null;
 		}
-
-		public static Set<Category> categories() {
-			if (categories == null) {
-				categories = Stream.of(values()).filter(category -> category != Category.NONE)
-						.collect(Collectors.toSet());
-			}
-			return categories;
-		}
-
 	}
 }

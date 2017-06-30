@@ -28,7 +28,7 @@ public class AirClass extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
-	@Size(max = 255)
+	@Size(max = DEFAULT_FIELD_LEN)
 	@Column(name = "title", nullable = false)
 	private String title;
 

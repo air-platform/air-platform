@@ -46,6 +46,21 @@ public class NewpayClient {
 	}
 
 	/**
+	 * Parse payment response from payment gateway and verify RSA signature.
+	 * 
+	 * @param data the payment response data
+	 * @return NewpayPayResponse
+	 * @throws NewpayException if failed to parse or RSA signature verification failure
+	 * 
+	 */
+	public NewpayPayResponse parsePayResponse(Map<String, String> data) {
+		NewpayPayResponse response = NewpayPayResponse.parse(data);
+		response.setSignature(signature);
+		response.verifySignature();
+		return response;
+	}
+
+	/**
 	 * Execute refund request and got refund response. (need to wait for async server notification to confirm refund
 	 * result)
 	 * 

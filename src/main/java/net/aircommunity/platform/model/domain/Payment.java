@@ -40,13 +40,13 @@ public class Payment extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// trade No. of payment system
-	@Size(max = 255)
-	@Column(name = "trade_no", nullable = false)
+	@Size(max = TRADE_NO_LEN)
+	@Column(name = "trade_no", length = TRADE_NO_LEN, nullable = false)
 	private String tradeNo;
 
 	// order no
-	@Size(max = 32)
-	@Column(name = "order_no", length = 32, nullable = false)
+	@Size(max = ORDER_NO_LEN)
+	@Column(name = "order_no", length = ORDER_NO_LEN, nullable = false)
 	private String orderNo;
 
 	// amount of payment
@@ -54,9 +54,13 @@ public class Payment extends Persistable {
 	private BigDecimal amount = BigDecimal.ZERO;
 
 	// payment method: alipay, wechat etc.
-	@Column(name = "method", length = 10, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "method", length = PAYMENT_METHOD_LEN, nullable = false)
 	private Method method;
+
+	@Size(max = DEFAULT_FIELD_LEN)
+	@Column(name = "note")
+	private String note;
 
 	// XXX NOTE: we only saved success payment ATM, also history for failures?
 	// the status of this payment
@@ -121,6 +125,14 @@ public class Payment extends Persistable {
 		this.timestamp = timestamp;
 	}
 
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
 	public User getOwner() {
 		return owner;
 	}
@@ -156,9 +168,9 @@ public class Payment extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Payment [tradeNo=").append(tradeNo).append(", orderNo=").append(orderNo).append(", amount=")
-				.append(amount).append(", method=").append(method).append(", timestamp=").append(timestamp)
-				.append(", id=").append(id).append("]");
+		builder.append("Payment [id=").append(id).append(", tradeNo=").append(tradeNo).append(", orderNo=")
+				.append(orderNo).append(", amount=").append(amount).append(", method=").append(method).append(", note=")
+				.append(note).append(", timestamp=").append(timestamp).append("]");
 		return builder.toString();
 	}
 

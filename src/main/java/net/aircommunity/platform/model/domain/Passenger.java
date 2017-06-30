@@ -29,20 +29,21 @@ public class Passenger extends Persistable implements Cloneable {
 
 	// Passenger name
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "name", nullable = false)
+	@Size(max = PERSON_NAME_LEN)
+	@Column(name = "name", length = PERSON_NAME_LEN, nullable = false)
 	private String name;
 
 	// Passenger mobile
 	@Mobile
 	@NotEmpty
-	@Column(name = "mobile")
+	@Size(max = MOBILE_LEN)
+	@Column(name = "mobile", length = MOBILE_LEN)
 	private String mobile;
 
-	// e.g. ID Card number (not limited to 18, may be other identity)
+	// e.g. ID Card number
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "identity", nullable = false)
+	@Size(max = IDENTITY_LEN)
+	@Column(name = "identity", length = IDENTITY_LEN, nullable = false)
 	private String identity;
 
 	@ManyToOne

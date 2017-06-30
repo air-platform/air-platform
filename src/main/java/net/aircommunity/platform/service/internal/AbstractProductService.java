@@ -93,6 +93,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			newProduct.setDescription(product.getDescription());
 			newProduct.setRank(Product.DEFAULT_RANK);
 			newProduct.setTotalSales(0);
+			newProduct.setStock(product.getStock());
 			newProduct.setPublished(false);
 			// actually set when @PrePersist
 			newProduct.setCategory(product.getCategory());
@@ -227,6 +228,17 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		product.setTotalSales(totalSales);
 		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s with new total sales %d failed",
 				type.getSimpleName(), productId, totalSales);
+	}
+
+	/**
+	 * Update stock
+	 */
+	protected final T doUpdateProductStock(String productId, int deltaStock) {
+		T product = doFindProduct(productId);
+		int newStock = product.getStock() + deltaStock;
+		product.setStock(newStock);
+		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s with new stock %d failed",
+				type.getSimpleName(), productId, newStock);
 	}
 
 	/**

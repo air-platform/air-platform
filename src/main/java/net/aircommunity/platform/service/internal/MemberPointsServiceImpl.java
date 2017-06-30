@@ -78,7 +78,7 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 		// first order price off
 		setEarnPointsForRule(PointRules.FIRST_ORDER_PRICE_OFF, DEFAULT_FIRST_ORDER_PRICE_OFF);
 		// order finished
-		Category.categories().forEach(category -> setEarnPointsForRule(PointRules.getOrderFinishedRule(category),
+		Category.ALL.forEach(category -> setEarnPointsForRule(PointRules.getOrderFinishedRule(category),
 				ORDER_FINISHED_POINTS.get(category)));
 		// daily signin
 		DAILY_SIGNIN_POINTS.entrySet().stream()

@@ -36,12 +36,12 @@ public class ProductFamily extends Reviewable {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "name", nullable = false)
+	@Size(max = PRODUCT_NAME_LEN) // same as product name length
+	@Column(name = "name", length = PRODUCT_NAME_LEN, nullable = false)
 	private String name;
 
-	@Column(name = "category", length = 20)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "category", length = PRODUCT_CATEGORY_LEN, nullable = false)
 	private Category category;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
@@ -49,8 +49,8 @@ public class ProductFamily extends Reviewable {
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private Date creationDate;
 
-	@Size(max = 255)
-	@Column(name = "image")
+	@Size(max = IMAGE_URL_LEN)
+	@Column(name = "image", length = IMAGE_URL_LEN)
 	private String image;
 
 	// description

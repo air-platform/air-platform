@@ -50,10 +50,10 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 	private static final String RETURN_MSG_FAIL = "FAIL";
 	// SUCCESS: 退款申请接收成功，结果通过退款查询接口查询, FAIL: 提交业务失败
 	private static final String RESULT_CODE_SUCCESS = "SUCCESS"; // SUCCESS/FAIL
-	private static final PaymentResponse NOTIFICATION_RESPONSE_SUCCESS = new PaymentResponse(
-			WxPayOrderNotifyResponse.success(RETURN_MSG_SUCCESS));
-	private static final PaymentResponse NOTIFICATION_RESPONSE_FAILURE = new PaymentResponse(
-			WxPayOrderNotifyResponse.fail(RETURN_MSG_FAIL));
+	private static final PaymentResponse NOTIFICATION_RESPONSE_SUCCESS = PaymentResponse
+			.success(WxPayOrderNotifyResponse.success(RETURN_MSG_SUCCESS));
+	private static final PaymentResponse NOTIFICATION_RESPONSE_FAILURE = PaymentResponse
+			.failure(WxPayOrderNotifyResponse.fail(RETURN_MSG_FAIL));
 
 	private final WxPayService wxPayService;
 	private final WechatConfig config;
@@ -158,7 +158,12 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 					String tradeNo = notifyResponse.getTransactionId();
 					String orderNo = notifyResponse.getOutTradeNo();
 					Date paymentDate = new Date();// 交易付款时间, no date from wechat server response
-					return doProcessPaymentNotification(totalAmount, orderNo, tradeNo, paymentDate);
+					PaymentResponse response = doProcessPaymentSuccess(totalAmount, orderNo, tradeNo, paymentDate);
+					if (!response.isSuccessful()) {
+						// TODO refund?
+						return response;
+					}
+					return NOTIFICATION_RESPONSE_SUCCESS;
 				}
 				LOG.error("Payment failed, errCode: {}, errMsg: {}", notifyResponse.getErrCode(),
 						notifyResponse.getErrCodeDes());
@@ -240,15 +245,5 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 			}
 			return RefundResponse.failure(refundFailureCause);
 		}
-	}
-
-	@Override
-	protected PaymentResponse getPaymentFailureResponse() {
-		return NOTIFICATION_RESPONSE_FAILURE;
-	}
-
-	@Override
-	protected PaymentResponse getPaymentSuccessResponse() {
-		return NOTIFICATION_RESPONSE_SUCCESS;
 	}
 }

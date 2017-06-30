@@ -35,12 +35,15 @@ Air Community Platform.
  
 #### Deployment
 
+* Require `MySQL 5.5.3+` to support `utf8mb4` (most bytes 4)
 * Update `/etc/mysql/my.cnf`, and `service mysql restart`
 
 	[mysqld]
 	skip-character-set-client-handshake
 	collation-server=utf8_unicode_ci
 	character-set-server=utf8
+* Check charset: `SHOW VARIABLES WHERE Variable_name LIKE 'character_set_%' OR Variable_name LIKE 'collation%';`
+
 	
 	
 * Create database

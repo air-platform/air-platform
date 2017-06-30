@@ -14,7 +14,13 @@ public class LocalizedMessages extends NLSResource {
 	private static final String RESOURCE_BUNDLE_BASENAME = LocalizedMessages.class.getPackage().getName() + ".message";
 
 	// message for display
+	public static String PAYMENT_SERVICE_UNAVAILABLE;
+	public static String PAYMENT_SUCCESS_SERVER_NOTIFY;
+	public static String PAYMENT_SUCCESS_SERVER_QUERY;
 	public static String PAYMENT_PRODUCT_DESCRIPTION;
+	public static String PAYMENT_SERVER_NOTIFY_BIZ_FAILURE;
+	public static String PAYMENT_SERVER_NOTIFY_TRADE_FAILURE;
+	public static String REFUND_SERVER_NOTIFY_TRADE_FAILURE;
 	public static String USERNAME_ANONYMOUS;
 	public static String FLEET_OFFERED;
 	public static String FLEET_NOT_SELECTED;
@@ -23,6 +29,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String REFUND_REQUEST_REJECTED;
 	public static String REFUND_REASON_MISSING;
 	public static String REFUND_REASON_FORCE;
+	public static String REFUND_ON_PAYMENT_NOTIFY_FAILURE; // auto refund message
 
 	// generic
 	public static String FORM_INVALID_FILE_INPUT;
@@ -55,6 +62,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String ORDER_OPERATION_SUBMIT;
 	public static String ORDER_OPERATION_CANCEL;
 	public static String ORDER_NOT_FOUND;
+	public static String ORDER_TOTAL_AMOUNT_MISMATCH;
 	public static String ORDER_INSTALMENT_NOT_FOUND;
 	public static String ORDER_ACCESS_DENIED;
 	public static String ORDER_ILLEGAL_STATUS;

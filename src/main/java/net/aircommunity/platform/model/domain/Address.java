@@ -24,19 +24,20 @@ import net.aircommunity.platform.model.jaxb.AccountAdapter;
 public class Address extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-	// contact person
-	@Size(max = 255)
-	@Column(name = "contact")
+	// contact person name
+	@Size(max = PERSON_NAME_LEN)
+	@Column(name = "contact", length = PERSON_NAME_LEN)
 	private String contact;
 
 	// contact person mobile
 	@Mobile
-	@Column(name = "mobile")
+	@Size(max = MOBILE_LEN)
+	@Column(name = "mobile", length = MOBILE_LEN)
 	private String mobile;
 
 	// detailed address
-	@Size(max = 1024)
-	@Column(name = "address", length = 1024)
+	@Size(max = ADDRESS_LEN)
+	@Column(name = "address", length = ADDRESS_LEN)
 	private String address;
 
 	@Column(name = "is_default")

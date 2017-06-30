@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,8 +29,8 @@ public class OrderSalesPackage extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// price package name
-	@Size(max = 255)
-	@Column(name = "name", nullable = false)
+	@Size(max = SALES_PACKAGE_NAME_LEN)
+	@Column(name = "name", length = SALES_PACKAGE_NAME_LEN, nullable = false)
 	private String name;
 
 	// the number of passengers of this package
@@ -38,17 +39,18 @@ public class OrderSalesPackage extends Persistable {
 
 	// prices for 30days, separated by comma (,) if 0 means the product is not available that day
 	// e.g. 1000,2000,0,3000 etc.
-	@Size(max = 255)
-	@Column(name = "prices")
+	@Size(max = SALES_PACKAGE_PRICES_LEN)
+	@Column(name = "prices", length = SALES_PACKAGE_PRICES_LEN)
 	private String prices;
 
 	// in presalesDays before
+	@Min(0)
 	@Column(name = "presales_days")
 	private int presalesDays = 0;
 
 	// product price CurrencyUnit
-	@Column(name = "currency_unit", length = 3, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "currency_unit", length = CURRENCY_UNIT_LEN, nullable = false)
 	private CurrencyUnit currencyUnit = CurrencyUnit.RMB;
 
 	// price package desc

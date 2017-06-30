@@ -33,14 +33,14 @@ public class Fleet extends StandardProduct {
 
 	// Flight NO. is global unique for all air company
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "flight_no", nullable = false, unique = true)
+	@Size(max = AIRCRAFT_FLIGHT_NO_LEN)
+	@Column(name = "flight_no", length = AIRCRAFT_FLIGHT_NO_LEN, nullable = false, unique = true)
 	private String flightNo;
 
 	// e.g. Gulfstream 450 (should select from a predefined list)
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "aircraft_type", nullable = false)
+	@Size(max = AIRCRAFT_TYPE_LEN)
+	@Column(name = "aircraft_type", length = AIRCRAFT_TYPE_LEN, nullable = false)
 	private String aircraftType;
 
 	// Aircraft GPS location
@@ -49,13 +49,13 @@ public class Fleet extends StandardProduct {
 
 	// Aircraft current status
 	@Enumerated(EnumType.STRING)
-	@Column(name = "status", length = 20, nullable = false)
+	@Column(name = "status", length = AIRCRAFT_STATUS_LEN, nullable = false)
 	private Status status = Status.AVAILABLE;
 
 	// XXX better be int for a specific fleet with same aircaftType, e.g. G550 ?
 	// e.g. 11 - 14 guests
-	@Size(max = 255)
-	@Column(name = "capacity")
+	@Size(max = AIRCRAFT_CAPACITY_LEN)
+	@Column(name = "capacity", length = AIRCRAFT_CAPACITY_LEN)
 	private String capacity;
 
 	// e.g. 2 divans can be made as beds
@@ -84,7 +84,7 @@ public class Fleet extends StandardProduct {
 	private String appearances;
 
 	// interior 360 of this Aircraft, 360view.html
-	@Size(max = 255)
+	@Size(max = DEFAULT_FIELD_LEN)
 	@Column(name = "interior")
 	private String interior;
 

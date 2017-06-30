@@ -21,7 +21,6 @@ import javax.annotation.Resource;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.retry.support.RetryTemplate;
 
 import com.codahale.metrics.Timer;
 
@@ -46,6 +45,7 @@ import net.aircommunity.platform.model.domain.CharterableOrder;
 import net.aircommunity.platform.model.domain.Instalment;
 import net.aircommunity.platform.model.domain.InstalmentOrder;
 import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.OrderRef;
 import net.aircommunity.platform.model.domain.OrderSalesPackage;
 import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.PassengerItem;
@@ -58,6 +58,7 @@ import net.aircommunity.platform.model.domain.StandardProduct;
 import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseOrderRepository;
+import net.aircommunity.platform.repository.OrderRefRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.repository.SalesPackageRepository;
 import net.aircommunity.platform.service.AccountService;
@@ -79,10 +80,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	protected Class<T> type;
 
 	@Resource
-	private RetryTemplate retryTemplate;
+	private OrderNoGenerator orderNoGenerator;
 
 	@Resource
-	private OrderNoGenerator orderNoGenerator;
+	private OrderRefRepository orderRefRepository;
 
 	@Resource
 	private SalesPackageRepository salesPackageRepository;
@@ -183,7 +184,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			LOG.info("[Creating order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), order);
 			BigDecimal totalPrice = newOrder.getTotalPrice();
 
-			// 5.1) check if first order price off for this user (DISABLED)
+			// 5.1) check if first order price off for this user (XXX DISABLED)
 			// boolean existsOrder = getOrderRepository().existsByOwnerId(userId);
 			// if (!existsOrder) {
 			// long priceOff = memberPointsService.getPointsEarnedFromRule(Constants.PointRules.FIRST_ORDER_PRICE_OFF);
@@ -233,12 +234,24 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			}
 			// 6) perform save
 			final T orderToSave = newOrder;
-			return safeExecute(() -> {
+			T saved = safeExecute(() -> {
 				T orderSaved = getOrderRepository().save(orderToSave);
 				LOG.info("[Created order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), orderSaved);
 				eventBus.post(new OrderEvent(OrderEvent.EventType.CREATION, orderSaved));
 				return orderSaved;
 			}, "Create %s: %s for user %s failed", type.getSimpleName(), order, userId);
+
+			// 7) create ref
+			OrderRef orderRef = new OrderRef();
+			orderRef.setOrderId(saved.getId());
+			orderRef.setOrderNo(saved.getOrderNo());
+			orderRef.setOwnerId(owner.getId());
+			orderRef.setStatus(saved.getStatus());
+			orderRef.setType(saved.getType());
+			orderRef.setCreationDate(saved.getCreationDate());
+			orderRefRepository.save(orderRef);
+			// returning finally
+			return saved;
 		} // metrics
 		finally {
 			if (isMetricsEnabled()) {
@@ -248,9 +261,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	private String nextOrderNo() {
-		return retryTemplate.execute(context -> {
-			return orderNoGenerator.next();
-		});
+		return retryTemplate.execute(context -> orderNoGenerator.next());
 	}
 
 	private void copyCommonProperties(Order src, Order tgt) {
@@ -478,20 +489,24 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * Pay order
 	 */
 	protected T doPayOrder(String orderId, Payment payment) {
-		return doPayOrder(orderId, null, payment);
+		T order = doFindOrder(orderId);
+		return doPayOrder(order, null, payment);
+	}
+
+	protected T doPayOrder(T order, Payment payment) {
+		return doPayOrder(order, null, payment);
 	}
 
 	/**
 	 * Pay order
 	 */
-	protected T doPayOrder(String orderId, String instalmentId, Payment payment) {
+	protected T doPayOrder(T order, String instalmentId, Payment payment) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = orderOperationTimer(type, ORDER_ACTION_PAYMENT);
 			timerContext = timer.time();
 		}
 		try {
-			T order = doFindOrder(orderId);
 			Payment newPayment = new Payment();
 			newPayment.setAmount(payment.getAmount());
 			newPayment.setMethod(payment.getMethod());
@@ -505,6 +520,12 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			// standard order
 			if (StandardOrder.class.isAssignableFrom(order.getClass())) {
 				StandardOrder standardOrder = StandardOrder.class.cast(order);
+				Payment orderPayment = standardOrder.getPayment();
+				// check existence of the payment
+				if (orderPayment != null) {
+					LOG.warn("Payment is already done for {}, skip current payment: {}", order, newPayment);
+					return order;
+				}
 				standardOrder.setPayment(newPayment);
 				orderPaid = doUpdateOrderStatus(order, Order.Status.PAID);
 			}
@@ -518,9 +539,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				// Instalment instalment = instalmentRepository.findOne(instalmentId);
 				Optional<Instalment> instalment = instalmentOrder.findInstalment(instalmentId);
 				if (!instalment.isPresent()) {
-					LOG.error("Order {} instalment {} not found", orderId, instalmentId);
+					LOG.error("Order {} instalment {} not found", order, instalmentId);
 					throw new AirException(Codes.ORDER_INSTALMENT_NOT_FOUND, M.msg(M.ORDER_INSTALMENT_NOT_FOUND));
 				}
+				// TODO check existence of payment
 				instalment.get().setPayment(newPayment);
 				if (instalmentOrder.isPaidFully()) {
 					orderPaid = doUpdateOrderStatus(order, Order.Status.PAID);
@@ -660,11 +682,23 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
+	 * Payment failure
+	 */
+	protected T doHandleOrderPaymentFailure(T order, String paymentFailureCause) {
+		order.setPaymentFailureCause(paymentFailureCause);
+		return doUpdateOrderStatus(order, Order.Status.PAYMENT_FAILED);
+	}
+
+	/**
 	 * Refund failure
 	 */
 	protected T doHandleOrderRefundFailure(String orderId, String refundFailureCause) {
 		// NOTE: not from cache, in case it's updated
 		T order = doFindOrder(orderId);
+		return doHandleOrderRefundFailure(order, refundFailureCause);
+	}
+
+	protected T doHandleOrderRefundFailure(T order, String refundFailureCause) {
 		order.setRefundFailureCause(refundFailureCause);
 		return doUpdateOrderStatus(order, Order.Status.REFUND_FAILED);
 	}
@@ -731,35 +765,33 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		// AirJet, Course
 		case CONTRACT_SIGNED:
 			// should be already confirmed
-			LOG.debug("Expect order signContractRequired");
-			expectOrderStatusCondition(order.signContractRequired());
-			expectOrderStatus(order, newStatus, Order.Status.CONFIRMED);
+			LOG.debug("Expect order contractRequired");
+			expectOrderStatusCondition(order.contractRequired());
+			if (order.confirmationRequired()) {
+				expectOrderStatus(order, newStatus, Order.Status.CONFIRMED);
+			}
 			break;
 
 		// may called by client notification, ignored if already paid
 		case PAYMENT_IN_PROCESS:
-			if (order.getStatus() == Order.Status.PAID) {
+			if (order.isPaid()) {
 				LOG.warn("Ignored status update to: {}, because this order is already PAID", newStatus);
 				return order;
 			}
-			// TODO check later
+			LOG.debug("Expect order isPayable");
+			expectOrderStatusCondition(order.isPayable());
 			break;
 
 		case PARTIAL_PAID:
 			// TODO check later
-			LOG.debug("TODO CHECK for {}", newStatus);
-			break;
-
-		case PAYMENT_FAILED:
-			// TODO check later
-			LOG.debug("TODO CHECK for {}", newStatus);
+			LOG.debug("Check {} is NOT implemented yet", newStatus);
 			break;
 
 		case PAID:
 			// we allow refund request to move back to paid status in case tenant rejected the refund request
 			// should be already contract signed (if contract sign is required)
-			if (order.signContractRequired()) {
-				LOG.debug("Order signContractRequired, expect contract signed before paid");
+			if (order.contractRequired()) {
+				LOG.debug("Order contractRequired, expect contract signed before payment");
 				expectOrderStatus(order, newStatus,
 						EnumSet.of(Order.Status.CONTRACT_SIGNED, Order.Status.PAYMENT_IN_PROCESS,
 								Order.Status.PARTIAL_PAID, Order.Status.PAYMENT_FAILED, Order.Status.REFUND_REQUESTED));
@@ -777,10 +809,17 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			}
 			break;
 
+		case PAYMENT_FAILED:
+			// TODO: should handle PARTIAL_PAID once its implemented
+			LOG.debug("Expect order isPayable");
+			expectOrderStatusCondition(order.isPayable());
+			break;
+
 		//
 		case REFUND_REQUESTED:
 			// should be already paid
-			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.PAID));
+			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.PARTIAL_PAID,
+					Order.Status.PAID, Order.Status.TICKET_RELEASED));
 			break;
 
 		//
@@ -848,7 +887,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		order.setStatus(newStatus);
 		order.setLastModifiedDate(new Date());
-		return safeExecute(() -> {
+		T updated = safeExecute(() -> {
 			T orderUpdated = getOrderRepository().save(order);
 			if (orderUpdated.getStatus() == Order.Status.CANCELLED) {
 				eventBus.post(new OrderEvent(OrderEvent.EventType.CANCELLATION, orderUpdated));
@@ -856,6 +895,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			}
 			return orderUpdated;
 		}, "Update %s: %s to status %s failed", type.getSimpleName(), order.getId(), newStatus);
+
+		// update the status of order ref
+		orderRefRepository.updateOrderStatus(updated.getId(), updated.getStatus());
+		return updated;
 	}
 
 	private void returnBackPoints(Order order, Order.Status status) {
@@ -906,7 +949,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			}
 			if (status == null) {
 				return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusInOrderByCreationDateDesc(userId,
-						Order.Status.visibleStatus(), Pages.createPageRequest(page, pageSize)));
+						Order.Status.VISIBLE_STATUSES, Pages.createPageRequest(page, pageSize)));
 				// return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusNotOrderByCreationDateDesc(userId,
 				// Order.Status.DELETED, Pages.createPageRequest(page, pageSize)));
 			}
@@ -964,7 +1007,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			LOG.debug("List recent {} days({}) orders for user: {}", days, creationDate, userId);
 			return Pages.adapt(getOrderRepository()
 					.findByOwnerIdAndStatusInAndCreationDateLessThanEqualOrderByCreationDateDesc(userId,
-							Order.Status.visibleStatus(), creationDate, Pages.createPageRequest(page, pageSize)));
+							Order.Status.VISIBLE_STATUSES, creationDate, Pages.createPageRequest(page, pageSize)));
 		}
 		// metrics
 		finally {
@@ -1071,6 +1114,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 */
 	protected void doDeleteOrder(String orderId) {
 		safeDeletion(getOrderRepository(), orderId, Codes.ORDER_CANNOT_BE_DELETED, M.msg(M.ORDER_CANNOT_BE_DELETED));
+		orderRefRepository.delete(orderId);
 	}
 
 	/**
@@ -1079,5 +1123,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	protected void doDeleteOrders(String userId) {
 		safeDeletion(getOrderRepository(), () -> getOrderRepository().deleteByOwnerId(userId),
 				Codes.ORDER_CANNOT_BE_DELETED, M.msg(M.USER_ORDERS_CANNOT_BE_DELETED, userId));
+		orderRefRepository.deleteByOwnerId(userId);
 	}
 }

@@ -32,18 +32,18 @@ public class CourseOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "aircraft_type", nullable = false)
+	@Size(max = AIRCRAFT_TYPE_LEN)
+	@Column(name = "aircraft_type", length = AIRCRAFT_TYPE_LEN, nullable = false)
 	private String aircraftType;
 
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "license", nullable = false)
+	@Size(max = AIRCRAFT_LICENSE_LEN)
+	@Column(name = "license", length = AIRCRAFT_LICENSE_LEN, nullable = false)
 	private String license;
 
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "location", nullable = false)
+	@Size(max = COURSE_LOCATION_LEN)
+	@Column(name = "location", length = COURSE_LOCATION_LEN, nullable = false)
 	private String location;
 
 	@NotNull

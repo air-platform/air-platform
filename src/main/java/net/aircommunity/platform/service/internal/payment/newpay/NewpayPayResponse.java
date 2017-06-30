@@ -52,16 +52,13 @@ public class NewpayPayResponse extends NewpayResponse {
 	private String tradeNo;
 
 	/**
-	 * Parse the data to construct NewpayPayResponse
+	 * Parse the data to construct NewpayPayResponse (signature is not verified)
 	 * 
 	 * @param data the incoming key value data
 	 * @return NewpayPayResponse
-	 * @throws NewpayException if failed to parse or RSA signature verification failure
 	 */
 	public static NewpayPayResponse parse(Map<String, String> data) {
-		NewpayPayResponse response = convert(data, NewpayPayResponse.class);
-		response.verifySignature();
-		return response;
+		return convert(data, NewpayPayResponse.class);
 	}
 
 	public int getOrderAmount() {

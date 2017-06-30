@@ -52,15 +52,15 @@ public class Promotion extends Persistable {
 	 */
 	public static final int DEFAULT_RANK = LOWEST_RANK;
 
-	@NotNull
-	@Column(name = "category", length = 20, nullable = false)
-	@Enumerated(EnumType.STRING)
-	private Category category;
-
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "name", length = 255, nullable = false)
+	@Size(max = PRODUCT_NAME_LEN) // same as product name length
+	@Column(name = "name", length = PRODUCT_NAME_LEN, nullable = false)
 	private String name;
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "category", length = PRODUCT_CATEGORY_LEN, nullable = false)
+	private Category category;
 
 	// product rank (high rank will considered as hot, sort by rank DESC, 0 will be the lowest rank)
 	@Min(LOWEST_RANK)

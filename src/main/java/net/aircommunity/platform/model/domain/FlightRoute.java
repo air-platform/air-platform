@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -17,32 +18,32 @@ import io.micro.annotation.constraint.NotEmpty;
  */
 @Embeddable
 @XmlAccessorType(XmlAccessType.FIELD)
-public class FlightRoute implements Serializable {
+public class FlightRoute implements Serializable, DomainConstants {
 	private static final long serialVersionUID = 1L;
 
 	// departure city
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "departure", nullable = false)
+	@Size(max = CITY_NAME_LEN)
+	@Column(name = "departure", length = CITY_NAME_LEN, nullable = false)
 	private String departure;
 
-	@Column(name = "departure_lat")
-	private double departureLatitude;
+	@Column(name = "departure_lat", precision = 10, scale = 8)
+	private BigDecimal departureLatitude = BigDecimal.ZERO;
 
-	@Column(name = "departure_lon")
-	private double departureLongitude;
+	@Column(name = "departure_lon", precision = 11, scale = 8)
+	private BigDecimal departureLongitude = BigDecimal.ZERO;
 
 	// arrival city
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "arrival", nullable = false)
+	@Size(max = CITY_NAME_LEN)
+	@Column(name = "arrival", length = CITY_NAME_LEN, nullable = false)
 	private String arrival;
 
-	@Column(name = "arrival_lat")
-	private double arrivalLatitude;
+	@Column(name = "arrival_lat", precision = 10, scale = 8)
+	private BigDecimal arrivalLatitude = BigDecimal.ZERO;
 
-	@Column(name = "arrival_lon")
-	private double arrivalLongitude;
+	@Column(name = "arrival_lon", precision = 11, scale = 8)
+	private BigDecimal arrivalLongitude = BigDecimal.ZERO;
 
 	public String getDeparture() {
 		return departure;
@@ -52,19 +53,19 @@ public class FlightRoute implements Serializable {
 		this.departure = departure;
 	}
 
-	public double getDepartureLatitude() {
+	public BigDecimal getDepartureLatitude() {
 		return departureLatitude;
 	}
 
-	public void setDepartureLatitude(double departureLatitude) {
+	public void setDepartureLatitude(BigDecimal departureLatitude) {
 		this.departureLatitude = departureLatitude;
 	}
 
-	public double getDepartureLongitude() {
+	public BigDecimal getDepartureLongitude() {
 		return departureLongitude;
 	}
 
-	public void setDepartureLongitude(double departureLongitude) {
+	public void setDepartureLongitude(BigDecimal departureLongitude) {
 		this.departureLongitude = departureLongitude;
 	}
 
@@ -76,19 +77,19 @@ public class FlightRoute implements Serializable {
 		this.arrival = arrival;
 	}
 
-	public double getArrivalLatitude() {
+	public BigDecimal getArrivalLatitude() {
 		return arrivalLatitude;
 	}
 
-	public void setArrivalLatitude(double arrivalLatitude) {
+	public void setArrivalLatitude(BigDecimal arrivalLatitude) {
 		this.arrivalLatitude = arrivalLatitude;
 	}
 
-	public double getArrivalLongitude() {
+	public BigDecimal getArrivalLongitude() {
 		return arrivalLongitude;
 	}
 
-	public void setArrivalLongitude(double arrivalLongitude) {
+	public void setArrivalLongitude(BigDecimal arrivalLongitude) {
 		this.arrivalLongitude = arrivalLongitude;
 	}
 

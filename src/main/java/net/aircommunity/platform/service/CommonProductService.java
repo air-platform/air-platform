@@ -183,6 +183,15 @@ public interface CommonProductService {
 	ProductFaq updateProductFaq(@Nonnull String productFaqId, @Nonnull ProductFaq newFaq);
 
 	/**
+	 * Increase views of a FAQ of a product.
+	 * 
+	 * @param productFaqId the productFaqId
+	 * @return the updated FAQ
+	 */
+	@Nonnull
+	ProductFaq increaseProductFaqViews(@Nonnull String productFaqId);
+
+	/**
 	 * Delete a product FAQ.
 	 * 
 	 * @param productFaqId the productFaqId

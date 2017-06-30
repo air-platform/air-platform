@@ -47,20 +47,20 @@ public class Course extends StandardProduct {
 
 	// aircraft type
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "aircraft_type", nullable = false)
+	@Size(max = AIRCRAFT_TYPE_LEN)
+	@Column(name = "aircraft_type", length = AIRCRAFT_TYPE_LEN, nullable = false)
 	private String aircraftType;
 
-	// which city
+	// which city and may have address detail, FIXME: better just use city name
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "location", nullable = false)
+	@Size(max = COURSE_LOCATION_LEN)
+	@Column(name = "location", length = COURSE_LOCATION_LEN, nullable = false)
 	private String location;
 
 	// air driving license
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "license", nullable = false)
+	@Size(max = AIRCRAFT_LICENSE_LEN)
+	@Column(name = "license", length = AIRCRAFT_LICENSE_LEN, nullable = false)
 	private String license;
 
 	@NotNull

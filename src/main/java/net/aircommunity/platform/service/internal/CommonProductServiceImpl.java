@@ -137,6 +137,14 @@ public class CommonProductServiceImpl extends AbstractProductService<Product> im
 		return doUpdateProductFaq(productFaqId, newFaq);
 	}
 
+	@CachePut(cacheNames = CACHE_NAME_PRD_FAQ, key = "#productFaqId")
+	@Override
+	public ProductFaq increaseProductFaqViews(String productFaqId) {
+		ProductFaq faq = findProductFaq(productFaqId);
+		faq.increaseViews();
+		return safeExecute(() -> productFaqRepository.save(faq), "Increase FAQ views: %s failed", productFaqId);
+	}
+
 	@CacheEvict(cacheNames = CACHE_NAME_PRD_FAQ, key = "#productFaqId")
 	@Override
 	public void deleteProductFaq(String productFaqId) {

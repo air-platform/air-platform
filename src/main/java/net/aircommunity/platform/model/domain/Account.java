@@ -2,10 +2,12 @@ package net.aircommunity.platform.model.domain;
 
 import java.util.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Temporal;
@@ -36,31 +38,32 @@ public abstract class Account extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// display purpose
-	@Size(max = 255)
+	@Size(max = DEFAULT_FIELD_LEN)
 	@Column(name = "nick_name")
 	protected String nickName;
 
 	// XXX NOTE: useful only for role TENANT and ADMIN
 	@XmlTransient
-	@Size(max = 255)
-	@Column(name = "api_key", nullable = false, unique = true)
+	@Size(max = ACCOUNT_APIKEY_LEN)
+	@Column(name = "api_key", length = ACCOUNT_APIKEY_LEN, nullable = false, unique = true)
 	protected String apiKey;
 
 	@XmlTransient
-	@Size(max = 255)
-	@Column(name = "password", nullable = false)
+	@Size(max = ACCOUNT_PASSWORD_LEN)
+	@Basic(fetch = FetchType.LAZY)
+	@Column(name = "password", length = ACCOUNT_PASSWORD_LEN, nullable = false)
 	protected String password;
 
 	@NotNull
-	@Column(name = "role", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "role", length = ACCOUNT_ROLE_LEN, nullable = false)
 	protected Role role;
 
-	@Column(name = "status", length = 8, nullable = false)
+	@Column(name = "status", length = ACCOUNT_STATUS_LEN, nullable = false)
 	@Enumerated(EnumType.STRING)
 	protected Status status = Status.ENABLED;
 
-	@Size(max = 255)
+	@Size(max = DEFAULT_FIELD_LEN)
 	@Column(name = "avatar")
 	protected String avatar;
 
@@ -76,7 +79,7 @@ public abstract class Account extends Persistable {
 
 	// last accessed IP regardless from which source (AUTH type)
 	// just duplicated AccountAuth lastAccessedIp for quick lookup
-	@Size(max = 255)
+	@Size(max = DEFAULT_FIELD_LEN)
 	@Column(name = "last_accessed_ip")
 	@JsonView(JsonViews.Admin.class)
 	protected String lastAccessedIp;

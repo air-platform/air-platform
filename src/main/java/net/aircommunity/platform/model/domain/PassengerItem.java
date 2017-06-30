@@ -30,20 +30,20 @@ public class PassengerItem extends Persistable {
 
 	// Passenger name
 	@XmlTransient
-	@Size(max = 255)
-	@Column(name = "name")
+	@Size(max = PERSON_NAME_LEN)
+	@Column(name = "name", length = PERSON_NAME_LEN)
 	private String name;
 
 	// Passenger mobile
 	@XmlTransient
-	@Size(max = 255)
-	@Column(name = "mobile")
+	@Size(max = MOBILE_LEN)
+	@Column(name = "mobile", length = MOBILE_LEN)
 	private String mobile;
 
 	// e.g. ID Card number
 	@XmlTransient
-	@Size(max = 255)
-	@Column(name = "identity")
+	@Size(max = IDENTITY_LEN)
+	@Column(name = "identity", length = IDENTITY_LEN)
 	private String identity;
 
 	@NotNull

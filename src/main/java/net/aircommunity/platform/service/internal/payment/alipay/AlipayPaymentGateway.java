@@ -15,11 +15,14 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
+import com.alipay.api.domain.AlipayTradeQueryModel;
 import com.alipay.api.domain.AlipayTradeRefundModel;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
+import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -64,8 +67,6 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 	private static final String TRADE_SUCCESS = "TRADE_SUCCESS";
 	// TRADE_CLOSED: 未付款交易超时关闭，或支付完成后全额退款
 	private static final String TRADE_CLOSED = "TRADE_CLOSED";
-	private static final PaymentResponse NOTIFICATION_RESPONSE_FAILURE = new PaymentResponse("failure");
-	private static final PaymentResponse NOTIFICATION_RESPONSE_SUCCESS = new PaymentResponse("success");
 	private static final SimpleDateFormat PAYMENT_TIMESTAMP_FORMATTER = DateFormats.simple("yyyy-MM-dd HH:mm:ss");
 	private static final String NOTIFICATION_RESULT_TRADE_APP_PAY_RESPONSE = "alipay_trade_app_pay_response";
 	private static final String NOTIFICATION_RESULT_STATUS = "resultStatus";
@@ -110,7 +111,7 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 	@Override
 	public PaymentRequest createPaymentRequest(Order order) {
 		LOG.debug("Create payment request for order: {}", order);
-		LOG.info("orderNo: {}", order.getOrderNo());
+		LOG.info("Order No: {}", order.getOrderNo());
 		AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
 		// SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
 		AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
@@ -134,13 +135,13 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 		request.setBizModel(model);
 		request.setNotifyUrl(config.getNotifyUrl());
 		request.setReturnUrl(config.getReturnUrl());
-		LOG.debug("notify url: {}", request.getNotifyUrl());
-		LOG.debug("return url: {}", request.getReturnUrl());
+		LOG.debug("Notify url: {}", request.getNotifyUrl());
+		LOG.debug("Return url: {}", request.getReturnUrl());
 		try {
 			AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
 			// 就是orderString 可以直接给客户端请求，无需再做处理
 			String orderString = response.getBody();
-			LOG.info("orderInfo: {}", orderString);
+			LOG.info("Order info: {}", orderString);
 			return new PaymentRequest(orderString);
 		}
 		catch (Exception e) {
@@ -219,7 +220,7 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 						// 4) check total_amount matches the total price of the order and check order status?
 						if (OrderPrices.priceMatches(totalAmount, order.getTotalPrice()) && order.isProbablyPaid()) {
 							// it may still FAILURE because of async notification from payment system, just a guess
-							commonOrderService.updateOrderStatus(order.getId(), Order.Status.PAYMENT_IN_PROCESS);
+							commonOrderService.updateOrderStatus(order, Order.Status.PAYMENT_IN_PROCESS);
 							return PaymentVerification.SUCCESS;
 						}
 					}
@@ -236,6 +237,8 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 		return PaymentVerification.FAILURE;
 	}
 
+	// 程序执行完后必须打印输出“success”（不包含引号）。如果商户反馈给支付宝的字符不是success这7个字符，支付宝服务器会不断重发通知，直到超过24小时22分钟。
+	// 一般情况下，25小时以内完成8次通知（通知的间隔频率一般是：4m,10m,10m,1h,2h,6h,15h）；
 	@Override
 	@SuppressWarnings("unchecked")
 	public PaymentResponse processServerPaymentNotification(PaymentNotification notification) {
@@ -247,7 +250,7 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 					ALIPAY_SIGN_TYPE);
 			if (!signVerified) {
 				LOG.error("Signature verification failure, payment failed");
-				return NOTIFICATION_RESPONSE_FAILURE;
+				return PaymentResponse.failure(PaymentResponse.Status.INVALID_SIGNATURE);
 			}
 
 			String orderNo = params.get(NOTIFICATION_RESULT_OUT_TRADE_NO); // 商户订单号
@@ -258,36 +261,56 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 
 			// 2) check APP_ID
 			if (!config.getAppId().equals(appId)) {
-				LOG.error("APP ID mismatch expected: {}, but was: {}, payment failed", config.getAppId(), appId);
-				return NOTIFICATION_RESPONSE_FAILURE;
+				LOG.error("AppId mismatch expected: {}, but was: {}, payment failed", config.getAppId(), appId);
+				return PaymentResponse.failure(PaymentResponse.Status.APP_ID_MISMATCH);
 			}
 
 			// 3) check trade status
 			switch (tradeStatus) {
-			// refund success or payment timeout and closed
+			// Available status for TRADE REFUND action:
+			// NOTE: refund success or payment timeout and closed, we do nothing with our order (because refund is SYNC
+			// operation)
+			// TRADE_CLOSED: 在指定时间段内未支付时关闭的交易； 在交易完成全额退款成功时关闭的交易。
 			case TRADE_CLOSED:
 				// 交易退款时间
 				// Date refundTimestamp = PAYMENT_TIMESTAMP_FORMATTER.parse(params.get(NOTIFICATION_RESULT_GMT_REFUND));
 				// 总退款金额
 				// String refundFee = params.get(NOTIFICATION_RESULT_REFUND_FEE);
-				Optional<Order> orderRef = commonOrderService.lookupByOrderNo(orderNo);
-				if (orderRef.isPresent()) {
-					Order order = orderRef.get();
-					LOG.info("[{}]: {}", tradeStatus, order);
+				if (LOG.isDebugEnabled()) {
+					Optional<Order> orderRef = commonOrderService.lookupByOrderNo(orderNo);
+					if (orderRef.isPresent()) {
+						Order order = orderRef.get();
+						LOG.debug("[{}]: {}", tradeStatus, order);
+					}
 				}
 				// just success anyway because AlipaySignature.rsaCheckV1 is already done (no order check ATM)
-				return NOTIFICATION_RESPONSE_SUCCESS;
+				return PaymentResponse.success();
 
+			// Available status for TRADE PAY action:
+			// 1) TRADE_FINISHED 交易成功
+			// 2) TRADE_SUCCESS 支付成功
+			// 3) WAIT_BUYER_PAY 交易创建
 			// payment success
 			case TRADE_FINISHED:
 			case TRADE_SUCCESS:
 				// 交易付款时间
 				Date paymentDate = PAYMENT_TIMESTAMP_FORMATTER.parse(params.get(NOTIFICATION_RESULT_GMT_PAYMENT));
-				return doProcessPaymentNotification(totalAmount, orderNo, tradeNo, paymentDate);
+				PaymentResponse response = doProcessPaymentSuccess(totalAmount, orderNo, tradeNo, paymentDate);
+				if (!response.isSuccessful()) {
+					tryAutoRefundOnFailure(tradeNo, orderNo, totalAmount, response.getBody());
+				}
+				return response;
 
 			default:
+				// no payment failure notification
 				LOG.error("Trade status {} is not processed, just considered as failed", tradeStatus);
-				return NOTIFICATION_RESPONSE_FAILURE;
+				Optional<Order> orderRef = commonOrderService.lookupByOrderNo(orderNo);
+				if (orderRef.isPresent()) {
+					commonOrderService.handleOrderPaymentFailure(orderRef.get(),
+							M.msg(M.PAYMENT_SERVER_NOTIFY_TRADE_FAILURE, tradeStatus));
+				}
+				return PaymentResponse.failure(PaymentResponse.Status.UNSUCCESS_TRADE_STATUS,
+						M.msg(M.PAYMENT_SERVER_NOTIFY_TRADE_FAILURE, tradeStatus));
 			}
 		}
 		catch (AlipayApiException e) {
@@ -297,7 +320,42 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 		catch (Exception e) {
 			LOG.error(String.format("Process trade notification result failure, cause: %s", e.getMessage()), e);
 		}
-		return NOTIFICATION_RESPONSE_FAILURE;
+		return PaymentResponse.failure(PaymentResponse.Status.UNKNOWN);
+	}
+
+	/**
+	 * Try refund on handle notification failure, and just ignored if refund failed
+	 */
+	private void tryAutoRefundOnFailure(String tradeNo, String orderNo, BigDecimal refundAmount, String reason) {
+		AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
+		AlipayTradeRefundModel model = new AlipayTradeRefundModel();
+		model.setTradeNo(tradeNo);
+		model.setRefundAmount(String.valueOf(refundAmount));
+		model.setRefundReason(M.msg(M.REFUND_ON_PAYMENT_NOTIFY_FAILURE, tradeNo, orderNo, reason));
+		alipayRequest.setBizModel(model);
+		if (LOG.isInfoEnabled()) {
+			LOG.info("Final auto refund on failure: {}", toJson(alipayRequest));
+		}
+		try {
+			AlipayTradeRefundResponse refundResponse = alipayClient.execute(alipayRequest);
+			if (LOG.isInfoEnabled()) {
+				LOG.info("Final refund response: {}", toJson(refundResponse));
+			}
+			if (refundResponse.isSuccess()) {
+				LOG.info("Final auto refund for tradeNo: {} success", tradeNo);
+				return;
+			}
+			LOG.error(M.msg(M.REFUND_FAILURE, refundResponse.getCode(), refundResponse.getMsg()));
+		}
+		catch (Exception e) {
+			if (AlipayApiException.class.isAssignableFrom(e.getClass())) {
+				AlipayApiException ex = AlipayApiException.class.cast(e);
+				LOG.error(M.msg(M.REFUND_FAILURE, ex.getErrCode(), ex.getErrMsg()), e);
+			}
+			else {
+				LOG.error(String.format("Auto refund failure for tradeNo: %s, cause: %s", tradeNo, e.getMessage()), e);
+			}
+		}
 	}
 
 	@Override
@@ -352,16 +410,6 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 		}
 	}
 
-	@Override
-	protected PaymentResponse getPaymentFailureResponse() {
-		return NOTIFICATION_RESPONSE_FAILURE;
-	}
-
-	@Override
-	protected PaymentResponse getPaymentSuccessResponse() {
-		return NOTIFICATION_RESPONSE_SUCCESS;
-	}
-
 	private String toJson(Object object) {
 		try {
 			return objectMapper.writeValueAsString(object);
@@ -371,22 +419,55 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 		return null;
 	}
 
-	// WORKS
-	// private void testQuery() {
-	// AlipayTradeQueryRequest alipayRequest = new AlipayTradeQueryRequest();
-	// AlipayTradeQueryModel model = new AlipayTradeQueryModel();
-	// // model.setOutTradeNo(out_trade_no);
-	// model.setTradeNo("2017061321001004040275979115");
-	// alipayRequest.setBizModel(model);
-	// try {
-	// AlipayTradeQueryResponse alipayResponse = alipayClient.execute(alipayRequest);
-	// System.out.println(alipayResponse.getBody());
-	// }
-	// catch (AlipayApiException e) {
-	// e.printStackTrace();
-	// }
-	// }
+	private void testQuery(Order order) {
+		AlipayTradeQueryRequest alipayRequest = new AlipayTradeQueryRequest();
+		AlipayTradeQueryModel model = new AlipayTradeQueryModel();
+		model.setOutTradeNo(order.getOrderNo());
+		alipayRequest.setBizModel(model);
+		try {
+			AlipayTradeQueryResponse alipayResponse = alipayClient.execute(alipayRequest);
+			// 交易状态：WAIT_BUYER_PAY（交易创建，等待买家付款）、TRADE_CLOSED（未付款交易超时关闭，或支付完成后全额退款）、TRADE_SUCCESS（交易支付成功）、TRADE_FINISHED（交易结束，不可退款）
+			if (alipayResponse.isSuccess()) {
 
+			}
+			System.out.println(alipayResponse.getBody());
+		}
+		catch (AlipayApiException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String arg[]) throws Exception {
+		AlipayConfig alipayConfig = new AlipayConfig();
+		alipayConfig.setAppId("2017060907455116");
+		alipayConfig.setAppPrivateKey(
+				"MIIEwAIBADANBgkqhkiG9w0BAQEFAASCBKowggSmAgEAAoIBAQCzd1f1XztJ4AH6psb69aLgdecrikGiQzM4MFf9fyzgxE2AdTgMgSSTvzhHpiT1+Cr4ksMqsHMO2hrTaHLTuCKhb4HYq44VKib7NrF1XRq5h9PNOBAR6bV3QRbcFN3QZDR/GZMOqQOGMsarT87L2PXsEuCcTDJnYOqaWwGgWPTq1xV8O+xvBBYTHNZtRTpLpxCd1XMelXk9QDZyNtSPuekMOzKFxcJvPYFNSLck0alMdnSWqest8WDq1isae4bBzMQeL6k3UcDBJG0XSm4mMpTCePxt9ai4pOlhwxQ+OlMzGesa9lCSPPfXHCHT3XM+T09uuCCfN5Y193XcklmKwn4NAgMBAAECggEBAKafhGPFgjdpqoy8MXwpeYqrDPFI0P1FJRXjFJ7AZ7tbppVAv8QkVwByBl/HawOP4N2e7WMCJiFA8K0diZb2m/iEneq8BROzajPNKN/NjJV6/XPIvGrVMO1C2mWFXhgwIOlspjNzSllbZUcCtv5eNp1zPWT//cArpEWhfxYP4Xzymy+jO6fKm1c8Omn1mJyOEQeneh5OwoBYEV32rX/mpBVmKnpVP6HsVxsU/U05bB2eTUyKsKCtzPhhDZoRwbsxqI7V+MaYdz613muHh8OIZHtMS+SF5fw+O5ZWJAWsP2Cxta602BHqascADaTQ3tgbaPv+/I8YrDU++KnuLHvKkMUCgYEA64o9yUw4BZgBFhcN8/q5GHJjD3T7VvcX9E3oD/dEiejXd9RHFJqV47DEDSO+XrKI/Shk/U6WiRSmqksXhVw0ynf8NYDrjbBjPIXTIqNyIuKRkZw+DCoAb3QkVLPzTIUUd2D1+zPhNi12k6fyRYhlgait5ZlN6HKE9nvmcOm+GhcCgYEAww4s7NQNfKefiHR5fqjIc2BvcOMKUUPApJEQxqm/8hTRmCZG/MvZWpvZTwERb0AsDNGu16b+Dq+mqnYshD0zwkvW0WBsLKpac6W3P53UP5cwypPYj49x9dNo8a7no3j1c0DsEnpoAVI5dqyq4VYHSKZHhREKQjRw9ljdDmxN03sCgYEAh40jSbmHdBCqb2ANM5/S7fLGd5rHGqFRM9Ox/Z4733IUrm2ICp98K3ELItSzNiRhGfApTm3vzCwKTm6wtpr99pdemhv7c6tTMP2DKKgPg2wIglf8jVuOrJWWYvi8yAi+YoV2in6s2VUIrKk2kDWS1S+SBFRZtbBSPNfJIqoiMTkCgYEAksM0vFFlgHijScnRrKKUiHN0Bm1eUvz2kxxvkfshaKWPerq6SPWcqld/b7lvA9U2D8MpmiuVFznE3peiMTHXowbrMIkre4QGIOP8eIpprBs3ZAVQOdyFs6CJYufmdJLLpBeiSNj/LpdOk2OiA4B2ZIxwXcgPfvb0U/dTBMoq2McCgYEA1QeHkDYsF3szmY2w9AeGw/lgIQGHtL+5Ir32x4t8B/EsuWpNF1jFAzx/shoWFqw+oCcA6mDfTaUgankpYKYGnUXkP0aHZNCN1+V+MuSfBq+RFRCqiMFT0C9k/bn47nW/qg2q2DJGw0LAJJ0upqIsYs391UJwW0xzwLUXmT40RTA=");
+		alipayConfig.setPublicKey(
+				"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAooqAPK0uB0LBA9RjaTNgD1NK5h/ZYbuVteNhVMyeUcJQUXrOWB8Fbpv/uhJoqjtZlXud4svJ8jJ9xx2H2LJqW4eGnAekyI848T/C99X6z67R0QBzyZHjFejUxvv6GbDyF80eMn4MJFslaS51iBhZQC3ilCzgBQ4jjBRwCMP3tPVgoMpYV0vo6QJ9pTFojs84fe23lNcd0fA5rfRWJsai4F7oBD0odG77SVPbohuPefj3BHYppItCSFdwmjLXdGFsi2X+KIvkDQCsHcwhbjJvp9A8SWU0vUAcpakE5dvp2zoN5mYQJDR/CePiEEe7i32CtwJ0Uni5eqIKsSmmMbOIEQIDAQAB");
+		AlipayPaymentGateway g = new AlipayPaymentGateway(alipayConfig);
+		// g.init();
+		AlipayTradeQueryRequest alipayRequest = new AlipayTradeQueryRequest();
+		AlipayTradeQueryModel model = new AlipayTradeQueryModel();
+		model.getOutTradeNo();
+		// model.setOutTradeNo(out_trade_no);
+		model.setTradeNo("2017061321001004040275979115");
+		model.setTradeNo("2017062921001004450274967595");
+		alipayRequest.setBizModel(model);
+		try {
+			AlipayTradeQueryResponse alipayResponse = g.alipayClient.execute(alipayRequest);
+			if (alipayResponse.isSuccess()) {
+
+			}
+			// TRADE_SUCCESS（交易支付成功）、TRADE_FINISHED
+			alipayResponse.getTradeStatus();
+
+			System.out.println(alipayResponse.getBody());
+		}
+		catch (AlipayApiException e) {
+			e.printStackTrace();
+		}
+
+	}
 	// WORKS
 	// private void testQueryRefund() {
 	// AlipayTradeFastpayRefundQueryRequest alipayRequest = new AlipayTradeFastpayRefundQueryRequest();

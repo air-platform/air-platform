@@ -32,30 +32,30 @@ public class Aircraft extends Persistable {
 
 	// Flight NO. global unique, e.g. 353252
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "flight_no", nullable = false, unique = true)
+	@Size(max = AIRCRAFT_FLIGHT_NO_LEN)
+	@Column(name = "flight_no", length = AIRCRAFT_FLIGHT_NO_LEN, nullable = false, unique = true)
 	private String flightNo;
 
 	// Flight name
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "name", nullable = false)
+	@Size(max = AIRCRAFT_NAME_LEN)
+	@Column(name = "name", length = AIRCRAFT_NAME_LEN, nullable = false)
 	private String name;
 
-	@Size(max = 255)
-	@Column(name = "image")
+	@Size(max = IMAGE_URL_LEN)
+	@Column(name = "image", length = IMAGE_URL_LEN)
 	private String image;
 
 	// e.g. G550
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "type", nullable = false)
+	@Size(max = AIRCRAFT_TYPE_LEN)
+	@Column(name = "type", length = AIRCRAFT_TYPE_LEN, nullable = false)
 	private String type;
 
 	// e.g. fixed-wing / helicopter / balloon
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "category", nullable = false)
+	@Size(max = AIRCRAFT_CATEGORY_LEN)
+	@Column(name = "category", length = AIRCRAFT_CATEGORY_LEN, nullable = false)
 	private String category;
 
 	// Number of seats

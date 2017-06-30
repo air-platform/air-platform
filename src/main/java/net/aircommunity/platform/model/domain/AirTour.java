@@ -22,12 +22,13 @@ public class AirTour extends SalesPackageProduct {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "city", nullable = false)
+	@Size(max = CITY_NAME_LEN)
+	@Column(name = "city", length = CITY_NAME_LEN, nullable = false)
 	private String city;
 
-	@Size(max = 255)
-	@Column(name = "tour_distance")
+	// TODO better make it int
+	@Size(max = FLYING_DISTANCE_LEN)
+	@Column(name = "tour_distance", length = FLYING_DISTANCE_LEN)
 	private String tourDistance;
 
 	// e.g. time in minutes
@@ -43,7 +44,7 @@ public class AirTour extends SalesPackageProduct {
 	@Column(name = "tour_show")
 	private String tourShow;
 
-	@Size(max = 255)
+	@Size(max = DEFAULT_FIELD_LEN)
 	@Column(name = "boarding_location")
 	private String boardingLocation;
 

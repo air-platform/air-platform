@@ -1,4 +1,4 @@
-package net.aircommunity.platform.service.internal;
+package net.aircommunity.platform.service.internal.payment;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -44,7 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
 	private static final String KEY_PAYMENT_METHOD = "paymentMethod";
 	private static final String KEY_PAYMENT_ACTION = "paymentAction";
 
-	private static final String ACTION_PAYMENT = "PAYMENT";
+	private static final String ACTION_PAY_REQUEST = "PAY_REQUEST";
 	private static final String ACTION_REFUND = "REFUND";
 	private static final String ACTION_VERIFY_CLIENT_NOTIFY = "CLT_NOTIFY";
 	private static final String ACTION_PROCESS_SERVER_NOTIFY = "SRV_NOTIFY";
@@ -68,13 +68,12 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public PaymentRequest createPaymentRequest(Payment.Method paymentMethod, Order order) {
-		// Order order = commonOrderService.findByOrderNo(orderNo);
 		if (!order.isPayable()) {
-			LOG.error("Order [{}] is not ready to pay", order.getOrderNo());
+			LOG.error("Order [{}] status is {}, and it is not ready to pay", order.getOrderNo(), order.getStatus());
 			throw new AirException(Codes.ORDER_NOT_PAYABLE, M.msg(M.ORDER_NOT_PAYABLE, order.getOrderNo()));
 		}
 		PaymentGateway paymentGateway = getPaymentGateway(paymentMethod);
-		return call(paymentMethod, ACTION_PAYMENT, () -> paymentGateway.createPaymentRequest(order));
+		return call(paymentMethod, ACTION_PAY_REQUEST, () -> paymentGateway.createPaymentRequest(order));
 	}
 
 	@Override
@@ -90,8 +89,12 @@ public class PaymentServiceImpl implements PaymentService {
 	public PaymentResponse processServerPaymentNotification(Payment.Method paymentMethod,
 			PaymentNotification notification) {
 		PaymentGateway paymentGateway = getPaymentGateway(paymentMethod);
-		return call(paymentMethod, ACTION_PROCESS_SERVER_NOTIFY,
+		PaymentResponse response = call(paymentMethod, ACTION_PROCESS_SERVER_NOTIFY,
 				() -> paymentGateway.processServerPaymentNotification(notification));
+
+		// TODO
+
+		return response;
 	}
 
 	@Override
@@ -104,7 +107,7 @@ public class PaymentServiceImpl implements PaymentService {
 		PaymentGateway paymentGateway = paymentGatewayRegistry.get(paymentMethod);
 		if (paymentGateway == null) {
 			LOG.error("Payment gateway not found for payment method: {}", paymentMethod);
-			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
+			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.PAYMENT_SERVICE_UNAVAILABLE));
 		}
 		return paymentGateway;
 	}

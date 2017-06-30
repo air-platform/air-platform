@@ -51,8 +51,8 @@ public class SalesPackage extends Persistable {
 
 	// price package name
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "name", nullable = false)
+	@Size(max = SALES_PACKAGE_NAME_LEN)
+	@Column(name = "name", length = SALES_PACKAGE_NAME_LEN, nullable = false)
 	private String name;
 
 	// the number of passengers of this package
@@ -63,8 +63,8 @@ public class SalesPackage extends Persistable {
 	// prices for 30days, separated by comma (,) if 0 means the product is not available that day
 	// e.g. 1000,2000,0,3000 etc.
 	@PriceList
-	@Size(max = 255)
-	@Column(name = "prices")
+	@Size(max = SALES_PACKAGE_PRICES_LEN)
+	@Column(name = "prices", length = SALES_PACKAGE_PRICES_LEN)
 	private String prices;
 
 	@XmlTransient
@@ -78,8 +78,8 @@ public class SalesPackage extends Persistable {
 
 	// product price CurrencyUnit
 	@NotNull
-	@Column(name = "currency_unit", nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "currency_unit", length = CURRENCY_UNIT_LEN, nullable = false)
 	private CurrencyUnit currencyUnit = CurrencyUnit.RMB;
 
 	// price package desc

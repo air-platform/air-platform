@@ -48,19 +48,18 @@ public class AccountAuth extends Persistable {
 
 	// e.g. username/email/mobile/wechat/qq/weibo etc.
 	@NotNull
-	@Column(name = "type", length = 20, nullable = false)
+	@Column(name = "type", length = ACCOUNT_AUTHTYPE_LEN, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private AuthType type;
 
 	@NotNull
-	@Size(max = 255)
-	@Column(name = "principal", nullable = false)
+	@Size(max = ACCOUNT_PRINCIPAL_LEN)
+	@Column(name = "principal", length = ACCOUNT_PRINCIPAL_LEN, nullable = false)
 	private String principal;
 
-	// store OAuth access token, just in case its longer than 255
 	@XmlTransient
-	@Size(max = 512)
-	@Column(name = "credential", length = 512)
+	@Size(max = ACCOUNT_CREDENTIAL_LEN)
+	@Column(name = "credential", length = ACCOUNT_CREDENTIAL_LEN)
 	private String credential;
 
 	// expires in seconds, define the lifespan of this auth
@@ -81,13 +80,13 @@ public class AccountAuth extends Persistable {
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private Date lastAccessedDate;
 
-	@Size(max = 255)
+	@Size(max = DEFAULT_FIELD_LEN)
 	@Column(name = "last_accessed_ip")
 	@JsonView(JsonViews.Admin.class)
 	private String lastAccessedIp;
 
 	// user-agent, from which source: app, browser etc.
-	@Size(max = 255)
+	@Size(max = DEFAULT_FIELD_LEN)
 	@Column(name = "last_accessed_source")
 	@JsonView(JsonViews.Admin.class)
 	private String lastAccessedSource;

@@ -14,6 +14,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.retry.support.RetryTemplate;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
@@ -48,6 +49,9 @@ abstract class AbstractServiceSupport {
 
 	@Resource
 	protected Configuration configuration;
+
+	@Resource
+	protected RetryTemplate retryTemplate;
 
 	@Resource
 	protected GaugeService gaugeService;

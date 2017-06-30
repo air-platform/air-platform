@@ -35,7 +35,7 @@ public class AdminOrderResource extends TenantBaseOrderResource<Order> {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<Order> listAllOrders(@QueryParam("user") String userId, @QueryParam("status") Order.Status status,
-			@QueryParam("status") Product.Type type, @QueryParam("page") @DefaultValue("1") int page,
+			@QueryParam("type") Product.Type type, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
 		if (Strings.isBlank(userId)) {
 			return commonOrderService.listAllOrders(status, type, page, pageSize);

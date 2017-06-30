@@ -28,7 +28,6 @@ import com.google.common.base.Joiner;
 
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
-import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.PaymentNotification;
 import net.aircommunity.platform.model.PaymentResponse;
@@ -108,12 +107,9 @@ public class PaymentResource {
 		PaymentResponse paymentResponse = paymentService.processServerPaymentNotification(paymentMethod,
 				new PaymentNotification(params));
 		LOG.debug("Payment response to server: {}", paymentResponse);
-		response.setStatus(paymentResponse.getCode());
 		PrintWriter out = response.getWriter();
-		String body = paymentResponse.getBody();
-		if (Strings.isNotBlank(body)) {
-			out.println(body);
-		}
+		response.setStatus(paymentResponse.getStatus().getHttpStatusCode());
+		out.println(paymentResponse.getMessage());
 		out.flush();
 		out.close();
 	}

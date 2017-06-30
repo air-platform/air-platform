@@ -29,14 +29,14 @@ public class Settings extends Persistable {
 
 	// configuration name
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "name", nullable = false, unique = true)
+	@Size(max = SETTING_NAME_LEN)
+	@Column(name = "name", length = SETTING_NAME_LEN, nullable = false, unique = true)
 	private String name;
 
 	// configuration category
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "category", nullable = false)
+	@Size(max = SETTING_CATEGORY_LEN)
+	@Column(name = "category", length = SETTING_CATEGORY_LEN, nullable = false)
 	private String category;
 
 	// configuration body

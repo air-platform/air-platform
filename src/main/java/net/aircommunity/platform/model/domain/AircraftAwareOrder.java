@@ -57,8 +57,8 @@ public abstract class AircraftAwareOrder extends VendorAwareOrder {
 
 	// e.g. 8:00-9:00
 	@NotEmpty
-	@Size(max = 255) // not restricted to time for now, just make it max of column length
-	@Column(name = "time_slot", nullable = false)
+	@Size(max = TIMESLOT_LEN)
+	@Column(name = "time_slot", length = TIMESLOT_LEN, nullable = false)
 	protected String timeSlot;
 
 	// passengers

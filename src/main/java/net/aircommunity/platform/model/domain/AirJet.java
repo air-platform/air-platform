@@ -24,26 +24,26 @@ public class AirJet extends Persistable {
 
 	// e.g. G550
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "type", nullable = false, unique = true)
+	@Size(max = AIRCRAFT_TYPE_LEN)
+	@Column(name = "type", length = AIRCRAFT_TYPE_LEN, nullable = false, unique = true)
 	private String type;
 
 	// human friendly name
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "name", nullable = false)
+	@Size(max = AIRCRAFT_NAME_LEN)
+	@Column(name = "name", length = AIRCRAFT_NAME_LEN, nullable = false)
 	private String name;
 
 	// product image
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "image", nullable = false)
+	@Size(max = IMAGE_URL_LEN)
+	@Column(name = "image", length = IMAGE_URL_LEN, nullable = false)
 	private String image;
 
 	// e.g. 11 - 14 guests
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "capacity", nullable = false)
+	@Size(max = AIRCRAFT_CAPACITY_LEN)
+	@Column(name = "capacity", length = AIRCRAFT_CAPACITY_LEN, nullable = false)
 	private String capacity;
 
 	// e.g. 430 kilograms of baggage

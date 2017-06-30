@@ -24,20 +24,21 @@ import net.aircommunity.platform.Constants;
  * @author Bin.Zhang
  */
 @Embeddable
-public class Contact implements Serializable {
+public class Contact implements Serializable, DomainConstants {
 	private static final long serialVersionUID = 1L;
 
-	@Size(max = 255)
-	@Column(name = "contact_person")
+	@Size(max = PERSON_NAME_LEN)
+	@Column(name = "contact_person", length = PERSON_NAME_LEN)
 	private String person;
 
 	@Mobile
-	@Column(name = "contact_mobile")
+	@Size(max = MOBILE_LEN)
+	@Column(name = "contact_mobile", length = MOBILE_LEN)
 	private String mobile;
 
 	@Email
-	@Size(max = 255)
-	@Column(name = "contact_email")
+	@Size(max = EMAIL_LEN)
+	@Column(name = "contact_email", length = EMAIL_LEN)
 	private String email;
 
 	public String getPerson() {

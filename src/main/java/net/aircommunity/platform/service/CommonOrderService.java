@@ -86,10 +86,19 @@ public interface CommonOrderService {
 	Order updateOrderStatus(@Nonnull String orderId, @Nonnull Order.Status status);
 
 	@Nonnull
+	Order updateOrderStatus(@Nonnull Order order, @Nonnull Order.Status status);
+
+	@Nonnull
 	PaymentRequest requestOrderPayment(@Nonnull String orderId, @Nonnull Payment.Method paymentMethod);
 
 	@Nonnull
 	Order payOrder(@Nonnull String orderId, @Nonnull Payment payment);
+
+	@Nonnull
+	Order payOrder(@Nonnull Order order, @Nonnull Payment payment);
+
+	@Nonnull
+	Order handleOrderPaymentFailure(@Nonnull Order order, @Nonnull String paymentFailureCause);
 
 	@Nonnull
 	Order requestOrderRefund(@Nonnull String orderId, @Nonnull String refundReason);
@@ -108,6 +117,9 @@ public interface CommonOrderService {
 
 	@Nonnull
 	Order handleOrderRefundFailure(@Nonnull String orderId, @Nonnull String refundFailureCause);
+
+	@Nonnull
+	Order handleOrderRefundFailure(@Nonnull Order order, @Nonnull String refundFailureCause);
 
 	@Nonnull
 	Order cancelOrder(@Nonnull String orderId, @Nonnull String cancelReason);

@@ -21,7 +21,7 @@ import org.hibernate.annotations.Parameter;
  */
 @MappedSuperclass
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class Persistable implements Serializable {
+public abstract class Persistable implements DomainConstants, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// timestamp based UUID
@@ -30,7 +30,7 @@ public abstract class Persistable implements Serializable {
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator", parameters = {
 			@Parameter(name = "uuid_gen_strategy_class", value = "org.hibernate.id.uuid.CustomVersionOneStrategy") })
-	@Column(name = "id", length = 36, updatable = false, nullable = false)
+	@Column(name = "id", length = ID_LEN, updatable = false, nullable = false)
 	protected String id;
 
 	/**

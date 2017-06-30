@@ -25,12 +25,16 @@ public class AirTaxi extends SalesPackageProduct {
 	@Embedded
 	private FlightRoute flightRoute;
 
-	@Size(max = 255)
-	@Column(name = "distance")
+	// TODO better make it int
+	// flying distance in km
+	@Size(max = FLYING_DISTANCE_LEN)
+	@Column(name = "distance", length = FLYING_DISTANCE_LEN)
 	private String distance;
 
-	@Size(max = 255)
-	@Column(name = "duration")
+	// TODO better make it int
+	// duration in minutes
+	@Size(max = FLYING_DURATION_LEN)
+	@Column(name = "duration", length = FLYING_DURATION_LEN)
 	private String duration;
 
 	public AirTaxi() {

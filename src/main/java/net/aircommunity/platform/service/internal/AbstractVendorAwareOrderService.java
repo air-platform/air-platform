@@ -31,7 +31,7 @@ abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> exten
 			}
 			if (status == null) {
 				return Pages.adapt(getOrderRepository().findByVendorIdAndStatusInOrderByCreationDateDesc(tenantId,
-						Order.Status.visibleStatus(), Pages.createPageRequest(page, pageSize)));
+						Order.Status.VISIBLE_STATUSES, Pages.createPageRequest(page, pageSize)));
 			}
 			return Pages.adapt(getOrderRepository().findByVendorIdAndStatusOrderByCreationDateDesc(tenantId, status,
 					Pages.createPageRequest(page, pageSize)));

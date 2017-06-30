@@ -41,21 +41,21 @@ public class User extends Account {
 	private long points = 0;
 
 	// membership level: e.g. member, silver, gold, platinum, diamond
-	@Column(name = "rank", length = 10)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "rank", length = USER_RANK_LEN)
 	private Rank rank = Rank.MEMBER;
 
-	@Size(max = 255)
-	@Column(name = "real_name")
+	@Size(max = PERSON_NAME_LEN)
+	@Column(name = "real_name", length = PERSON_NAME_LEN)
 	private String realName;
 
 	// ID card
-	@Size(max = 255)
-	@Column(name = "identity")
+	@Size(max = IDENTITY_LEN)
+	@Column(name = "identity", length = IDENTITY_LEN)
 	private String identity;
 
-	@Column(name = "gender", length = 8)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "gender", length = GENDER_LEN)
 	private Gender gender;
 
 	@Temporal(value = TemporalType.DATE)
@@ -63,17 +63,17 @@ public class User extends Account {
 	@Column(name = "birthday")
 	private Date birthday;
 
-	@Size(max = 255)
-	@Column(name = "country")
+	@Size(max = COUNTRY_NAME_LEN)
+	@Column(name = "country", length = COUNTRY_NAME_LEN)
 	private String country;
 
 	// state or province
-	@Size(max = 255)
-	@Column(name = "province")
+	@Size(max = PROVINCE_NAME_LEN)
+	@Column(name = "province", length = PROVINCE_NAME_LEN)
 	private String province;
 
-	@Size(max = 255)
-	@Column(name = "city")
+	@Size(max = CITY_NAME_LEN)
+	@Column(name = "city", length = CITY_NAME_LEN)
 	private String city;
 
 	// multiple hobbies with comma(,) separated, e.g. travel, shopping

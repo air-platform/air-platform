@@ -34,26 +34,26 @@ public class FerryFlight extends CharterableProduct {
 
 	// Flight NO. cannot be unique, because it can be different date
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "flight_no", nullable = false)
+	@Size(max = AIRCRAFT_FLIGHT_NO_LEN)
+	@Column(name = "flight_no", length = AIRCRAFT_FLIGHT_NO_LEN, nullable = false)
 	private String flightNo;
 
 	// e.g. Gulfstream 450
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "aircraft_type", nullable = false)
+	@Size(max = AIRCRAFT_TYPE_LEN)
+	@Column(name = "aircraft_type", length = AIRCRAFT_TYPE_LEN, nullable = false)
 	private String aircraftType;
 
 	// departure city
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "departure", nullable = false)
+	@Size(max = CITY_NAME_LEN)
+	@Column(name = "departure", length = CITY_NAME_LEN, nullable = false)
 	private String departure;
 
 	// arrival city
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "arrival", nullable = false)
+	@Size(max = CITY_NAME_LEN)
+	@Column(name = "arrival", length = CITY_NAME_LEN, nullable = false)
 	private String arrival;
 
 	// departure date, e.g. 2017-5-1
@@ -65,8 +65,8 @@ public class FerryFlight extends CharterableProduct {
 
 	// departure timeSlot, e.g. 8:00-9:00
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "time_slot", nullable = false)
+	@Size(max = TIMESLOT_LEN)
+	@Column(name = "time_slot", length = TIMESLOT_LEN, nullable = false)
 	private String timeSlot;
 
 	// images of this flight, comma separated, image1.png,image2/png

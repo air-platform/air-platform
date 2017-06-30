@@ -20,6 +20,7 @@ import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
+import net.aircommunity.platform.repository.AirTaxiOrderRepository;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.PaymentRepository;
 import net.aircommunity.platform.service.CommentService;
@@ -43,6 +44,9 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 
 	@Resource
 	private CommentService commentService;
+
+	@Resource
+	private AirTaxiOrderRepository airTaxiOrderRepository;
 
 	@Override
 	public boolean existsOrderForUser(String userId) {
@@ -77,13 +81,22 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	}
 
 	@Caching(put = { //
-			@CachePut(cacheNames = CACHE_NAME, key = "#orderId"),
-			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")
-			//
+			@CachePut(cacheNames = CACHE_NAME, key = "#orderId"), //
+			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")//
 	})
 	@Override
 	public Order updateOrderStatus(String orderId, Status status) {
 		return doUpdateOrderStatus(orderId, status);
+	}
+
+	@Caching(put = { //
+			@CachePut(cacheNames = CACHE_NAME, key = "#order.id"),
+			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")
+			//
+	})
+	@Override
+	public Order updateOrderStatus(Order order, Status status) {
+		return doUpdateOrderStatus(order, status);
 	}
 
 	@Override
@@ -99,6 +112,26 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	@Override
 	public Order payOrder(String orderId, Payment payment) {
 		return doPayOrder(orderId, payment);
+	}
+
+	@Caching(put = { //
+			@CachePut(cacheNames = CACHE_NAME, key = "#order.id"),
+			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")
+			//
+	})
+	@Override
+	public Order payOrder(Order order, Payment payment) {
+		return doPayOrder(order, payment);
+	}
+
+	@Caching(put = { //
+			@CachePut(cacheNames = CACHE_NAME, key = "#order.id"),
+			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")
+			//
+	})
+	@Override
+	public Order handleOrderPaymentFailure(Order order, String paymentFailureCause) {
+		return doHandleOrderPaymentFailure(order, paymentFailureCause);
 	}
 
 	@Caching(put = { //
@@ -151,10 +184,24 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 		return doRejectOrderRefund(orderId, rejectReason);
 	}
 
-	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	@Caching(put = { //
+			@CachePut(cacheNames = CACHE_NAME, key = "#orderId"),
+			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")
+			//
+	})
 	@Override
 	public Order handleOrderRefundFailure(String orderId, String refundFailureCause) {
 		return doHandleOrderRefundFailure(orderId, refundFailureCause);
+	}
+
+	@Caching(put = { //
+			@CachePut(cacheNames = CACHE_NAME, key = "#order.id"),
+			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")
+			//
+	})
+	@Override
+	public Order handleOrderRefundFailure(Order order, String refundFailureCause) {
+		return doHandleOrderRefundFailure(order, refundFailureCause);
 	}
 
 	@Caching(put = { //
@@ -279,4 +326,5 @@ public class CommonOrderServiceImpl extends AbstractOrderService<Order> implemen
 	protected BaseOrderRepository<Order> getOrderRepository() {
 		return baseOrderRepository;
 	}
+
 }

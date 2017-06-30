@@ -66,7 +66,9 @@ public abstract class ProductResourceSupport<T extends Product> extends BaseReso
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public ProductFaq findProductFaq(@PathParam("productFaqId") String productFaqId) {
-		return commonProductService.findProductFaq(productFaqId);
+		ProductFaq faq = commonProductService.findProductFaq(productFaqId);
+		commonProductService.increaseProductFaqViews(productFaqId);
+		return faq;
 	}
 
 }

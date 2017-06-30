@@ -33,14 +33,14 @@ public class FlightLeg extends Persistable {
 
 	// departure city
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "departure", nullable = false)
+	@Size(max = CITY_NAME_LEN)
+	@Column(name = "departure", length = CITY_NAME_LEN, nullable = false)
 	private String departure;
 
 	// arrival city
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "arrival", nullable = false)
+	@Size(max = CITY_NAME_LEN)
+	@Column(name = "arrival", length = CITY_NAME_LEN, nullable = false)
 	private String arrival;
 
 	// departure date, e.g. 2017-5-1 15:30

@@ -60,7 +60,7 @@ public abstract class Order extends Persistable {
 	 * Refund
 	 */
 	public static final EnumSet<Status> REFUND_STATUSES = EnumSet.of(Status.REFUND_REQUESTED, Status.REFUNDING,
-			Status.REFUNDED, Status.REFUND_FAILED);
+			Status.REFUNDED, Status.REFUND_FAILED); // TODO REFUND_REJECTED
 
 	/**
 	 * Finished or closed
@@ -77,13 +77,14 @@ public abstract class Order extends Persistable {
 
 	// Order Number
 	@XmlElement
-	@Column(name = "order_no", length = 32, nullable = false, unique = true)
+	@Size(max = ORDER_NO_LEN)
+	@Column(name = "order_no", length = ORDER_NO_LEN, nullable = false, unique = true)
 	protected String orderNo;
 
 	// Order type (product type)
 	@XmlElement
-	@Column(name = "type", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "type", length = ORDER_TYPE_LEN, nullable = false)
 	protected Type type;
 
 	// points used in this order
@@ -108,21 +109,20 @@ public abstract class Order extends Persistable {
 	protected BigDecimal originalTotalPrice = BigDecimal.ZERO;
 
 	// Order price CurrencyUnit
-	// https://en.wikipedia.org/wiki/ISO_4217 (3 chars)
-	@Column(name = "currency_unit", length = 3, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "currency_unit", length = CURRENCY_UNIT_LEN, nullable = false)
 	protected CurrencyUnit currencyUnit = CurrencyUnit.RMB;
 
-	// TODO add tradeStatus? PENDING/IN_PROGRESS/FINISHED/CLOSED?
+	// TODO add tradeStatus? PENDING/IN_PROGRESS/FINISHED/CLOSED? TODO add subStatus to indicate status changes?
 	@XmlElement
-	@Column(name = "status", length = 20, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "status", length = ORDER_STATUS_LEN, nullable = false)
 	protected Status status;
 
 	// order is placed from which channel (Android, iPhone, PC, etc.)
 	@XmlElement
-	@Size(max = 255)
-	@Column(name = "channel")
+	@Size(max = ORDER_CHANNEL_LEN)
+	@Column(name = "channel", length = ORDER_CHANNEL_LEN)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected String channel;
 
@@ -196,6 +196,12 @@ public abstract class Order extends Persistable {
 	@Lob
 	@Column(name = "refund_failure_cause")
 	protected String refundFailureCause;
+
+	// information from customer if the order payment failure cause
+	@XmlElement
+	@Lob
+	@Column(name = "payment_failure_cause")
+	protected String paymentFailureCause;
 
 	// information from customer about cancel
 	@XmlElement
@@ -381,6 +387,14 @@ public abstract class Order extends Persistable {
 		this.refundFailureCause = refundFailureCause;
 	}
 
+	public String getPaymentFailureCause() {
+		return paymentFailureCause;
+	}
+
+	public void setPaymentFailureCause(String paymentFailureCause) {
+		this.paymentFailureCause = paymentFailureCause;
+	}
+
 	public String getCancelReason() {
 		return cancelReason;
 	}
@@ -425,24 +439,13 @@ public abstract class Order extends Persistable {
 		return owner.getId().equals(userId);
 	}
 
-	// XXX
-	// order type (used by for RESTful API, not persisted)
-	// @XmlElement(name = "type")
-	// public String getTypeAsString() {
-	// return getType().name().toLowerCase(Locale.ENGLISH);
-	// }
-
-	// Not sure why this enum cannot be serialized to JSON (event with @XmlElement), so just use getTypeString instead
-	// @XmlTransient
-	// public abstract Type getType();
-
 	public boolean confirmationRequired() {
-		return getType() == Type.FLEET || getType() == Type.JETTRAVEL;
+		return getType() == Type.FLEET || getType() == Type.JETTRAVEL || getType() == Type.FERRYFLIGHT;
 	}
 
-	public boolean signContractRequired() {
-		return getType() == Type.FLEET || getType() == Type.COURSE || getType() == Type.FERRYFLIGHT
-				|| getType() == Type.JETTRAVEL;
+	public boolean contractRequired() {
+		return getType() == Type.FLEET || getType() == Type.JETTRAVEL || getType() == Type.FERRYFLIGHT
+				|| getType() == Type.COURSE;
 	}
 
 	@XmlTransient
@@ -455,13 +458,13 @@ public abstract class Order extends Persistable {
 	 */
 	@XmlTransient
 	public boolean isPayable() {
-		return getProduct() != null && (status.ordinal() < Status.CONTRACT_SIGNED.ordinal()
+		return getProduct() != null && (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal()
 				|| status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
 	}
 
 	/**
-	 * Return true if the current order is ready to update to PAID. Order is updated to PAYMENT_IN_PROCESS after payment
-	 * is submitted, and this method is called when payment finished notification is received from 3rd payment gateway.
+	 * Return true if the current order is ready to update to PAID. Order MAY update to PAYMENT_IN_PROCESS after payment
+	 * is submitted, and this method is called when payment finished notification is received from payment gateway.
 	 * 
 	 * @return true if its ready to PAID
 	 */
@@ -501,6 +504,11 @@ public abstract class Order extends Persistable {
 	@XmlTransient
 	public boolean isProbablyPaid() {
 		return status.ordinal() <= Status.PAID.ordinal();
+	}
+
+	@XmlTransient
+	public boolean isPaid() {
+		return status == Status.PAID;
 	}
 
 	/**
@@ -591,6 +599,12 @@ public abstract class Order extends Persistable {
 		 */
 		DELETED;
 
+		/**
+		 * All status except DELETED.
+		 */
+		public static final Set<Status> VISIBLE_STATUSES = Stream.of(values())
+				.filter(status -> status != Status.DELETED).collect(Collectors.toSet());
+
 		public static Status fromString(String value) {
 			for (Status e : values()) {
 				if (e.name().equalsIgnoreCase(value)) {
@@ -598,13 +612,6 @@ public abstract class Order extends Persistable {
 				}
 			}
 			return null;
-		}
-
-		/**
-		 * All status except DELETED.
-		 */
-		public static Set<Status> visibleStatus() {
-			return Stream.of(values()).filter(status -> status != Status.DELETED).collect(Collectors.toSet());
 		}
 	}
 }

@@ -93,7 +93,7 @@ public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<Cour
 		}
 		if (status == null) {
 			return Pages.adapt(courseOrderRepository.findByCourseIdAndStatusInOrderByCreationDateDesc(courseId,
-					Order.Status.visibleStatus(), Pages.createPageRequest(page, pageSize)));
+					Order.Status.VISIBLE_STATUSES, Pages.createPageRequest(page, pageSize)));
 		}
 		return Pages.adapt(courseOrderRepository.findByCourseIdAndStatusOrderByCreationDateDesc(courseId, status,
 				Pages.createPageRequest(page, pageSize))); // OK

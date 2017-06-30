@@ -38,7 +38,6 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 	// WHY not provide an official field, e.g. notificationType
 	private static final String PAY_KEYWORD = "payAmount";
 	private static final String REFUND_KEYWORD = "refundAmount";
-	private static final PaymentResponse NOTIFICATION_RESPONSE_FAILURE = new PaymentResponse(599, "failure");
 
 	private final NewpayClient client;
 	private final NewpayConfig config;
@@ -97,7 +96,7 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 		Map<String, String> params = (Map<String, String>) notification.getData();
 		LOG.info("client notificaion params: {}", params);
 		try {
-			NewpayPayResponse response = NewpayPayResponse.parse(params);
+			NewpayPayResponse response = client.parsePayResponse(params);
 			LOG.info("client notificaion response: {}", response);
 			if (response.isTradeSuccessful()) {
 				String orderNo = response.getOrderNo();
@@ -106,7 +105,7 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 					LOG.error("OrderNo: {} not exists, payment failed", orderNo);
 					return PaymentVerification.FAILURE;
 				}
-				commonOrderService.updateOrderStatus(orderRef.get().getId(), Order.Status.PAYMENT_IN_PROCESS);
+				commonOrderService.updateOrderStatus(orderRef.get(), Order.Status.PAYMENT_IN_PROCESS);
 				return PaymentVerification.SUCCESS;
 			}
 		}
@@ -123,7 +122,7 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 		LOG.info("server notificaion: {}", params);
 		// PAYMENT
 		if (params.containsKey(PAY_KEYWORD)) {
-			NewpayPayResponse response = NewpayPayResponse.parse(params);
+			NewpayPayResponse response = client.parsePayResponse(params);
 			String orderNo = response.getOrderNo();
 			if (response.isTradeSuccessful()) {
 				String partnerId = response.getPartnerId();
@@ -131,24 +130,30 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 				if (!config.getPartnerId().equals(partnerId)) {
 					LOG.error("Partner ID mismatch expected: {}, but was: {}, payment failed", config.getPartnerId(),
 							partnerId);
-					return NOTIFICATION_RESPONSE_FAILURE;
+					return PaymentResponse.failure(PaymentResponse.Status.APP_ID_MISMATCH);
 				}
 
 				// 3) check order and update status
 				BigDecimal totalAmount = OrderPrices.convertPrice(response.getPayAmount());
 				String tradeNo = response.getTradeNo();
 				Date paymentDate = response.getCompleteTime();// 交易处理完成时间
-				return doProcessPaymentNotification(totalAmount, orderNo, tradeNo, paymentDate);
+				PaymentResponse paymentResponse = doProcessPaymentSuccess(totalAmount, orderNo, tradeNo, paymentDate);
+				if (!paymentResponse.isSuccessful()) {
+					tryAutoRefundOnFailure(tradeNo, orderNo, totalAmount, paymentResponse.getBody());
+				}
+				return paymentResponse;
 			}
 
 			Optional<Order> orderRef = commonOrderService.lookupByOrderNo(orderNo);
 			if (!orderRef.isPresent()) {
 				LOG.error("Order {} not found", orderNo);
-				return NOTIFICATION_RESPONSE_FAILURE;
+				return PaymentResponse.failure(PaymentResponse.Status.ORDER_NOT_FOUND,
+						M.msg(M.ORDER_NOT_FOUND, orderNo));
 			}
 
-			// update order status, TODO: we save failure payment?
-			commonOrderService.updateOrderStatus(orderRef.get().getId(), Order.Status.PAYMENT_FAILED);
+			// check detailed status with doc, update order status, TODO: we save failure payment?
+			commonOrderService.handleOrderPaymentFailure(orderRef.get(),
+					M.msg(M.PAYMENT_SERVER_NOTIFY_TRADE_FAILURE, response.getStateCode(), response.getResultMessage()));
 			LOG.error("Order {} payment failure, response: {}", response.getOrderNo(), response);
 		}
 		// REFUND
@@ -157,7 +162,8 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 			Optional<Order> orderRef = commonOrderService.lookupByOrderNo(response.getOrderNo());
 			if (!orderRef.isPresent()) {
 				LOG.error("Order {} not found", response.getOrderNo());
-				return NOTIFICATION_RESPONSE_FAILURE;
+				return PaymentResponse.failure(PaymentResponse.Status.ORDER_NOT_FOUND,
+						M.msg(M.ORDER_NOT_FOUND, response.getOrderNo()));
 			}
 
 			Order order = orderRef.get();
@@ -177,17 +183,42 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 				refund.setRefundReason(order.getRefundReason());
 				refund.setRefundResult(M.msg(M.REFUND_SUCCESS));
 				commonOrderService.acceptOrderRefund(order.getId(), refund);
-				return NOTIFICATION_RESPONSE_SUCCESS;
+				return PaymentResponse.success();
 			}
 
 			// TODO: we save failure refund?
-			response.getResultCode();
-			response.getStateCode();
-
-			commonOrderService.handleOrderRefundFailure(order.getId(), response.getResultMessage());
+			commonOrderService.handleOrderRefundFailure(order,
+					M.msg(M.REFUND_SERVER_NOTIFY_TRADE_FAILURE, response.getStateCode(), response.getResultMessage()));
 			LOG.error("Order {} refund failure, response: {}", response.getOrderNo(), response);
 		}
-		return NOTIFICATION_RESPONSE_FAILURE;
+		return PaymentResponse.failure(PaymentResponse.Status.UNKNOWN);
+	}
+
+	/**
+	 * Try refund on handle notification failure, and just ignored if refund failed
+	 */
+	private void tryAutoRefundOnFailure(String tradeNo, String orderNo, BigDecimal refundAmount, String reason) {
+		NewpayRefundModel model = new NewpayRefundModel();
+		model.setRefundAmount(OrderPrices.convertPrice(refundAmount));
+		model.setOrderNo(orderNo);
+		model.setRefundReason(M.msg(M.REFUND_ON_PAYMENT_NOTIFY_FAILURE, tradeNo, orderNo, reason));
+		if (LOG.isInfoEnabled()) {
+			LOG.info("Final auto refund on failure: {}", model);
+		}
+		try {
+			NewpayRefundResponse response = client.executeRefundRequest(model);
+			if (LOG.isInfoEnabled()) {
+				LOG.info("Final refund response: {}", response);
+			}
+			if (response.isRequestSuccessful()) {
+				LOG.info("Final auto refund for tradeNo: {} success", tradeNo);
+				return;
+			}
+			LOG.error(M.msg(M.REFUND_FAILURE, response.getResultCode(), response.getResultMessage()));
+		}
+		catch (Exception e) {
+			LOG.error(String.format("Auto refund failure for tradeNo: %s, cause: %s", tradeNo, e.getMessage()), e);
+		}
 	}
 
 	@Override
@@ -232,7 +263,7 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 				return RefundResponse.pending();
 			}
 			return RefundResponse
-					.failure(M.msg(M.REFUND_FAILURE, response.getResultCode(), response.getResultMessage()));
+					.failure(M.msg(M.REFUND_FAILURE, response.getStateCode(), response.getResultMessage()));
 		}
 		catch (Exception e) {
 			LOG.error(String.format("Refund failure for order: %s, cause: %s", order, e.getMessage()), e);

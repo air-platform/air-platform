@@ -34,22 +34,23 @@ public class PromotionItem extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
-	@Size(max = 255)
-	@Column(name = "title", nullable = false)
+	@Size(max = PRODUCT_NAME_LEN) // same as product name length
+	@Column(name = "title", length = PRODUCT_NAME_LEN, nullable = false)
 	private String title;
 
-	@Size(max = 255)
-	@Column(name = "image")
+	@NotEmpty
+	@Size(max = IMAGE_URL_LEN)
+	@Column(name = "image", length = IMAGE_URL_LEN, nullable = false)
 	private String image;
 
 	// product link
-	@Size(max = 1024)
-	@Column(name = "link", length = 1024)
+	@Size(max = URL_LEN)
+	@Column(name = "link", length = URL_LEN)
 	private String link;
 
 	// link type
-	@Column(name = "link_type", length = 10, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "link_type", length = LINK_TYPE_LEN, nullable = false)
 	private LinkType linkType = LinkType.PRODUCT;
 
 	@Temporal(value = TemporalType.TIMESTAMP)

@@ -43,24 +43,24 @@ public class Refund extends Persistable {
 
 	// trade No. of payment system
 	@NotNull
-	@Size(max = 255)
-	@Column(name = "trade_no", nullable = false)
+	@Size(max = TRADE_NO_LEN)
+	@Column(name = "trade_no", length = TRADE_NO_LEN, nullable = false)
 	private String tradeNo;
 
 	// alipay, wechat etc.
 	@NotNull
-	@Size(max = 32)
-	@Column(name = "order_no", length = 32, nullable = false)
+	@Size(max = ORDER_NO_LEN)
+	@Column(name = "order_no", length = ORDER_NO_LEN, nullable = false)
 	private String orderNo;
 
 	@NotNull
-	@Size(max = 255)
+	@Size(max = DEFAULT_FIELD_LEN)
 	@Column(name = "refund_reason", nullable = false)
 	private String refundReason;
 
 	// refund result note
 	@NotNull
-	@Size(max = 255)
+	@Size(max = DEFAULT_FIELD_LEN)
 	@Column(name = "refund_result", nullable = false)
 	private String refundResult;
 
@@ -71,8 +71,8 @@ public class Refund extends Persistable {
 
 	// payment method: alipay, wechat etc.
 	@NotNull
-	@Column(name = "method", length = 10, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Column(name = "method", length = PAYMENT_METHOD_LEN, nullable = false)
 	private Method method;
 
 	@Column(name = "timestamp", nullable = false)
