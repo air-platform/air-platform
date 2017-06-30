@@ -16,6 +16,10 @@ import javax.ws.rs.core.MediaType;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import io.micro.common.Strings;
+import net.aircommunity.platform.common.ua.Client;
+import net.aircommunity.platform.common.ua.Device;
+import net.aircommunity.platform.common.ua.Parser;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Order;
@@ -37,6 +41,8 @@ public abstract class UserBaseOrderResource<T extends Order> extends BaseResourc
 	@Resource
 	private CharterOrderService charterOrderService;
 
+	private final Parser uaParser = Parser.newParser();
+
 	/**
 	 * Detect order channel from UA.
 	 * 
@@ -45,9 +51,33 @@ public abstract class UserBaseOrderResource<T extends Order> extends BaseResourc
 	 * @return the order channel
 	 */
 	protected <ORDER extends Order> ORDER detectOrderChannel(String userAgent, ORDER order) {
-		// TODO parse userAgent for channel
-		order.setChannel(userAgent);
+		// parse userAgent for channel
+		String channel = parseForChannel(userAgent);
+		order.setChannel(channel);
 		return order;
+	}
+
+	private String parseForChannel(String userAgent) {
+		Client c = uaParser.parse(userAgent);
+		StringBuilder builder = new StringBuilder(c.os.family);
+		if (Strings.isNotBlank(c.os.major)) {
+			builder.append(" ").append(c.os.major);
+		}
+		if (Strings.isNotBlank(c.os.minor)) {
+			builder.append(".").append(c.os.minor);
+		}
+		if (Strings.isNotBlank(c.os.patch)) {
+			builder.append(".").append(c.os.patch);
+		}
+		builder.append("(");
+		// TODO check
+		if (Device.OTHER.family.equalsIgnoreCase(c.device.family)) {
+			builder.append(c.userAgent.family);
+		}
+		else {
+			builder.append(c.device.family);
+		}
+		return builder.append(")").toString();
 	}
 
 	/**

@@ -2,8 +2,6 @@ package net.aircommunity.platform.common.ua;
 
 /**
  * Collection of parsed data for a given user agent string consisting of UserAgent, OS, Device
- *
- * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 public class Client {
 	public final UserAgent userAgent;

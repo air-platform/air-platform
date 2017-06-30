@@ -3,9 +3,7 @@ package net.aircommunity.platform.common.ua;
 import java.util.Map;
 
 /**
- * Device parsed data class
- *
- * @author Steve Jiang (@sjiang) <gh at iamsteve com>
+ * Device parsed data
  */
 public class Device {
 	public static final Device OTHER = new Device("Other");

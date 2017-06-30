@@ -3,9 +3,7 @@ package net.aircommunity.platform.common.ua;
 import java.util.Map;
 
 /**
- * Operating System parsed data class
- *
- * @author Steve Jiang (@sjiang) <gh at iamsteve com>
+ * Operating System parsed data
  */
 public class OS {
 	public static final OS OTHER = new OS("Other", null, null, null, null);

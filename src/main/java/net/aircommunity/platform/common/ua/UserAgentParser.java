@@ -8,8 +8,6 @@ import java.util.regex.Pattern;
 
 /**
  * User Agent parser using ua-parser regexes
- *
- * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 class UserAgentParser {
 	private final List<UAPattern> patterns;

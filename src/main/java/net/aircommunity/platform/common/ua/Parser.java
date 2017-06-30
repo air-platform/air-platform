@@ -15,8 +15,6 @@ import io.micro.common.io.MoreFiles;
 
 /**
  * Java implementation of <a href="https://github.com/ua-parser/uap-java">UA Parser</a>
- *
- * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 public class Parser {
 	private static final int CACHE_SIZE = 100;
