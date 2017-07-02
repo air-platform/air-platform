@@ -26,7 +26,7 @@ import net.aircommunity.platform.service.PromotionService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PromotionServiceImpl extends AbstractServiceSupport implements PromotionService {
 	private static final String CACHE_NAME = "cache.promotion";
 	private static final String CACHE_NAME_CATEGORY = "cache.promotion-category";
@@ -34,6 +34,7 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 	@Resource
 	private PromotionRepository promotionRepository;
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME_CATEGORY, allEntries = true)
 	@Override
 	public Promotion createPromotion(Promotion promotion) {
@@ -54,6 +55,7 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 		return promotion;
 	}
 
+	@Transactional
 	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#promotionId"), evict = @CacheEvict(cacheNames = CACHE_NAME_CATEGORY, allEntries = true))
 	@Override
 	public Promotion updatePromotion(String promotionId, Promotion newPromotion) {
@@ -70,6 +72,7 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 		tgt.setItems(src.getItems());
 	}
 
+	@Transactional
 	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#promotionId"), evict = @CacheEvict(cacheNames = CACHE_NAME_CATEGORY, allEntries = true))
 	public Promotion updatePromotionRank(String promotionId, int rank) {
 		Promotion promotion = findPromotion(promotionId);
@@ -90,6 +93,7 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 		return promotionRepository.findByCategoryOrderByRankDescCreationDateDesc(category);
 	}
 
+	@Transactional
 	@Caching(evict = { @CacheEvict(cacheNames = CACHE_NAME, key = "#promotionId"),
 			@CacheEvict(cacheNames = CACHE_NAME_CATEGORY, allEntries = true) })
 	@Override
@@ -97,6 +101,7 @@ public class PromotionServiceImpl extends AbstractServiceSupport implements Prom
 		safeExecute(() -> promotionRepository.delete(promotionId), "Delete promotion %s failed", promotionId);
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_CATEGORY }, allEntries = true)
 	@Override
 	public void deletePromotions() {

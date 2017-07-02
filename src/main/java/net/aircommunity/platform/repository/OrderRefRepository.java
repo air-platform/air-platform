@@ -17,6 +17,7 @@ import org.springframework.data.repository.query.Param;
 
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
+import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.domain.OrderRef;
 
 /**
@@ -41,7 +42,7 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String> {
 	OrderRef findByOrderNo(String orderNo);
 
 	/**
-	 * Find user orders in statuses
+	 * Find user orders in statuses (USER)
 	 */
 	Page<OrderRef> findByOwnerIdAndStatusInAndCreationDateGreaterThanEqualOrderByCreationDateDesc(String userId,
 			Collection<Status> statuses, Date creationDate, Pageable pageable);
@@ -59,6 +60,11 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String> {
 	default Stream<OrderRef> findRefundPendingOrders(Date creationDate) {
 		return findByStatusInAndCreationDateGreaterThanEqual(REFUND_PENDING_STATUSES, creationDate);
 	}
+
+	/**
+	 * (ADMIN)
+	 */
+	Page<OrderRef> findByTypeOrderByCreationDateDesc(Type type, Pageable pageable);
 
 	/**
 	 * Stream of orders in statuses (ADMIN)

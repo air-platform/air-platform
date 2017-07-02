@@ -31,7 +31,7 @@ import net.aircommunity.platform.service.product.AirTransportService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AirTransportServiceImpl extends AbstractSalesPackageProductService<AirTransport>
 		implements AirTransportService {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTransportServiceImpl.class);

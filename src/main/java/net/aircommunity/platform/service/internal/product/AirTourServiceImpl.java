@@ -3,9 +3,9 @@ package net.aircommunity.platform.service.internal.product;
 import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
@@ -22,7 +22,7 @@ import net.aircommunity.platform.service.product.AirTourService;
  * @author guankai
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AirTourServiceImpl extends AbstractSalesPackageProductService<AirTour> implements AirTourService {
 
 	// TODO REMOVE

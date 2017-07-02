@@ -29,13 +29,14 @@ import net.aircommunity.platform.service.product.ProductFamilyService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class ProductFamilyServiceImpl extends AbstractServiceSupport implements ProductFamilyService {
 	private static final String CACHE_NAME = "cache.product-family";
 
 	@Resource
 	private ProductFamilyRepository productFamilyRepository;
 
+	@Transactional
 	@Override
 	public ProductFamily createProductFamily(String tenantId, ProductFamily productFamily) {
 		Tenant tenant = findAccount(tenantId, Tenant.class);
@@ -58,6 +59,7 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 		return productFamily;
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#productFamilyId")
 	@Override
 	public ProductFamily updateProductFamily(String productFamilyId, ProductFamily newProductFamily) {
@@ -67,6 +69,7 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 				productFamilyId, productFamily);
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#productFamilyId")
 	@Override
 	public ProductFamily reviewProductFamily(String productFamilyId, ReviewStatus reviewStatus, String rejectedReason) {
@@ -142,6 +145,7 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 				Pages.createPageRequest(page, pageSize)));
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#productFamilyId")
 	@Override
 	public void deleteProductFamily(String productFamilyId) {
@@ -149,6 +153,7 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 				M.msg(M.PRODUCT_FAMILY_CANNOT_BE_DELETED));
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteProductFamilies(String tenantId) {

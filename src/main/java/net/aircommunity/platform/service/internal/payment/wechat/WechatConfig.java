@@ -25,6 +25,7 @@ public class WechatConfig {
 	private String mchId;
 
 	// API密钥(微信支付商户密钥)
+	@NotEmpty
 	private String mchKey;
 
 	private String notifyUrl;

@@ -29,7 +29,7 @@ import net.aircommunity.platform.service.product.AircraftService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AircraftServiceImpl extends AbstractServiceSupport implements AircraftService {
 	private static final Logger LOG = LoggerFactory.getLogger(AircraftServiceImpl.class);
 
@@ -38,6 +38,7 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 	@Resource
 	private AircraftRepository aircraftRepository;
 
+	@Transactional
 	@Override
 	public Aircraft createAircraft(String tenantId, Aircraft aircraft) {
 		Tenant vendor = findAccount(tenantId, Tenant.class);
@@ -65,6 +66,7 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 		return aircraft;
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#aircraftId")
 	@Override
 	public Aircraft updateAircraft(String aircraftId, Aircraft newAircraft) {
@@ -100,6 +102,7 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 		return Pages.adapt(aircraftRepository.findAll(Pages.createPageRequest(page, pageSize)));
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#aircraftId")
 	@Override
 	public void deleteAircraft(String aircraftId) {
@@ -107,6 +110,7 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 				M.msg(M.AIRCRAFT_CANNOT_BE_DELETED));
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAircrafts(String tenantId) {

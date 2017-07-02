@@ -22,7 +22,7 @@ import net.aircommunity.platform.service.product.AirTaxiService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AirTaxiServiceImpl extends AbstractSalesPackageProductService<AirTaxi> implements AirTaxiService {
 
 	// TODO REMOVE

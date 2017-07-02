@@ -59,6 +59,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	 */
 	Page<T> findByOwnerIdAndStatusNotOrderByCreationDateDesc(String userId, Status ignoredStatus, Pageable pageable);
 
+	// (NOTE: used more often)
 	/**
 	 * Find all user orders in status (type: range, Using index condition; Using filesort)
 	 * 
@@ -130,6 +131,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	 */
 	Page<T> findByStatusOrderByCreationDateDesc(Status status, Pageable pageable);
 
+	// (NOTE: used more often)
 	/**
 	 * Find all orders filter by type (ADMIN) (XXX NOT GOOD) (type: all, Using where; Using filesort)
 	 * 

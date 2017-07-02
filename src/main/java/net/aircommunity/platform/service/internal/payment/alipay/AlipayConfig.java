@@ -19,15 +19,15 @@ public class AlipayConfig {
 	@NotEmpty
 	private String appId;
 
-	private String notifyUrl;
-
-	private String returnUrl;
-
 	@NotEmpty
 	private String appPrivateKey;
 
 	@NotEmpty
 	private String publicKey;
+
+	private String notifyUrl;
+
+	private String returnUrl;
 
 	public String getAppId() {
 		return appId;

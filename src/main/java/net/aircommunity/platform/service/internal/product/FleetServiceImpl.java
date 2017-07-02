@@ -30,7 +30,7 @@ import net.aircommunity.platform.service.product.FleetService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class FleetServiceImpl extends AbstractStandardProductService<Fleet> implements FleetService {
 
 	// TODO REMOVE
@@ -39,6 +39,7 @@ public class FleetServiceImpl extends AbstractStandardProductService<Fleet> impl
 	@Resource
 	private FleetRepository fleetRepository;
 
+	@Transactional
 	@Override
 	public Fleet createFleet(String tenantId, Fleet fleet) {
 		Fleet existing = fleetRepository.findByFlightNo(fleet.getFlightNo());
@@ -64,6 +65,7 @@ public class FleetServiceImpl extends AbstractStandardProductService<Fleet> impl
 		return fleet;
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#fleetId")
 	@Override
 	public Fleet updateFleet(String fleetId, Fleet newFleet) {

@@ -20,10 +20,6 @@ public class NewpayConfig {
 	@NotEmpty
 	private String partnerId;
 
-	private String notifyUrl;
-
-	private String returnUrl;
-
 	// hnapay.partner.kayPath
 	@NotEmpty
 	private String keystorePath;
@@ -45,6 +41,10 @@ public class NewpayConfig {
 	private String gatewayPublicKey;
 	// hnapay.partner.pubkey (if MD5, never use it)
 	// private String partnerPublicKey;
+
+	private String notifyUrl;
+
+	private String returnUrl;
 
 	public String getPartnerId() {
 		return partnerId;

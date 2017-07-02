@@ -37,7 +37,7 @@ import net.aircommunity.platform.service.spi.PaymentGateway;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PaymentServiceImpl implements PaymentService {
 	private static final Logger LOG = LoggerFactory.getLogger(LOGGER_NAME);
 
@@ -76,6 +76,7 @@ public class PaymentServiceImpl implements PaymentService {
 		return call(paymentMethod, ACTION_PAY_REQUEST, () -> paymentGateway.createPaymentRequest(order));
 	}
 
+	@Transactional
 	@Override
 	public PaymentVerification verifyClientPaymentNotification(Payment.Method paymentMethod,
 			PaymentNotification notification) {
@@ -89,14 +90,11 @@ public class PaymentServiceImpl implements PaymentService {
 	public PaymentResponse processServerPaymentNotification(Payment.Method paymentMethod,
 			PaymentNotification notification) {
 		PaymentGateway paymentGateway = getPaymentGateway(paymentMethod);
-		PaymentResponse response = call(paymentMethod, ACTION_PROCESS_SERVER_NOTIFY,
+		return call(paymentMethod, ACTION_PROCESS_SERVER_NOTIFY,
 				() -> paymentGateway.processServerPaymentNotification(notification));
-
-		// TODO
-
-		return response;
 	}
 
+	@Transactional
 	@Override
 	public RefundResponse refundPayment(Payment.Method paymentMethod, Order order, BigDecimal refundAmount) {
 		PaymentGateway paymentGateway = getPaymentGateway(paymentMethod);

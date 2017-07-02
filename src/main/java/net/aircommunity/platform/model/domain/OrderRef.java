@@ -24,11 +24,9 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_order", indexes = {
-		//
-		@Index(name = "idx_status", columnList = "status"),
-		@Index(name = "idx_user_id_status", columnList = "user_id,status,creation_date")
-		//
+@Table(name = "air_platform_order", indexes = { //
+		@Index(name = "idx_type", columnList = "type,creation_date"), // for ADMIN
+		@Index(name = "idx_user_id_status", columnList = "user_id,status,creation_date") // for USER
 })
 public class OrderRef implements DomainConstants, Serializable {
 	private static final long serialVersionUID = 1L;

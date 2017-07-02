@@ -23,7 +23,7 @@ import net.aircommunity.platform.service.product.FerryFlightService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class FerryFlightServiceImpl extends AbstractStandardProductService<FerryFlight> implements FerryFlightService {
 
 	// TODO REMOVE

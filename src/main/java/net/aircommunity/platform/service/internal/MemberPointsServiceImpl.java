@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -27,6 +28,7 @@ import net.aircommunity.platform.service.MemberPointsService;
  * @author Bin.Zhang
  */
 @Service
+@Transactional(readOnly = true)
 public class MemberPointsServiceImpl extends AbstractServiceSupport implements MemberPointsService {
 	private static final Logger LOG = LoggerFactory.getLogger(MemberPointsServiceImpl.class);
 
@@ -103,6 +105,7 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 		settingsRepository.save(settings);
 	}
 
+	@Transactional
 	@Override
 	public void setPointsExchangeRate(int percent) {
 		Settings settings = settingsRepository.findByName(POINTS_EXCHANGE_RATE);
@@ -130,6 +133,7 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 		return DEFAULT_EXCHANGE_RATE;
 	}
 
+	@Transactional
 	@Override
 	public void setPointsExchangePercent(int percent) {
 		Settings settings = settingsRepository.findByName(POINTS_EXCHANGE_PERCENT);
@@ -157,6 +161,7 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 		return DEFAULT_EXCHANGE_PERCENT;
 	}
 
+	@Transactional
 	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#pointRule"), evict = @CacheEvict(cacheNames = CACHE_NAME_DAILY_SIGNIN))
 	@Override
 	public void setEarnPointsForRule(String pointRule, long points) {

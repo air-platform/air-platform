@@ -14,12 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micro.common.io.MoreFiles;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirJet;
 import net.aircommunity.platform.nls.M;
@@ -32,7 +30,7 @@ import net.aircommunity.platform.service.AirJetService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetService {
 	private static final Logger LOG = LoggerFactory.getLogger(AirJetServiceImpl.class);
 
@@ -40,12 +38,6 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 	private static final String AIRJETS_INFO = "data/airjets.json";
 	// FORMAT: http://host:port/airjet/image/xxx.jpeg
 	// private static final String BASE_URL_FORMAT = "http://%s:%d/%s";
-
-	@Resource
-	private ObjectMapper objectMapper;
-
-	@Resource
-	private Configuration configuration;
 
 	@Resource
 	private AirJetRepository airjetRepository;
@@ -78,6 +70,7 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 		}
 	}
 
+	@Transactional
 	@Override
 	public AirJet createAirJet(AirJet airJet) {
 		AirJet airJetExisting = airjetRepository.findByTypeIgnoreCase(airJet.getType());
@@ -120,6 +113,7 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 		return airJet;
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#airJetId")
 	@Override
 	public AirJet updateAirJet(String airJetId, AirJet newAirJet) {
@@ -138,12 +132,14 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 		return Pages.adapt(airjetRepository.findAll(Pages.createPageRequest(page, pageSize)));
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airJetId")
 	@Override
 	public void deleteAirJet(String airJetId) {
 		safeExecute(() -> airjetRepository.delete(airJetId), "Delete airJet %s failed", airJetId);
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAirJets() {

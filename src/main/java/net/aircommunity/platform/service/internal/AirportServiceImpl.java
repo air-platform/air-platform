@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micro.common.Strings;
 import io.micro.common.io.MoreFiles;
@@ -33,7 +32,7 @@ import net.aircommunity.platform.service.AirportService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AirportServiceImpl extends AbstractServiceSupport implements AirportService {
 	private static final Logger LOG = LoggerFactory.getLogger(AirportServiceImpl.class);
 
@@ -44,9 +43,6 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 
 	@Resource
 	private AirportRepository airportRepository;
-
-	@Resource
-	private ObjectMapper objectMapper;
 
 	@PostConstruct
 	private void init() {
@@ -94,6 +90,7 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 		}
 	}
 
+	@Transactional
 	@Override
 	public Airport createAirport(Airport airport) {
 		checkExistence(airport);
@@ -160,6 +157,7 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 		return airport;
 	}
 
+	@Transactional
 	@Caching(put = { @CachePut(value = CACHE_NAME, key = "#airportId"),
 			@CachePut(value = CACHE_NAME_IATA3, key = "#result.iata3"),
 			@CachePut(value = CACHE_NAME_ICAO4, key = "#result.icao4") })
@@ -214,6 +212,7 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 		return Pages.adapt(airportRepository.findAll(Pages.createPageRequest(page, pageSize)));
 	}
 
+	@Transactional
 	@Caching(evict = { @CacheEvict(value = CACHE_NAME, key = "#airportId"),
 			@CacheEvict(value = CACHE_NAME_IATA3, key = "#result.iata3"),
 			@CacheEvict(value = CACHE_NAME_ICAO4, key = "#result.icao4") })
@@ -224,6 +223,7 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 		return airport;
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_IATA3, CACHE_NAME_ICAO4 }, allEntries = true)
 	@Override
 	public void deleteAllAirports() {

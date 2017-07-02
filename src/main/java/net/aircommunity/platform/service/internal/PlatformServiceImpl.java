@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.domain.Contact;
@@ -20,6 +21,7 @@ import net.aircommunity.platform.service.PlatformService;
  * @author Bin.Zhang
  */
 @Service
+@Transactional(readOnly = true)
 public class PlatformServiceImpl extends AbstractServiceSupport implements PlatformService {
 	private static final Logger LOG = LoggerFactory.getLogger(PlatformServiceImpl.class);
 
@@ -38,6 +40,7 @@ public class PlatformServiceImpl extends AbstractServiceSupport implements Platf
 		cacheManager.getCacheNames().parallelStream().forEach(name -> cacheManager.getCache(name).clear());
 	}
 
+	@Transactional
 	@Override
 	public void setPlatformClientManagers(Set<Contact> clientManagers) {
 		if (clientManagers == null || clientManagers.isEmpty()) {

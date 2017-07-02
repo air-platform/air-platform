@@ -10,15 +10,13 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.common.OrderPrices;
 import net.aircommunity.platform.model.PaymentResponse;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.RefundRepository;
+import net.aircommunity.platform.service.internal.AbstractServiceSupport;
 import net.aircommunity.platform.service.order.CommonOrderService;
 import net.aircommunity.platform.service.payment.PaymentService;
 import net.aircommunity.platform.service.spi.PaymentGateway;
@@ -28,7 +26,7 @@ import net.aircommunity.platform.service.spi.PaymentGateway;
  * 
  * @author Bin.Zhang
  */
-public abstract class AbstractPaymentGateway implements PaymentGateway {
+public abstract class AbstractPaymentGateway extends AbstractServiceSupport implements PaymentGateway {
 	protected static final Logger LOG = LoggerFactory.getLogger(PaymentService.LOGGER_NAME);
 
 	// .e.g http://aircommunity.net/api/v2/payment/alipay/notify
@@ -38,16 +36,10 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 	private static final String PAYMENT_CLIENT_RETURN_URI = "/client/return";
 
 	@Resource
-	protected Configuration configuration;
-
-	@Resource
 	protected CommonOrderService commonOrderService;
 
 	@Resource
 	protected RefundRepository refundRepository;
-
-	@Resource
-	protected ObjectMapper objectMapper;
 
 	// protected PaymentResponse getPaymentFailureResponse() {
 	// return NOTIFICATION_RESPONSE_FAILURE;

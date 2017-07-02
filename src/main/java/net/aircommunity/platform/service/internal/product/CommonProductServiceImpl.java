@@ -15,7 +15,7 @@ import net.aircommunity.platform.service.product.CommonProductService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class CommonProductServiceImpl extends AbstractBaseProductService<Product> implements CommonProductService {
 
 	@Resource

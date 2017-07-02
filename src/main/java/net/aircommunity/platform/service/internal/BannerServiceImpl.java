@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
@@ -27,6 +28,7 @@ import net.aircommunity.platform.service.BannerService;
  * @author Bin.Zhang
  */
 @Service
+@Transactional(readOnly = true)
 public class BannerServiceImpl extends AbstractServiceSupport implements BannerService {
 
 	private static final String CACHE_NAME = "cache.banner";
@@ -35,6 +37,7 @@ public class BannerServiceImpl extends AbstractServiceSupport implements BannerS
 	@Resource
 	private BannerRepository bannerRepository;
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME_CATEGORY, allEntries = true)
 	@Override
 	public Banner createBanner(Banner banner) {
@@ -54,6 +57,7 @@ public class BannerServiceImpl extends AbstractServiceSupport implements BannerS
 		return banner;
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#bannerId")
 	@CacheEvict(cacheNames = CACHE_NAME_CATEGORY, allEntries = true)
 	@Override
@@ -97,6 +101,7 @@ public class BannerServiceImpl extends AbstractServiceSupport implements BannerS
 		return listBanners(category, 1, Integer.MAX_VALUE).getContent();
 	}
 
+	@Transactional
 	@Caching(evict = { @CacheEvict(cacheNames = CACHE_NAME, key = "#bannerId"),
 			@CacheEvict(cacheNames = CACHE_NAME_CATEGORY, allEntries = true) })
 	@Override
@@ -104,6 +109,7 @@ public class BannerServiceImpl extends AbstractServiceSupport implements BannerS
 		bannerRepository.delete(bannerId);
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_CATEGORY }, allEntries = true)
 	@Override
 	public void deleteBanners() {

@@ -21,7 +21,7 @@ import net.aircommunity.platform.service.product.JetTravelService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class JetTravelServiceImpl extends AbstractStandardProductService<JetTravel> implements JetTravelService {
 
 	// TODO REMOVE

@@ -26,7 +26,7 @@ import net.aircommunity.platform.service.AirClassService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AirClassServiceImpl extends AbstractServiceSupport implements AirClassService {
 	private static final Logger LOG = LoggerFactory.getLogger(AirClassServiceImpl.class);
 
@@ -35,6 +35,7 @@ public class AirClassServiceImpl extends AbstractServiceSupport implements AirCl
 	@Resource
 	private AirClassRepository airClassRepository;
 
+	@Transactional
 	@Override
 	public AirClass createAirClass(AirClass airClass) {
 		AirClass newAirClass = new AirClass();
@@ -54,6 +55,7 @@ public class AirClassServiceImpl extends AbstractServiceSupport implements AirCl
 		return airClass;
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#airClassId")
 	@Override
 	public AirClass updateAirClass(String airClassId, AirClass newAirClass) {
@@ -68,6 +70,7 @@ public class AirClassServiceImpl extends AbstractServiceSupport implements AirCl
 		tgt.setContent(src.getContent());
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#airClassId")
 	@Override
 	public AirClass increaseAirClassViews(String airClassId) {
@@ -82,12 +85,14 @@ public class AirClassServiceImpl extends AbstractServiceSupport implements AirCl
 		return Pages.adapt(airClassRepository.findAll(Pages.createPageRequest(page, pageSize)));
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#airClassId")
 	@Override
 	public void deleteAirClass(String airClassId) {
 		safeExecute(() -> airClassRepository.delete(airClassId), "Delete airClass %s failed", airClassId);
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteAirClasses() {

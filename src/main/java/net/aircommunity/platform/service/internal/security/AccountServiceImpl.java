@@ -73,7 +73,7 @@ import net.aircommunity.platform.service.security.AccountService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AccountServiceImpl extends AbstractServiceSupport implements AccountService {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountServiceImpl.class);
 
@@ -164,6 +164,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#result.id")
 	@Override
 	public Account authenticateAccount(String principal, String credential, AuthContext context) {
@@ -218,6 +219,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return auth;
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#result.id")
 	@Override
 	public Account authenticateAccount(AuthType type, String principal, String credential, AuthContext context) {
@@ -268,6 +270,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return accountAuthRepository.save(auth);
 	}
 
+	@Transactional
 	@Override
 	public Account createAccount(String username, String password, Role role) {
 		Pair<Account, AccountAuth> pair = createAccount(AuthType.USERNAME, username, password, null,
@@ -275,6 +278,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return pair.getLeft();
 	}
 
+	@Transactional
 	@Override
 	public Account createAccount(String mobile, String password, String verificationCode, Role role) {
 		Pair<Account, AccountAuth> pair = createAccount(AuthType.MOBILE, mobile, password, verificationCode,
@@ -418,6 +422,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 	}
 
+	@Transactional
 	@Override
 	public Account createAdminAccount(String username, String password) {
 		Pair<Account, AccountAuth> pair = doCreateAccount(AuthType.USERNAME, username, password, null,
@@ -425,6 +430,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return pair.getLeft();
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account updateAccount(String accountId, Account newAccount) {
@@ -475,6 +481,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				newAccount);
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account updateAccountStatus(String accountId, Status newStatus) {
@@ -488,6 +495,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				newStatus);
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account updateTenantVerificationStatus(String accountId, VerificationStatus newStatus) {
@@ -550,6 +558,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return addresses.stream().collect(Collectors.toList());
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account addUserAddress(String accountId, Address address) {
@@ -563,6 +572,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return safeExecute(() -> accountRepository.save(user), "Add user %s address %s failed", accountId, address);
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account removeUserAddress(String accountId, String addressId) {
@@ -588,6 +598,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return passengers.stream().map(Passenger::clone).collect(Collectors.toList());
 	}
 
+	@Transactional
 	@Override
 	public Passenger addUserPassenger(String accountId, Passenger passenger) {
 		Account account = findAccount(accountId);
@@ -625,6 +636,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}, "Add user %s passenger %s failed", accountId, passenger);
 	}
 
+	@Transactional
 	@Override
 	public void removeUserPassenger(String accountId, String passengerId) {
 		Account account = findAccount(accountId);
@@ -655,6 +667,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	// TODO list all/cleanup unconfirmed/expired accounts, need to re-send email if confirm link expired
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account updateUserPoints(String accountId, long deltaPoints) {
@@ -664,6 +677,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				deltaPoints);
 	}
 
+	@Transactional
 	@Override
 	public void updateUsername(String accountId, String username) {
 		AccountAuth existingAuth = accountAuthRepository.findByTypeAndPrincipal(AuthType.USERNAME, username);
@@ -681,6 +695,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				username);
 	}
 
+	@Transactional
 	@Override
 	public void updateEmail(String accountId, String email) {
 		Account account = findAccount(accountId);
@@ -730,6 +745,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		mailService.sendMail(email, configuration.getMailVerificationSubject(), mailVerificationBody);
 	}
 
+	@Transactional
 	@Override
 	public void confirmEmail(String accountId, String verificationCode) {
 		AccountAuth auth = accountAuthRepository.findByAccountIdAndType(accountId, AuthType.EMAIL);
@@ -772,6 +788,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		safeExecute(() -> accountAuthRepository.save(auth), "Confirm account %s email failed", accountId);
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account updatePassword(String accountId, String oldPassword, String newPassword) {
@@ -790,6 +807,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return safeExecute(() -> accountRepository.save(account), "Update account %s password failed", accountId);
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account resetPasswordTo(String accountId, String newPassword) {
@@ -798,6 +816,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return safeExecute(() -> accountRepository.save(account), "Reset account %s password failed", accountId);
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#result.id")
 	@Override
 	public Account resetPasswordViaMobile(String mobile, String newPassword) {
@@ -811,6 +830,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 				mobile);
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account resetPasswordViaEmail(String accountId) {
@@ -833,6 +853,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return accountUpdated;
 	}
 
+	@Transactional
 	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#accountId"), evict = @CacheEvict(cacheNames = CACHE_NAME_APIKEY))
 	@Override
 	public Account refreshApiKey(String accountId) {
@@ -841,6 +862,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return safeExecute(() -> accountRepository.save(account), "Refresh account %s apikey failed", accountId);
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
 	public Account dailySignin(String accountId) {
@@ -892,6 +914,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return updatedUser;
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_APIKEY }, key = "#accountId")
 	@Override
 	public void deleteAccount(String accountId) {

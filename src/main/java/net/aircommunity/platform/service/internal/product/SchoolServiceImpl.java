@@ -18,24 +18,21 @@ import net.aircommunity.platform.repository.SchoolRepository;
 import net.aircommunity.platform.service.internal.AbstractServiceSupport;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.product.SchoolService;
-import net.aircommunity.platform.service.security.AccountService;
 
 /**
  * School service implementation.
  * 
- * @author guankai
+ * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolService {
 	private static final String CACHE_NAME = "cache.school";
 
 	@Resource
 	private SchoolRepository schoolRepository;
 
-	@Resource
-	private AccountService accountService;
-
+	@Transactional
 	@Override
 	public School createSchool(String tenantId, School school) {
 		Tenant tenant = findAccount(tenantId, Tenant.class);
@@ -56,6 +53,7 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 		return school;
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#schoolId")
 	@Override
 	public School updateSchool(String schoolId, School newSchool) {
@@ -83,6 +81,7 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 		return Pages.adapt(schoolRepository.findByVendorId(tenantId, Pages.createPageRequest(page, pageSize)));
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#schoolId")
 	@Override
 	public void deleteSchool(String schoolId) {
@@ -90,6 +89,7 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 		safeDeletion(schoolRepository, schoolId, Codes.SCHOOL_CANNOT_BE_DELETED, M.msg(M.SCHOOL_CANNOT_BE_DELETED));
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteSchools(String tenantId) {

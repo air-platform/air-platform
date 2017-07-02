@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service.internal.product;
 
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.service.product.StandardProductService;
@@ -15,11 +16,13 @@ import net.aircommunity.platform.service.product.StandardProductService;
 abstract class AbstractStandardProductService<T extends Product> extends AbstractBaseProductService<T>
 		implements StandardProductService<T> {
 
+	@Transactional
 	@Override
 	public T createProduct(String tenantId, T product) {
 		return doCreateProduct(tenantId, product);
 	}
 
+	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#productId")
 	@Override
 	public T updateProduct(String productId, T newProduct) {

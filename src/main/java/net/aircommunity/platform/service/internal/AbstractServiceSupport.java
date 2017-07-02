@@ -18,6 +18,7 @@ import org.springframework.retry.support.RetryTemplate;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.eventbus.EventBus;
 
@@ -49,6 +50,9 @@ public abstract class AbstractServiceSupport {
 
 	@Resource
 	protected Configuration configuration;
+
+	@Resource
+	protected ObjectMapper objectMapper;
 
 	@Resource
 	protected RetryTemplate retryTemplate;

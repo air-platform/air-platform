@@ -29,10 +29,10 @@ import net.aircommunity.platform.service.product.CourseService;
 /**
  * Course service implementation.
  * 
- * @author guankai
+ * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class CourseServiceImpl extends AbstractStandardProductService<Course> implements CourseService {
 	// TODO REMOVE
 	// private static final String CACHE_NAME = "cache.course";
@@ -62,6 +62,7 @@ public class CourseServiceImpl extends AbstractStandardProductService<Course> im
 		return courseRepository.listCourseLocations();
 	}
 
+	@Transactional
 	@Override
 	public Course createCourse(String schoolId, Course course) {
 		School school = schoolService.findSchool(course.getSchool().getId());
@@ -76,6 +77,7 @@ public class CourseServiceImpl extends AbstractStandardProductService<Course> im
 	// return doFindProduct(courseId);
 	// }
 
+	@Transactional
 	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#courseId"), evict = @CacheEvict(cacheNames = {
 			CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES }, allEntries = true))
 	@Override
@@ -153,6 +155,7 @@ public class CourseServiceImpl extends AbstractStandardProductService<Course> im
 				Pages.createPageRequest(page, pageSize)));
 	}
 
+	@Transactional
 	@Caching(evict = { @CacheEvict(cacheNames = CACHE_NAME, key = "#courseId"),
 			@CacheEvict(cacheNames = { CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES }, allEntries = true) })
 	@Override
@@ -160,6 +163,7 @@ public class CourseServiceImpl extends AbstractStandardProductService<Course> im
 		doDeleteProduct(courseId);
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES,
 			CACHE_NAME_AIRCRAFT_LOCATIONS }, allEntries = true)
 	@Override

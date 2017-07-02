@@ -35,7 +35,7 @@ import net.aircommunity.platform.service.product.CommonProductService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class CommentServiceImpl extends AbstractServiceSupport implements CommentService {
 	private static final Logger LOG = LoggerFactory.getLogger(CommentServiceImpl.class);
 
@@ -62,6 +62,7 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 		return !order.getCommented() && isOrderOwner;
 	}
 
+	@Transactional
 	@Override
 	public Comment createComment(String accountId, Source source, String sourceId, Comment comment) {
 		if (source == null) {
@@ -164,12 +165,14 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 				Pages.createPageRequest(page, pageSize)));
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#commentId")
 	@Override
 	public void deleteComment(String commentId) {
 		safeExecute(() -> commentRepository.delete(commentId), "Delete comment %s failed", commentId);
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteComments(String productId) {
@@ -177,6 +180,7 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 				productId);
 	}
 
+	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteCommentsOfAccount(String accountId) {
