@@ -32,16 +32,16 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Aircraft;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.AircraftService;
+import net.aircommunity.platform.service.product.AircraftService;
 
 /**
- * Aircraft RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
+ * Aircraft RESTful API for TENANT
  * 
  * @author Bin.Zhang
  */
 @RESTful
 @AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 public class TenantAircraftResource {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantAircraftResource.class);
 

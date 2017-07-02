@@ -31,7 +31,7 @@ import net.aircommunity.platform.rest.tenant.order.TenantJetTravelOrderResource;
 @RESTful
 @Path("tenant")
 @AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 public class TenantResource {
 
 	// ***********************

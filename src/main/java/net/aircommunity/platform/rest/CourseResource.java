@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -25,12 +24,13 @@ import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Course;
-import net.aircommunity.platform.service.CourseService;
+import net.aircommunity.platform.service.product.CourseService;
+import net.aircommunity.platform.service.product.StandardProductService;
 
 /**
  * Course RESTful API for anybody.
  * 
- * @author guankai
+ * @author Bin.Zhang
  */
 @Api
 @RESTful
@@ -122,15 +122,21 @@ public class CourseResource extends ProductResourceSupport<Course> {
 		return courseService.listCoursesBySchool(schoolId, page, pageSize);
 	}
 
+	@Override
+	protected StandardProductService<Course> getProductService() {
+		return courseService;
+	}
+
 	/**
 	 * Find
 	 */
-	@GET
-	@Path("{courseId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
-	public Course find(@PathParam("courseId") String courseId) {
-		return courseService.findCourse(courseId);
-	}
+	// TODO REMOVE
+	// @GET
+	// @Path("{courseId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// @JsonView(JsonViews.Public.class)
+	// public Course find(@PathParam("courseId") String courseId) {
+	// return courseService.findCourse(courseId);
+	// }
 
 }

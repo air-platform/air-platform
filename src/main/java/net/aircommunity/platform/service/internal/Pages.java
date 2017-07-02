@@ -14,7 +14,7 @@ import net.aircommunity.platform.model.Page;
  * 
  * @author Bin.Zhang
  */
-final class Pages {
+public final class Pages {
 
 	/**
 	 * Default page size.

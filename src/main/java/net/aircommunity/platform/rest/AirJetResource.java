@@ -125,8 +125,8 @@ public class AirJetResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public AirJet update(@PathParam("airJetId") String airJetId, @NotNull @Valid AirJet newAirJet) {
-		return airJetService.updateAirJet(airJetId, newAirJet);
+	public AirJet update(@PathParam("airJetId") String airJetId, @NotNull @Valid AirJet airJet) {
+		return airJetService.updateAirJet(airJetId, airJet);
 	}
 
 	/**

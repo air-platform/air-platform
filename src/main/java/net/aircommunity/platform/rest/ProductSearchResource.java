@@ -26,12 +26,12 @@ import net.aircommunity.platform.model.domain.AirTransport;
 import net.aircommunity.platform.model.domain.Course;
 import net.aircommunity.platform.model.domain.FerryFlight;
 import net.aircommunity.platform.model.domain.JetTravel;
-import net.aircommunity.platform.service.AirTaxiService;
-import net.aircommunity.platform.service.AirTourService;
-import net.aircommunity.platform.service.AirTransportService;
-import net.aircommunity.platform.service.CourseService;
-import net.aircommunity.platform.service.FerryFlightService;
-import net.aircommunity.platform.service.JetTravelService;
+import net.aircommunity.platform.service.product.AirTaxiService;
+import net.aircommunity.platform.service.product.AirTourService;
+import net.aircommunity.platform.service.product.AirTransportService;
+import net.aircommunity.platform.service.product.CourseService;
+import net.aircommunity.platform.service.product.FerryFlightService;
+import net.aircommunity.platform.service.product.JetTravelService;
 
 /**
  * Generic product search RESTful API allows list/find/query for ANYONE.

@@ -37,14 +37,14 @@ import net.aircommunity.platform.model.domain.JetTravel;
 import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.SettingsRepository;
-import net.aircommunity.platform.service.AccountService;
+import net.aircommunity.platform.service.security.AccountService;
 
 /**
  * Abstract service support.
  * 
  * @author Bin.Zhang
  */
-abstract class AbstractServiceSupport {
+public abstract class AbstractServiceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractServiceSupport.class);
 
 	@Resource

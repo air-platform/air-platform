@@ -31,12 +31,12 @@ import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.domain.ProductFamily;
-import net.aircommunity.platform.model.domain.Product.Category;
-import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.ProductFamily;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.rest.BaseResourceSupport;
-import net.aircommunity.platform.service.ProductFamilyService;
+import net.aircommunity.platform.service.product.ProductFamilyService;
 
 /**
  * ProductFamily RESTful API for ADMIN
@@ -55,8 +55,8 @@ public class AdminProductFamilyResource extends BaseResourceSupport {
 	 * Create
 	 */
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid ProductFamily productFamily,
 			@Context UriInfo uriInfo) {
 		ProductFamily created = productFamilyService.createProductFamily(tenantId, productFamily);
@@ -100,7 +100,8 @@ public class AdminProductFamilyResource extends BaseResourceSupport {
 	@GET
 	@Path("review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listToBeApproved(@QueryParam("tenant") String tenantId,
+	@JsonView(JsonViews.Admin.class)
+	public JsonObject reviewCount(@QueryParam("tenant") String tenantId,
 			@QueryParam("status") ReviewStatus reviewStatus) {
 		if (Strings.isBlank(tenantId)) {
 			return buildCountResponse(productFamilyService.countAllProductFamilies(reviewStatus));
@@ -124,8 +125,8 @@ public class AdminProductFamilyResource extends BaseResourceSupport {
 	@Path("{productFamilyId}/disapprove")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void disapproveProductFamily(@PathParam("productFamilyId") String productFamilyId,
-			JsonObject rejectedReason) {
-		String reason = getRejectedReason(rejectedReason);
+			@NotNull JsonObject rejectedReason) {
+		String reason = getRejectedReason(rejectedReason); // TODO how to valid JsonObject
 		productFamilyService.reviewProductFamily(productFamilyId, ReviewStatus.REJECTED, reason);
 	}
 

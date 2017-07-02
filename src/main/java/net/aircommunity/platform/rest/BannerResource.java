@@ -115,8 +115,8 @@ public class BannerResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	@JsonView(JsonViews.Admin.class)
-	public Banner update(@PathParam("bannerId") String bannerId, @NotNull @Valid Banner newBanner) {
-		return bannerService.updateBanner(bannerId, newBanner);
+	public Banner update(@PathParam("bannerId") String bannerId, @NotNull @Valid Banner banner) {
+		return bannerService.updateBanner(bannerId, banner);
 	}
 
 	/**

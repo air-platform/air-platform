@@ -25,9 +25,6 @@ import net.aircommunity.platform.model.domain.Product;
 @Path("products")
 public class ProductResource extends BaseResourceSupport {
 
-	// *****************
-	// Product
-	// *****************
 	/**
 	 * Find
 	 */

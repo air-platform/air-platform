@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -73,7 +74,6 @@ import net.aircommunity.platform.rest.user.CharterOrderResource;
 import net.aircommunity.platform.rest.user.FerryFlightOrderResource;
 import net.aircommunity.platform.rest.user.JetTravelOrderResource;
 import net.aircommunity.platform.rest.user.UserCourseOrderResource;
-import net.aircommunity.platform.service.CommonProductService;
 import net.aircommunity.platform.service.PlatformService;
 
 /**
@@ -314,9 +314,6 @@ public class AdminResource extends BaseResourceSupport {
 		return adminCourseResource;
 	}
 
-	@Resource
-	private CommonProductService commonProductService;
-
 	@GET
 	@Path("product/summaries")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -357,7 +354,7 @@ public class AdminResource extends BaseResourceSupport {
 	@POST
 	@Path("products/{productId}/disapprove")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void disapproveProduct(@PathParam("productId") String productId, JsonObject rejectedReason) {
+	public void disapproveProduct(@PathParam("productId") String productId, @NotNull JsonObject rejectedReason) {
 		String reason = getRejectedReason(rejectedReason);
 		commonProductService.reviewProduct(productId, ReviewStatus.REJECTED, reason);
 	}

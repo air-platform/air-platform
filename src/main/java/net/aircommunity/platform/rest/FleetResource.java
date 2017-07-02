@@ -24,7 +24,8 @@ import net.aircommunity.platform.model.FleetProvider;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Fleet;
-import net.aircommunity.platform.service.FleetService;
+import net.aircommunity.platform.service.product.FleetService;
+import net.aircommunity.platform.service.product.StandardProductService;
 
 /**
  * Fleet RESTful API allows list/find/query for ANYONE
@@ -75,17 +76,6 @@ public class FleetResource extends ProductResourceSupport<Fleet> {
 	}
 
 	/**
-	 * Find
-	 */
-	@GET
-	@Path("{fleetId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
-	public Fleet find(@PathParam("fleetId") String fleetId) {
-		return fleetService.findFleet(fleetId);
-	}
-
-	/**
 	 * Find by flightNo
 	 */
 	@GET
@@ -95,5 +85,21 @@ public class FleetResource extends ProductResourceSupport<Fleet> {
 	public Fleet findFlightNo(@PathParam("flightNo") String flightNo) {
 		return fleetService.findFleetByFlightNo(flightNo);
 	}
+
+	@Override
+	protected StandardProductService<Fleet> getProductService() {
+		return fleetService;
+	}
+
+	/**
+	 * Find
+	 */
+	// @GET
+	// @Path("{fleetId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// @JsonView(JsonViews.Public.class)
+	// public Fleet find(@PathParam("fleetId") String fleetId) {
+	// return fleetService.findFleet(fleetId);
+	// }
 
 }

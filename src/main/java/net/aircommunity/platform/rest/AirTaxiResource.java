@@ -5,7 +5,6 @@ import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -20,7 +19,8 @@ import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirTaxi;
-import net.aircommunity.platform.service.AirTaxiService;
+import net.aircommunity.platform.service.product.AirTaxiService;
+import net.aircommunity.platform.service.product.StandardProductService;
 
 /**
  * AirTaxi RESTful API allows list/find/query for ANYONE.
@@ -54,15 +54,21 @@ public class AirTaxiResource extends ProductResourceSupport<AirTaxi> {
 		return airTaxiService.listAirTaxisWithConditions(departure, arrival, tenantId, page, pageSize);
 	}
 
+	@Override
+	protected StandardProductService<AirTaxi> getProductService() {
+		return airTaxiService;
+	}
+
 	/**
 	 * Find
 	 */
-	@GET
-	@Path("{airTaxiId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
-	public AirTaxi find(@PathParam("airTaxiId") String airTaxiId) {
-		return airTaxiService.findAirTaxi(airTaxiId);
-	}
+	// TODO REMOVE
+	// @GET
+	// @Path("{airTaxiId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// @JsonView(JsonViews.Public.class)
+	// public AirTaxi find(@PathParam("airTaxiId") String airTaxiId) {
+	// return airTaxiService.findAirTaxi(airTaxiId);
+	// }
 
 }

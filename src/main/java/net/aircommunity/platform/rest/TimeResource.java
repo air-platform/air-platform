@@ -26,7 +26,7 @@ import io.swagger.annotations.Api;
 @Path("time")
 public class TimeResource {
 
-	private static final SimpleDateFormat SAFE_FORMATTER = DateFormats.simple("yyyy-MM-dd HH:mm:ss");
+	private static final SimpleDateFormat SAFE_TIME_FORMATTER = DateFormats.simple("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * Sync time
@@ -34,7 +34,7 @@ public class TimeResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject currentTime() {
-		return Json.createObjectBuilder().add("time", SAFE_FORMATTER.format(new Date())).build();
+		return Json.createObjectBuilder().add("time", SAFE_TIME_FORMATTER.format(new Date())).build();
 	}
 
 }

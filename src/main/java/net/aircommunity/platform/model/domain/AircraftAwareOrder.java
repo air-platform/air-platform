@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.PricePolicy;
 import net.aircommunity.platform.model.UnitProductPrice;
+import net.aircommunity.platform.model.constraint.TimeSlot;
 import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
@@ -57,6 +58,7 @@ public abstract class AircraftAwareOrder extends VendorAwareOrder {
 
 	// e.g. 8:00-9:00
 	@NotEmpty
+	@TimeSlot
 	@Size(max = TIMESLOT_LEN)
 	@Column(name = "time_slot", length = TIMESLOT_LEN, nullable = false)
 	protected String timeSlot;

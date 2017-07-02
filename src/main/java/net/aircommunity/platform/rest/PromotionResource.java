@@ -62,7 +62,7 @@ public class PromotionResource extends BaseResourceSupport {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public List<Promotion> listAll(@QueryParam("category") Category category) {
-		LOG.debug("list promotions for category: {}", category);
+		LOG.debug("List promotions for category: {}", category);
 		return promotionService.listPromotions(category);
 	}
 
@@ -109,8 +109,8 @@ public class PromotionResource extends BaseResourceSupport {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	@JsonView(JsonViews.Admin.class)
-	public Promotion update(@PathParam("promotionId") String promotionId, @NotNull @Valid Promotion newPromotion) {
-		return promotionService.updatePromotion(promotionId, newPromotion);
+	public Promotion update(@PathParam("promotionId") String promotionId, @NotNull @Valid Promotion promotion) {
+		return promotionService.updatePromotion(promotionId, promotion);
 	}
 
 	/**
@@ -121,8 +121,8 @@ public class PromotionResource extends BaseResourceSupport {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	@JsonView(JsonViews.Admin.class)
-	public Promotion rank(@PathParam("promotionId") String promotionId, JsonObject request) {
-		int newRank = getRank(request);
+	public Promotion rank(@PathParam("promotionId") String promotionId, JsonObject rank) {
+		int newRank = getRank(rank); // TODO valid JsonObject
 		return promotionService.updatePromotionRank(promotionId, newRank);
 	}
 

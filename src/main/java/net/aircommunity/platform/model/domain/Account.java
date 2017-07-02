@@ -188,6 +188,11 @@ public abstract class Account extends Persistable {
 		ENABLED,
 
 		/**
+		 * Expired may useful in future
+		 */
+		// EXPIRED,
+
+		/**
 		 * An lock account can login, but cannot place orders.
 		 */
 		LOCKED,

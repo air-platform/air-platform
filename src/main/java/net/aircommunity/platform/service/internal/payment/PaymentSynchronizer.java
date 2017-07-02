@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.model.domain.OrderRef;
 import net.aircommunity.platform.repository.OrderRefRepository;
-import net.aircommunity.platform.service.CommonOrderService;
+import net.aircommunity.platform.service.order.CommonOrderService;
 
 /**
  * Scheduled task to query order payment info from payment gateway and sync payment status locally.

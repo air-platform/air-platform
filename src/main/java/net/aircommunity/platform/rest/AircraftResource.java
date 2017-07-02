@@ -20,7 +20,7 @@ import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Aircraft;
-import net.aircommunity.platform.service.AircraftService;
+import net.aircommunity.platform.service.product.AircraftService;
 
 /**
  * Aircraft RESTful API allows list/find/query for ANYONE.
@@ -42,7 +42,7 @@ public class AircraftResource {
 	// ***********************
 
 	/**
-	 * List all TODO query by
+	 * List
 	 */
 	@GET
 	@PermitAll
@@ -50,7 +50,7 @@ public class AircraftResource {
 	@JsonView(JsonViews.Public.class)
 	public Page<Aircraft> listAll(@QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		LOG.debug("list all aircrafts");
+		LOG.debug("List all aircrafts page: {}, pageSize: {}", page, pageSize);
 		return aircraftService.listAircrafts(page, pageSize);
 	}
 

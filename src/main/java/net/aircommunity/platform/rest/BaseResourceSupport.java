@@ -9,7 +9,7 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 
 import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.service.CommonProductService;
+import net.aircommunity.platform.service.product.CommonProductService;
 
 /**
  * Common RESTful API support

@@ -980,16 +980,6 @@
   "timezone" : null
 }, {
   
-  "name" : "中文名",
-  "city" : "城市中文名",
-  "country" : "国家中文名",
-  "iata3" : "三字代码",
-  "icao4" : "四字代码",
-  "latitude" : 0.0,
-  "longitude" : 0.0,
-  "timezone" : null
-}, {
-  
   "name" : "出云机场",
   "city" : "出云",
   "country" : "日本",

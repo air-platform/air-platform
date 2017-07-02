@@ -2,8 +2,6 @@ package net.aircommunity.platform.rest.tenant;
 
 import java.net.URI;
 
-import javax.annotation.Resource;
-import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -29,94 +27,104 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.model.domain.ProductFaq;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
-import net.aircommunity.platform.rest.BaseResourceSupport;
-import net.aircommunity.platform.service.CommonProductService;
+import net.aircommunity.platform.rest.ProductFaqResourceSupport;
+import net.aircommunity.platform.service.product.ProductFaqService;
+import net.aircommunity.platform.service.product.StandardProductService;
 
 /**
- * Base Tenant Product RESTful API. <b>all permission</b> for ADMIN/TENANT
+ * Base Tenant Product RESTful API for TENANT, and also allow ADMIN
  * 
  * @author Bin.Zhang
  */
-public abstract class TenantProductResourceSupport<T extends Product> extends BaseResourceSupport {
+public abstract class TenantProductResourceSupport<T extends Product> extends ProductFaqResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantProductResourceSupport.class);
-
-	@Resource
-	protected CommonProductService commonProductService;
 
 	// *****************
 	// Product
 	// *****************
+
+	/**
+	 * Create (*)
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	public Response createProduct(@PathParam("tenantId") String tenantId, @NotNull @Valid T product,
+			@Context UriInfo uriInfo) {
+		T created = getProductService().createProduct(tenantId, product);
+		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
+		LOG.debug("Created: {}", uri);
+		return Response.created(uri).build();
+	}
+
 	/**
 	 * Find
 	 */
 	@GET
 	@Path("{productId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
-	public Product findProduct(@PathParam("productId") String productId) {
-		return commonProductService.findProduct(productId);
-	}
-
-	/**
-	 * Update Rank (ADMIN)
-	 */
-	@POST
-	@Path("{productId}/rank")
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed(Roles.ROLE_ADMIN)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Product rankProduct(@PathParam("productId") String productId, JsonObject request) {
-		int newRank = getRank(request);
-		return commonProductService.updateProductRank(productId, newRank);
+	public Product findProduct(@PathParam("productId") String productId) {
+		return getProductService().findProduct(productId);
 	}
 
 	/**
-	 * On Sale
+	 * Update (*)
+	 */
+	@PUT
+	@Path("{productId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	public T updateProduct(@PathParam("productId") String productId, @NotNull @Valid T newProduct) {
+		return getProductService().updateProduct(productId, newProduct);
+	}
+
+	/**
+	 * List
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	public Page<T> listProducts(@PathParam("tenantId") String tenantId, @QueryParam("status") ReviewStatus reviewStatus,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		return getProductService().listTenantProducts(tenantId, reviewStatus, page, pageSize);
+	}
+
+	/**
+	 * Review count e.g. review/count?status=pending
+	 */
+	@GET
+	@Path("review/count")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	public JsonObject productReviewCount(@PathParam("tenantId") String tenantId,
+			@QueryParam("status") ReviewStatus reviewStatus) {
+		return buildCountResponse(getProductService().countTenantProducts(tenantId, reviewStatus));
+	}
+
+	/**
+	 * Publish on-sale
 	 */
 	@POST
 	@Path("{productId}/publish")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Product publishProduct(@PathParam("productId") String productId) {
-		return commonProductService.publishProduct(productId, true);
+		return getProductService().publishProduct(productId, true);
 	}
 
 	/**
-	 * Off Sale
+	 * Unpublish off-sale
 	 */
 	@POST
 	@Path("{productId}/unpublish")
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Product unpublishProduct(@PathParam("productId") String productId) {
-		return commonProductService.publishProduct(productId, false);
-	}
-
-	/**
-	 * Approve a tenant product (ADMIN & CS)
-	 */
-	@POST
-	@Path("{productId}/approve")
-	@RolesAllowed(Roles.ROLE_ADMIN)
-	public void approveProduct(@PathParam("productId") String productId) {
-		commonProductService.reviewProduct(productId, ReviewStatus.APPROVED, null);
-	}
-
-	/**
-	 * Disapprove a tenant product (body: {"reason": "xxxx"} ) (ADMIN & CS)
-	 */
-	@POST
-	@Path("{productId}/disapprove")
-	@RolesAllowed(Roles.ROLE_ADMIN)
-	public void disapproveProduct(@PathParam("productId") String productId, JsonObject rejectedReason) {
-		String reason = getRejectedReason(rejectedReason);
-		commonProductService.reviewProduct(productId, ReviewStatus.REJECTED, reason);
+		return getProductService().publishProduct(productId, false);
 	}
 
 	/**
@@ -124,94 +132,23 @@ public abstract class TenantProductResourceSupport<T extends Product> extends Ba
 	 */
 	@DELETE
 	@Path("{productId}")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	public void deleteProduct(@PathParam("productId") String productId) {
-		commonProductService.deleteProduct(productId);
+		getProductService().deleteProduct(productId);
 	}
 
 	/**
 	 * Delete all
 	 */
 	@DELETE
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
 	public void deleteProducts(@PathParam("tenantId") String tenantId) {
-		commonProductService.deleteProducts(tenantId);
+		getProductService().deleteProducts(tenantId);
 	}
 
-	// *****************
-	// Product FAQ
-	// *****************
-	/**
-	 * List all FAQs
-	 */
-	@GET
-	@Path("{productId}/faqs")
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Page<ProductFaq> listProductFaqs(@PathParam("productId") String productId,
-			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		return commonProductService.listProductFaqs(productId, page, pageSize);
+	@Override
+	protected ProductFaqService getProductFaqService() {
+		return getProductService();
 	}
 
-	/**
-	 * Create FAQ
-	 */
-	@POST
-	@Path("{productId}/faqs")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Response createProductFaq(@PathParam("productId") String productId, @NotNull @Valid ProductFaq faq,
-			@Context UriInfo uriInfo) {
-		ProductFaq created = commonProductService.createProductFaq(productId, faq);
-		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
-		LOG.debug("Created: {}", uri);
-		return Response.created(uri).build();
-	}
+	protected abstract StandardProductService<T> getProductService();
 
-	/**
-	 * Find FAQ
-	 */
-	@GET
-	@Path("{productId}/faqs/{productFaqId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public ProductFaq findProductFaq(@PathParam("productFaqId") String productFaqId) {
-		return commonProductService.findProductFaq(productFaqId);
-	}
-
-	/**
-	 * Update FAQ
-	 */
-	@PUT
-	@Path("{productId}/faqs/{productFaqId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public ProductFaq updateProductFaq(@PathParam("productFaqId") String productFaqId, @NotNull ProductFaq newFaq) {
-		return commonProductService.updateProductFaq(productFaqId, newFaq);
-	}
-
-	/**
-	 * Delete FAQ
-	 */
-	@DELETE
-	@Path("{productId}/faqs/{productFaqId}")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
-	public void deleteProductFaq(@PathParam("productFaqId") String productFaqId) {
-		commonProductService.deleteProductFaq(productFaqId);
-	}
-
-	/**
-	 * Delete all FAQ
-	 */
-	@DELETE
-	@Path("{productId}/faqs")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_TENANT })
-	public void deleteProductFaqs(@PathParam("productId") String productId) {
-		commonProductService.deleteProductFaqs(productId);
-	}
 }

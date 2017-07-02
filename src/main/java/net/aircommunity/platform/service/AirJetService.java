@@ -9,7 +9,7 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirJet;
 
 /**
- * AirJet service (only available for platform ADMIN).
+ * AirJet service (ADMIN ONLY)
  * 
  * @author Bin.Zhang
  */

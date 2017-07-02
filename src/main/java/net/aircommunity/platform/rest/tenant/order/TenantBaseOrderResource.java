@@ -30,8 +30,8 @@ import net.aircommunity.platform.model.domain.FleetCandidate;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
-import net.aircommunity.platform.service.CharterOrderService;
-import net.aircommunity.platform.service.CommonOrderService;
+import net.aircommunity.platform.service.order.CharterOrderService;
+import net.aircommunity.platform.service.order.CommonOrderService;
 
 /**
  * Base Tenant order RESTful API. <b>all permission</b> for ADMIN/TENANT

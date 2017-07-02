@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.AccessControlService;
+import net.aircommunity.platform.service.security.AccessControlService;
 
 /**
  * Access check for agent sub-resources TODO

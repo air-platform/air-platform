@@ -33,7 +33,7 @@ import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.Tenant.VerificationStatus;
 import net.aircommunity.platform.rest.BaseResourceSupport;
-import net.aircommunity.platform.service.AccountService;
+import net.aircommunity.platform.service.security.AccountService;
 
 /**
  * Account RESTful API for ADMIN.
@@ -108,9 +108,9 @@ public class AdminAccountResource extends BaseResourceSupport {
 	 */
 	@POST
 	@Path("{accountId}/points")
-	public void updateUserPoints(@PathParam("accountId") String accountId, JsonObject request) {
-		long deltaPoints = getPoints(request);
-		LOG.debug("Update user {} with point request: {}, deltaPoints: {}", accountId, request, deltaPoints);
+	public void updateUserPoints(@PathParam("accountId") String accountId, @NotNull JsonObject points) {
+		long deltaPoints = getPoints(points);
+		LOG.debug("Update user {} with point request: {}, deltaPoints: {}", accountId, points, deltaPoints);
 		accountService.updateUserPoints(accountId, deltaPoints);
 	}
 

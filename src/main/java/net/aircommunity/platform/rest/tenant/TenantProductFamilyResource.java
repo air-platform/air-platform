@@ -30,22 +30,22 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.RESTful;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.domain.ProductFamily;
-import net.aircommunity.platform.model.domain.Product.Category;
-import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.ProductFamily;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.ProductFamilyService;
+import net.aircommunity.platform.service.product.ProductFamilyService;
 
 /**
- * ProductFamily RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
+ * ProductFamily RESTful API for ADMIN/TENANT
  * 
  * @author Bin.Zhang
  */
 @RESTful
 @AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 public class TenantProductFamilyResource extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantProductFamilyResource.class);
 
@@ -96,7 +96,7 @@ public class TenantProductFamilyResource extends BaseResourceSupport {
 	@GET
 	@Path("review/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject listToBeApproved(@PathParam("tenantId") String tenantId,
+	public JsonObject reviewCount(@PathParam("tenantId") String tenantId,
 			@QueryParam("status") ReviewStatus reviewStatus) {
 		return buildCountResponse(productFamilyService.countTenantProductFamilies(tenantId, reviewStatus));
 	}

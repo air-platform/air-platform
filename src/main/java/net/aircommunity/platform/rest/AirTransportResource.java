@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -25,7 +24,8 @@ import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirTransport;
 import net.aircommunity.platform.model.domain.ProductFamily;
-import net.aircommunity.platform.service.AirTransportService;
+import net.aircommunity.platform.service.product.AirTransportService;
+import net.aircommunity.platform.service.product.StandardProductService;
 
 /**
  * AirTransport RESTful API allows list/find/query for ANYONE
@@ -97,15 +97,21 @@ public class AirTransportResource extends ProductResourceSupport<AirTransport> {
 				pageSize);
 	}
 
+	@Override
+	protected StandardProductService<AirTransport> getProductService() {
+		return airTransportService;
+	}
+
 	/**
 	 * Find
 	 */
-	@GET
-	@Path("{transportId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
-	public AirTransport find(@PathParam("transportId") String transportId) {
-		return airTransportService.findAirTransport(transportId);
-	}
+	// TODO REMOVE
+	// @GET
+	// @Path("{transportId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// @JsonView(JsonViews.Public.class)
+	// public AirTransport find(@PathParam("transportId") String transportId) {
+	// return airTransportService.findAirTransport(transportId);
+	// }
 
 }

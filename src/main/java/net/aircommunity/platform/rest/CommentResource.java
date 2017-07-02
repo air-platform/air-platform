@@ -5,7 +5,6 @@ import java.net.URI;
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.json.Json;
 import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -40,8 +39,8 @@ import net.aircommunity.platform.model.domain.Comment;
 import net.aircommunity.platform.model.domain.Comment.Source;
 import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.AccountService;
-import net.aircommunity.platform.service.CommentService;
+import net.aircommunity.platform.service.product.CommentService;
+import net.aircommunity.platform.service.security.AccountService;
 
 /**
  * Comment RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT and <b>list/find/query</b> for ANYONE
@@ -52,7 +51,7 @@ import net.aircommunity.platform.service.CommentService;
 @RESTful
 @Path("comments")
 @AllowResourceOwner
-public class CommentResource {
+public class CommentResource extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(CommentResource.class);
 
 	private static final String HEADER_COMMENT_ALLOWED = "Comment-Allowed";
@@ -98,7 +97,7 @@ public class CommentResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject totalCount() {
 		long count = commentService.getTotalCommentsCount();
-		return Json.createObjectBuilder().add("count", count).build();
+		return buildCountResponse(count);
 	}
 
 	// TODO query by xxx

@@ -21,7 +21,7 @@ import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.AirTransportOrder;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.AirTransportOrderService;
+import net.aircommunity.platform.service.order.AirTransportOrderService;
 
 /**
  * AirTransportOrder RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT

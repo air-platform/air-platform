@@ -16,7 +16,7 @@ import io.micro.core.security.TokenVerificationService;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.domain.Account;
-import net.aircommunity.platform.service.AccountService;
+import net.aircommunity.platform.service.security.AccountService;
 
 /**
  * Verify API calls.

@@ -32,16 +32,16 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.School;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.SchoolService;
+import net.aircommunity.platform.service.product.SchoolService;
 
 /**
- * School RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
+ * School RESTful API for ADMIN/TENANT
  * 
- * @author guankai
+ * @author Bin.Zhang
  */
 @RESTful
 @AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
+@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 public class TenantSchoolResource {
 	private static final Logger LOG = LoggerFactory.getLogger(TenantSchoolResource.class);
 
@@ -54,9 +54,9 @@ public class TenantSchoolResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid School request,
+	public Response create(@PathParam("tenantId") String tenantId, @NotNull @Valid School school,
 			@Context UriInfo uriInfo) {
-		School created = schoolService.createSchool(tenantId, request);
+		School created = schoolService.createSchool(tenantId, school);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created: {}", uri);
 		return Response.created(uri).build();
@@ -79,8 +79,8 @@ public class TenantSchoolResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Page<School> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+	public Page<School> list(@PathParam("tenantId") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		return schoolService.listSchools(tenantId, page, pageSize);
 	}
 

@@ -15,7 +15,7 @@ import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.rest.tenant.order.TenantBaseOrderResource;
-import net.aircommunity.platform.service.CommonOrderService;
+import net.aircommunity.platform.service.order.CommonOrderService;
 
 /**
  * Order RESTful API for ADMIN

@@ -19,8 +19,8 @@ import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.RefundRepository;
-import net.aircommunity.platform.service.CommonOrderService;
-import net.aircommunity.platform.service.PaymentService;
+import net.aircommunity.platform.service.order.CommonOrderService;
+import net.aircommunity.platform.service.payment.PaymentService;
 import net.aircommunity.platform.service.spi.PaymentGateway;
 
 /**

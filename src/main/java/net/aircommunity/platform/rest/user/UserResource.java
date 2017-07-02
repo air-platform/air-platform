@@ -43,9 +43,9 @@ import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
-import net.aircommunity.platform.service.AccountService;
-import net.aircommunity.platform.service.CharterOrderService;
-import net.aircommunity.platform.service.CommonOrderService;
+import net.aircommunity.platform.service.order.CharterOrderService;
+import net.aircommunity.platform.service.order.CommonOrderService;
+import net.aircommunity.platform.service.security.AccountService;
 
 /**
  * User resource.

@@ -12,18 +12,17 @@ import javax.ws.rs.core.MediaType;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
-import net.aircommunity.platform.rest.ProductResourceSupport;
-import net.aircommunity.platform.service.CommonProductService;
+import net.aircommunity.platform.service.product.CommonProductService;
 
 /**
  * Product administrative RESTful API. NOTE: <b>all permission</b> for ADMIN
  * 
  * @author Bin.Zhang
- * @deprecated (two level sub-resource is NOT working)
+ * @deprecated (because of two level sub-resource is NOT working)
  */
 // @RESTful
 @RolesAllowed(Roles.ROLE_ADMIN)
-public class AdminProductResource extends ProductResourceSupport<Product> {
+public class AdminProductResource /* extends ProductResourceSupport<Product> */ {
 
 	@Resource
 	private CommonProductService commonProductService;

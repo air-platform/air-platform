@@ -22,7 +22,7 @@ import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.CourseOrder;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.CourseOrderService;
+import net.aircommunity.platform.service.order.CourseOrderService;
 
 /**
  * Tenant can view the {@code Course} CourseOrder of a {@code User}

@@ -20,7 +20,7 @@ import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.School;
-import net.aircommunity.platform.service.SchoolService;
+import net.aircommunity.platform.service.product.SchoolService;
 
 /**
  * School RESTful API allows list/find/query for ANYONE
@@ -49,7 +49,7 @@ public class SchoolResource {
 	@JsonView(JsonViews.Public.class)
 	public Page<School> listAll(@QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		LOG.debug("List all schools");
+		LOG.debug("List all schools page: {}, pageSize: {}", page, pageSize);
 		return schoolService.listAllSchools(page, pageSize);
 	}
 

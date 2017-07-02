@@ -33,7 +33,7 @@ import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.FerryFlightOrder;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.FerryFlightOrderService;
+import net.aircommunity.platform.service.order.FerryFlightOrderService;
 
 /**
  * FerryFlightOrder RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT

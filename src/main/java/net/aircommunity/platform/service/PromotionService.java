@@ -10,7 +10,7 @@ import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.Promotion;
 
 /**
- * Product Promotion Service.
+ * Product Promotion Service (ADMIN ONLY).
  * 
  * @author Bin.Zhang
  */

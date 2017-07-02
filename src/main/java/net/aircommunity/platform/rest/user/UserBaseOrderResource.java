@@ -24,8 +24,8 @@ import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.rest.BaseResourceSupport;
-import net.aircommunity.platform.service.CharterOrderService;
-import net.aircommunity.platform.service.CommonOrderService;
+import net.aircommunity.platform.service.order.CharterOrderService;
+import net.aircommunity.platform.service.order.CommonOrderService;
 
 /**
  * Base User order RESTful API. <b>all permission</b> for ADMIN/USER

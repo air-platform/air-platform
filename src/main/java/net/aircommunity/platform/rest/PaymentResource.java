@@ -33,8 +33,8 @@ import net.aircommunity.platform.model.PaymentNotification;
 import net.aircommunity.platform.model.PaymentResponse;
 import net.aircommunity.platform.model.PaymentVerification;
 import net.aircommunity.platform.model.domain.Payment;
-import net.aircommunity.platform.service.CommonOrderService;
-import net.aircommunity.platform.service.PaymentService;
+import net.aircommunity.platform.service.order.CommonOrderService;
+import net.aircommunity.platform.service.payment.PaymentService;
 
 /**
  * Payment RESTful API.

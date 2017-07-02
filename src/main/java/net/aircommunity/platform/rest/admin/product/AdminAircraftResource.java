@@ -32,10 +32,10 @@ import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Aircraft;
-import net.aircommunity.platform.service.AircraftService;
+import net.aircommunity.platform.service.product.AircraftService;
 
 /**
- * Aircraft RESTful API for ADMIN ONLY
+ * Aircraft RESTful API for ADMIN
  * 
  * @author Bin.Zhang
  */
@@ -94,8 +94,8 @@ public class AdminAircraftResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Aircraft update(@PathParam("aircraftId") String aircraftId, @NotNull @Valid Aircraft newAircraft) {
-		return aircraftService.updateAircraft(aircraftId, newAircraft);
+	public Aircraft update(@PathParam("aircraftId") String aircraftId, @NotNull @Valid Aircraft aircraft) {
+		return aircraftService.updateAircraft(aircraftId, aircraft);
 	}
 
 	/**

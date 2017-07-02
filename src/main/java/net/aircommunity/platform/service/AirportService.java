@@ -10,7 +10,7 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Airport;
 
 /**
- * Airport service. (for ADMIN only)
+ * Airport service. (ADMIN ONLY)
  * 
  * @author Bin.Zhang
  */

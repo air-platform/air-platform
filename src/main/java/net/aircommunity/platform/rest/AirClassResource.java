@@ -96,8 +96,8 @@ public class AirClassResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public Response create(@NotNull @Valid AirClass AirClass, @Context UriInfo uriInfo) {
-		AirClass created = airClassService.createAirClass(AirClass);
+	public Response create(@NotNull @Valid AirClass airClass, @Context UriInfo uriInfo) {
+		AirClass created = airClassService.createAirClass(airClass);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
@@ -112,8 +112,8 @@ public class AirClassResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	public AirClass update(@PathParam("airClassId") String airClassId, @NotNull @Valid AirClass newAirClass) {
-		return airClassService.updateAirClass(airClassId, newAirClass);
+	public AirClass update(@PathParam("airClassId") String airClassId, @NotNull @Valid AirClass airClass) {
+		return airClassService.updateAirClass(airClassId, airClass);
 	}
 
 	/**

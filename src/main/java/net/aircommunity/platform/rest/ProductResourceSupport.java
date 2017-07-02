@@ -15,6 +15,7 @@ import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.ProductFaq;
+import net.aircommunity.platform.service.product.StandardProductService;
 
 /**
  * Product RESTful API. <b>all permission</b> for ALL (NOTE: base resource class for subclass extending MUST be public)
@@ -32,14 +33,14 @@ public abstract class ProductResourceSupport<T extends Product> extends BaseReso
 	 * this for better performance and better apidoc generation for the moment (XXX just comment out to avoid resource
 	 * path conflicting)
 	 */
-	// @GET
-	// @PermitAll
-	// @Path("{productId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @JsonView(View.Public.class)
-	// public Product findProduct(@PathParam("productId") String productId) {
-	// return commonProductService.findProduct(productId);
-	// }
+	@GET
+	@PermitAll
+	@Path("{productId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
+	public T findProduct(@PathParam("productId") String productId) {
+		return getProductService().findProduct(productId);
+	}
 
 	// *****************
 	// Product FAQ
@@ -54,7 +55,7 @@ public abstract class ProductResourceSupport<T extends Product> extends BaseReso
 	@JsonView(JsonViews.Public.class)
 	public Page<ProductFaq> listProductFaqs(@PathParam("productId") String productId,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		return commonProductService.listProductFaqs(productId, page, pageSize);
+		return getProductService().listProductFaqs(productId, page, pageSize);
 	}
 
 	/**
@@ -66,9 +67,10 @@ public abstract class ProductResourceSupport<T extends Product> extends BaseReso
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public ProductFaq findProductFaq(@PathParam("productFaqId") String productFaqId) {
-		ProductFaq faq = commonProductService.findProductFaq(productFaqId);
-		commonProductService.increaseProductFaqViews(productFaqId);
+		ProductFaq faq = getProductService().findProductFaq(productFaqId);
+		getProductService().increaseProductFaqViews(productFaqId);
 		return faq;
 	}
 
+	protected abstract StandardProductService<T> getProductService();
 }

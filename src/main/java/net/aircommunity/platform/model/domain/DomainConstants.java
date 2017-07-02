@@ -65,7 +65,8 @@ interface DomainConstants {
 	int TRADE_NO_LEN = 50;
 	// current used max is 12
 	int ORDER_TYPE_LEN = 15;
-	int ORDER_STATUS_LEN = 15;
+	// current used max is 18
+	int ORDER_STATUS_LEN = 20;
 	// e.g. iOS, Android, Windows Phone, H5, Web etc. TODO: improve to reduce length?
 	int ORDER_CHANNEL_LEN = 50;
 	// is it enough?
@@ -102,8 +103,8 @@ interface DomainConstants {
 	int SETTING_CATEGORY_LEN = 50;
 	// https://en.wikipedia.org/wiki/ISO_4217 (3 chars)
 	int CURRENCY_UNIT_LEN = 3;
-	// current format is, HH:mm-HH:mm, e.g. 8:00-9:00
-	int TIMESLOT_LEN = 9;
+	// current format is, HH:mm-HH:mm, e.g. 08:00-09:00
+	int TIMESLOT_LEN = 11;
 	// TODO: a better reasonable length?
 	int AIRPORT_NAME_LEN = 50;
 	int COUNTRY_NAME_LEN = 50;

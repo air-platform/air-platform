@@ -82,11 +82,11 @@ import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 import net.aircommunity.platform.model.domain.DailySignin;
 import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
-import net.aircommunity.platform.service.AccountService;
-import net.aircommunity.platform.service.FileService;
-import net.aircommunity.platform.service.SmsService;
-import net.aircommunity.platform.service.TemplateService;
-import net.aircommunity.platform.service.VerificationService;
+import net.aircommunity.platform.service.common.FileService;
+import net.aircommunity.platform.service.common.SmsService;
+import net.aircommunity.platform.service.common.TemplateService;
+import net.aircommunity.platform.service.common.VerificationService;
+import net.aircommunity.platform.service.security.AccountService;
 
 /**
  * Account RESTful API.

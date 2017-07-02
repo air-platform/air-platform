@@ -138,8 +138,8 @@ public class AirportResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	@JsonView(JsonViews.Admin.class)
-	public Airport update(@PathParam("airportId") String airportId, @NotNull @Valid Airport newAirport) {
-		return airportService.updateAirport(airportId, newAirport);
+	public Airport update(@PathParam("airportId") String airportId, @NotNull @Valid Airport airport) {
+		return airportService.updateAirport(airportId, airport);
 	}
 
 	/**

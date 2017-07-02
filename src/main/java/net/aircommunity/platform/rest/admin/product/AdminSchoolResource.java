@@ -32,7 +32,7 @@ import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.School;
-import net.aircommunity.platform.service.SchoolService;
+import net.aircommunity.platform.service.product.SchoolService;
 
 /**
  * School RESTful API for ADMIN
@@ -53,9 +53,9 @@ public class AdminSchoolResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid School request,
+	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid School school,
 			@Context UriInfo uriInfo) {
-		School created = schoolService.createSchool(tenantId, request);
+		School created = schoolService.createSchool(tenantId, school);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created: {}", uri);
 		return Response.created(uri).build();
@@ -78,8 +78,8 @@ public class AdminSchoolResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Page<School> list(@QueryParam("tenant") String tenantId, @QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+	public Page<School> list(@QueryParam("tenant") String tenantId, @QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		if (Strings.isBlank(tenantId)) {
 			return schoolService.listAllSchools(page, pageSize);
 		}

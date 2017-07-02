@@ -7,7 +7,7 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirClass;
 
 /**
- * AirClass service (only available for platform ADMIN).
+ * AirClass service (ADMIN ONLY)
  * 
  * @author Bin.Zhang
  */

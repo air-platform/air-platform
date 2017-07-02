@@ -7,7 +7,6 @@ import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -18,11 +17,13 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirTour;
-import net.aircommunity.platform.service.AirTourService;
+import net.aircommunity.platform.service.product.AirTourService;
+import net.aircommunity.platform.service.product.StandardProductService;
 
 /**
  * AirTour RESTful API allows list/find/query for ANYONE.
@@ -63,21 +64,27 @@ public class AirTourResourse extends ProductResourceSupport<AirTour> {
 	public Page<AirTour> listAll(@QueryParam("city") String city, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("list all air tours");
-		if (city == null) {
+		if (Strings.isBlank(city)) {
 			return airTourService.listAirTours(page, pageSize);
 		}
 		return airTourService.listAirToursByCity(city, page, pageSize);
 	}
 
+	@Override
+	protected StandardProductService<AirTour> getProductService() {
+		return airTourService;
+	}
+
 	/**
 	 * Find
 	 */
-	@GET
-	@Path("{airTourId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
-	public AirTour find(@PathParam("airTourId") String airTourId) {
-		return airTourService.findAirTour(airTourId);
-	}
+	// TODO REMOVE
+	// @GET
+	// @Path("{airTourId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// @JsonView(JsonViews.Public.class)
+	// public AirTour find(@PathParam("airTourId") String airTourId) {
+	// return airTourService.findAirTour(airTourId);
+	// }
 
 }

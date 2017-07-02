@@ -5,7 +5,6 @@ import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -21,7 +20,8 @@ import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.domain.FerryFlight;
-import net.aircommunity.platform.service.FerryFlightService;
+import net.aircommunity.platform.service.product.FerryFlightService;
+import net.aircommunity.platform.service.product.StandardProductService;
 
 /**
  * FerryFlight RESTful API allows list/find/query for ANYONE
@@ -69,15 +69,20 @@ public class FerryFlightResource extends ProductResourceSupport<FerryFlight> {
 		return Response.ok(ferryFlightService.listFerryFlights(page, pageSize)).build();
 	}
 
+	@Override
+	protected StandardProductService<FerryFlight> getProductService() {
+		return ferryFlightService;
+	}
+
 	/**
 	 * Find one
 	 */
-	@GET
-	@Path("{ferryFlightId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
-	public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {
-		return ferryFlightService.findFerryFlight(ferryFlightId);
-	}
+	// @GET
+	// @Path("{ferryFlightId}")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// @JsonView(JsonViews.Public.class)
+	// public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {
+	// return ferryFlightService.findFerryFlight(ferryFlightId);
+	// }
 
 }

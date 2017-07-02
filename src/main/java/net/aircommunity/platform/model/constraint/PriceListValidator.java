@@ -47,7 +47,7 @@ public class PriceListValidator implements ConstraintValidator<PriceList, CharSe
 
 	@Override
 	public void initialize(PriceList parameters) {
-		// do nothing (as long as ContactList has no properties)
+		// do nothing (as long as PriceList has no properties)
 	}
 
 }

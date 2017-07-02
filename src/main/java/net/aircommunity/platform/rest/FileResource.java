@@ -22,7 +22,7 @@ import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.FileUploadResult;
 import net.aircommunity.platform.model.StreamingImageFile;
-import net.aircommunity.platform.service.FileService;
+import net.aircommunity.platform.service.common.FileService;
 
 /**
  * Files RESTful API.
