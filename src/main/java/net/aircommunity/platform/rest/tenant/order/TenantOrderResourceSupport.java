@@ -3,7 +3,6 @@ package net.aircommunity.platform.rest.tenant.order;
 import java.math.BigDecimal;
 
 import javax.annotation.Resource;
-import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -24,33 +23,24 @@ import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.CharterOrder;
 import net.aircommunity.platform.model.domain.FleetCandidate;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.order.CharterOrderService;
-import net.aircommunity.platform.service.order.CommonOrderService;
+import net.aircommunity.platform.service.order.OrderService;
 
 /**
- * Base Tenant order RESTful API. <b>all permission</b> for ADMIN/TENANT
+ * Base Tenant order RESTful API for ADMIN and TENANT
  * 
  * @author Bin.Zhang
  */
-@SuppressWarnings("unchecked")
-public abstract class TenantBaseOrderResource<T extends Order> extends BaseResourceSupport {
-	private static final Logger LOG = LoggerFactory.getLogger(TenantBaseOrderResource.class);
-
-	@Resource
-	private CommonOrderService commonOrderService;
+public abstract class TenantOrderResourceSupport<T extends Order> extends BaseResourceSupport {
+	protected static final Logger LOG = LoggerFactory.getLogger(TenantOrderResourceSupport.class);
 
 	@Resource
 	private CharterOrderService charterOrderService;
-
-	// *****************
-	// ADMIN & TENANT
-	// *****************
 
 	/**
 	 * Find order
@@ -59,9 +49,8 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	@Path("{orderId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public T find(@PathParam("orderId") String orderId) {
-		return (T) commonOrderService.findOrder(orderId);
+		return getOrderService().findOrder(orderId);
 	}
 
 	/**
@@ -70,16 +59,15 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	@POST
 	@Path("{orderId}/price")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void updateOrderPrice(@PathParam("orderId") String orderId, @NotNull JsonObject request) {
 		BigDecimal totalAmount = getAmount(request);
-		Order order = commonOrderService.findOrder(orderId);
+		Order order = getOrderService().findOrder(orderId);
 		// specific case for charter (update price and also offer a fleetCandidate)
 		if (CharterOrder.class.isAssignableFrom(order.getClass())) {
 			updateCharterOrderPrice(order, totalAmount, request);
 		}
 		else {
-			commonOrderService.updateOrderTotalAmount(orderId, totalAmount);
+			getOrderService().updateOrderTotalAmount(orderId, totalAmount);
 		}
 	}
 
@@ -88,7 +76,7 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 		String status = getStatus(request);
 		String orderId = order.getId();
 		if (Strings.isBlank(fleetCandidateId)) {
-			commonOrderService.updateOrderTotalAmount(orderId, totalAmount);
+			getOrderService().updateOrderTotalAmount(orderId, totalAmount);
 			return;
 		}
 		// offer or refuse
@@ -117,9 +105,8 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@POST
 	@Path("{orderId}/confirm")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void confirmOrder(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.CONFIRMED);
+		getOrderService().updateOrderStatus(orderId, Order.Status.CONFIRMED);
 	}
 
 	/**
@@ -127,9 +114,8 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@POST
 	@Path("{orderId}/sign-contract")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void signContractOrder(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.CONTRACT_SIGNED);
+		getOrderService().updateOrderStatus(orderId, Order.Status.CONTRACT_SIGNED);
 	}
 
 	/**
@@ -137,9 +123,8 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@POST
 	@Path("{orderId}/pay")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void payOrder(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.PAID);
+		getOrderService().updateOrderStatus(orderId, Order.Status.PAID);
 	}
 
 	/**
@@ -148,13 +133,12 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	@POST
 	@Path("{orderId}/refund/initiate")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void forceOrderRefund(@PathParam("orderId") String orderId, JsonObject request) {
 		LOG.debug("Initiate refund request: {}", request);
 		BigDecimal refundAmount = getAmount(request);
 		String refundReason = getReason(request);
 		LOG.debug("Refund amount original: {}", refundAmount);
-		Order order = commonOrderService.initiateOrderRefund(orderId, refundAmount, refundReason);
+		Order order = getOrderService().initiateOrderRefund(orderId, refundAmount, refundReason);
 		if (order.getStatus() == Order.Status.REFUND_FAILED) {
 			throw new AirException(Codes.ORDER_REFUND_FAILURE, M.msg(M.ORDER_REFUND_FAILURE, order.getOrderNo()));
 		}
@@ -166,12 +150,11 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	@POST
 	@Path("{orderId}/refund/accept")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void acceptOrderRefund(@PathParam("orderId") String orderId, JsonObject request) {
 		LOG.debug("Refund request: {}", request);
 		BigDecimal amount = getAmount(request);
 		LOG.debug("Refund amount original: {}", amount);
-		Order order = commonOrderService.acceptOrderRefund(orderId, amount);
+		Order order = getOrderService().acceptOrderRefund(orderId, amount);
 		if (order.getStatus() == Order.Status.REFUND_FAILED) {
 			throw new AirException(Codes.ORDER_REFUND_FAILURE, M.msg(M.ORDER_REFUND_FAILURE, order.getOrderNo()));
 		}
@@ -183,10 +166,9 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	@POST
 	@Path("{orderId}/refund/reject")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void rejectOrderRefund(@PathParam("orderId") String orderId, JsonObject rejectedReason) {
 		String reason = getRejectedReason(rejectedReason);
-		commonOrderService.rejectOrderRefund(orderId, reason);
+		getOrderService().rejectOrderRefund(orderId, reason);
 	}
 
 	/**
@@ -194,9 +176,8 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@POST
 	@Path("{orderId}/release-ticket")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void releaseTicketOrder(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.TICKET_RELEASED);
+		getOrderService().updateOrderStatus(orderId, Order.Status.TICKET_RELEASED);
 	}
 
 	/**
@@ -204,9 +185,8 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@POST
 	@Path("{orderId}/finish")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void finishOrder(@PathParam("orderId") String orderId) {
-		commonOrderService.updateOrderStatus(orderId, Order.Status.FINISHED);
+		getOrderService().updateOrderStatus(orderId, Order.Status.FINISHED);
 	}
 
 	/**
@@ -215,10 +195,9 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	@POST
 	@Path("{orderId}/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void cancel(@PathParam("orderId") String orderId, JsonObject request) {
 		String reason = getCancelReason(request);
-		commonOrderService.cancelOrder(orderId, reason);
+		getOrderService().cancelOrder(orderId, reason);
 	}
 
 	/**
@@ -227,10 +206,9 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	@POST
 	@Path("{orderId}/close")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void closeOrder(@PathParam("orderId") String orderId, JsonObject closeReason) {
 		String reason = getReason(closeReason);
-		commonOrderService.closeOrder(orderId, reason);
+		getOrderService().closeOrder(orderId, reason);
 	}
 
 	/**
@@ -238,32 +216,9 @@ public abstract class TenantBaseOrderResource<T extends Order> extends BaseResou
 	 */
 	@DELETE
 	@Path("{orderId}")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 	public void delete(@PathParam("orderId") String orderId) {
-		commonOrderService.softDeleteOrder(orderId);
+		getOrderService().softDeleteOrder(orderId);
 	}
 
-	// **************
-	// ADMIN ONLY
-	// **************
-
-	/**
-	 * Delete
-	 */
-	@DELETE
-	@Path("{orderId}/force")
-	@RolesAllowed(Roles.ROLE_ADMIN)
-	public void forceDelete(@PathParam("orderId") String orderId) {
-		commonOrderService.deleteOrder(orderId);
-	}
-
-	/**
-	 * Delete all
-	 */
-	@DELETE
-	@RolesAllowed(Roles.ROLE_ADMIN)
-	public void deleteAll(@PathParam("userId") String userId) {
-		commonOrderService.deleteOrders(userId);
-	}
-
+	protected abstract OrderService<T> getOrderService();
 }

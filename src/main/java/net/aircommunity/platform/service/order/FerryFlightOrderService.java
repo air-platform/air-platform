@@ -13,7 +13,7 @@ import net.aircommunity.platform.model.domain.Order;
  * 
  * @author Bin.Zhang
  */
-public interface FerryFlightOrderService {
+public interface FerryFlightOrderService extends StandardOrderService<FerryFlightOrder> {
 
 	/**
 	 * Create a FerryFlightOrder.
@@ -23,7 +23,10 @@ public interface FerryFlightOrderService {
 	 * @return FerryFlightOrder created
 	 */
 	@Nonnull
-	FerryFlightOrder createFerryFlightOrder(@Nonnull String userId, @Nonnull FerryFlightOrder ferryFlightOrder);
+	default FerryFlightOrder createFerryFlightOrder(@Nonnull String userId,
+			@Nonnull FerryFlightOrder ferryFlightOrder) {
+		return createOrder(userId, ferryFlightOrder);
+	}
 
 	/**
 	 * Retrieves the specified FerryFlightOrder.
@@ -33,7 +36,9 @@ public interface FerryFlightOrderService {
 	 * @throws AirException if not found
 	 */
 	@Nonnull
-	FerryFlightOrder findFerryFlightOrder(@Nonnull String ferryFlightOrderId);
+	default FerryFlightOrder findFerryFlightOrder(@Nonnull String ferryFlightOrderId) {
+		return findOrder(ferryFlightOrderId);
+	}
 
 	/**
 	 * Update a FerryFlightOrder.
@@ -43,8 +48,10 @@ public interface FerryFlightOrderService {
 	 * @return FerryFlightOrder created
 	 */
 	@Nonnull
-	FerryFlightOrder updateFerryFlightOrder(@Nonnull String ferryFlightOrderId,
-			@Nonnull FerryFlightOrder newFerryFlightOrder);
+	default FerryFlightOrder updateFerryFlightOrder(@Nonnull String ferryFlightOrderId,
+			@Nonnull FerryFlightOrder newFerryFlightOrder) {
+		return updateOrder(ferryFlightOrderId, newFerryFlightOrder);
+	}
 
 	/**
 	 * Update FerryFlightOrder status
@@ -54,7 +61,10 @@ public interface FerryFlightOrderService {
 	 * @return updated FerryFlightOrder
 	 */
 	@Nonnull
-	FerryFlightOrder updateFerryFlightOrderStatus(@Nonnull String ferryFlightOrderId, @Nonnull Order.Status status);
+	default FerryFlightOrder updateFerryFlightOrderStatus(@Nonnull String ferryFlightOrderId,
+			@Nonnull Order.Status status) {
+		return updateOrderStatus(ferryFlightOrderId, status);
+	}
 
 	/**
 	 * List all FerryFlightOrders by pagination filtered by userId and order status.
@@ -66,8 +76,10 @@ public interface FerryFlightOrderService {
 	 * @return a page of FerryFlightOrders or empty
 	 */
 	@Nonnull
-	Page<FerryFlightOrder> listUserFerryFlightOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
-			int pageSize);
+	default Page<FerryFlightOrder> listUserFerryFlightOrders(@Nonnull String userId, @Nullable Order.Status status,
+			int page, int pageSize) {
+		return listUserOrders(userId, status, page, pageSize);
+	}
 
 	/**
 	 * List all FerryFlightOrders by pagination filtered by userId.
@@ -79,7 +91,7 @@ public interface FerryFlightOrderService {
 	 */
 	@Nonnull
 	default Page<FerryFlightOrder> listUserFerryFlightOrders(@Nonnull String userId, int page, int pageSize) {
-		return listUserFerryFlightOrders(userId, null, page, pageSize);
+		return listUserOrders(userId, page, pageSize);
 	}
 
 	/**
@@ -91,8 +103,10 @@ public interface FerryFlightOrderService {
 	 * @param pageSize the pageSize
 	 * @return a page of FerryFlightOrders or empty
 	 */
-	Page<FerryFlightOrder> listTenantFerryFlightOrders(@Nonnull String tenantId, @Nullable Order.Status status,
-			int page, int pageSize);
+	default Page<FerryFlightOrder> listTenantFerryFlightOrders(@Nonnull String tenantId, @Nullable Order.Status status,
+			int page, int pageSize) {
+		return listTenantOrders(tenantId, status, page, pageSize);
+	}
 
 	/**
 	 * List all the FerryFlightOrders placed on this tenant.
@@ -103,7 +117,7 @@ public interface FerryFlightOrderService {
 	 * @return a page of FerryFlightOrders or empty
 	 */
 	default Page<FerryFlightOrder> listTenantFerryFlightOrders(@Nonnull String tenantId, int page, int pageSize) {
-		return listTenantFerryFlightOrders(tenantId, null, page, pageSize);
+		return listTenantOrders(tenantId, page, pageSize);
 	}
 
 	/**
@@ -115,7 +129,9 @@ public interface FerryFlightOrderService {
 	 * @return a page of FerryFlightOrders or empty
 	 */
 	@Nonnull
-	Page<FerryFlightOrder> listFerryFlightOrders(@Nullable Order.Status status, int page, int pageSize);
+	default Page<FerryFlightOrder> listFerryFlightOrders(@Nullable Order.Status status, int page, int pageSize) {
+		return listAllOrders(status, page, pageSize);
+	}
 
 	/**
 	 * List all FerryFlightOrders by pagination.
@@ -125,7 +141,7 @@ public interface FerryFlightOrderService {
 	 * @return a page of FerryFlightOrders or empty
 	 */
 	default @Nonnull Page<FerryFlightOrder> listFerryFlightOrders(int page, int pageSize) {
-		return listFerryFlightOrders(null, page, pageSize);
+		return listAllOrders(page, pageSize);
 	}
 
 	/**
@@ -133,12 +149,16 @@ public interface FerryFlightOrderService {
 	 * 
 	 * @param ferryFlightOrderId the ferryFlightOrderId
 	 */
-	void deleteFerryFlightOrder(@Nonnull String ferryFlightOrderId);
+	default void deleteFerryFlightOrder(@Nonnull String ferryFlightOrderId) {
+		deleteOrder(ferryFlightOrderId);
+	}
 
 	/**
 	 * Delete FerryFlightOrders.
 	 * 
 	 * @param userId the userId
 	 */
-	void deleteFerryFlightOrders(@Nonnull String userId);
+	default void deleteFerryFlightOrders(@Nonnull String userId) {
+		deleteOrders(userId);
+	}
 }

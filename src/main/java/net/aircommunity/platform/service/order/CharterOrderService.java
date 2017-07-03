@@ -16,7 +16,7 @@ import net.aircommunity.platform.model.domain.Order;
  * 
  * @author Bin.Zhang
  */
-public interface CharterOrderService {
+public interface CharterOrderService extends StandardOrderService<CharterOrder> {
 
 	/**
 	 * Create a CharterOrder.
@@ -27,7 +27,9 @@ public interface CharterOrderService {
 	 * @return CharterOrder created
 	 */
 	@Nonnull
-	CharterOrder createCharterOrder(@Nonnull String userId, @Nonnull CharterOrder charterOrder);
+	default CharterOrder createCharterOrder(@Nonnull String userId, @Nonnull CharterOrder charterOrder) {
+		return createOrder(userId, charterOrder);
+	}
 
 	/**
 	 * Retrieves the specified CharterOrder.
@@ -37,17 +39,9 @@ public interface CharterOrderService {
 	 * @throws AirException if not found
 	 */
 	@Nonnull
-	CharterOrder findCharterOrder(@Nonnull String charterOrderId);
-
-	/**
-	 * Retrieves the specified CharterOrder by orderNo.
-	 * 
-	 * @param orderNo the orderNo
-	 * @return the CharterOrder found
-	 * @throws AirException if not found
-	 */
-	@Nonnull
-	CharterOrder findCharterOrderByOrderNo(@Nonnull String orderNo);
+	default CharterOrder findCharterOrder(@Nonnull String charterOrderId) {
+		return findOrder(charterOrderId);
+	}
 
 	/**
 	 * Update a CharterOrder.
@@ -57,7 +51,9 @@ public interface CharterOrderService {
 	 * @return CharterOrder created
 	 */
 	@Nonnull
-	CharterOrder updateCharterOrder(@Nonnull String charterOrderId, @Nonnull CharterOrder newCharterOrder);
+	default CharterOrder updateCharterOrder(@Nonnull String charterOrderId, @Nonnull CharterOrder newCharterOrder) {
+		return updateOrder(charterOrderId, newCharterOrder);
+	}
 
 	/**
 	 * Update CharterOrder status
@@ -67,7 +63,9 @@ public interface CharterOrderService {
 	 * @return updated CharterOrder
 	 */
 	@Nonnull
-	CharterOrder updateCharterOrderStatus(@Nonnull String charterOrderId, @Nonnull Order.Status status);
+	default CharterOrder updateCharterOrderStatus(@Nonnull String charterOrderId, @Nonnull Order.Status status) {
+		return updateOrderStatus(charterOrderId, status);
+	}
 
 	/**
 	 * Update CharterOrder total amount.
@@ -76,9 +74,10 @@ public interface CharterOrderService {
 	 * @param totalAmount the tenant offered totalAmount > 0 for the charter order
 	 * @return updated CharterOrder
 	 */
-	@Nonnull
-	CharterOrder updateCharterOrderTotalAmount(@Nonnull String charterOrderId,
-			@Nonnull @Nonnegative BigDecimal totalAmount);
+	// XXX useful?
+	// @Nonnull
+	// CharterOrder updateCharterOrderTotalAmount(@Nonnull String charterOrderId,
+	// @Nonnull @Nonnegative BigDecimal totalAmount);
 
 	/**
 	 * Update CharterOrder to select a fleet candidate
@@ -122,8 +121,10 @@ public interface CharterOrderService {
 	 * @return a page of CharterOrders or empty
 	 */
 	@Nonnull
-	Page<CharterOrder> listUserCharterOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
-			int pageSize);
+	default Page<CharterOrder> listUserCharterOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
+			int pageSize) {
+		return listUserOrders(userId, status, page, pageSize);
+	}
 
 	/**
 	 * List all CharterOrders by pagination filtered by userId.
@@ -134,7 +135,7 @@ public interface CharterOrderService {
 	 * @return a page of CharterOrders or empty
 	 */
 	default @Nonnull Page<CharterOrder> listUserCharterOrders(@Nonnull String userId, int page, int pageSize) {
-		return listUserCharterOrders(userId, null, page, pageSize);
+		return listUserOrders(userId, page, pageSize);
 	}
 
 	/**
@@ -147,8 +148,10 @@ public interface CharterOrderService {
 	 * @return a page of CharterOrders or empty
 	 */
 	@Nonnull
-	Page<CharterOrder> listTenantCharterOrders(@Nonnull String tenantId, @Nullable Order.Status status, int page,
-			int pageSize);
+	default Page<CharterOrder> listTenantCharterOrders(@Nonnull String tenantId, @Nullable Order.Status status,
+			int page, int pageSize) {
+		return listTenantOrders(tenantId, status, page, pageSize);
+	}
 
 	/**
 	 * List all the CharterOrder placed on this tenant
@@ -160,7 +163,7 @@ public interface CharterOrderService {
 	 */
 	@Nonnull
 	default Page<CharterOrder> listTenantCharterOrders(@Nonnull String tenantId, int page, int pageSize) {
-		return listTenantCharterOrders(tenantId, null, page, pageSize);
+		return listTenantOrders(tenantId, page, pageSize);
 	}
 
 	/**
@@ -172,7 +175,9 @@ public interface CharterOrderService {
 	 * @return a page of CharterOrders or empty
 	 */
 	@Nonnull
-	Page<CharterOrder> listCharterOrders(@Nullable Order.Status status, int page, int pageSize);
+	default Page<CharterOrder> listCharterOrders(@Nullable Order.Status status, int page, int pageSize) {
+		return listAllOrders(status, page, pageSize);
+	}
 
 	/**
 	 * List all CharterOrders by pagination (all users).
@@ -183,7 +188,7 @@ public interface CharterOrderService {
 	 */
 	@Nonnull
 	default Page<CharterOrder> listCharterOrders(int page, int pageSize) {
-		return listCharterOrders(null, page, pageSize);
+		return listAllOrders(page, pageSize);
 	}
 
 	/**
@@ -191,13 +196,17 @@ public interface CharterOrderService {
 	 * 
 	 * @param charterOrderId the charterOrderId
 	 */
-	void deleteCharterOrder(@Nonnull String charterOrderId);
+	default void deleteCharterOrder(@Nonnull String charterOrderId) {
+		deleteOrder(charterOrderId);
+	}
 
 	/**
 	 * Delete all CharterOrders of a user.
 	 * 
 	 * @param userId the userId
 	 */
-	void deleteCharterOrders(@Nonnull String userId);
+	default void deleteCharterOrders(@Nonnull String userId) {
+		deleteOrders(userId);
+	}
 
 }

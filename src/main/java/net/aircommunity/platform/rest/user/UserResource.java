@@ -358,11 +358,11 @@ public class UserResource extends BaseResourceSupport {
 	// Course
 	// ***********************
 	@Resource
-	private UserCourseOrderResource userEnrollmentResource;
+	private UserCourseOrderResource userCourseOrderResource;
 
 	@Path("course/orders")
-	public UserCourseOrderResource enrollments() {
-		return userEnrollmentResource;
+	public UserCourseOrderResource courseOrders() {
+		return userCourseOrderResource;
 	}
 
 }

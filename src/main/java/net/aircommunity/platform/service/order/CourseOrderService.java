@@ -8,38 +8,50 @@ import net.aircommunity.platform.model.domain.CourseOrder;
 import net.aircommunity.platform.model.domain.Order;
 
 /**
- * Course order (CourseOrder) Service
+ * Course order service.
  * 
  * @author guankai
  */
-public interface CourseOrderService {
+public interface CourseOrderService extends StandardOrderService<CourseOrder> {
 
 	@Nonnull
-	CourseOrder createCourseOrder(@Nonnull String userId, @Nonnull CourseOrder courseOrder);
+	default CourseOrder createCourseOrder(@Nonnull String userId, @Nonnull CourseOrder courseOrder) {
+		return createOrder(userId, courseOrder);
+	}
 
 	@Nonnull
-	CourseOrder findCourseOrder(@Nonnull String courseOrderId);
+	default CourseOrder findCourseOrder(@Nonnull String courseOrderId) {
+		return findCourseOrder(courseOrderId);
+	}
 
 	@Nonnull
-	CourseOrder updateCourseOrderStatus(@Nonnull String courseOrderId, @Nonnull Order.Status status);
+	default CourseOrder updateCourseOrderStatus(@Nonnull String courseOrderId, @Nonnull Order.Status status) {
+		return updateCourseOrderStatus(courseOrderId, status);
+	}
+
+	// USER
+	@Nonnull
+	default Page<CourseOrder> listUserCourseOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
+			int pageSize) {
+		return listUserOrders(userId, status, page, pageSize);
+	}
+
+	// TENANT
+	@Nonnull
+	default Page<CourseOrder> listTenantCourseOrders(@Nonnull String tenantId, @Nullable Order.Status status, int page,
+			int pageSize) {
+		return listTenantOrders(tenantId, status, page, pageSize);
+	}
 
 	// ADMIN
 	@Nonnull
-	Page<CourseOrder> listCourseOrders(Order.Status status, int page, int pageSize);
+	default Page<CourseOrder> listCourseOrders(Order.Status status, int page, int pageSize) {
+		return listAllOrders(status, page, pageSize);
+	}
 
 	// ADMIN
 	@Nonnull
 	Page<CourseOrder> listCourseOrdersByCourse(@Nonnull String courseId, int page, int pageSize);
-
-	// USER
-	@Nonnull
-	Page<CourseOrder> listUserCourseOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
-			int pageSize);
-
-	// TENANT
-	@Nonnull
-	Page<CourseOrder> listCourseOrdersForTenant(@Nonnull String tenantId, @Nullable Order.Status status, int page,
-			int pageSize);
 
 	// TENANT or ANONYMOUS
 	// List all orders placed on the given course (a course should belong to a tenant)
@@ -47,6 +59,13 @@ public interface CourseOrderService {
 			int pageSize);
 
 	// ADMIN
-	void deleteCourseOrder(@Nonnull String courseOrderId);
+	default void deleteCourseOrder(@Nonnull String courseOrderId) {
+		deleteOrder(courseOrderId);
+	}
+
+	// ADMIN
+	default void deleteCourseOrders(@Nonnull String userId) {
+		deleteOrders(userId);
+	}
 
 }

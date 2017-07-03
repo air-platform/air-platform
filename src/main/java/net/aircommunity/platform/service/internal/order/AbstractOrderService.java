@@ -66,7 +66,6 @@ import net.aircommunity.platform.service.internal.AbstractServiceSupport;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.payment.PaymentService;
 import net.aircommunity.platform.service.product.CommonProductService;
-import net.aircommunity.platform.service.security.AccountService;
 
 /**
  * Abstract Order service support.
@@ -77,15 +76,19 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractOrderService.class);
 
 	protected static final String CACHE_NAME = "cache.order";
+	protected static final String CACHE_NAME_ORDER_NO = "cache.orderno";
 	protected static final SimpleDateFormat DEPARTURE_DATE_FORMATTER = DateFormats.simple("yyyy-MM-dd");
 
 	protected Class<T> type;
 
 	@Resource
-	private OrderNoGenerator orderNoGenerator;
+	protected OrderRefRepository orderRefRepository;
 
 	@Resource
-	private OrderRefRepository orderRefRepository;
+	private CommonProductService commonProductService;
+
+	@Resource
+	private OrderNoGenerator orderNoGenerator;
 
 	@Resource
 	private SalesPackageRepository salesPackageRepository;
@@ -94,16 +97,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	private PassengerRepository passengerRepository;
 
 	@Resource
-	private CommonProductService commonProductService;
-
-	@Resource
 	private MemberPointsService memberPointsService;
 
 	@Resource
 	private PaymentService paymentService;
-
-	@Resource
-	private AccountService accountService;
 
 	@PostConstruct
 	@SuppressWarnings("unchecked")

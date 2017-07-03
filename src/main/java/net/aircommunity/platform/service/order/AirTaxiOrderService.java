@@ -13,7 +13,7 @@ import net.aircommunity.platform.model.domain.Order;
  * 
  * @author Bin.Zhang
  */
-public interface AirTaxiOrderService {
+public interface AirTaxiOrderService extends StandardOrderService<AirTaxiOrder> {
 
 	/**
 	 * Create a AirTaxiOrder.
@@ -23,7 +23,9 @@ public interface AirTaxiOrderService {
 	 * @return AirTaxiOrder created
 	 */
 	@Nonnull
-	AirTaxiOrder createAirTaxiOrder(@Nonnull String userId, @Nonnull AirTaxiOrder airTaxiOrder);
+	default AirTaxiOrder createAirTaxiOrder(@Nonnull String userId, @Nonnull AirTaxiOrder airTaxiOrder) {
+		return createOrder(userId, airTaxiOrder);
+	}
 
 	/**
 	 * Retrieves the specified AirTaxiOrder.
@@ -33,7 +35,9 @@ public interface AirTaxiOrderService {
 	 * @throws AirException if not found
 	 */
 	@Nonnull
-	AirTaxiOrder findAirTaxiOrder(@Nonnull String airTaxiOrderId);
+	default AirTaxiOrder findAirTaxiOrder(@Nonnull String airTaxiOrderId) {
+		return findOrder(airTaxiOrderId);
+	}
 
 	/**
 	 * Update a AirTaxiOrder.
@@ -43,7 +47,9 @@ public interface AirTaxiOrderService {
 	 * @return AirTaxiOrder created
 	 */
 	@Nonnull
-	AirTaxiOrder updateAirTaxiOrder(@Nonnull String airTaxiOrderId, @Nonnull AirTaxiOrder newAirTaxiOrder);
+	default AirTaxiOrder updateAirTaxiOrder(@Nonnull String airTaxiOrderId, @Nonnull AirTaxiOrder newAirTaxiOrder) {
+		return updateOrder(airTaxiOrderId, newAirTaxiOrder);
+	}
 
 	/**
 	 * Update AirTaxiOrder status
@@ -53,10 +59,12 @@ public interface AirTaxiOrderService {
 	 * @return updated AirTaxiOrder
 	 */
 	@Nonnull
-	AirTaxiOrder updateAirTaxiOrderStatus(@Nonnull String airTaxiOrderId, @Nonnull Order.Status status);
+	default AirTaxiOrder updateAirTaxiOrderStatus(@Nonnull String airTaxiOrderId, @Nonnull Order.Status status) {
+		return updateOrderStatus(airTaxiOrderId, status);
+	}
 
 	/**
-	 * List all AirTaxiOrders by pagination filtered by userId and order status.
+	 * List all AirTaxiOrders by pagination filtered by userId and order status. (USER)
 	 * 
 	 * @param userId the userId
 	 * @param status the order status
@@ -65,8 +73,10 @@ public interface AirTaxiOrderService {
 	 * @return a page of AirTaxiOrders or empty
 	 */
 	@Nonnull
-	Page<AirTaxiOrder> listUserAirTaxiOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
-			int pageSize);
+	default Page<AirTaxiOrder> listUserAirTaxiOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
+			int pageSize) {
+		return listUserOrders(userId, status, page, pageSize);
+	}
 
 	/**
 	 * List all AirTaxiOrders by pagination filtered by userId.
@@ -78,11 +88,11 @@ public interface AirTaxiOrderService {
 	 */
 	@Nonnull
 	default Page<AirTaxiOrder> listUserAirTaxiOrders(@Nonnull String userId, int page, int pageSize) {
-		return listUserAirTaxiOrders(userId, null, page, pageSize);
+		return listUserOrders(userId, page, pageSize);
 	}
 
 	/**
-	 * List all the AirTaxiOrders placed on this tenant.
+	 * List all the AirTaxiOrders placed on this tenant. (TENANT)
 	 * 
 	 * @param tenantId the tenantId
 	 * @param status the order status
@@ -90,8 +100,10 @@ public interface AirTaxiOrderService {
 	 * @param pageSize the pageSize
 	 * @return a page of AirTaxiOrders or empty
 	 */
-	Page<AirTaxiOrder> listTenantAirTaxiOrders(@Nonnull String tenantId, @Nullable Order.Status status, int page,
-			int pageSize);
+	default Page<AirTaxiOrder> listTenantAirTaxiOrders(@Nonnull String tenantId, @Nullable Order.Status status,
+			int page, int pageSize) {
+		return listTenantOrders(tenantId, status, page, pageSize);
+	}
 
 	/**
 	 * List all the AirTaxiOrders placed on this tenant.
@@ -102,11 +114,11 @@ public interface AirTaxiOrderService {
 	 * @return a page of AirTaxiOrders or empty
 	 */
 	default Page<AirTaxiOrder> listTenantAirTaxiOrders(@Nonnull String tenantId, int page, int pageSize) {
-		return listTenantAirTaxiOrders(tenantId, null, page, pageSize);
+		return listTenantOrders(tenantId, page, pageSize);
 	}
 
 	/**
-	 * List all AirTaxiOrders by pagination filtered by order status.
+	 * List all AirTaxiOrders by pagination filtered by order status. (ADMIN)
 	 * 
 	 * @param status the order status
 	 * @param page the page number
@@ -114,7 +126,9 @@ public interface AirTaxiOrderService {
 	 * @return a page of AirTaxiOrders or empty
 	 */
 	@Nonnull
-	Page<AirTaxiOrder> listAirTaxiOrders(@Nullable Order.Status status, int page, int pageSize);
+	default Page<AirTaxiOrder> listAirTaxiOrders(@Nullable Order.Status status, int page, int pageSize) {
+		return listAllOrders(status, page, pageSize);
+	}
 
 	/**
 	 * List all AirTaxiOrders by pagination.
@@ -132,12 +146,16 @@ public interface AirTaxiOrderService {
 	 * 
 	 * @param airTaxiOrderId the airTaxiOrderId
 	 */
-	void deleteAirTaxiOrder(@Nonnull String airTaxiOrderId);
+	default void deleteAirTaxiOrder(@Nonnull String airTaxiOrderId) {
+		deleteOrder(airTaxiOrderId);
+	}
 
 	/**
 	 * Delete AirTaxiOrders.
 	 * 
 	 * @param userId the userId
 	 */
-	void deleteAirTaxiOrders(@Nonnull String userId);
+	default void deleteAirTaxiOrders(@Nonnull String userId) {
+		deleteOrders(userId);
+	}
 }

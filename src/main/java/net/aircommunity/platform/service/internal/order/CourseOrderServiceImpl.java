@@ -2,9 +2,6 @@ package net.aircommunity.platform.service.internal.order;
 
 import javax.annotation.Resource;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +11,9 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.CourseOrder;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.repository.CourseOrderRepository;
-import net.aircommunity.platform.repository.SchoolRepository;
 import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.order.CourseOrderService;
-import net.aircommunity.platform.service.product.CourseService;
 
 /**
  * CourseOrder service implementation
@@ -26,7 +21,7 @@ import net.aircommunity.platform.service.product.CourseService;
  * @author Bin.Zhang
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<CourseOrder> implements CourseOrderService {
 
 	// TODO REMOVE
@@ -35,17 +30,6 @@ public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<Cour
 	@Resource
 	private CourseOrderRepository courseOrderRepository;
 
-	@Resource
-	private CourseService courseService;
-
-	@Resource
-	private SchoolRepository schoolRepository;
-
-	@Override
-	public CourseOrder createCourseOrder(String userId, CourseOrder courseOrder) {
-		return doCreateOrder(userId, courseOrder);
-	}
-
 	@Override
 	protected void copyProperties(CourseOrder src, CourseOrder tgt) {
 		tgt.setAircraftType(src.getAircraftType());
@@ -53,37 +37,10 @@ public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<Cour
 		tgt.setLocation(src.getLocation());
 	}
 
-	@Cacheable(cacheNames = CACHE_NAME)
-	@Override
-	public CourseOrder findCourseOrder(String courseOrderId) {
-		return doFindOrder(courseOrderId);
-	}
-
-	@CachePut(cacheNames = CACHE_NAME, key = "#courseOrderId")
-	@Override
-	public CourseOrder updateCourseOrderStatus(String courseOrderId, Order.Status status) {
-		return doUpdateOrderStatus(courseOrderId, status);
-	}
-
-	@Override
-	public Page<CourseOrder> listCourseOrders(Order.Status status, int page, int pageSize) {
-		return doListAllOrders(status, page, pageSize); // OK, full table scan for ADMIN
-	}
-
 	@Override
 	public Page<CourseOrder> listCourseOrdersByCourse(String courseId, int page, int pageSize) {
 		return Pages.adapt(courseOrderRepository.findByCourseIdOrderByCreationDateDesc(courseId,
 				Pages.createPageRequest(page, pageSize)));
-	}
-
-	@Override
-	public Page<CourseOrder> listUserCourseOrders(String userId, Order.Status status, int page, int pageSize) {
-		return doListAllUserOrders(userId, status, page, pageSize); // OK
-	}
-
-	@Override
-	public Page<CourseOrder> listCourseOrdersForTenant(String tenantId, Order.Status status, int page, int pageSize) {
-		return doListTenantOrders(tenantId, status, page, pageSize); // OK
 	}
 
 	// less important (for TENANT)
@@ -100,11 +57,43 @@ public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<Cour
 				Pages.createPageRequest(page, pageSize))); // OK
 	}
 
-	@CacheEvict(cacheNames = CACHE_NAME, key = "#courseOrderId")
-	@Override
-	public void deleteCourseOrder(String courseOrderId) {
-		doDeleteOrder(courseOrderId);
-	}
+	// @Override
+	// public CourseOrder createCourseOrder(String userId, CourseOrder courseOrder) {
+	// return doCreateOrder(userId, courseOrder);
+	// }
+	//
+	// @Cacheable(cacheNames = CACHE_NAME)
+	// @Override
+	// public CourseOrder findCourseOrder(String courseOrderId) {
+	// return doFindOrder(courseOrderId);
+	// }
+	//
+	// @CachePut(cacheNames = CACHE_NAME, key = "#courseOrderId")
+	// @Override
+	// public CourseOrder updateCourseOrderStatus(String courseOrderId, Order.Status status) {
+	// return doUpdateOrderStatus(courseOrderId, status);
+	// }
+	//
+	// @Override
+	// public Page<CourseOrder> listCourseOrders(Order.Status status, int page, int pageSize) {
+	// return doListAllOrders(status, page, pageSize); // OK, full table scan for ADMIN
+	// }
+
+	// @Override
+	// public Page<CourseOrder> listUserCourseOrders(String userId, Order.Status status, int page, int pageSize) {
+	// return doListAllUserOrders(userId, status, page, pageSize); // OK
+	// }
+	//
+	// @Override
+	// public Page<CourseOrder> listTenantCourseOrders(String tenantId, Order.Status status, int page, int pageSize) {
+	// return doListTenantOrders(tenantId, status, page, pageSize); // OK
+	// }
+
+	// @CacheEvict(cacheNames = CACHE_NAME, key = "#courseOrderId")
+	// @Override
+	// public void deleteCourseOrder(String courseOrderId) {
+	// doDeleteOrder(courseOrderId);
+	// }
 
 	@Override
 	protected Code orderNotFoundCode() {

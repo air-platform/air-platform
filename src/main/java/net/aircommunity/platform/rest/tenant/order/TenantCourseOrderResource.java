@@ -9,9 +9,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
@@ -23,23 +20,28 @@ import net.aircommunity.platform.model.domain.CourseOrder;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.order.CourseOrderService;
+import net.aircommunity.platform.service.order.OrderService;
 
 /**
- * Tenant can view the {@code Course} CourseOrder of a {@code User}
+ * Tenant can view the {@code Course} CourseOrder of a {@code User} for ADMIN and TENANT
  * 
- * @author guankai
+ * @author Bin.Zhang
  */
 @RESTful
 @AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantCourseOrderResource extends TenantBaseOrderResource<CourseOrder> {
-	private static final Logger LOG = LoggerFactory.getLogger(TenantCourseOrderResource.class);
+@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+public class TenantCourseOrderResource extends TenantOrderResourceSupport<CourseOrder> {
 
 	@Resource
 	private CourseOrderService courseOrderService;
 
+	@Override
+	protected OrderService<CourseOrder> getOrderService() {
+		return courseOrderService;
+	}
+
 	/**
-	 * List CourseOrders of a course or all
+	 * List (customized query)
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -47,12 +49,12 @@ public class TenantCourseOrderResource extends TenantBaseOrderResource<CourseOrd
 	public Page<CourseOrder> list(@PathParam("tenantId") String tenantId, @QueryParam("status") Order.Status status,
 			@QueryParam("course") String courseId, @QueryParam("page") @DefaultValue("1") int page,
 			@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		LOG.debug("List all CourseOrders tenantId: {}, course: {}", tenantId, courseId);
+		LOG.debug("List all course orders tenantId: {}, course: {}", tenantId, courseId);
 		if (Strings.isNotBlank(courseId)) {
 			// TODO just check the courseId belongs to this tenant
 			return courseOrderService.listCourseOrdersOfCourse(courseId, status, page, pageSize);
 		}
-		return courseOrderService.listCourseOrdersForTenant(tenantId, status, page, pageSize);
+		return courseOrderService.listTenantCourseOrders(tenantId, status, page, pageSize);
 	}
 
 }

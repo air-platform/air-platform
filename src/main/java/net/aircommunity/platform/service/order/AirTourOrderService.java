@@ -1,19 +1,19 @@
 package net.aircommunity.platform.service.order;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirTourOrder;
 import net.aircommunity.platform.model.domain.Order;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * AirTourOrder service.
  * 
  * @author Bin.Zhang
  */
-public interface AirTourOrderService {
+public interface AirTourOrderService extends StandardOrderService<AirTourOrder> {
 
 	/**
 	 * Create a AirTourOrder.
@@ -23,7 +23,9 @@ public interface AirTourOrderService {
 	 * @return AirTourOrder created
 	 */
 	@Nonnull
-	AirTourOrder createAirTourOrder(@Nonnull String userId, @Nonnull AirTourOrder airTourOrder);
+	default AirTourOrder createAirTourOrder(@Nonnull String userId, @Nonnull AirTourOrder airTourOrder) {
+		return createOrder(userId, airTourOrder);
+	}
 
 	/**
 	 * Retrieves the specified AirTourOrder.
@@ -33,7 +35,9 @@ public interface AirTourOrderService {
 	 * @throws AirException if not found
 	 */
 	@Nonnull
-	AirTourOrder findAirTourOrder(@Nonnull String airTourOrderId);
+	default AirTourOrder findAirTourOrder(@Nonnull String airTourOrderId) {
+		return findOrder(airTourOrderId);
+	}
 
 	/**
 	 * Update a AirTourOrder.
@@ -43,7 +47,9 @@ public interface AirTourOrderService {
 	 * @return AirTourOrder created
 	 */
 	@Nonnull
-	AirTourOrder updateAirTourOrder(@Nonnull String airTourOrderId, @Nonnull AirTourOrder newAirTourOrder);
+	default AirTourOrder updateAirTourOrder(@Nonnull String airTourOrderId, @Nonnull AirTourOrder newAirTourOrder) {
+		return updateOrder(airTourOrderId, newAirTourOrder);
+	}
 
 	/**
 	 * Update AirTourOrder status
@@ -53,7 +59,9 @@ public interface AirTourOrderService {
 	 * @return updated AirTourOrder
 	 */
 	@Nonnull
-	AirTourOrder updateAirTourOrderStatus(@Nonnull String airTourOrderId, @Nonnull Order.Status status);
+	default AirTourOrder updateAirTourOrderStatus(@Nonnull String airTourOrderId, @Nonnull Order.Status status) {
+		return this.updateAirTourOrderStatus(airTourOrderId, status);
+	}
 
 	/**
 	 * List all AirTourOrders by pagination filtered by userId and order status.
@@ -65,8 +73,10 @@ public interface AirTourOrderService {
 	 * @return a page of AirTourOrders or empty
 	 */
 	@Nonnull
-	Page<AirTourOrder> listUserAirTourOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
-			int pageSize);
+	default Page<AirTourOrder> listUserAirTourOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
+			int pageSize) {
+		return this.listUserOrders(userId, status, page, pageSize);
+	}
 
 	/**
 	 * List all AirTourOrders by pagination filtered by userId.
@@ -78,7 +88,7 @@ public interface AirTourOrderService {
 	 */
 	@Nonnull
 	default Page<AirTourOrder> listUserAirTourOrders(@Nonnull String userId, int page, int pageSize) {
-		return listUserAirTourOrders(userId, null, page, pageSize);
+		return listUserOrders(userId, page, pageSize);
 	}
 
 	/**
@@ -90,8 +100,10 @@ public interface AirTourOrderService {
 	 * @param pageSize the pageSize
 	 * @return a page of AirTourOrders or empty
 	 */
-	Page<AirTourOrder> listTenantAirTourOrders(@Nonnull String tenantId, @Nullable Order.Status status, int page,
-			int pageSize);
+	default Page<AirTourOrder> listTenantAirTourOrders(@Nonnull String tenantId, @Nullable Order.Status status,
+			int page, int pageSize) {
+		return this.listTenantOrders(tenantId, status, page, pageSize);
+	}
 
 	/**
 	 * List all the AirTourOrders placed on this tenant.
@@ -102,7 +114,7 @@ public interface AirTourOrderService {
 	 * @return a page of AirTourOrders or empty
 	 */
 	default Page<AirTourOrder> listTenantAirTourOrders(@Nonnull String tenantId, int page, int pageSize) {
-		return listTenantAirTourOrders(tenantId, null, page, pageSize);
+		return listTenantOrders(tenantId, page, pageSize);
 	}
 
 	/**
@@ -114,7 +126,9 @@ public interface AirTourOrderService {
 	 * @return a page of AirTourOrders or empty
 	 */
 	@Nonnull
-	Page<AirTourOrder> listAirTourOrders(@Nullable Order.Status status, int page, int pageSize);
+	default Page<AirTourOrder> listAirTourOrders(@Nullable Order.Status status, int page, int pageSize) {
+		return listAllOrders(status, page, pageSize);
+	}
 
 	/**
 	 * List all AirTourOrders by pagination.
@@ -124,7 +138,7 @@ public interface AirTourOrderService {
 	 * @return a page of AirTourOrders or empty
 	 */
 	default @Nonnull Page<AirTourOrder> listAirTourOrders(int page, int pageSize) {
-		return listAirTourOrders(null, page, pageSize);
+		return listAllOrders(page, pageSize);
 	}
 
 	/**
@@ -132,12 +146,16 @@ public interface AirTourOrderService {
 	 * 
 	 * @param airTourOrderId the airTourOrderId
 	 */
-	void deleteAirTourOrder(@Nonnull String airTourOrderId);
+	default void deleteAirTourOrder(@Nonnull String airTourOrderId) {
+		deleteOrder(airTourOrderId);
+	}
 
 	/**
 	 * Delete AirTourOrders.
 	 * 
 	 * @param userId the userId
 	 */
-	void deleteAirTourOrders(@Nonnull String userId);
+	default void deleteAirTourOrders(@Nonnull String userId) {
+		deleteOrders(userId);
+	}
 }

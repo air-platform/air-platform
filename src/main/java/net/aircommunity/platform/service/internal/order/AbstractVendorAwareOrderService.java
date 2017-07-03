@@ -13,9 +13,12 @@ import net.aircommunity.platform.service.internal.Pages;
  * 
  * @author Bin.Zhang
  */
-abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> extends AbstractOrderService<T> {
+abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> extends AbstractStandardOrderService<T> {
 
-	protected abstract VendorAwareOrderRepository<T> getOrderRepository();
+	@Override
+	public Page<T> listTenantOrders(String tenantId, Order.Status status, int page, int pageSize) {
+		return doListTenantOrders(tenantId, status, page, pageSize);
+	}
 
 	/**
 	 * For TENANT (Exclude orders in DELETED status)
@@ -69,4 +72,7 @@ abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> exten
 			}
 		}
 	}
+
+	@Override
+	protected abstract VendorAwareOrderRepository<T> getOrderRepository();
 }

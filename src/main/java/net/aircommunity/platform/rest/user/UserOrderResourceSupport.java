@@ -1,18 +1,29 @@
 package net.aircommunity.platform.rest.user;
 
+import java.net.URI;
+
 import javax.annotation.Resource;
-import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -21,27 +32,37 @@ import net.aircommunity.platform.common.ua.Client;
 import net.aircommunity.platform.common.ua.Device;
 import net.aircommunity.platform.common.ua.Parser;
 import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.order.CharterOrderService;
 import net.aircommunity.platform.service.order.CommonOrderService;
+import net.aircommunity.platform.service.order.StandardOrderService;
 
 /**
- * Base User order RESTful API. <b>all permission</b> for ADMIN/USER
+ * Base User order RESTful API for ADMIN/USER
  * 
  * @author Bin.Zhang
  */
-@SuppressWarnings("unchecked")
-public abstract class UserBaseOrderResource<T extends Order> extends BaseResourceSupport {
-
-	@Resource
-	private CommonOrderService commonOrderService;
-
-	@Resource
-	private CharterOrderService charterOrderService;
+public abstract class UserOrderResourceSupport<T extends Order> extends BaseResourceSupport {
+	private static final Logger LOG = LoggerFactory.getLogger(UserOrderResourceSupport.class);
 
 	private final Parser uaParser = Parser.newParser();
+
+	/**
+	 * Create
+	 */
+	@POST
+	@JsonView(JsonViews.User.class)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response create(@HeaderParam("user-agent") String userAgent, @PathParam("userId") String userId,
+			@NotNull @Valid T order, @Context UriInfo uriInfo) {
+		LOG.debug("[{}] Creating order {}", userAgent, order);
+		T created = getStandardOrderService().createOrder(userId, detectOrderChannel(userAgent, order));
+		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
+		LOG.debug("Created {}", uri);
+		return Response.created(uri).build();
+	}
 
 	/**
 	 * Detect order channel from UA.
@@ -81,27 +102,65 @@ public abstract class UserBaseOrderResource<T extends Order> extends BaseResourc
 	}
 
 	/**
-	 * Find order
+	 * Find
 	 */
 	@GET
 	@Path("{orderId}")
-	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
+	@Produces(MediaType.APPLICATION_JSON)
 	public T find(@PathParam("orderId") String orderId) {
-		return (T) commonOrderService.findOrder(orderId);
+		return getStandardOrderService().findOrder(orderId);
 	}
 
-	// *****************
-	// ADMIN & USER
-	// *****************
+	/**
+	 * List
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
+	public Page<T> list(@PathParam("userId") String userId, @QueryParam("status") Order.Status status,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		return getStandardOrderService().listUserOrders(userId, status, page, pageSize);
+	}
+
+	/**
+	 * Update
+	 */
+	@PUT
+	@Path("{orderId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.User.class)
+	public T update(@PathParam("orderId") String orderId, @NotNull @Valid T order) {
+		return getStandardOrderService().updateOrder(orderId, order);
+	}
+
+	/**
+	 * Delete (mark order as DELETED)
+	 */
+	@DELETE
+	@Path("{orderId}")
+	public void delete(@PathParam("orderId") String orderId) {
+		getStandardOrderService().softDeleteOrder(orderId);
+	}
+
+	protected abstract StandardOrderService<T> getStandardOrderService();
+
+	// ***********************
+	// ADMIN & USER ACTIONS
+	// ***********************
+
+	@Resource
+	private CommonOrderService commonOrderService;
+
+	@Resource
+	private CharterOrderService charterOrderService;
 
 	/**
 	 * Select a fleet (Only allow one vendor to be selected)
 	 */
 	@POST
 	@Path("{orderId}/fleet/select")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
 	public void selectFleet(@PathParam("orderId") String orderId,
 			@NotNull @QueryParam("candidate") String fleetCandidateId) {
 		charterOrderService.selectFleetCandidate(orderId, fleetCandidateId);
@@ -113,20 +172,9 @@ public abstract class UserBaseOrderResource<T extends Order> extends BaseResourc
 	@POST
 	@Path("{orderId}/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
 	public void cancel(@PathParam("orderId") String orderId, JsonObject request) {
 		String reason = getCancelReason(request);
 		commonOrderService.cancelOrder(orderId, reason);
-	}
-
-	/**
-	 * Delete (mark order as DELETED)
-	 */
-	@DELETE
-	@Path("{orderId}")
-	@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
-	public void delete(@PathParam("orderId") String orderId) {
-		commonOrderService.softDeleteOrder(orderId);
 	}
 
 }

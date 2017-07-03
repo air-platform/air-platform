@@ -9,9 +9,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
@@ -22,30 +19,35 @@ import net.aircommunity.platform.model.domain.CharterOrder;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.order.CharterOrderService;
+import net.aircommunity.platform.service.order.OrderService;
 
 /**
- * Tenant CharterOrder RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT
+ * Tenant CharterOrder RESTful API for ADMIN/TENANT
  * 
  * @author Bin.Zhang
  */
 @RESTful
 @AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT })
-public class TenantCharterOrderResource extends TenantBaseOrderResource<CharterOrder> {
-	private static final Logger LOG = LoggerFactory.getLogger(TenantCharterOrderResource.class);
+@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
+public class TenantCharterOrderResource extends TenantOrderResourceSupport<CharterOrder> {
 
 	@Resource
 	private CharterOrderService charterOrderService;
 
+	@Override
+	protected OrderService<CharterOrder> getOrderService() {
+		return charterOrderService;
+	}
+
 	/**
-	 * List
+	 * List (customized query)
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public Page<CharterOrder> list(@PathParam("tenantId") String tenantId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		LOG.debug("List all orders with status: {} for tenant: {} ", status, tenantId);
+		LOG.debug("List all charter orders with status: {} for tenant: {} ", status, tenantId);
 		if (Order.Status.PUBLISHED == status) {
 			return charterOrderService.listCharterOrders(status, page, pageSize);
 		}

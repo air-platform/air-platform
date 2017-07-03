@@ -13,7 +13,7 @@ import net.aircommunity.platform.model.domain.Order;
  * 
  * @author Bin.Zhang
  */
-public interface AirTransportOrderService {
+public interface AirTransportOrderService extends StandardOrderService<AirTransportOrder> {
 
 	/**
 	 * Create a AirTransportOrder.
@@ -23,7 +23,10 @@ public interface AirTransportOrderService {
 	 * @return AirTransportOrder created
 	 */
 	@Nonnull
-	AirTransportOrder createAirTransportOrder(@Nonnull String userId, @Nonnull AirTransportOrder airTransportOrder);
+	default AirTransportOrder createAirTransportOrder(@Nonnull String userId,
+			@Nonnull AirTransportOrder airTransportOrder) {
+		return createOrder(userId, airTransportOrder);
+	}
 
 	/**
 	 * Retrieves the specified AirTransportOrder.
@@ -33,7 +36,9 @@ public interface AirTransportOrderService {
 	 * @throws AirException if not found
 	 */
 	@Nonnull
-	AirTransportOrder findAirTransportOrder(@Nonnull String airTransportOrderId);
+	default AirTransportOrder findAirTransportOrder(@Nonnull String airTransportOrderId) {
+		return findOrder(airTransportOrderId);
+	}
 
 	/**
 	 * Update a AirTransportOrder.
@@ -43,8 +48,10 @@ public interface AirTransportOrderService {
 	 * @return AirTransportOrder created
 	 */
 	@Nonnull
-	AirTransportOrder updateAirTransportOrder(@Nonnull String airTransportOrderId,
-			@Nonnull AirTransportOrder newAirTransportOrder);
+	default AirTransportOrder updateAirTransportOrder(@Nonnull String airTransportOrderId,
+			@Nonnull AirTransportOrder newAirTransportOrder) {
+		return updateOrder(airTransportOrderId, newAirTransportOrder);
+	}
 
 	/**
 	 * Update AirTransportOrder status
@@ -54,7 +61,10 @@ public interface AirTransportOrderService {
 	 * @return updated AirTransportOrder
 	 */
 	@Nonnull
-	AirTransportOrder updateAirTransportOrderStatus(@Nonnull String airTransportOrderId, @Nonnull Order.Status status);
+	default AirTransportOrder updateAirTransportOrderStatus(@Nonnull String airTransportOrderId,
+			@Nonnull Order.Status status) {
+		return updateOrderStatus(airTransportOrderId, status);
+	}
 
 	/**
 	 * List all AirTransportOrders by pagination filtered by userId and order status.
@@ -66,8 +76,10 @@ public interface AirTransportOrderService {
 	 * @return a page of AirTransportOrders or empty
 	 */
 	@Nonnull
-	Page<AirTransportOrder> listUserAirTransportOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
-			int pageSize);
+	default Page<AirTransportOrder> listUserAirTransportOrders(@Nonnull String userId, @Nullable Order.Status status,
+			int page, int pageSize) {
+		return listUserOrders(userId, status, page, pageSize);
+	}
 
 	/**
 	 * List all AirTransportOrders by pagination filtered by userId.
@@ -79,7 +91,7 @@ public interface AirTransportOrderService {
 	 */
 	@Nonnull
 	default Page<AirTransportOrder> listUserAirTransportOrders(@Nonnull String userId, int page, int pageSize) {
-		return listUserAirTransportOrders(userId, null, page, pageSize);
+		return listUserOrders(userId, page, pageSize);
 	}
 
 	/**
@@ -91,8 +103,10 @@ public interface AirTransportOrderService {
 	 * @param pageSize the pageSize
 	 * @return a page of AirTransportOrders or empty
 	 */
-	Page<AirTransportOrder> listTenantAirTransportOrders(@Nonnull String tenantId, @Nullable Order.Status status,
-			int page, int pageSize);
+	default Page<AirTransportOrder> listTenantAirTransportOrders(@Nonnull String tenantId,
+			@Nullable Order.Status status, int page, int pageSize) {
+		return listTenantOrders(tenantId, status, page, pageSize);
+	}
 
 	/**
 	 * List all the AirTransportOrders placed on this tenant.
@@ -103,7 +117,7 @@ public interface AirTransportOrderService {
 	 * @return a page of AirTransportOrders or empty
 	 */
 	default Page<AirTransportOrder> listTenantAirTransportOrders(@Nonnull String tenantId, int page, int pageSize) {
-		return listTenantAirTransportOrders(tenantId, null, page, pageSize);
+		return listTenantOrders(tenantId, page, pageSize);
 	}
 
 	/**
@@ -115,7 +129,9 @@ public interface AirTransportOrderService {
 	 * @return a page of AirTransportOrders or empty
 	 */
 	@Nonnull
-	Page<AirTransportOrder> listAirTransportOrders(@Nullable Order.Status status, int page, int pageSize);
+	default Page<AirTransportOrder> listAirTransportOrders(@Nullable Order.Status status, int page, int pageSize) {
+		return listAllOrders(status, page, pageSize);
+	}
 
 	/**
 	 * List all AirTransportOrders by pagination.
@@ -125,7 +141,7 @@ public interface AirTransportOrderService {
 	 * @return a page of AirTransportOrders or empty
 	 */
 	default @Nonnull Page<AirTransportOrder> listAirTransportOrders(int page, int pageSize) {
-		return listAirTransportOrders(null, page, pageSize);
+		return listAllOrders(page, pageSize);
 	}
 
 	/**
@@ -133,12 +149,16 @@ public interface AirTransportOrderService {
 	 * 
 	 * @param airTransportOrderId the airTransportOrderId
 	 */
-	void deleteAirTransportOrder(@Nonnull String airTransportOrderId);
+	default void deleteAirTransportOrder(@Nonnull String airTransportOrderId) {
+		deleteOrder(airTransportOrderId);
+	}
 
 	/**
 	 * Delete AirTransportOrders.
 	 * 
 	 * @param userId the userId
 	 */
-	void deleteAirTransportOrders(@Nonnull String userId);
+	default void deleteAirTransportOrders(@Nonnull String userId) {
+		deleteOrders(userId);
+	}
 }

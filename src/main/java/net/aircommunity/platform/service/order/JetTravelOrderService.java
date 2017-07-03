@@ -13,7 +13,7 @@ import net.aircommunity.platform.model.domain.Order;
  * 
  * @author Bin.Zhang
  */
-public interface JetTravelOrderService {
+public interface JetTravelOrderService extends StandardOrderService<JetTravelOrder> {
 
 	/**
 	 * Create a JetTravelOrder.
@@ -23,7 +23,9 @@ public interface JetTravelOrderService {
 	 * @return JetTravelOrder created
 	 */
 	@Nonnull
-	JetTravelOrder createJetTravelOrder(@Nonnull String userId, @Nonnull JetTravelOrder jetTravelOrder);
+	default JetTravelOrder createJetTravelOrder(@Nonnull String userId, @Nonnull JetTravelOrder jetTravelOrder) {
+		return createOrder(userId, jetTravelOrder);
+	}
 
 	/**
 	 * Retrieves the specified JetTravelOrder.
@@ -33,7 +35,9 @@ public interface JetTravelOrderService {
 	 * @throws AirException if not found
 	 */
 	@Nonnull
-	JetTravelOrder findJetTravelOrder(@Nonnull String jetTravelOrderId);
+	default JetTravelOrder findJetTravelOrder(@Nonnull String jetTravelOrderId) {
+		return findOrder(jetTravelOrderId);
+	}
 
 	/**
 	 * Update a JetTravelOrder.
@@ -43,7 +47,10 @@ public interface JetTravelOrderService {
 	 * @return JetTravelOrder created
 	 */
 	@Nonnull
-	JetTravelOrder updateJetTravelOrder(@Nonnull String jetTravelOrderId, @Nonnull JetTravelOrder newJetTravelOrder);
+	default JetTravelOrder updateJetTravelOrder(@Nonnull String jetTravelOrderId,
+			@Nonnull JetTravelOrder newJetTravelOrder) {
+		return updateOrder(jetTravelOrderId, newJetTravelOrder);
+	}
 
 	/**
 	 * Update JetTravelOrder status
@@ -53,7 +60,9 @@ public interface JetTravelOrderService {
 	 * @return updated JetTravelOrder
 	 */
 	@Nonnull
-	JetTravelOrder updateJetTravelOrderStatus(@Nonnull String jetTravelOrderId, @Nonnull Order.Status status);
+	default JetTravelOrder updateJetTravelOrderStatus(@Nonnull String jetTravelOrderId, @Nonnull Order.Status status) {
+		return updateOrderStatus(jetTravelOrderId, status);
+	}
 
 	/**
 	 * List all JetTravelOrders by pagination filtered by userId and order status.
@@ -65,8 +74,10 @@ public interface JetTravelOrderService {
 	 * @return a page of JetTravelOrders or empty
 	 */
 	@Nonnull
-	Page<JetTravelOrder> listUserJetTravelOrders(@Nonnull String userId, @Nullable Order.Status status, int page,
-			int pageSize);
+	default Page<JetTravelOrder> listUserJetTravelOrders(@Nonnull String userId, @Nullable Order.Status status,
+			int page, int pageSize) {
+		return listUserOrders(userId, status, page, pageSize);
+	}
 
 	/**
 	 * List all JetTravelOrders by pagination filtered by userId.
@@ -78,7 +89,7 @@ public interface JetTravelOrderService {
 	 */
 	@Nonnull
 	default Page<JetTravelOrder> listUserJetTravelOrders(@Nonnull String userId, int page, int pageSize) {
-		return listUserJetTravelOrders(userId, null, page, pageSize);
+		return listUserOrders(userId, page, pageSize);
 	}
 
 	/**
@@ -90,8 +101,10 @@ public interface JetTravelOrderService {
 	 * @param pageSize the pageSize
 	 * @return a page of JetTravelOrders or empty
 	 */
-	Page<JetTravelOrder> listTenantJetTravelOrders(@Nonnull String tenantId, @Nullable Order.Status status, int page,
-			int pageSize);
+	default Page<JetTravelOrder> listTenantJetTravelOrders(@Nonnull String tenantId, @Nullable Order.Status status,
+			int page, int pageSize) {
+		return listTenantOrders(tenantId, status, page, pageSize);
+	}
 
 	/**
 	 * List all the JetTravelOrders placed on this tenant.
@@ -102,7 +115,7 @@ public interface JetTravelOrderService {
 	 * @return a page of JetTravelOrders or empty
 	 */
 	default Page<JetTravelOrder> listTenantJetTravelOrders(@Nonnull String tenantId, int page, int pageSize) {
-		return listTenantJetTravelOrders(tenantId, null, page, pageSize);
+		return listTenantOrders(tenantId, page, pageSize);
 	}
 
 	/**
@@ -114,7 +127,9 @@ public interface JetTravelOrderService {
 	 * @return a page of JetTravelOrders or empty
 	 */
 	@Nonnull
-	Page<JetTravelOrder> listJetTravelOrders(@Nullable Order.Status status, int page, int pageSize);
+	default Page<JetTravelOrder> listJetTravelOrders(@Nullable Order.Status status, int page, int pageSize) {
+		return listAllOrders(status, page, pageSize);
+	}
 
 	/**
 	 * List all JetTravelOrders by pagination.
@@ -124,7 +139,7 @@ public interface JetTravelOrderService {
 	 * @return a page of JetTravelOrders or empty
 	 */
 	default @Nonnull Page<JetTravelOrder> listJetTravelOrders(int page, int pageSize) {
-		return listJetTravelOrders(null, page, pageSize);
+		return listAllOrders(page, pageSize);
 	}
 
 	/**
@@ -132,12 +147,16 @@ public interface JetTravelOrderService {
 	 * 
 	 * @param jetTravelOrderId the jetTravelOrderId
 	 */
-	void deleteJetTravelOrder(@Nonnull String jetTravelOrderId);
+	default void deleteJetTravelOrder(@Nonnull String jetTravelOrderId) {
+		deleteOrder(jetTravelOrderId);
+	}
 
 	/**
 	 * Delete JetTravelOrders.
 	 * 
 	 * @param userId the userId
 	 */
-	void deleteJetTravelOrders(@Nonnull String userId);
+	default void deleteJetTravelOrders(@Nonnull String userId) {
+		deleteOrders(userId);
+	}
 }
