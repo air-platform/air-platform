@@ -186,7 +186,7 @@ public class UserResource extends BaseResourceSupport {
 		default: // noops
 		}
 		if (Strings.isBlank(status)) {
-			return commonOrderService.listUserOrders(userId, null, page, pageSize);
+			return commonOrderService.listUserOrders(userId, page, pageSize);
 		}
 		return Page.emptyPage(page, pageSize);
 	}

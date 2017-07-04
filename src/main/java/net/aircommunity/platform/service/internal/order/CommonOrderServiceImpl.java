@@ -1,26 +1,30 @@
 package net.aircommunity.platform.service.internal.order;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Stream;
 
-import javax.annotation.Resource;
-
-import org.springframework.cache.annotation.CacheEvict;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.PaymentRequest;
+import com.google.common.collect.ImmutableMap;
+
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
+import net.aircommunity.platform.model.domain.OrderRef;
 import net.aircommunity.platform.model.domain.Payment;
-import net.aircommunity.platform.repository.BaseOrderRepository;
-import net.aircommunity.platform.repository.PaymentRepository;
+import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.order.CommonOrderService;
-import net.aircommunity.platform.service.product.CommentService;
+import net.aircommunity.platform.service.order.OrderServiced;
+import net.aircommunity.platform.service.order.StandardOrderService;
 
 /**
  * Common order service implementation.
@@ -29,43 +33,50 @@ import net.aircommunity.platform.service.product.CommentService;
  */
 @Service
 @Transactional(readOnly = true)
-public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order> implements CommonOrderService {
+public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order>
+		implements CommonOrderService, ApplicationContextAware {
+	private static final Logger LOG = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
 
-	// TODO use orderRefRepository to improve performance
+	private Map<Product.Type, StandardOrderService<Order>> serviceRegistry = Collections.emptyMap();
 
-	@Resource
-	private BaseOrderRepository<Order> baseOrderRepository;
+	@Override
+	protected void doInitialize() {
+		setOrderProcessor(new CommonOrderProcessor(configuration, orderRefRepository, serviceRegistry));
+		// !!! NOTE:
+		// use it with caution when production, it will load all data, ONLY for initialization
+		if (configuration.isOrderRebuildRef()) {
+			rebuildOrderRef();
+			LOG.debug("Finished order rebuild with order refs: {}", orderRefRepository.count());
+		}
+	}
 
-	@Resource
-	private PaymentRepository paymentRepository;
-
-	@Resource
-	private CommentService commentService;
+	// XXX NOTE: @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+	// orderRepository.findAllByOrderByCreationDateDesc() NOT working
+	private void rebuildOrderRef() {
+		// always try-resource when streaming data from DB:
+		orderRefRepository.deleteAllInBatch();
+		try (Stream<Order> stream = orderRepository
+				.findAllByOrderByCreationDateDesc(Pages.createPageRequest(1, Integer.MAX_VALUE)).getContent()
+				.stream()) {
+			stream.forEach(order -> {
+				OrderRef orderRef = new OrderRef();
+				orderRef.setOrderId(order.getId());
+				orderRef.setOrderNo(order.getOrderNo());
+				orderRef.setOwnerId(order.getOwner().getId());
+				orderRef.setStatus(order.getStatus());
+				orderRef.setType(order.getType());
+				orderRef.setCreationDate(order.getCreationDate());
+				orderRefRepository.save(orderRef);
+			});
+		}
+		finally {
+			orderRefRepository.flush();
+		}
+	}
 
 	@Override
 	public boolean existsOrderForUser(String userId) {
-		return baseOrderRepository.existsByOwnerId(userId);
-	}
-
-	@Override
-	public Optional<Payment> findPaymentByTradeNo(Payment.Method paymentMethod, String tradeNo) {
-		return paymentRepository.findByTradeNoAndMethod(tradeNo, paymentMethod);
-	}
-
-	// NOTE: need update this cache in case order is updated
-	@Cacheable(cacheNames = CACHE_NAME_ORDER_NO)
-	@Override
-	public Order findByOrderNo(String orderNo) {
-		return doFindOrderByOrderNo(orderNo);
-	}
-
-	// NOTE: According to spring cache doc:
-	// The cache abstraction supports java.util.Optional, using its content as cached value only if it present. #result
-	// always refers to the business entity and never on a supported wrapper
-	@Cacheable(cacheNames = CACHE_NAME_ORDER_NO)
-	@Override
-	public Optional<Order> lookupByOrderNo(String orderNo) {
-		return doLookupOrderByOrderNo(orderNo);
+		return orderRefRepository.existsByOwnerId(userId);
 	}
 
 	@Transactional
@@ -76,21 +87,6 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order> impl
 	@Override
 	public Order updateOrderStatus(Order order, Status status) {
 		return doUpdateOrderStatus(order, status);
-	}
-
-	@Override
-	public PaymentRequest requestOrderPayment(String orderId, Payment.Method paymentMethod) {
-		return doRequestOrderPayment(orderId, paymentMethod);
-	}
-
-	@Transactional
-	@Caching(put = { //
-			@CachePut(cacheNames = CACHE_NAME, key = "#orderId"),
-			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")//
-	})
-	@Override
-	public Order payOrder(String orderId, Payment payment) {
-		return doPayOrder(orderId, payment);
 	}
 
 	@Transactional
@@ -115,26 +111,6 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order> impl
 
 	@Transactional
 	@Caching(put = { //
-			@CachePut(cacheNames = CACHE_NAME, key = "#orderId"),
-			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")//
-	})
-	@Override
-	public Order requestOrderRefund(String orderId, String refundReason) {
-		return doRequestOrderRefund(orderId, refundReason);
-	}
-
-	@Transactional
-	@Caching(put = { //
-			@CachePut(cacheNames = CACHE_NAME, key = "#orderId"),
-			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")//
-	})
-	@Override
-	public Order handleOrderRefundFailure(String orderId, String refundFailureCause) {
-		return doHandleOrderRefundFailure(orderId, refundFailureCause);
-	}
-
-	@Transactional
-	@Caching(put = { //
 			@CachePut(cacheNames = CACHE_NAME, key = "#order.id"),
 			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")//
 	})
@@ -143,33 +119,19 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order> impl
 		return doHandleOrderRefundFailure(order, refundFailureCause);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Page<Order> listUserOrders(String userId, int days, int page, int pageSize) {
-		return doListUserOrdersOfRecentDays(userId, days, page, pageSize);// OK ? full scan?
-	}
-
-	@Override
-	public Page<Order> listUserOrdersInStatuses(String userId, Set<Order.Status> statuses, int page, int pageSize) {
-		return doListUserOrdersInStatuses(userId, statuses, page, pageSize); // OK ? full scan?
-	}
-
-	@Override
-	public Page<Order> listUserOrdersNotInStatuses(String userId, Set<Order.Status> statuses, int page, int pageSize) {
-		return doListUserOrdersNotInStatuses(userId, statuses, page, pageSize); // NOT USED
-	}
-
-	// TODO: seldom called, improve cache without clear
-	@Transactional
-	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_ORDER_NO }, allEntries = true)
-	@Override
-	public void purgeOrders(String userId) {
-		commentService.deleteCommentsOfAccount(userId);
-		doDeleteOrders(userId);
-	}
-
-	@Override
-	protected BaseOrderRepository<Order> getOrderRepository() {
-		return baseOrderRepository;
+	public void setApplicationContext(ApplicationContext context) throws BeansException {
+		Map<String, StandardOrderService> orderServices = context.getBeansOfType(StandardOrderService.class);
+		ImmutableMap.Builder<Product.Type, StandardOrderService<Order>> builder = ImmutableMap.builder();
+		orderServices.values().stream().forEach(service -> {
+			OrderServiced serviced = service.getClass().getAnnotation(OrderServiced.class);
+			if (serviced != null) {
+				builder.put(serviced.value(), service);
+			}
+		});
+		serviceRegistry = builder.build();
+		LOG.debug("Order service registry: {}", serviceRegistry);
 	}
 
 }

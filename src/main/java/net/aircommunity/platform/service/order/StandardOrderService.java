@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.order;
 
+import java.util.function.Function;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -34,8 +36,17 @@ public interface StandardOrderService<T extends Order> extends OrderService<T> {
 	T updateOrder(@Nonnull String orderId, @Nonnull T order);
 
 	/**
+	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed
+	 * the entity instance completely. The function accept entity as input and returns the saved entity
+	 * 
+	 * @return persister function
+	 */
+	Function<T, T> getOrderPersister();
+
+	/**
 	 * List all the orders placed on this tenant (but NOT DELETED). NOTE: it cannot be implemented without concrete
-	 * order. So, it cannot share this method with {@code CommonOrderService} (TENANT)
+	 * order(because of charter order that may have many vendors as candidates). So, it cannot share this method with
+	 * {@code CommonOrderService} (TENANT ONLY)
 	 * 
 	 * @param tenantId the tenantId
 	 * @param status the order status
@@ -47,7 +58,7 @@ public interface StandardOrderService<T extends Order> extends OrderService<T> {
 	Page<T> listTenantOrders(@Nonnull String tenantId, @Nullable Order.Status status, int page, int pageSize);
 
 	/**
-	 * List all the orders placed on this tenant with all status (but NOT DELETED). (TENANT)
+	 * List all the orders placed on this tenant with all status (but NOT DELETED). (TENANT ONLY)
 	 * 
 	 * @param tenantId the tenantId
 	 * @param page the page number
@@ -58,5 +69,4 @@ public interface StandardOrderService<T extends Order> extends OrderService<T> {
 	default Page<T> listTenantOrders(@Nonnull String tenantId, int page, int pageSize) {
 		return listTenantOrders(tenantId, null, page, pageSize);
 	}
-
 }

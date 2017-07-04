@@ -1,32 +1,38 @@
 package net.aircommunity.platform.service.internal.order;
 
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.domain.AirTourOrder;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.repository.AirTourOrderRepository;
-import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.order.AirTourOrderService;
+import net.aircommunity.platform.service.order.OrderServiced;
 
 /**
  * AirTourOrder service implementation.
  *
  * @author Bin.Zhang
  */
-@Service
+@OrderServiced(Product.Type.AIRTOUR)
 @Transactional(readOnly = true)
 public class AirTourOrderServiceImpl extends AbstractVendorAwareOrderService<AirTourOrder>
 		implements AirTourOrderService {
 
+	@Autowired
+	public AirTourOrderServiceImpl(AirTourOrderRepository airTourOrderRepository) {
+		super(airTourOrderRepository);
+	}
+
+	@Override
+	protected Code orderNotFoundCode() {
+		return Codes.TOUR_ORDER_NOT_FOUND;
+	}
+
 	// TODO REMOVE
 	// private static final String CACHE_NAME = "cache.airtour-order";
-
-	@Resource
-	private AirTourOrderRepository airTourOrderRepository;
 
 	// @Override
 	// public AirTourOrder createAirTourOrder(String userId, AirTourOrder order) {
@@ -77,15 +83,5 @@ public class AirTourOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 	// public void deleteAirTourOrders(String userId) {
 	// doDeleteOrders(userId);
 	// }
-
-	@Override
-	protected Code orderNotFoundCode() {
-		return Codes.TOUR_ORDER_NOT_FOUND;
-	}
-
-	@Override
-	protected VendorAwareOrderRepository<AirTourOrder> getOrderRepository() {
-		return airTourOrderRepository;
-	}
 
 }

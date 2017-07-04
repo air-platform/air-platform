@@ -10,7 +10,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,7 +17,6 @@ import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,12 +58,14 @@ import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.OrderRefRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
+import net.aircommunity.platform.repository.PaymentRepository;
 import net.aircommunity.platform.repository.SalesPackageRepository;
 import net.aircommunity.platform.service.MemberPointsService;
 import net.aircommunity.platform.service.internal.AbstractServiceSupport;
-import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.payment.PaymentService;
+import net.aircommunity.platform.service.product.CommentService;
 import net.aircommunity.platform.service.product.CommonProductService;
+import net.aircommunity.platform.service.spi.OrderProcessor;
 
 /**
  * Abstract Order service support.
@@ -73,17 +73,28 @@ import net.aircommunity.platform.service.product.CommonProductService;
  * @author Bin.Zhang
  */
 abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupport {
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractOrderService.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(AbstractOrderService.class);
 
 	protected static final String CACHE_NAME = "cache.order";
 	protected static final String CACHE_NAME_ORDER_NO = "cache.orderno";
 	protected static final SimpleDateFormat DEPARTURE_DATE_FORMATTER = DateFormats.simple("yyyy-MM-dd");
 
 	protected Class<T> type;
+	protected OrderProcessor<T> orderProcessor;
 
 	@Resource
 	protected OrderRefRepository orderRefRepository;
 
+	@Resource
+	protected BaseOrderRepository<Order> orderRepository;
+
+	@Resource
+	protected PaymentRepository paymentRepository;
+
+	@Resource
+	protected CommentService commentService;
+
+	//
 	@Resource
 	private CommonProductService commonProductService;
 
@@ -102,18 +113,31 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	@Resource
 	private PaymentService paymentService;
 
+	/**
+	 * Initialize
+	 */
 	@PostConstruct
 	@SuppressWarnings("unchecked")
 	private void init() {
 		ParameterizedType pt = ParameterizedType.class.cast(getClass().getGenericSuperclass());
 		type = (Class<T>) pt.getActualTypeArguments()[0];
+		doInitialize();
+		LOG.debug("Order service {} initialized, order type: {}", this, type.getSimpleName());
+	}
+
+	/**
+	 * To be overridden by subclass
+	 */
+	protected void doInitialize() {
 	}
 
 	protected Code orderNotFoundCode() {
 		return Codes.ORDER_NOT_FOUND;
 	}
 
-	protected abstract BaseOrderRepository<T> getOrderRepository();
+	protected void setOrderProcessor(OrderProcessor<T> orderProcessor) {
+		this.orderProcessor = orderProcessor;
+	}
 
 	// *********************
 	// Generic CRUD shared
@@ -234,7 +258,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			// 6) perform save
 			final T orderToSave = newOrder;
 			T saved = safeExecute(() -> {
-				T orderSaved = getOrderRepository().save(orderToSave);
+				T orderSaved = orderProcessor.saveOrder(orderToSave);
 				LOG.info("[Created order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), orderSaved);
 				eventBus.post(new OrderEvent(OrderEvent.EventType.CREATION, orderSaved));
 				return orderSaved;
@@ -381,10 +405,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return passengers;
 	}
 
-	protected T doFindOrder0(String orderId) {
-		return getOrderRepository().findOne(orderId);
-	}
-
 	protected T doFindOrder(String orderId) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
@@ -392,7 +412,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			timerContext = timer.time();
 		}
 		try {
-			T order = doFindOrder0(orderId);
+			T order = orderProcessor.findByOrderId(orderId);
 			// XXX CANNOT load all passengers for tour, taxi , trans
 			if (order == null || order.getStatus() == Order.Status.DELETED) {
 				LOG.error("{}: {} is not found", type.getSimpleName(), orderId);
@@ -409,7 +429,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	protected T doFindOrderByOrderNo(String orderNo) {
-		T order = getOrderRepository().findByOrderNo(orderNo);
+		T order = orderProcessor.findByOrderNo(orderNo);
 		if (order == null || order.getStatus() == Order.Status.DELETED) {
 			LOG.error("{}: NO. {} is not found", type.getSimpleName(), orderNo);
 			throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderNo));
@@ -418,7 +438,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	protected Optional<T> doLookupOrderByOrderNo(String orderNo) {
-		T order = getOrderRepository().findByOrderNo(orderNo);
+		T order = orderProcessor.findByOrderNo(orderNo);
 		if (order == null || order.getStatus() == Order.Status.DELETED) {
 			LOG.error("{}: NO. {} is not found or already soft deleted", type.getSimpleName(), orderNo);
 			return Optional.empty();
@@ -437,7 +457,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			copyCommonProperties(newOrder, order);
 			copyProperties(newOrder, order);
 			order.setLastModifiedDate(new Date());
-			return safeExecute(() -> getOrderRepository().save(order), "Update %s: %s with %s failed",
+			return safeExecute(() -> orderProcessor.saveOrder(order), "Update %s: %s with %s failed",
 					type.getSimpleName(), orderId, newOrder);
 		}
 		// metrics
@@ -454,7 +474,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	protected T doUpdateOrderCommented(String orderId) {
 		T order = doFindOrder(orderId);
 		order.setCommented(true);
-		return safeExecute(() -> getOrderRepository().save(order), "Update %s: %s to commented failed",
+		return safeExecute(() -> orderProcessor.saveOrder(order), "Update %s: %s to commented failed",
 				type.getSimpleName(), orderId);
 	}
 
@@ -466,7 +486,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		T order = doFindOrder(orderId);
 		order.setLastModifiedDate(new Date());
 		order.setTotalPrice(newTotalAmount);
-		return safeExecute(() -> getOrderRepository().save(order), "Update %s price: %s to %d failed",
+		return safeExecute(() -> orderProcessor.saveOrder(order), "Update %s price: %s to %d failed",
 				type.getSimpleName(), orderId, newTotalAmount);
 	}
 
@@ -887,7 +907,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		order.setStatus(newStatus);
 		order.setLastModifiedDate(new Date());
 		T updated = safeExecute(() -> {
-			T orderUpdated = getOrderRepository().save(order);
+			T orderUpdated = orderProcessor.saveOrder(order);
 			if (orderUpdated.getStatus() == Order.Status.CANCELLED) {
 				eventBus.post(new OrderEvent(OrderEvent.EventType.CANCELLATION, orderUpdated));
 				LOG.info("Notify client managers on order cancellation: {}", orderUpdated);
@@ -943,17 +963,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			timerContext = timer.time();
 		}
 		try {
-			if (Order.Status.DELETED == status) {
-				return Page.emptyPage(page, pageSize);
-			}
-			if (status == null) {
-				return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusInOrderByCreationDateDesc(userId,
-						Order.Status.VISIBLE_STATUSES, Pages.createPageRequest(page, pageSize)));
-				// return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusNotOrderByCreationDateDesc(userId,
-				// Order.Status.DELETED, Pages.createPageRequest(page, pageSize)));
-			}
-			return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
-					Pages.createPageRequest(page, pageSize)));
+			return orderProcessor.listUserOrders(userId, status, page, pageSize);
 		}
 		// metrics
 		finally {
@@ -973,10 +983,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			timerContext = timer.time();
 		}
 		try {
-			Set<Order.Status> incudedStatuses = new HashSet<>(statuses);
-			incudedStatuses.remove(Order.Status.DELETED);
-			return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusInOrderByCreationDateDesc(userId,
-					incudedStatuses, Pages.createPageRequest(page, pageSize)));
+			return orderProcessor.listUserOrders(userId, statuses, page, pageSize);
 		}
 		// metrics
 		finally {
@@ -996,17 +1003,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			timerContext = timer.time();
 		}
 		try {
-			if (days < 0) {
-				days = 0;
-			}
-			if (days > 6 * 30) {
-				days = 6 * 30; // max 6 months
-			}
-			Date creationDate = LocalDateTime.now().minusDays(days).toDate();
-			LOG.debug("List recent {} days({}) orders for user: {}", days, creationDate, userId);
-			return Pages.adapt(getOrderRepository()
-					.findByOwnerIdAndStatusInAndCreationDateLessThanEqualOrderByCreationDateDesc(userId,
-							Order.Status.VISIBLE_STATUSES, creationDate, Pages.createPageRequest(page, pageSize)));
+			return orderProcessor.listUserOrdersOfRecentDays(userId, days, page, pageSize);
 		}
 		// metrics
 		finally {
@@ -1019,12 +1016,13 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	/**
 	 * For USER (Exclude orders in DELETED status), NOT IN statuses. (XXX NOT USED YET)
 	 */
-	protected Page<T> doListUserOrdersNotInStatuses(String userId, Set<Order.Status> statuses, int page, int pageSize) {
-		Set<Order.Status> excludedStatuses = new HashSet<>(statuses);
-		excludedStatuses.add(Order.Status.DELETED);
-		return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusNotInOrderByCreationDateDesc(userId,
-				excludedStatuses, Pages.createPageRequest(page, pageSize)));
-	}
+	// protected Page<T> doListUserOrdersNotInStatuses(String userId, Set<Order.Status> statuses, int page, int
+	// pageSize) {
+	// Set<Order.Status> excludedStatuses = new HashSet<>(statuses);
+	// excludedStatuses.add(Order.Status.DELETED);
+	// return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusNotInOrderByCreationDateDesc(userId,
+	// excludedStatuses, Pages.createPageRequest(page, pageSize)));
+	// }
 
 	/**
 	 * For ADMIN for a user (orders in any status)
@@ -1044,20 +1042,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			timerContext = timer.time();
 		}
 		try {
-			if (status != null) {
-				if (type != null) {
-					return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusAndTypeOrderByCreationDateDesc(userId,
-							status, type, Pages.createPageRequest(page, pageSize)));
-				}
-				return Pages.adapt(getOrderRepository().findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
-						Pages.createPageRequest(page, pageSize)));
-			}
-			if (type != null) {
-				return Pages.adapt(getOrderRepository().findByOwnerIdAndTypeOrderByCreationDateDesc(userId, type,
-						Pages.createPageRequest(page, pageSize)));
-			}
-			return Pages.adapt(getOrderRepository().findByOwnerIdOrderByCreationDateDesc(userId,
-					Pages.createPageRequest(page, pageSize)));
+			return orderProcessor.listAllUserOrders(userId, status, type, page, pageSize);
 		}
 		// metrics
 		finally {
@@ -1085,20 +1070,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			timerContext = timer.time();
 		}
 		try {
-			if (status != null) {
-				if (type != null) {
-					return Pages.adapt(getOrderRepository().findByStatusAndTypeOrderByCreationDateDesc(status, type,
-							Pages.createPageRequest(page, pageSize)));
-				}
-				return Pages.adapt(getOrderRepository().findByStatusOrderByCreationDateDesc(status,
-						Pages.createPageRequest(page, pageSize)));
-			}
-			if (type != null) {
-				return Pages.adapt(getOrderRepository().findByTypeOrderByCreationDateDesc(type,
-						Pages.createPageRequest(page, pageSize)));
-			}
-			return Pages.adapt(
-					getOrderRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+			return orderProcessor.listAllOrders(status, type, page, pageSize);
 		}
 		// metrics
 		finally {
@@ -1112,7 +1084,11 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * For ADMIN
 	 */
 	protected void doDeleteOrder(String orderId) {
-		safeDeletion(getOrderRepository(), orderId, Codes.ORDER_CANNOT_BE_DELETED, M.msg(M.ORDER_CANNOT_BE_DELETED));
+		// safeDeletion(() -> orderProcessor.flush(), () -> orderProcessor.deleteOrder(orderId),
+		// Codes.ORDER_CANNOT_BE_DELETED, M.msg(M.ORDER_CANNOT_BE_DELETED));
+
+		// XXX NOTE: JUST use orderRepository for simplicity
+		safeDeletion(orderRepository, orderId, Codes.ORDER_CANNOT_BE_DELETED, M.msg(M.ORDER_CANNOT_BE_DELETED));
 		orderRefRepository.delete(orderId);
 	}
 
@@ -1120,8 +1096,12 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * For ADMIN
 	 */
 	protected void doDeleteOrders(String userId) {
-		safeDeletion(getOrderRepository(), () -> getOrderRepository().deleteByOwnerId(userId),
-				Codes.ORDER_CANNOT_BE_DELETED, M.msg(M.USER_ORDERS_CANNOT_BE_DELETED, userId));
+		// safeDeletion(() -> orderProcessor.flush(), () -> orderProcessor.deleteOrders(userId),
+		// Codes.ORDER_CANNOT_BE_DELETED, M.msg(M.USER_ORDERS_CANNOT_BE_DELETED, userId));
+
+		// XXX NOTE: JUST use orderRepository for simplicity
+		safeDeletion(orderRepository, () -> orderRepository.deleteByOwnerId(userId), Codes.ORDER_CANNOT_BE_DELETED,
+				M.msg(M.USER_ORDERS_CANNOT_BE_DELETED, userId));
 		orderRefRepository.deleteByOwnerId(userId);
 	}
 }

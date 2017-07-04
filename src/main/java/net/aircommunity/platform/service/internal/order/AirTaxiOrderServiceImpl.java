@@ -1,36 +1,38 @@
 package net.aircommunity.platform.service.internal.order;
 
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.domain.AirTaxiOrder;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.repository.AirTaxiOrderRepository;
-import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.order.AirTaxiOrderService;
-import net.aircommunity.platform.service.product.AirTaxiService;
+import net.aircommunity.platform.service.order.OrderServiced;
 
 /**
  * AirTaxiOrder service implementation.
  *
  * @author Bin.Zhang
  */
-@Service
+@OrderServiced(Product.Type.AIRTAXI)
 @Transactional(readOnly = true)
 public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<AirTaxiOrder>
 		implements AirTaxiOrderService {
 
+	@Autowired
+	public AirTaxiOrderServiceImpl(AirTaxiOrderRepository airTaxiOrderRepository) {
+		super(airTaxiOrderRepository);
+	}
+
+	@Override
+	protected Code orderNotFoundCode() {
+		return Codes.TAXI_ORDER_NOT_FOUND;
+	}
+
 	// TODO REMOVE
 	// private static final String CACHE_NAME = "cache.airtaxi-order";
-
-	@Resource
-	private AirTaxiOrderRepository airTaxiOrderRepository;
-
-	@Resource
-	private AirTaxiService airTaxiService;
 
 	// @Override
 	// public AirTaxiOrder createAirTaxiOrder(String userId, AirTaxiOrder order) {
@@ -81,15 +83,5 @@ public class AirTaxiOrderServiceImpl extends AbstractVendorAwareOrderService<Air
 	// public void deleteAirTaxiOrders(String userId) {
 	// doDeleteOrders(userId);
 	// }
-
-	@Override
-	protected Code orderNotFoundCode() {
-		return Codes.TAXI_ORDER_NOT_FOUND;
-	}
-
-	@Override
-	protected VendorAwareOrderRepository<AirTaxiOrder> getOrderRepository() {
-		return airTaxiOrderRepository;
-	}
 
 }

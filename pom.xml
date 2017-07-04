@@ -389,6 +389,7 @@
 							<include>logo.*</include>
 							<include>messages*.properties</include>
 							<include>apidoc-messages*.yaml</include>
+							<include>ua-regexes.yaml</include>
 						</includes>
 					</resource>
 					<resource>

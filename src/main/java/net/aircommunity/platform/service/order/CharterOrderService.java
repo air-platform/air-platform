@@ -68,18 +68,6 @@ public interface CharterOrderService extends StandardOrderService<CharterOrder> 
 	}
 
 	/**
-	 * Update CharterOrder total amount.
-	 * 
-	 * @param charterOrderId the charterOrderId
-	 * @param totalAmount the tenant offered totalAmount > 0 for the charter order
-	 * @return updated CharterOrder
-	 */
-	// XXX useful?
-	// @Nonnull
-	// CharterOrder updateCharterOrderTotalAmount(@Nonnull String charterOrderId,
-	// @Nonnull @Nonnegative BigDecimal totalAmount);
-
-	/**
 	 * Update CharterOrder to select a fleet candidate
 	 * 
 	 * @param charterOrderId the charterOrderId

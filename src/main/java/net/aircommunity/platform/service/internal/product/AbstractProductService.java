@@ -455,8 +455,10 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	}
 
 	/**
-	 * Delete all for a tenant
+	 * Delete all for a tenant. FIXME: do we have a problem here Streaming data within a @Transactional (readOnly=false)
+	 * ?
 	 */
+	// FIXME: stream requires @Transactional(readOnly = true)
 	protected final void doDeleteProducts(String tenantId) {
 		// delete standard products
 		doBatchDeleteProducts(() -> getProductRepository().findByVendorId(tenantId), Codes.PRODUCT_CANNOT_BE_DELETED,
@@ -470,6 +472,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	/**
 	 * Batch delete products (will delete dependencies first)
 	 */
+	// FIXME: stream requires @Transactional(readOnly = true)
 	protected final void doBatchDeleteProducts(Supplier<Stream<T>> productProvider, Code errorCode,
 			String errorMessage) {
 		safeDeletion(getProductRepository(), () -> {
@@ -482,6 +485,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		}, errorCode, errorMessage);
 	}
 
+	// FIXME: stream requires @Transactional(readOnly = true)
 	protected final void doBatchDeleteProductDependencies(Supplier<Stream<T>> productProvider) {
 		try (Stream<T> stream = productProvider.get()) {
 			stream.forEach(product -> doDeleteProductDependencies(product.getId()));

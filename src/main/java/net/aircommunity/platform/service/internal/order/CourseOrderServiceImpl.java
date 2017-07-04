@@ -1,8 +1,6 @@
 package net.aircommunity.platform.service.internal.order;
 
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
@@ -10,25 +8,25 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.CourseOrder;
 import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.repository.CourseOrderRepository;
-import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.order.CourseOrderService;
+import net.aircommunity.platform.service.order.OrderServiced;
 
 /**
  * CourseOrder service implementation
  * 
  * @author Bin.Zhang
  */
-@Service
+@OrderServiced(Product.Type.COURSE)
 @Transactional(readOnly = true)
 public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<CourseOrder> implements CourseOrderService {
 
-	// TODO REMOVE
-	// private static final String CACHE_NAME = "cache.course-courseorder";
-
-	@Resource
-	private CourseOrderRepository courseOrderRepository;
+	@Autowired
+	public CourseOrderServiceImpl(CourseOrderRepository courseOrderRepository) {
+		super(courseOrderRepository);
+	}
 
 	@Override
 	protected void copyProperties(CourseOrder src, CourseOrder tgt) {
@@ -39,7 +37,7 @@ public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<Cour
 
 	@Override
 	public Page<CourseOrder> listCourseOrdersByCourse(String courseId, int page, int pageSize) {
-		return Pages.adapt(courseOrderRepository.findByCourseIdOrderByCreationDateDesc(courseId,
+		return Pages.adapt(getOrderRepository().findByCourseIdOrderByCreationDateDesc(courseId,
 				Pages.createPageRequest(page, pageSize)));
 	}
 
@@ -50,12 +48,27 @@ public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<Cour
 			return Page.emptyPage(page, pageSize);
 		}
 		if (status == null) {
-			return Pages.adapt(courseOrderRepository.findByCourseIdAndStatusInOrderByCreationDateDesc(courseId,
+			return Pages.adapt(getOrderRepository().findByCourseIdAndStatusInOrderByCreationDateDesc(courseId,
 					Order.Status.VISIBLE_STATUSES, Pages.createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(courseOrderRepository.findByCourseIdAndStatusOrderByCreationDateDesc(courseId, status,
+		return Pages.adapt(getOrderRepository().findByCourseIdAndStatusOrderByCreationDateDesc(courseId, status,
 				Pages.createPageRequest(page, pageSize))); // OK
 	}
+
+	@Override
+	protected Code orderNotFoundCode() {
+		return Codes.COURSEORDER_NOT_FOUND;
+	}
+
+	@Override
+	protected CourseOrderRepository getOrderRepository() {
+		return (CourseOrderRepository) orderRepository;
+	}
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.course-courseorder";
+	// @Resource
+	// private CourseOrderRepository courseOrderRepository;
 
 	// @Override
 	// public CourseOrder createCourseOrder(String userId, CourseOrder courseOrder) {
@@ -94,15 +107,5 @@ public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<Cour
 	// public void deleteCourseOrder(String courseOrderId) {
 	// doDeleteOrder(courseOrderId);
 	// }
-
-	@Override
-	protected Code orderNotFoundCode() {
-		return Codes.COURSEORDER_NOT_FOUND;
-	}
-
-	@Override
-	protected VendorAwareOrderRepository<CourseOrder> getOrderRepository() {
-		return courseOrderRepository;
-	}
 
 }

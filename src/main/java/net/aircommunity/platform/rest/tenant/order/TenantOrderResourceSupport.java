@@ -1,6 +1,7 @@
 package net.aircommunity.platform.rest.tenant.order;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.json.JsonObject;
@@ -12,6 +13,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
@@ -41,6 +43,17 @@ public abstract class TenantOrderResourceSupport<T extends Order> extends BaseRe
 
 	@Resource
 	private CharterOrderService charterOrderService;
+
+	/**
+	 * Search order
+	 */
+	@GET
+	@Path("search")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	public List<T> search(@NotNull @QueryParam("orderNo") String orderNo) {
+		return getOrderService().searchOrder(orderNo);
+	}
 
 	/**
 	 * Find order
@@ -133,7 +146,7 @@ public abstract class TenantOrderResourceSupport<T extends Order> extends BaseRe
 	@POST
 	@Path("{orderId}/refund/initiate")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void forceOrderRefund(@PathParam("orderId") String orderId, JsonObject request) {
+	public void initiateOrderRefund(@PathParam("orderId") String orderId, @NotNull JsonObject request) {
 		LOG.debug("Initiate refund request: {}", request);
 		BigDecimal refundAmount = getAmount(request);
 		String refundReason = getReason(request);

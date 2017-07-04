@@ -1,33 +1,38 @@
 package net.aircommunity.platform.service.internal.order;
 
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.domain.JetTravelOrder;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.repository.JetTravelOrderRepository;
-import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.order.JetTravelOrderService;
+import net.aircommunity.platform.service.order.OrderServiced;
 
 /**
  * JetTravelOrder service implementation.
  * 
  * @author Bin.Zhang
  */
-@Service
+@OrderServiced(Product.Type.JETTRAVEL)
 @Transactional(readOnly = true)
 public class JetTravelOrderServiceImpl extends AbstractVendorAwareOrderService<JetTravelOrder>
 		implements JetTravelOrderService {
 
+	@Autowired
+	public JetTravelOrderServiceImpl(JetTravelOrderRepository jetTravelOrderRepository) {
+		super(jetTravelOrderRepository);
+	}
+
+	@Override
+	protected Code orderNotFoundCode() {
+		return Codes.JETTRAVEL_ORDER_NOT_FOUND;
+	}
+
 	// TODO REMOVE
 	// private static final String CACHE_NAME = "cache.jettravel-order";
-
-	@Resource
-	private JetTravelOrderRepository jetTravelOrderRepository;
-
 	// @Override
 	// public JetTravelOrder createJetTravelOrder(String userId, JetTravelOrder order) {
 	// return doCreateOrder(userId, order);
@@ -78,15 +83,4 @@ public class JetTravelOrderServiceImpl extends AbstractVendorAwareOrderService<J
 	// public void deleteJetTravelOrders(String userId) {
 	// doDeleteOrders(userId);
 	// }
-
-	@Override
-	protected Code orderNotFoundCode() {
-		return Codes.JETTRAVEL_ORDER_NOT_FOUND;
-	}
-
-	@Override
-	protected VendorAwareOrderRepository<JetTravelOrder> getOrderRepository() {
-		return jetTravelOrderRepository;
-	}
-
 }

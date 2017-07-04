@@ -67,6 +67,12 @@ public class Configuration {
 	@Value("${air.order.email-notification-subject}")
 	private String orderEmailNotificationSubject;
 
+	@Value("${air.order.query-day-max}")
+	private int orderQueryDayMax;
+
+	@Value("${air.order.rebuild-ref}")
+	private boolean orderRebuildRef;
+
 	@Value("${air.mobile.verification}")
 	private boolean mobileVerificationEnabled;
 
@@ -210,6 +216,14 @@ public class Configuration {
 
 	public String getOrderEmailNotificationSubject() {
 		return orderEmailNotificationSubject;
+	}
+
+	public int getOrderQueryDayMax() {
+		return orderQueryDayMax;
+	}
+
+	public boolean isOrderRebuildRef() {
+		return orderRebuildRef;
 	}
 
 	public boolean isMobileVerificationEnabled() {

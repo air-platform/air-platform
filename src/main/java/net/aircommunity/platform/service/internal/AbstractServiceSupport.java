@@ -112,6 +112,26 @@ public abstract class AbstractServiceSupport {
 	/**
 	 * Delete
 	 */
+	protected final <T> void safeDeletion(Runnable flusher, Runnable deleteAction, Code errorCode,
+			String errorMessage) {
+		try {
+			deleteAction.run();
+			// NOTE: important flush() here, otherwise we cannot catch DataIntegrityViolationException
+			flusher.run();
+		}
+		catch (DataIntegrityViolationException e) {
+			LOG.error(String.format("Deletion failure, casue: %s", e.getMessage()), e);
+			throw new AirException(errorCode, errorMessage);
+		}
+		catch (Exception e) {
+			LOG.error(String.format("Internal server error casue: %s", e.getMessage()), e);
+			newInternalException();
+		}
+	}
+
+	/**
+	 * Delete
+	 */
 	protected final <T> void safeDeletion(JpaRepository<T, String> repository, String id, Code errorCode,
 			String errorMessage) {
 		try {

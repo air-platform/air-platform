@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.internal.order;
 
+import java.util.function.Function;
+
 import com.codahale.metrics.Timer;
 
 import net.aircommunity.platform.model.Page;
@@ -9,11 +11,31 @@ import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.internal.Pages;
 
 /**
- * Abstract VendorAwareOrder service support.
+ * Abstract VendorAware order service support.
  * 
  * @author Bin.Zhang
  */
 abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> extends AbstractStandardOrderService<T> {
+
+	protected VendorAwareOrderRepository<T> orderRepository;
+
+	public AbstractVendorAwareOrderService(VendorAwareOrderRepository<T> orderRepository) {
+		this.orderRepository = orderRepository;
+	}
+
+	@Override
+	protected void doInitialize() {
+		setOrderProcessor(new StandardOrderProcessor<T>(configuration, orderRepository));
+	}
+
+	protected VendorAwareOrderRepository<T> getOrderRepository() {
+		return orderRepository;
+	}
+
+	@Override
+	public Function<T, T> getOrderPersister() {
+		return t -> orderRepository.save(t);
+	}
 
 	@Override
 	public Page<T> listTenantOrders(String tenantId, Order.Status status, int page, int pageSize) {
@@ -34,10 +56,10 @@ abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> exten
 				return Page.emptyPage(page, pageSize);
 			}
 			if (status == null) {
-				return Pages.adapt(getOrderRepository().findByVendorIdAndStatusInOrderByCreationDateDesc(tenantId,
+				return Pages.adapt(orderRepository.findByVendorIdAndStatusInOrderByCreationDateDesc(tenantId,
 						Order.Status.VISIBLE_STATUSES, Pages.createPageRequest(page, pageSize)));
 			}
-			return Pages.adapt(getOrderRepository().findByVendorIdAndStatusOrderByCreationDateDesc(tenantId, status,
+			return Pages.adapt(orderRepository.findByVendorIdAndStatusOrderByCreationDateDesc(tenantId, status,
 					Pages.createPageRequest(page, pageSize)));
 		}
 		// metrics
@@ -59,10 +81,10 @@ abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> exten
 		}
 		try {
 			if (status == null) {
-				return Pages.adapt(getOrderRepository().findByVendorIdOrderByCreationDateDesc(tenantId,
+				return Pages.adapt(orderRepository.findByVendorIdOrderByCreationDateDesc(tenantId,
 						Pages.createPageRequest(page, pageSize)));
 			}
-			return Pages.adapt(getOrderRepository().findByVendorIdAndStatusOrderByCreationDateDesc(tenantId, status,
+			return Pages.adapt(orderRepository.findByVendorIdAndStatusOrderByCreationDateDesc(tenantId, status,
 					Pages.createPageRequest(page, pageSize)));
 		}
 		// metrics
@@ -72,7 +94,4 @@ abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> exten
 			}
 		}
 	}
-
-	@Override
-	protected abstract VendorAwareOrderRepository<T> getOrderRepository();
 }

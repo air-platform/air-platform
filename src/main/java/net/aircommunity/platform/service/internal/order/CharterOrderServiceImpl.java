@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -13,7 +14,6 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableList;
@@ -28,12 +28,13 @@ import net.aircommunity.platform.model.domain.Fleet;
 import net.aircommunity.platform.model.domain.FleetCandidate;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.nls.M;
-import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.CharterOrderRepository;
 import net.aircommunity.platform.repository.FleetCandidateRepository;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.order.CharterOrderService;
+import net.aircommunity.platform.service.order.OrderServiced;
 import net.aircommunity.platform.service.product.FleetService;
 
 /**
@@ -41,13 +42,10 @@ import net.aircommunity.platform.service.product.FleetService;
  * 
  * @author Bin.Zhang
  */
-@Service
+@OrderServiced(Product.Type.FLEET)
 @Transactional(readOnly = true)
 public class CharterOrderServiceImpl extends AbstractStandardOrderService<CharterOrder> implements CharterOrderService {
 	private static final Logger LOG = LoggerFactory.getLogger(CharterOrderServiceImpl.class);
-
-	// TODO REMOVE
-	// private static final String CACHE_NAME = "cache.charterorder";
 
 	@Resource
 	private CharterOrderRepository charterOrderRepository;
@@ -57,6 +55,11 @@ public class CharterOrderServiceImpl extends AbstractStandardOrderService<Charte
 
 	@Resource
 	private FleetService fleetService;
+
+	@Override
+	protected void doInitialize() {
+		setOrderProcessor(new StandardOrderProcessor<CharterOrder>(configuration, charterOrderRepository));
+	}
 
 	// NOTE: not use default, just override (special case for CharterOrder)
 	@Transactional
@@ -113,13 +116,6 @@ public class CharterOrderServiceImpl extends AbstractStandardOrderService<Charte
 			tgt.setFleetCandidates(fleetCandidates);
 		}
 	}
-
-	// XXX
-	// @CachePut(cacheNames = CACHE_NAME, key = "#orderId")
-	// @Override
-	// public CharterOrder updateCharterOrderTotalAmount(String orderId, BigDecimal totalAmount) {
-	// return doUpdateOrderTotalAmount(orderId, totalAmount);
-	// }
 
 	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#orderId")
@@ -210,9 +206,18 @@ public class CharterOrderServiceImpl extends AbstractStandardOrderService<Charte
 	}
 
 	@Override
-	protected BaseOrderRepository<CharterOrder> getOrderRepository() {
-		return charterOrderRepository;
+	public Function<CharterOrder, CharterOrder> getOrderPersister() {
+		return t -> charterOrderRepository.save(t);
 	}
+
+	// TODO REMOVE
+	// private static final String CACHE_NAME = "cache.charterorder";
+	// XXX
+	// @CachePut(cacheNames = CACHE_NAME, key = "#orderId")
+	// @Override
+	// public CharterOrder updateCharterOrderTotalAmount(String orderId, BigDecimal totalAmount) {
+	// return doUpdateOrderTotalAmount(orderId, totalAmount);
+	// }
 
 	// @Cacheable(cacheNames = CACHE_NAME)
 	// @Override

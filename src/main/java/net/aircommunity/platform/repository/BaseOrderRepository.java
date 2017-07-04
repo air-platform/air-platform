@@ -2,6 +2,8 @@ package net.aircommunity.platform.repository;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -123,6 +125,13 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	Page<T> findAllByOrderByCreationDateDesc(Pageable pageable);
 
 	/**
+	 * Find all orders with streaming (ADMIN)
+	 * 
+	 * @return stream of orders or empty if none
+	 */
+	Stream<T> findAllByOrderByCreationDateDesc();
+
+	/**
 	 * Find all orders filter by status (ADMIN) (XXX NOT GOOD) (type: all, Using where; Using filesort)
 	 * 
 	 * @param status the status
@@ -166,6 +175,14 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	 * @return order found
 	 */
 	T findByOrderNo(String orderNo);
+
+	/**
+	 * Find order by orderNo (fuzzy match)
+	 * 
+	 * @param orderNo the orderNo
+	 * @return order list or empty
+	 */
+	List<T> findByOrderNoStartingWithIgnoreCase(String orderNo);
 
 	/**
 	 * Delete by order NO.

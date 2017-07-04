@@ -1,32 +1,38 @@
 package net.aircommunity.platform.service.internal.order;
 
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.domain.FerryFlightOrder;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.repository.FerryFlightOrderRepository;
-import net.aircommunity.platform.repository.VendorAwareOrderRepository;
 import net.aircommunity.platform.service.order.FerryFlightOrderService;
+import net.aircommunity.platform.service.order.OrderServiced;
 
 /**
  * FerryFlightOrder service implementation.
  * 
  * @author Bin.Zhang
  */
-@Service
+@OrderServiced(Product.Type.FERRYFLIGHT)
 @Transactional(readOnly = true)
 public class FerryFlightOrderServiceImpl extends AbstractVendorAwareOrderService<FerryFlightOrder>
 		implements FerryFlightOrderService {
 
-	// TODO REMOVE
-	// private static final String CACHE_NAME = "cache.ferryflight-order";
+	@Autowired
+	public FerryFlightOrderServiceImpl(FerryFlightOrderRepository ferryFlightOrderRepository) {
+		super(ferryFlightOrderRepository);
+	}
 
-	@Resource
-	private FerryFlightOrderRepository ferryFlightOrderRepository;
+	@Override
+	protected Code orderNotFoundCode() {
+		return Codes.FERRYFLIGHT_ORDER_NOT_FOUND;
+	}
+
+	// / TODO REMOVE
+	// private static final String CACHE_NAME = "cache.ferryflight-order";
 
 	// @Override
 	// public FerryFlightOrder createFerryFlightOrder(String userId, FerryFlightOrder order) {
@@ -79,15 +85,5 @@ public class FerryFlightOrderServiceImpl extends AbstractVendorAwareOrderService
 	// public void deleteFerryFlightOrders(String userId) {
 	// doDeleteOrders(userId);
 	// }
-
-	@Override
-	protected Code orderNotFoundCode() {
-		return Codes.FERRYFLIGHT_ORDER_NOT_FOUND;
-	}
-
-	@Override
-	protected VendorAwareOrderRepository<FerryFlightOrder> getOrderRepository() {
-		return ferryFlightOrderRepository;
-	}
 
 }

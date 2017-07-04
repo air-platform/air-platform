@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -24,7 +25,7 @@ public abstract class VendorAwareOrder extends StandardOrder {
 	// extra info (e.g. the vendor of this product, it's already available in product, just add extra id to avoid join)
 	// should be set via Product.vendor
 	@XmlTransient
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tenant_id", nullable = false)
 	protected Tenant vendor;
 

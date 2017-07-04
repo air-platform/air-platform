@@ -73,7 +73,9 @@ public abstract class UserOrderResourceSupport<T extends Order> extends BaseReso
 	 */
 	protected <ORDER extends Order> ORDER detectOrderChannel(String userAgent, ORDER order) {
 		// parse userAgent for channel
+		LOG.debug("Order userAgent: {}", userAgent);
 		String channel = parseForChannel(userAgent);
+		LOG.debug("Order channel: {}", channel);
 		order.setChannel(channel);
 		return order;
 	}

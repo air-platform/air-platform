@@ -2,6 +2,10 @@ package net.aircommunity.platform.service.internal.payment.wechat;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
 
@@ -17,6 +21,7 @@ import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
+import com.github.binarywang.wxpay.util.SignUtils;
 
 import io.micro.common.Strings;
 import me.chanjar.weixin.common.bean.result.WxError;
@@ -48,6 +53,8 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 	private static final String RETURN_CODE_SUCCESS = "SUCCESS"; // SUCCESS/FAIL
 	private static final String RETURN_MSG_SUCCESS = "OK";
 	private static final String RETURN_MSG_FAIL = "FAIL";
+	private static final String CLIENT_NOTIFICATION_ORDERNO = "orderNo";
+	private static final String CLIENT_NOTIFICATION_RESULT = "result";
 	// SUCCESS: 退款申请接收成功，结果通过退款查询接口查询, FAIL: 提交业务失败
 	private static final String RESULT_CODE_SUCCESS = "SUCCESS"; // SUCCESS/FAIL
 	private static final PaymentResponse NOTIFICATION_RESPONSE_SUCCESS = PaymentResponse
@@ -117,8 +124,10 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 			// 支付类型 (必填)
 			request.setTradeType(TRADE_TYPE);
 			WxPayUnifiedOrderResult paymentInfo = wxPayService.unifiedOrder(request);
-			LOG.info("orderInfo: {}", paymentInfo.getXmlString());
-			return new PaymentRequest(paymentInfo.getXmlString());
+			LOG.debug("Unified order result: {}", paymentInfo);
+			Map<String, String> orderInfo = signPrepay(paymentInfo);
+			LOG.info("orderInfo: {}", orderInfo);
+			return new PaymentRequest(orderInfo);
 		}
 		catch (Exception e) {
 			if (WxErrorException.class.isAssignableFrom(e.getClass())) {
@@ -133,14 +142,41 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 		}
 	}
 
+	private Map<String, String> signPrepay(WxPayUnifiedOrderResult paymentInfo) {
+		SortedMap<String, String> paramsSorted = new TreeMap<>();
+		paramsSorted.put("appid", paymentInfo.getAppid());
+		paramsSorted.put("partnerid", paymentInfo.getMchId());
+		paramsSorted.put("prepayid", paymentInfo.getPrepayId());
+		paramsSorted.put("package", "Sign=WXpay");
+		paramsSorted.put("noncestr", paymentInfo.getNonceStr());
+		paramsSorted.put("timestamp", String.valueOf(System.currentTimeMillis()).substring(0, 10));
+		String sign = SignUtils.createSign(paramsSorted, config.getMchKey());
+		paramsSorted.put("sign", sign);
+		return paramsSorted;
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public PaymentVerification verifyClientPaymentNotification(PaymentNotification notification) {
-		// noops for webchat payment
-		return PaymentVerification.SUCCESS;
+		LOG.info("client notification: {}", notification);
+		Map<String, Object> data = (Map<String, Object>) notification.getData();
+		String orderNo = (String) data.get(CLIENT_NOTIFICATION_ORDERNO);
+		String result = (String) data.get(CLIENT_NOTIFICATION_RESULT);
+		if (RETURN_MSG_SUCCESS.equalsIgnoreCase(result)) {
+			Optional<Order> orderRef = commonOrderService.lookupByOrderNo(orderNo);
+			if (orderRef.isPresent()) {
+				Order order = orderRef.get();
+				commonOrderService.updateOrderStatus(order, Order.Status.PAYMENT_IN_PROCESS);
+				LOG.debug("Processed client notification for order {}", order);
+				return PaymentVerification.SUCCESS;
+			}
+		}
+		return PaymentVerification.FAILURE;
 	}
 
 	@Override
 	public PaymentResponse processServerPaymentNotification(PaymentNotification notification) {
+		LOG.info("Server payment notification: {}", notification);
 		try {
 			String xmlData = (String) notification.getData();
 			// 1) parse and verify result
@@ -175,7 +211,7 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 		catch (Exception e) {
 			if (WxErrorException.class.isAssignableFrom(e.getClass())) {
 				WxError ex = WxErrorException.class.cast(e).getError();
-				LOG.error(String.format("Failed to create payment info, errcode: %s, errmsg: %s,  cause: %s",
+				LOG.error(String.format("Failed to process payment info, errcode: %s, errmsg: %s,  cause: %s",
 						ex.getErrorCode(), ex.getErrorMsg(), e.getMessage()), e);
 			}
 			else {
