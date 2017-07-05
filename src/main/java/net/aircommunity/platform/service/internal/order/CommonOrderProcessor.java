@@ -54,9 +54,9 @@ public class CommonOrderProcessor implements OrderProcessor<Order> {
 	@Override
 	public Order findByOrderId(String orderId) {
 		OrderRef ref = orderRefRepository.findOne(orderId);
-		if (ref == null || ref.getStatus() == Order.Status.DELETED) {
-			LOG.error("orderId: {} is not found", orderId);
-			throw new AirException(Codes.ORDER_NOT_FOUND, M.msg(M.ORDER_NOT_FOUND));
+		if (ref == null) {
+			LOG.warn("OrderRef orderId: {} is not found", orderId);
+			return null;
 		}
 		return findOrderByRef(ref);
 	}
@@ -79,9 +79,9 @@ public class CommonOrderProcessor implements OrderProcessor<Order> {
 	@Override
 	public Order findByOrderNo(String orderNo) {
 		OrderRef ref = orderRefRepository.findByOrderNo(orderNo);
-		if (ref == null || ref.getStatus() == Order.Status.DELETED) {
-			LOG.error("orderNo: {} is not found", orderNo);
-			throw new AirException(Codes.ORDER_NOT_FOUND, M.msg(M.ORDER_NOT_FOUND));
+		if (ref == null) {
+			LOG.warn("OrderRef orderNo: {} is not found", orderNo);
+			return null;
 		}
 		return findOrderByRef(ref);
 	}

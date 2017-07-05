@@ -180,7 +180,7 @@ public abstract class TenantOrderResourceSupport<T extends Order> extends BaseRe
 	@Path("{orderId}/refund/reject")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void rejectOrderRefund(@PathParam("orderId") String orderId, JsonObject rejectedReason) {
-		String reason = getRejectedReason(rejectedReason);
+		String reason = getReason(rejectedReason);
 		getOrderService().rejectOrderRefund(orderId, reason);
 	}
 
@@ -208,8 +208,8 @@ public abstract class TenantOrderResourceSupport<T extends Order> extends BaseRe
 	@POST
 	@Path("{orderId}/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void cancel(@PathParam("orderId") String orderId, JsonObject request) {
-		String reason = getCancelReason(request);
+	public void cancel(@PathParam("orderId") String orderId, JsonObject cancelReason) {
+		String reason = getReason(cancelReason);
 		getOrderService().cancelOrder(orderId, reason);
 	}
 

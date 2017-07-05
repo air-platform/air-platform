@@ -28,6 +28,10 @@ public class WechatConfig {
 	@NotEmpty
 	private String mchKey;
 
+	// 商户证书文件 (e.g. apiclient_cert.p12), 撤销、退款申请API中调用
+	@NotEmpty
+	private String keyPath;
+
 	private String notifyUrl;
 
 	private String returnUrl;
@@ -56,6 +60,14 @@ public class WechatConfig {
 		this.mchKey = mchKey;
 	}
 
+	public String getKeyPath() {
+		return keyPath;
+	}
+
+	public void setKeyPath(String keyPath) {
+		this.keyPath = keyPath;
+	}
+
 	public String getNotifyUrl() {
 		return notifyUrl;
 	}
@@ -76,8 +88,8 @@ public class WechatConfig {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("WechatConfig [appId=").append(appId).append(", mchId=").append(mchId).append(", mchKey=")
-				.append("******").append(", notifyUrl=").append(notifyUrl).append(", returnUrl=").append(returnUrl)
-				.append("]");
+				.append("******").append(", keyPath=").append(keyPath).append(", notifyUrl=").append(notifyUrl)
+				.append(", returnUrl=").append(returnUrl).append("]");
 		return builder.toString();
 	}
 

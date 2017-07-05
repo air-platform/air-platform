@@ -41,6 +41,12 @@ public interface OrderService<T extends Order> {
 	@Nonnull
 	List<T> searchOrder(@Nonnull String orderNo);
 
+	/**
+	 * Find orders with the given order IDs
+	 * 
+	 * @param orderIds the order IDs
+	 * @return orders list or empty
+	 */
 	@Nonnull
 	List<T> findOrders(@Nonnull List<String> orderIds);
 
@@ -280,10 +286,5 @@ public interface OrderService<T extends Order> {
 	default Page<T> listUserRefundOrders(@Nonnull String userId, int page, int pageSize) {
 		return listUserOrders(userId, Order.REFUND_STATUSES, page, pageSize);
 	}
-
-	// XXX NOT USED
-	// @Nonnull
-	// Page<T> listUserOrdersNotInStatuses(@Nonnull String userId, @Nonnull Set<Order.Status> statuses, int page,
-	// int pageSize);
 
 }

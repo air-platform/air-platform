@@ -40,8 +40,8 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String>, Jpa
 
 	// probably payment pending --- can be updated to --> PAID
 	EnumSet<Status> PAYMENT_PENDING_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED, Status.CUSTOMER_CONFIRMED,
-			Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.TICKET_RELEASED, Status.PAYMENT_IN_PROCESS,
-			Status.PARTIAL_PAID, Status.PAYMENT_FAILED);
+			Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.PAYMENT_IN_PROCESS, Status.PARTIAL_PAID,
+			Status.PAYMENT_FAILED);
 
 	// probably refund pending --- can be updated to --> REFUND
 	EnumSet<Status> REFUND_PENDING_STATUSES = EnumSet.of(Status.REFUND_REQUESTED, Status.REFUNDING,

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.domain.OrderRef;
 import net.aircommunity.platform.repository.OrderRefRepository;
 import net.aircommunity.platform.service.order.CommonOrderService;
@@ -26,6 +27,9 @@ public class PaymentSynchronizer {
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentSynchronizer.class);
 
 	@Resource
+	private Configuration configuration;
+
+	@Resource
 	private OrderRefRepository orderRefRepository;
 
 	@Resource
@@ -34,15 +38,16 @@ public class PaymentSynchronizer {
 	/**
 	 * Task
 	 */
+	// @Scheduled(fixedDelay = 5000, initialDelay = 10000)
 	@Transactional(readOnly = true)
-	@Scheduled(fixedDelay = 5000, initialDelay = 10000)
+	@Scheduled(fixedDelay = 60 * 1000, initialDelay = 1000)
 	public void syncPayment() {
 		LOG.debug("Sync payment");
-		Date today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+		Date today = Date.from(LocalDate.now().atStartOfDay(configuration.getZoneId()).toInstant());
 		try (Stream<OrderRef> paymentPendingOrders = orderRefRepository.findPaymentPendingOrders(today)) {
 			paymentPendingOrders.forEach(order -> {
 				String orderNo = order.getOrderNo();
-				// TODO query payment gatway with orderNo
+				// TODO query payment gateway with orderNo
 			});
 		}
 

@@ -350,7 +350,8 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 		catch (Exception e) {
 			if (AlipayApiException.class.isAssignableFrom(e.getClass())) {
 				AlipayApiException ex = AlipayApiException.class.cast(e);
-				LOG.error(M.msg(M.REFUND_FAILURE, ex.getErrCode(), ex.getErrMsg()), e);
+				LOG.error(String.format("Auto refund failure for tradeNo: %s, cause: %s", tradeNo,
+						M.msg(M.REFUND_FAILURE, ex.getErrCode(), ex.getErrMsg())), e);
 			}
 			else {
 				LOG.error(String.format("Auto refund failure for tradeNo: %s, cause: %s", tradeNo, e.getMessage()), e);

@@ -1,5 +1,9 @@
 package net.aircommunity.platform;
 
+import java.time.ZoneId;
+
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +16,9 @@ import org.springframework.stereotype.Component;
 public class Configuration {
 
 	// REST
+	private String publicBaseUrl;
 	private String apiBaseUrl;
+	private ZoneId zoneId;
 
 	@Value("${micro.rest.context-path}")
 	private String contextPath;
@@ -126,6 +132,39 @@ public class Configuration {
 	@Value("${air.idcard.token}")
 	private String idcardToken;
 
+	@PostConstruct
+	private void init() {
+		boolean useTls = isUseTls();
+		String host = getPublicHost();
+		int port = getPublicPort();
+		StringBuilder builder = new StringBuilder().append(useTls ? "https://" : "http://").append(host);
+		if (port != 80 && port != 443) {
+			builder.append(":").append(port);
+		}
+		publicBaseUrl = builder.toString();
+
+		// API URL
+		String apiVersion = getApiVersion();
+		String contextPath = getContextPath();
+		builder.setLength(0);
+		builder.append(getPublicBaseUrl());
+		if (!contextPath.startsWith("/")) {
+			contextPath = "/" + contextPath;
+		}
+		if (!contextPath.endsWith("/")) {
+			contextPath += "/";
+		}
+		// it should be now: contextPath=/path/
+		apiBaseUrl = builder.append(contextPath).append(apiVersion).toString();
+
+		//
+		zoneId = ZoneId.of(getTimeZone());
+	}
+
+	public ZoneId getZoneId() {
+		return zoneId;
+	}
+
 	public String getTimeZone() {
 		return timeZone;
 	}
@@ -166,27 +205,11 @@ public class Configuration {
 		return apiVersion;
 	}
 
+	public String getPublicBaseUrl() {
+		return publicBaseUrl;
+	}
+
 	public String getApiBaseUrl() {
-		if (apiBaseUrl == null) {
-			boolean useTls = isUseTls();
-			String host = getPublicHost();
-			int port = getPublicPort();
-			String apiVersion = getApiVersion();
-			String contextPath = getContextPath();
-			//
-			StringBuilder builder = new StringBuilder().append(useTls ? "https://" : "http://").append(host);
-			if (port != 80 && port != 443) {
-				builder.append(":").append(port);
-			}
-			if (!contextPath.startsWith("/")) {
-				contextPath = "/" + contextPath;
-			}
-			if (!contextPath.endsWith("/")) {
-				contextPath += "/";
-			}
-			// it should be now: contextPath=/path/
-			apiBaseUrl = builder.append(contextPath).append(apiVersion).toString();
-		}
 		return apiBaseUrl;
 	}
 

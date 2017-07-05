@@ -24,7 +24,7 @@ public interface OrderProcessor<T extends Order> {
 	 * @param orderId the order id
 	 * @return the order found or null if none
 	 */
-	@Nonnull
+	@Nullable
 	T findByOrderId(@Nonnull String orderId);
 
 	/**

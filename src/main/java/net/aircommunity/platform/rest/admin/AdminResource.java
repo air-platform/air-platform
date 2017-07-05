@@ -355,7 +355,7 @@ public class AdminResource extends BaseResourceSupport {
 	@Path("products/{productId}/disapprove")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void disapproveProduct(@PathParam("productId") String productId, @NotNull JsonObject rejectedReason) {
-		String reason = getRejectedReason(rejectedReason);
+		String reason = getReason(rejectedReason);
 		commonProductService.reviewProduct(productId, ReviewStatus.REJECTED, reason);
 	}
 

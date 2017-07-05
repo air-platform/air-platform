@@ -93,8 +93,8 @@ import net.aircommunity.platform.service.security.AccountService;
  * 
  * @author Bin.Zhang
  */
-@RESTful
 @Api
+@RESTful
 @Path("account")
 public class AccountResource {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountResource.class);

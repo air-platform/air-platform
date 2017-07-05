@@ -361,6 +361,7 @@
 						<filtering>false</filtering>
 						<includes>
 							<include>**/*-dev.jks</include>
+							<include>**/*.p12</include>
 						</includes>
 					</resource>
 				</resources>
@@ -397,6 +398,7 @@
 						<filtering>false</filtering>
 						<includes>
 							<include>**/*-prd.jks</include>
+							<include>**/*.p12</include>
 						</includes>
 					</resource>
 				</resources>

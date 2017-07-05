@@ -170,7 +170,7 @@ public abstract class AdminProductResourceSupport<T extends Product> extends Pro
 	@Path("{productId}/disapprove")
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	public void disapproveProduct(@PathParam("productId") String productId, @NotNull JsonObject rejectedReason) {
-		String reason = getRejectedReason(rejectedReason); // TODO how valid JsonObject
+		String reason = getReason(rejectedReason);
 		getProductService().reviewProduct(productId, ReviewStatus.REJECTED, reason);
 	}
 

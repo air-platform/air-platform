@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -24,6 +23,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.Authenticated;
@@ -35,7 +37,6 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PaymentRequest;
-import net.aircommunity.platform.model.RefundRequest;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Address;
 import net.aircommunity.platform.model.domain.Order;
@@ -57,6 +58,7 @@ import net.aircommunity.platform.service.security.AccountService;
 @Path("user")
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
 public class UserResource extends BaseResourceSupport {
+	private static final Logger LOG = LoggerFactory.getLogger(UserResource.class);
 
 	private static final String HEADER_FIRST_ORDER = "First-Order";
 
@@ -165,6 +167,7 @@ public class UserResource extends BaseResourceSupport {
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize,
 			@Context SecurityContext context) {
 		String userId = context.getUserPrincipal().getName();
+		LOG.debug("List user {} orders in status: {}, page: {}, pageSize: {}", userId, status, page, pageSize);
 		switch (status) {
 		case ORDER_FILTER_STATUS_PENDING:
 			// PUBLISHED + CREATED + PAID + CONFIRMED + CONTRACT_SIGNED + TICKET_RELEASED + REFUND_REQUESTED + REFUNDING
@@ -199,16 +202,17 @@ public class UserResource extends BaseResourceSupport {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
 	public Response searchOrders(@QueryParam("orderNo") String orderNo,
-			@Max(180) @Min(0) @DefaultValue("0") @QueryParam("days") int days,
-			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize,
-			@Context SecurityContext context) {
+			@Min(0) @DefaultValue("0") @QueryParam("days") int days, @QueryParam("page") @DefaultValue("0") int page,
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
 		String userId = context.getUserPrincipal().getName();
+		LOG.debug("Search user {} orders in orderNo: {}, days: {},  page: {}, pageSize: {}", userId, orderNo, days,
+				page, pageSize);
 		if (Strings.isNotBlank(orderNo)) {
 			Order order = commonOrderService.findByOrderNo(orderNo);
 			if (!order.isOwner(userId)) {
 				throw new AirException(Codes.ORDER_ACCESS_DENIED, M.msg(M.ORDER_ACCESS_DENIED));
 			}
-			return Response.ok(commonOrderService.findByOrderNo(orderNo)).build();
+			return Response.ok(order).build();
 		}
 		return Response.ok(commonOrderService.listUserOrders(userId, days, page, pageSize)).build();
 	}
@@ -269,16 +273,16 @@ public class UserResource extends BaseResourceSupport {
 	@POST
 	@Path("orders/{orderId}/refund")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void refundOrder(@PathParam("orderId") String orderId, @NotNull @Valid RefundRequest request) {
-		// TODO just replace RefundRequest --> JsonObject ( {reason: ""} )
-		commonOrderService.requestOrderRefund(orderId, request.getRefundReason());
+	public void refundOrder(@PathParam("orderId") String orderId, @NotNull JsonObject refundReason) {
+		String reason = getRefundReason(refundReason);
+		commonOrderService.requestOrderRefund(orderId, reason);
 	}
 
 	@POST
 	@Path("orders/{orderId}/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void cancelOrder(@PathParam("orderId") String orderId, JsonObject request) {
-		String reason = getCancelReason(request);
+		String reason = getReason(request);
 		commonOrderService.cancelOrder(orderId, reason);
 	}
 

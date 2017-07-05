@@ -160,7 +160,7 @@ public class AdminAccountResource extends BaseResourceSupport {
 	}
 
 	/**
-	 * Unverify a tenant account
+	 * Unverify a tenant account （TODO provide a reject reason, and tenant need to message box to view the result)
 	 */
 	@POST
 	@Path("{accountId}/unverified")

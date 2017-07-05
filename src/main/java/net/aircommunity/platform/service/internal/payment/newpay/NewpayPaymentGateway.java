@@ -158,7 +158,7 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 		}
 		// REFUND
 		else if (params.containsKey(REFUND_KEYWORD)) {
-			NewpayRefundResponse response = NewpayRefundResponse.parse(params);
+			NewpayRefundResponse response = client.parseRefundResponse(params);
 			Optional<Order> orderRef = commonOrderService.lookupByOrderNo(response.getOrderNo());
 			if (!orderRef.isPresent()) {
 				LOG.error("Order {} not found", response.getOrderNo());

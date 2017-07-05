@@ -12,14 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micro.common.Strings;
-import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.domain.Product.Type;
-import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.spi.OrderProcessor;
@@ -43,13 +40,7 @@ public class StandardOrderProcessor<T extends Order> implements OrderProcessor<T
 
 	@Override
 	public T findByOrderId(String orderId) {
-		T order = orderRepository.findOne(orderId);
-		// XXX CANNOT load all passengers for tour, taxi , trans TODO REMOVE?
-		if (order == null || order.getStatus() == Order.Status.DELETED) {
-			LOG.error("Order with id: {} is not found", orderId);
-			throw new AirException(Codes.ORDER_NOT_FOUND, M.msg(M.ORDER_NOT_FOUND));
-		}
-		return order;
+		return orderRepository.findOne(orderId);
 	}
 
 	@Override
@@ -67,13 +58,7 @@ public class StandardOrderProcessor<T extends Order> implements OrderProcessor<T
 
 	@Override
 	public T findByOrderNo(String orderNo) {
-		T order = orderRepository.findByOrderNo(orderNo);
-		// XXX CANNOT load all passengers for tour, taxi , trans TODO REMOVE?
-		if (order == null || order.getStatus() == Order.Status.DELETED) {
-			LOG.error("Order with no: {} is not found", orderNo);
-			throw new AirException(Codes.ORDER_NOT_FOUND, M.msg(M.ORDER_NOT_FOUND));
-		}
-		return order;
+		return orderRepository.findByOrderNo(orderNo);
 	}
 
 	@Override

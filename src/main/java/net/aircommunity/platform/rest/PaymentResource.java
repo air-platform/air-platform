@@ -142,11 +142,10 @@ public class PaymentResource {
 		LOG.debug("[{}] Payment notification(RAW) data from server: {}", method, notification.getData());
 		PaymentResponse paymentResponse = paymentService.processServerPaymentNotification(method, notification);
 		LOG.debug("[{}] Payment response to server: {}", method, paymentResponse);
-		PrintWriter out = response.getWriter();
 		response.setStatus(paymentResponse.getStatus().getHttpStatusCode());
+		PrintWriter out = response.getWriter();
 		out.println(paymentResponse.getMessage());
 		out.flush();
-		out.close();
 		MDC.remove(KEY_PAYMENT_METHOD);
 	}
 

@@ -175,7 +175,7 @@ public abstract class UserOrderResourceSupport<T extends Order> extends BaseReso
 	@Path("{orderId}/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void cancel(@PathParam("orderId") String orderId, JsonObject request) {
-		String reason = getCancelReason(request);
+		String reason = getReason(request);
 		commonOrderService.cancelOrder(orderId, reason);
 	}
 

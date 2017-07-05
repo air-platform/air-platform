@@ -8,6 +8,7 @@ import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 
+import io.micro.common.Strings;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.service.product.CommonProductService;
 
@@ -21,12 +22,17 @@ public abstract class BaseResourceSupport {
 	private static final String JSON_PROP_POINTS = "points";
 	private static final String JSON_PROP_COUNT = "count";
 	private static final String JSON_PROP_REASON = "reason";
-	private static final String JSON_PROP_REJECT_REASON = "reason";
-	private static final String JSON_PROP_CANCEL_REASON = "reason";
 	private static final String JSON_PROP_RANK = "rank";
 	private static final String JSON_PROP_AMOUNT = "amount";
 	private static final String JSON_PROP_STATUS = "status";
 	private static final String JSON_PROP_FLEET_CANDIDATE = "candidate";
+
+	/**
+	 * Current used in APP, TODO REMOVE once APP is updated
+	 * 
+	 * @deprecated use JSON_PROP_REASON
+	 */
+	private static final String JSON_PROP_REFUNDREASON = "refundReason";
 
 	@Resource
 	protected CommonProductService commonProductService;
@@ -43,16 +49,22 @@ public abstract class BaseResourceSupport {
 		return getJsonString(request, JSON_PROP_FLEET_CANDIDATE);
 	}
 
-	protected String getReason(JsonObject request) {
+	/**
+	 * Reject reason, cancel, refund reason etc.
+	 */
+	protected String getReason(JsonObject request) { // TODO how to valid JsonObject using bval
 		return getJsonString(request, JSON_PROP_REASON);
 	}
 
-	protected String getRejectedReason(JsonObject request) {
-		return getJsonString(request, JSON_PROP_REJECT_REASON);
-	}
-
-	protected String getCancelReason(JsonObject request) {
-		return getJsonString(request, JSON_PROP_CANCEL_REASON);
+	/**
+	 * @deprecated use {@code #getReason(JsonObject)}
+	 */
+	protected String getRefundReason(JsonObject request) {
+		String reason = getReason(request);
+		if (Strings.isNotBlank(reason)) {
+			return reason;
+		}
+		return getJsonString(request, JSON_PROP_REFUNDREASON);
 	}
 
 	protected long getPoints(JsonObject request) {

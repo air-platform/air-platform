@@ -120,9 +120,11 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 		catch (Exception e) {
 			LOG.error("Error: " + e.getMessage(), e);
+			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.PAYMENT_SERVICE_UNAVAILABLE));
 		}
-		MDC.remove(KEY_PAYMENT_ACTION);
-		MDC.remove(KEY_PAYMENT_METHOD);
-		return null;
+		finally {
+			MDC.remove(KEY_PAYMENT_ACTION);
+			MDC.remove(KEY_PAYMENT_METHOD);
+		}
 	}
 }

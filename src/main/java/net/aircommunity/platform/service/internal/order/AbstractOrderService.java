@@ -405,7 +405,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return passengers;
 	}
 
-	protected T doFindOrder(String orderId) {
+	/**
+	 * For ADMIN without check DELETED
+	 */
+	protected T doAdminFindOrder(String orderId) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = orderOperationTimer(type, ORDER_ACTION_READ);
@@ -413,8 +416,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		try {
 			T order = orderProcessor.findByOrderId(orderId);
-			// XXX CANNOT load all passengers for tour, taxi , trans
-			if (order == null || order.getStatus() == Order.Status.DELETED) {
+			if (order == null) {
 				LOG.error("{}: {} is not found", type.getSimpleName(), orderId);
 				throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderId));
 			}
@@ -426,6 +428,15 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				timerContext.stop();
 			}
 		}
+	}
+
+	protected T doFindOrder(String orderId) {
+		T order = doAdminFindOrder(orderId);
+		if (order.getStatus() == Order.Status.DELETED) {
+			LOG.error("{}: {} is in DELETED status, considered as not found", type.getSimpleName(), orderId);
+			throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderId));
+		}
+		return order;
 	}
 
 	protected T doFindOrderByOrderNo(String orderNo) {
@@ -614,6 +625,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			StandardOrder standardOrder = StandardOrder.class.cast(order);
 			refund.setVendor(standardOrder.getProduct().getVendor());
 			refund.setOwner(standardOrder.getOwner());
+			if (Strings.isBlank(refund.getRefundReason())) {
+				refund.setRefundReason(M.msg(M.REFUND_REASON_MISSING));
+			}
 			standardOrder.setRefund(refund);
 			standardOrder.setRefundFailureCause(null);
 			orderRefund = doUpdateOrderStatus(order, Order.Status.REFUNDED);
@@ -633,13 +647,21 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	protected T doInitiateOrderRefund(String orderId, BigDecimal refundAmount, String refundReason) {
 		T order = doFindOrder(orderId);
 		order.setRefundReason(M.msg(M.REFUND_REASON_FORCE, refundReason));
-		return doAcceptOrderRefund(orderId, refundAmount);
+		return doAcceptOrderRefund(order, refundAmount);
 	}
 
 	/**
 	 * Accept refund
 	 */
 	protected T doAcceptOrderRefund(String orderId, BigDecimal refundAmount) {
+		T order = doFindOrder(orderId);
+		return doAcceptOrderRefund(order, refundAmount);
+	}
+
+	/**
+	 * Accept refund
+	 */
+	protected T doAcceptOrderRefund(T order, BigDecimal refundAmount) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = orderOperationTimer(type, ORDER_ACTION_REFUND);
@@ -647,18 +669,18 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		try {
 			// update to Order.Status.REFUNDING now
-			T order = doUpdateOrderStatus(orderId, Order.Status.REFUNDING);
-			T orderRefund = order;
+			T orderRefund = doUpdateOrderStatus(order, Order.Status.REFUNDING);
 			// standard order
-			if (StandardOrder.class.isAssignableFrom(order.getClass())) {
-				StandardOrder standardOrder = StandardOrder.class.cast(order);
+			if (StandardOrder.class.isAssignableFrom(orderRefund.getClass())) {
+				StandardOrder standardOrder = StandardOrder.class.cast(orderRefund);
 				Payment payment = standardOrder.getPayment();
-				LOG.debug("Order {} payment: {}", order, payment);
+				LOG.debug("Order {} payment: {}", orderRefund, payment);
 				if (payment == null) {
 					throw new AirException(Codes.ORDER_ILLEGAL_STATUS,
-							M.msg(M.ORDER_PAYMENT_NOT_FOUND, order.getOrderNo()));
+							M.msg(M.ORDER_PAYMENT_NOT_FOUND, orderRefund.getOrderNo()));
 				}
-				RefundResponse refundResponse = paymentService.refundPayment(payment.getMethod(), order, refundAmount);
+				RefundResponse refundResponse = paymentService.refundPayment(payment.getMethod(), orderRefund,
+						refundAmount);
 				int code = refundResponse.getCode();
 				switch (code) {
 				case RefundResponse.PENDING:
@@ -669,15 +691,21 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 					Refund refund = refundResponse.getRefund();
 					refund.setVendor(standardOrder.getProduct().getVendor());
 					refund.setOwner(standardOrder.getOwner());
+					String refundReason = standardOrder.getRefundReason();
+					if (Strings.isBlank(refundReason)) {
+						refundReason = M.msg(M.REFUND_REASON_MISSING);
+					}
+					refund.setRefundReason(refundReason);
 					standardOrder.setRefund(refund);
+					// clear previous failure
 					standardOrder.setRefundFailureCause(null);
-					orderRefund = doUpdateOrderStatus(order, Order.Status.REFUNDED);
+					orderRefund = doUpdateOrderStatus(orderRefund, Order.Status.REFUNDED);
 					eventBus.post(new OrderEvent(OrderEvent.EventType.REFUNDED, orderRefund));
 					break;
 
 				case RefundResponse.FAILURE:
-					order.setRefundFailureCause(refundResponse.getFailureCause());
-					orderRefund = doUpdateOrderStatus(order, Order.Status.REFUND_FAILED);
+					orderRefund.setRefundFailureCause(refundResponse.getFailureCause());
+					orderRefund = doUpdateOrderStatus(orderRefund, Order.Status.REFUND_FAILED);
 					eventBus.post(new OrderEvent(OrderEvent.EventType.REFUND_FAILED, orderRefund));
 					break;
 

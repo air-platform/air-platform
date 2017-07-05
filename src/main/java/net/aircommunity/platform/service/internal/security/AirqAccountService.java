@@ -30,6 +30,7 @@ import okhttp3.Response;
  * AirQ account service.
  * 
  * @author luocheng
+ * @deprecated
  */
 @Service
 public class AirqAccountService {

@@ -61,6 +61,21 @@ public class NewpayClient {
 	}
 
 	/**
+	 * Parse refund response from payment gateway and verify RSA signature.
+	 * 
+	 * @param data the refund response data
+	 * @return NewpayRefundResponse
+	 * @throws NewpayException if failed to parse or RSA signature verification failure
+	 * 
+	 */
+	public NewpayRefundResponse parseRefundResponse(Map<String, String> data) {
+		NewpayRefundResponse response = NewpayRefundResponse.parse(data);
+		response.setSignature(signature);
+		response.verifySignature();
+		return response;
+	}
+
+	/**
 	 * Execute refund request and got refund response. (need to wait for async server notification to confirm refund
 	 * result)
 	 * 
@@ -89,7 +104,7 @@ public class NewpayClient {
 						response.body().string()));
 			}
 			Map<String, String> result = NewpayMessage.convertQueryString(response.body().string());
-			return NewpayRefundResponse.parse(result);
+			return parseRefundResponse(result);
 		}
 		catch (Exception e) {
 			if (NewpayException.class.isAssignableFrom(e.getClass())) {

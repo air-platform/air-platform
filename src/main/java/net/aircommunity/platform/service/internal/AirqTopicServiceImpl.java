@@ -3,6 +3,8 @@ package net.aircommunity.platform.service.internal;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -38,7 +40,10 @@ public class AirqTopicServiceImpl implements AirqTopicService {
 	private static final String APPLICATION_JSON = "application/json";
 	private static final String API_URL_FORMAT = "%s/api/recent";
 	private static final String TOPIC_URL_FORMAT = "%s/topic/%d";
+	private static final Pattern PUBLIC_URL_PATTERN = Pattern.compile("^(https?:\\/\\/.*)\\/.*$");
+
 	private String apiUrl;
+	private String publicUrl;
 
 	@Resource
 	private Configuration configuration;
@@ -48,7 +53,14 @@ public class AirqTopicServiceImpl implements AirqTopicService {
 
 	@PostConstruct
 	private void init() {
-		apiUrl = String.format(API_URL_FORMAT, configuration.getAirqUrl());
+		String url = configuration.getAirqUrl();
+		apiUrl = String.format(API_URL_FORMAT, url);
+		Matcher m = PUBLIC_URL_PATTERN.matcher(url);
+		if (!m.matches()) {
+			throw new IllegalArgumentException("Invalid AirQ URL: " + url);
+		}
+		publicUrl = url.replaceFirst(m.group(1), configuration.getPublicBaseUrl());
+		LOG.debug("AirQ publicUrl: {}, apiUrl: {}", publicUrl, apiUrl);
 	}
 
 	@Override
@@ -70,7 +82,7 @@ public class AirqTopicServiceImpl implements AirqTopicService {
 						String category = t.getJsonObject("category").getString("name");
 						String title = t.getString("title");
 						int tid = t.getInt("tid");
-						String url = String.format(TOPIC_URL_FORMAT, configuration.getAirqUrl(), tid);
+						String url = String.format(TOPIC_URL_FORMAT, publicUrl, tid);
 						builder.add(new AirqTopic(category, title, url));
 					}
 					return builder.build();

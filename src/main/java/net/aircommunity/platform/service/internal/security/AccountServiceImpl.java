@@ -123,8 +123,9 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	@Resource
 	private IdentityCardService identityCardService;
 
-	@Resource
-	private AirqAccountService airqAccountService;
+	// TODO REMOVE
+	// @Resource
+	// private AirqAccountService airqAccountService;
 
 	@Resource
 	private MemberPointsService memberPointsService;
@@ -339,7 +340,8 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		newAccount.setAvatar(configuration.getDefaultAvatar());
 
 		// save for airq user
-		String password = credential;
+		// TODO REMOVE
+		// String password = credential;
 
 		// auth type
 		boolean verified = false;
@@ -408,11 +410,12 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			auth.setCreationDate(new Date());
 			auth.setLastAccessedDate(auth.getCreationDate());
 			auth = accountAuthRepository.save(auth);
+			// TODO REMOVE
 			// create account in AirQ
-			if (configuration.isAirqAccountSync()) {
-				LOG.info("Create corresponding account on AirQ for {}", principal);
-				airqAccountService.createAccount(principal, password);
-			}
+			// if (configuration.isAirqAccountSync()) {
+			// LOG.info("Create corresponding account on AirQ for {}", principal);
+			// airqAccountService.createAccount(principal, password);
+			// }
 			return Pair.of(accountCreated, auth);
 		}
 		catch (Exception e) {
@@ -722,10 +725,11 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		safeExecute(() -> accountAuthRepository.save(authToSave), "Update account %s email to %s failed", accountId,
 				email);
 		// update AirQ user email
-		if (configuration.isAirqAccountSync()) {
-			LOG.info("Update corresponding account on AirQ for {}", account);
-			airqAccountService.updateAccountProfile(account.getNickName(), email);
-		}
+		// TODO REMOVE
+		// if (configuration.isAirqAccountSync()) {
+		// LOG.info("Update corresponding account on AirQ for {}", account);
+		// airqAccountService.updateAccountProfile(account.getNickName(), email);
+		// }
 		sendConfirmationEmail(email, verificationCode, account, AccountAuth.EXPIRES_IN_ONE_DAY);
 	}
 
@@ -800,10 +804,11 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		account.setPassword(passwordEncoder.encode(newPassword));
 
 		// update AirQ account password
-		if (configuration.isAirqAccountSync()) {
-			LOG.info("Update corresponding account password on AirQ for {}", account);
-			airqAccountService.updateAccountPassword(account.getNickName(), newPassword);
-		}
+		// TODO REMOVE
+		// if (configuration.isAirqAccountSync()) {
+		// LOG.info("Update corresponding account password on AirQ for {}", account);
+		// airqAccountService.updateAccountPassword(account.getNickName(), newPassword);
+		// }
 		return safeExecute(() -> accountRepository.save(account), "Update account %s password failed", accountId);
 	}
 
@@ -943,10 +948,11 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		accountAuthRepository.deleteByAccountId(account.getId());
 		accountRepository.delete(account);
 		// delete AirQ account
-		if (configuration.isAirqAccountSync()) {
-			LOG.info("Delete corresponding account on AirQ for {}", account);
-			airqAccountService.deleteAccount(account.getNickName());
-		}
+		// TODO REMOVE
+		// if (configuration.isAirqAccountSync()) {
+		// LOG.info("Delete corresponding account on AirQ for {}", account);
+		// airqAccountService.deleteAccount(account.getNickName());
+		// }
 		LOG.info("Delete account: {}", account);
 	}
 }

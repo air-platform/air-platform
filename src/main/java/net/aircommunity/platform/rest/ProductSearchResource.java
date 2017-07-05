@@ -50,6 +50,7 @@ public class ProductSearchResource {
 	private static final String PROP_FERRYFLIGHTS = "ferryflights";
 	private static final String PROP_JETTRAVELS = "jettravels";
 	private static final String PROP_COURSES = "courses";
+
 	private static final Map<String, Object> EMPTY_SEARCH_RESULT = ImmutableMap.<String, Object> builder()
 			.put(PROP_TAXIS, Collections.emptyList()).put(PROP_TRANSPORTS, Collections.emptyList())
 			.put(PROP_FERRYFLIGHTS, Collections.emptyList()).put(PROP_COURSES, Collections.emptyList()).build();

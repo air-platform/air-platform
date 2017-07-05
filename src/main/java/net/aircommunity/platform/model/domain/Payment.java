@@ -153,7 +153,21 @@ public class Payment extends Persistable {
 	 * Payment method
 	 */
 	public enum Method {
-		ALIPAY, WECHAT, NEWPAY;
+
+		/**
+		 * Alipay
+		 */
+		ALIPAY,
+
+		/**
+		 * Wxpay
+		 */
+		WECHAT,
+
+		/**
+		 * HNA Newpay
+		 */
+		NEWPAY;
 
 		public static Method fromString(String value) {
 			for (Method e : values()) {

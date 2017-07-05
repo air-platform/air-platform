@@ -28,11 +28,6 @@ public abstract class ProductResourceSupport<T extends Product> extends BaseReso
 	// Product
 	// *****************
 
-	/**
-	 * Find (this can replace the XxxResource.find(xxxId) that extends this class), but JUST use XxxResource instead of
-	 * this for better performance and better apidoc generation for the moment (XXX just comment out to avoid resource
-	 * path conflicting)
-	 */
 	@GET
 	@PermitAll
 	@Path("{productId}")

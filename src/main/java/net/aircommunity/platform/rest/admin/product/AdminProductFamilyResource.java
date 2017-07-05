@@ -88,8 +88,7 @@ public class AdminProductFamilyResource extends BaseResourceSupport {
 		LOG.debug("List all families with category: {}, page: {}, pageSize: {}", category, page, pageSize);
 		if (Strings.isBlank(tenantId)) {
 			return productFamilyService.listAllProductFamilies(reviewStatus, page, pageSize);
-			// TODO?
-			// return productFamilyService.listAllProductFamilies(reviewStatus,category, page, pageSize);
+			// TODO? return productFamilyService.listAllProductFamilies(reviewStatus,category, page, pageSize);
 		}
 		return productFamilyService.listTenantProductFamilies(tenantId, reviewStatus, category, page, pageSize);
 	}
@@ -126,7 +125,7 @@ public class AdminProductFamilyResource extends BaseResourceSupport {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void disapproveProductFamily(@PathParam("productFamilyId") String productFamilyId,
 			@NotNull JsonObject rejectedReason) {
-		String reason = getRejectedReason(rejectedReason); // TODO how to valid JsonObject
+		String reason = getReason(rejectedReason);
 		productFamilyService.reviewProductFamily(productFamilyId, ReviewStatus.REJECTED, reason);
 	}
 
