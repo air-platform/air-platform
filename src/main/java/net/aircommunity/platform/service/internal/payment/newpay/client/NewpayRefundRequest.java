@@ -1,4 +1,4 @@
-package net.aircommunity.platform.service.internal.payment.newpay;
+package net.aircommunity.platform.service.internal.payment.newpay.client;
 
 import java.util.Date;
 import java.util.Map;
@@ -13,6 +13,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 
 import io.micro.common.UUIDs;
+import net.aircommunity.platform.service.internal.payment.newpay.NewpayConfig;
 import okhttp3.ConnectionPool;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -65,14 +66,6 @@ public class NewpayRefundRequest extends NewpayRequest {
 	private Date refundTime;
 
 	private NewpayRefundModel model;
-
-	public String getRefundOrderId() {
-		return refundOrderId;
-	}
-
-	public void setRefundOrderId(String refundOrderId) {
-		this.refundOrderId = refundOrderId;
-	}
 
 	public String getNotifyUrl() {
 		return notifyUrl;
@@ -127,7 +120,7 @@ public class NewpayRefundRequest extends NewpayRequest {
 		return new StringBuilder()
 		.append("version=").append(version)
 		.append("&serialID=").append(requestId)
-		.append("&refundOrderID=").append(refundOrderId)
+		.append("&refundOrderID=").append(model.getRequestNo())
 		.append("&orderID=").append(model.getOrderNo())
 		.append("&destType=").append(destType)
 		.append("&refundType=").append(refundType.getCode())

@@ -73,6 +73,10 @@ public class Configuration {
 	@Value("${air.order.email-notification-subject}")
 	private String orderEmailNotificationSubject;
 
+	// cron job
+	@Value("${air.order.payment-sync-schedule}")
+	private String orderPaymentSyncSchedule;
+
 	@Value("${air.order.query-day-max}")
 	private int orderQueryDayMax;
 
@@ -239,6 +243,10 @@ public class Configuration {
 
 	public String getOrderEmailNotificationSubject() {
 		return orderEmailNotificationSubject;
+	}
+
+	public String getOrderPaymentSyncSchedule() {
+		return orderPaymentSyncSchedule;
 	}
 
 	public int getOrderQueryDayMax() {

@@ -92,6 +92,12 @@ public interface ProductFamilyRepository extends JpaRepository<ProductFamily, St
 	 */
 	Page<ProductFamily> findByReviewStatusAndCategory(ReviewStatus reviewStatus, Category category, Pageable pageable);
 
+	/**
+	 * Delete all ProductFamilies for this tenant.
+	 * 
+	 * @param tenantId the tenantId
+	 * @return records deleted
+	 */
 	long deleteByVendorId(String tenantId);
 
 }

@@ -443,12 +443,17 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		account.setAvatar(newAccount.getAvatar());
 		switch (account.getRole()) {
 		case ADMIN:
-			// noop
+			Admin newAdmin = (Admin) newAccount;
+			Admin admin = (Admin) account;
+			admin.setAvatar(newAdmin.getAvatar());
+			admin.setNickName(newAdmin.getNickName());
 			break;
 
 		case TENANT:
 			Tenant newTenant = (Tenant) newAccount;
 			Tenant tenant = (Tenant) account;
+			tenant.setNickName(newTenant.getNickName());
+			tenant.setAvatar(newTenant.getAvatar());
 			tenant.setEmail(newTenant.getEmail());
 			tenant.setWebsite(newTenant.getWebsite());
 			tenant.setAddress(newTenant.getAddress());
@@ -459,11 +464,15 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		case USER:
 			User newUser = (User) newAccount;
 			User user = (User) account;
-			user.setBirthday(newUser.getBirthday());
-			user.setCity(newUser.getCity());
-			user.setGender(newUser.getGender());
-			user.setHobbies(newUser.getHobbies());
+			user.setNickName(newUser.getNickName());
+			user.setAvatar(newUser.getAvatar());
 			user.setRealName(newUser.getRealName());
+			user.setBirthday(newUser.getBirthday());
+			user.setGender(newUser.getGender());
+			user.setCountry(newUser.getCountry());
+			user.setProvince(newUser.getProvince());
+			user.setCity(newUser.getCity());
+			user.setHobbies(newUser.getHobbies());
 			String identity = newUser.getIdentity();
 			if (Strings.isNotBlank(identity)) {
 				IdCardInfo cardInfo = identityCardService.getIdCardInfo(user.getIdentity(), user.getRealName());
@@ -501,13 +510,15 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
-	public Account updateTenantVerificationStatus(String accountId, VerificationStatus newStatus) {
+	public Account updateTenantVerificationStatus(String accountId, VerificationStatus newStatus,
+			String verificationResult) {
 		Account account = findAccount(accountId);
 		if (account.getRole() != Role.TENANT) {
 			LOG.warn("Tenant account required, but was: {}", account);
 			throw new AirException(Codes.ACCOUNT_NOT_TENANT, M.msg(M.ACCOUNT_NOT_TENANT));
 		}
 		Tenant tenant = (Tenant) account;
+		tenant.setVerificationResult(verificationResult);
 		tenant.setVerification(newStatus);
 		return safeExecute(() -> accountRepository.save(account),
 				"Update tenant account %s VerificationStatus to %s failed", accountId, newStatus);
@@ -657,7 +668,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	@Override
 	public Page<Account> listAccounts(int page, int pageSize) {
-		return Pages.adapt(accountRepository.findAll(Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(accountRepository.findAll(createPageRequest(page, pageSize)));
 	}
 
 	@Override
@@ -665,7 +676,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		if (role == null) {
 			return listAccounts(page, pageSize);
 		}
-		return Pages.adapt(accountRepository.findByRole(role, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(accountRepository.findByRole(role, createPageRequest(page, pageSize)));
 	}
 
 	// TODO list all/cleanup unconfirmed/expired accounts, need to re-send email if confirm link expired

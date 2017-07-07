@@ -209,7 +209,7 @@ public class AirportServiceImpl extends AbstractServiceSupport implements Airpor
 
 	@Override
 	public Page<Airport> listAirports(int page, int pageSize) {
-		return Pages.adapt(airportRepository.findAll(Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(airportRepository.findAll(createPageRequest(page, pageSize)));
 	}
 
 	@Transactional

@@ -92,10 +92,9 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 	@Override
 	public Page<ProductFamily> listAllProductFamilies(ReviewStatus reviewStatus, int page, int pageSize) {
 		if (reviewStatus == null) {
-			return Pages.adapt(productFamilyRepository.findAll(Pages.createPageRequest(page, pageSize)));
+			return Pages.adapt(productFamilyRepository.findAll(createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(
-				productFamilyRepository.findByReviewStatus(reviewStatus, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(productFamilyRepository.findByReviewStatus(reviewStatus, createPageRequest(page, pageSize)));
 	}
 
 	@Override
@@ -112,19 +111,18 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 		if (reviewStatus == null) {
 			// filter by category
 			if (category == null) {
-				return Pages.adapt(
-						productFamilyRepository.findByVendorId(tenantId, Pages.createPageRequest(page, pageSize)));
+				return Pages.adapt(productFamilyRepository.findByVendorId(tenantId, createPageRequest(page, pageSize)));
 			}
 			return Pages.adapt(productFamilyRepository.findByVendorIdAndCategory(tenantId, category,
-					Pages.createPageRequest(page, pageSize)));
+					createPageRequest(page, pageSize)));
 		}
 		// filter by reviewStatus and then by category
 		if (category == null) {
 			return Pages.adapt(productFamilyRepository.findByVendorIdAndReviewStatus(tenantId, reviewStatus,
-					Pages.createPageRequest(page, pageSize)));
+					createPageRequest(page, pageSize)));
 		}
 		return Pages.adapt(productFamilyRepository.findByVendorIdAndReviewStatusAndCategory(tenantId, reviewStatus,
-				category, Pages.createPageRequest(page, pageSize)));
+				category, createPageRequest(page, pageSize)));
 	}
 
 	@Override
@@ -139,10 +137,10 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 	public Page<ProductFamily> listProductFamilies(Category category, int page, int pageSize) {
 		if (category == null) {
 			return Pages.adapt(productFamilyRepository.findByReviewStatus(ReviewStatus.APPROVED,
-					Pages.createPageRequest(page, pageSize)));
+					createPageRequest(page, pageSize)));
 		}
 		return Pages.adapt(productFamilyRepository.findByReviewStatusAndCategory(ReviewStatus.APPROVED, category,
-				Pages.createPageRequest(page, pageSize)));
+				createPageRequest(page, pageSize)));
 	}
 
 	@Transactional

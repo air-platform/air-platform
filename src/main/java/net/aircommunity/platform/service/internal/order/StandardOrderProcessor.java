@@ -74,8 +74,6 @@ public class StandardOrderProcessor<T extends Order> implements OrderProcessor<T
 		if (status == null) {
 			return Pages.adapt(orderRepository.findByOwnerIdAndStatusInOrderByCreationDateDesc(userId,
 					Order.Status.VISIBLE_STATUSES, Pages.createPageRequest(page, pageSize)));
-			// return Pages.adapt(orderRepository.findByOwnerIdAndStatusNotOrderByCreationDateDesc(userId,
-			// Order.Status.DELETED, Pages.createPageRequest(page, pageSize)));
 		}
 		return Pages.adapt(orderRepository.findByOwnerIdAndStatusOrderByCreationDateDesc(userId, status,
 				Pages.createPageRequest(page, pageSize)));
@@ -99,8 +97,9 @@ public class StandardOrderProcessor<T extends Order> implements OrderProcessor<T
 		}
 		Date creationDate = LocalDateTime.now().minusDays(days).toDate();
 		LOG.debug("List recent {} days({}) orders for user: {}", days, creationDate, userId);
-		return Pages.adapt(orderRepository.findByOwnerIdAndStatusInAndCreationDateLessThanEqualOrderByCreationDateDesc(
-				userId, Order.Status.VISIBLE_STATUSES, creationDate, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(
+				orderRepository.findByOwnerIdAndStatusInAndCreationDateGreaterThanEqualOrderByCreationDateDesc(userId,
+						Order.Status.VISIBLE_STATUSES, creationDate, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Override

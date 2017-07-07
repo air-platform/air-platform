@@ -1,4 +1,4 @@
-package net.aircommunity.platform.service.internal.payment.newpay;
+package net.aircommunity.platform.service.internal.payment.newpay.client;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -17,12 +17,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class NewpayRefundResponse extends NewpayResponse {
 	private static final long serialVersionUID = 1L;
-
-	// Derived from parent, just make some comments
-	// 退款交易状态码 (商户请以此字段唯一判断退款订单交易状态)
-	// 1:退款处理中 2:退款成功 3:退款失败
-	// @XmlElement(name = "stateCode", required = true)
-	/// private String stateCode;
 
 	// 商户退款订单号 String(32)
 	@XmlElement(name = "refundOrderID", required = true)
@@ -94,6 +88,11 @@ public class NewpayRefundResponse extends NewpayResponse {
 
 	public void setTradeNo(String tradeNo) {
 		this.tradeNo = tradeNo;
+	}
+
+	@Override
+	public boolean isTradeSuccessful() {
+		return NewpayRefundStateCode.SUCCESS.getCode().equals(stateCode);
 	}
 
 	private String buildSignMsg() {

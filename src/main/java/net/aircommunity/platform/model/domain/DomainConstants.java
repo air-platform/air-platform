@@ -61,6 +61,8 @@ interface DomainConstants {
 	// ***********
 	// current used len is 15
 	int ORDER_NO_LEN = 18;
+	// normally request no is used when refund
+	int ORDER_REQUEST_NO_LEN = 32;
 	// just in case it's long
 	int TRADE_NO_LEN = 50;
 	// current used max is 12
@@ -73,6 +75,7 @@ interface DomainConstants {
 	int SALES_PACKAGE_NAME_LEN = 20;
 	int SALES_PACKAGE_PRICES_LEN = 255;
 	int PAYMENT_METHOD_LEN = 10;
+	int TRADE_STATUS_LEN = 10;
 
 	// ***********
 	// Aircraft

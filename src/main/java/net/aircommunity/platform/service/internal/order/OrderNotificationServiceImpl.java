@@ -78,8 +78,10 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 
 	@PostConstruct
 	private void init() {
-		orderOperationsMapping.put(Order.Status.CANCELLED, M.msg(M.ORDER_OPERATION_CANCEL)); // TODO CHECK
-		orderOperationsMapping.put(Order.Status.CREATED, M.msg(M.ORDER_OPERATION_SUBMIT)); // TODO CHECK
+		orderOperationsMapping.put(Order.Status.CANCELLED, M.msg(M.ORDER_OPERATION_CANCEL));
+		orderOperationsMapping.put(Order.Status.CREATED, M.msg(M.ORDER_OPERATION_SUBMIT));
+		orderOperationsMapping.put(Order.Status.PAID, M.msg(M.ORDER_OPERATION_PAY));
+		orderOperationsMapping.put(Order.Status.REFUND_REQUESTED, M.msg(M.ORDER_OPERATION_REFUND_REQUESTED));
 		//
 		String airjet = normalizeProductCategory(Category.AIR_JET);
 		String airtaxi = normalizeProductCategory(Category.AIR_TAXI);
@@ -107,8 +109,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 		switch (event.getType()) {
 		case CREATION:
 		case CANCELLATION:
-			Set<Contact> clientManagers = getClientManagerContacts(event);
-			doNotifyClientManager(clientManagers, event.getOrder());
+			doNotifyClientManager(getClientManagerContacts(event), event.getOrder());
 			break;
 
 		// fleet is offer by a tenant
@@ -119,6 +120,10 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 			break;
 
 		case PAYMENT:
+		case REFUND_REQUESTED:
+			doNotifyClientManager(getClientManagerContacts(event), event.getOrder());
+			break;
+
 		case REFUNDED:
 		case REFUND_FAILED:
 			// TODO send SMS to notify customer and tenant customer manager ?

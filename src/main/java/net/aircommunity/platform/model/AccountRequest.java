@@ -11,7 +11,7 @@ import io.micro.annotation.constraint.Password;
 import io.micro.annotation.constraint.Username;
 
 /**
- * Account (tenant/user) registration request by admin via console.
+ * Account (tenant/user) creation request by admin via console.
  * 
  * @author Bin.Zhang
  */
@@ -28,6 +28,7 @@ public class AccountRequest implements Serializable {
 	@Password
 	private String password;
 
+	@NotNull
 	private Role role;
 
 	public String getUsername() {

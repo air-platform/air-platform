@@ -341,7 +341,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		}
 		try {
 			return Pages.adapt(getProductRepository()
-					.findByPublishedTrueOrderByRankDescScoreDesc(Pages.createPageRequest(page, pageSize)));
+					.findByPublishedTrueOrderByRankDescScoreDesc(createPageRequest(page, pageSize)));
 		} // metrics
 		finally {
 			if (isMetricsEnabled()) {
@@ -368,10 +368,10 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		try {
 			if (reviewStatus == null) {
 				return Pages.adapt(getProductRepository().findByVendorIdOrderByCreationDateDesc(tenantId,
-						Pages.createPageRequest(page, pageSize)));
+						createPageRequest(page, pageSize)));
 			}
 			return Pages.adapt(getProductRepository().findByVendorIdAndReviewStatusOrderByCreationDateDesc(tenantId,
-					reviewStatus, Pages.createPageRequest(page, pageSize)));
+					reviewStatus, createPageRequest(page, pageSize)));
 		} // metrics
 		finally {
 			if (isMetricsEnabled()) {
@@ -413,20 +413,20 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 				// reviewStatus + category
 				if (category != null) {
 					return Pages.adapt(getProductRepository().findByReviewStatusAndCategoryOrderByCreationDateDesc(
-							reviewStatus, category, Pages.createPageRequest(page, pageSize)));
+							reviewStatus, category, createPageRequest(page, pageSize)));
 				}
 				// reviewStatus
 				return Pages.adapt(getProductRepository().findByReviewStatusOrderByCreationDateDesc(reviewStatus,
-						Pages.createPageRequest(page, pageSize)));
+						createPageRequest(page, pageSize)));
 			}
 			// category
 			if (category != null) {
 				return Pages.adapt(getProductRepository().findByCategoryOrderByCreationDateDesc(category,
-						Pages.createPageRequest(page, pageSize)));
+						createPageRequest(page, pageSize)));
 			}
 			// both null
-			return Pages.adapt(
-					getProductRepository().findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
+			return Pages
+					.adapt(getProductRepository().findAllByOrderByCreationDateDesc(createPageRequest(page, pageSize)));
 		} // metrics
 		finally {
 			if (isMetricsEnabled()) {
@@ -531,7 +531,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 
 	protected final Page<ProductFaq> doListProductFaqs(String productId, int page, int pageSize) {
 		return Pages.adapt(productFaqRepository.findByProductIdOrderByCreationDateDesc(productId,
-				Pages.createPageRequest(page, pageSize)));
+				createPageRequest(page, pageSize)));
 	}
 
 	protected final void doDeleteProductFaq(String productFaqId) {

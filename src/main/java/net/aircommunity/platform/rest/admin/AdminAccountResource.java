@@ -1,10 +1,13 @@
 package net.aircommunity.platform.rest.admin;
 
+import java.io.StringWriter;
 import java.net.URI;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonWriter;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -12,6 +15,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -24,7 +28,11 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.micro.annotation.RESTful;
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.Page;
@@ -32,6 +40,7 @@ import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.Tenant.VerificationStatus;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.security.AccountService;
 
@@ -45,6 +54,9 @@ import net.aircommunity.platform.service.security.AccountService;
 @RolesAllowed(Roles.ROLE_ADMIN)
 public class AdminAccountResource extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(AdminAccountResource.class);
+
+	@Resource
+	private ObjectMapper objectMapper;
 
 	@Resource
 	private AccountService accountService;
@@ -86,6 +98,31 @@ public class AdminAccountResource extends BaseResourceSupport {
 	}
 
 	/**
+	 * Update account
+	 */
+	@PUT
+	@Path("{accountId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Account updateAccount(@PathParam("accountId") String accountId, @NotNull @Valid JsonObject accountData) {
+		Account account = accountService.findAccount(accountId);
+		// convert to json string
+		StringWriter stringWriter = new StringWriter();
+		try (JsonWriter jsonWriter = Json.createWriter(stringWriter)) {
+			jsonWriter.writeObject(accountData);
+		}
+		String json = stringWriter.toString();
+		try {
+			Account newAccount = objectMapper.readValue(json, account.getClass());
+			return accountService.updateAccount(accountId, newAccount);
+		}
+		catch (Exception e) {
+			LOG.error(String.format("Failed to update account: %, cause: %s", json, e.getMessage()), e);
+			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
+		}
+	}
+
+	/**
 	 * Reset password for a account
 	 */
 	@POST
@@ -124,7 +161,7 @@ public class AdminAccountResource extends BaseResourceSupport {
 	}
 
 	/**
-	 * Disable a account
+	 * Disable a account (normally means this account will not be used anymore)
 	 */
 	@POST
 	@Path("{accountId}/disable")
@@ -133,7 +170,7 @@ public class AdminAccountResource extends BaseResourceSupport {
 	}
 
 	/**
-	 * Lock a account
+	 * Lock a account (normally means it's a temporally state, may unlock it later)
 	 */
 	@POST
 	@Path("{accountId}/lock")
@@ -151,7 +188,7 @@ public class AdminAccountResource extends BaseResourceSupport {
 	}
 
 	/**
-	 * Verify a tenant account
+	 * Verify a tenant account (tenant may provide certification materials to our platform to prove this identity)
 	 */
 	@POST
 	@Path("{accountId}/verified")
@@ -160,16 +197,17 @@ public class AdminAccountResource extends BaseResourceSupport {
 	}
 
 	/**
-	 * Unverify a tenant account （TODO provide a reject reason, and tenant need to message box to view the result)
+	 * Unverify a tenant account
 	 */
 	@POST
 	@Path("{accountId}/unverified")
-	public void unverifyTenantAccount(@PathParam("accountId") String accountId) {
-		accountService.updateTenantVerificationStatus(accountId, VerificationStatus.UNVERIFIED);
+	public void unverifyTenantAccount(@PathParam("accountId") String accountId, JsonObject rejectReason) {
+		String reason = getReason(rejectReason);
+		accountService.updateTenantVerificationStatus(accountId, VerificationStatus.UNVERIFIED, reason);
 	}
 
 	/**
-	 * Delete a account
+	 * Delete a account (NOTE: it remove all the related data of this account, use it with CAUTION )
 	 */
 	@Path("{accountId}")
 	@DELETE

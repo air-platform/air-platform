@@ -1,16 +1,19 @@
 package net.aircommunity.platform.service.payment;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import net.aircommunity.platform.model.PaymentNotification;
-import net.aircommunity.platform.model.PaymentRequest;
-import net.aircommunity.platform.model.PaymentResponse;
-import net.aircommunity.platform.model.PaymentVerification;
-import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.model.domain.Order;
-import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.Trade;
+import net.aircommunity.platform.model.payment.PaymentNotification;
+import net.aircommunity.platform.model.payment.PaymentRequest;
+import net.aircommunity.platform.model.payment.PaymentResponse;
+import net.aircommunity.platform.model.payment.PaymentVerification;
+import net.aircommunity.platform.model.payment.RefundResponse;
+import net.aircommunity.platform.model.payment.TradeQueryResult;
 
 /**
  * Payment service facade.
@@ -19,27 +22,25 @@ import net.aircommunity.platform.model.domain.Payment;
  */
 public interface PaymentService {
 
-	String LOGGER_NAME = "net.aircommunity.platform.payment";
-
 	/**
-	 * Create payment request.
+	 * Create payment request. (should be called within orderService)
 	 * 
-	 * @param paymentMethod the payment method
+	 * @param method the payment method
 	 * @param order the order to be paid
 	 * @return PaymentRequest
 	 */
 	@Nonnull
-	PaymentRequest createPaymentRequest(@Nonnull Payment.Method paymentMethod, @Nonnull Order order);
+	PaymentRequest createPaymentRequest(@Nonnull Trade.Method method, @Nonnull Order order);
 
 	/**
 	 * Verify client payment notification if needed (optional).
 	 * 
-	 * @param paymentMethod the payment method
+	 * @param method the payment method
 	 * @param notification client payment notification
 	 * @return PaymentVerification result
 	 */
 	@Nonnull
-	PaymentVerification verifyClientPaymentNotification(@Nonnull Payment.Method paymentMethod,
+	PaymentVerification verifyClientNotification(@Nonnull Trade.Method method,
 			@Nonnull PaymentNotification notification);
 
 	/**
@@ -50,11 +51,37 @@ public interface PaymentService {
 	 * @return PaymentResponse to the payment gateway
 	 */
 	@Nonnull
-	PaymentResponse processServerPaymentNotification(@Nonnull Payment.Method paymentMethod,
-			PaymentNotification notification);
+	PaymentResponse processServerNotification(@Nonnull Trade.Method method, @Nonnull PaymentNotification notification);
 
+	/**
+	 * Refund payment for an order.
+	 * 
+	 * @param method the payment method
+	 * @param order the order to refund
+	 * @param refundAmount the refund amount in basic currency unit (YUAN for CNY)
+	 * @return refund response
+	 */
 	@Nonnull
-	RefundResponse refundPayment(@Nonnull Payment.Method paymentMethod, @Nonnull Order order,
-			@Nonnull BigDecimal refundAmount);
+	RefundResponse refundPayment(@Nonnull Trade.Method method, @Nonnull Order order, @Nonnull BigDecimal refundAmount);
+
+	/**
+	 * Query payment result.
+	 * 
+	 * @param method the payment method
+	 * @param order the order to be queried
+	 * @return the query result
+	 */
+	@Nonnull
+	Optional<TradeQueryResult> queryPayment(@Nullable Trade.Method method, @Nonnull Order order);
+
+	/**
+	 * Query refund result.
+	 * 
+	 * @param method the payment method
+	 * @param order the order to be queried
+	 * @return the query result
+	 */
+	@Nonnull
+	Optional<TradeQueryResult> queryRefund(@Nullable Trade.Method method, @Nonnull Order order);
 
 }

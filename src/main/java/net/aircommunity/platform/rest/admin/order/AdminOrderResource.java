@@ -77,15 +77,4 @@ public class AdminOrderResource extends TenantOrderResourceSupport<Order> {
 		return commonOrderService;
 	}
 
-	/**
-	 * Update order status (use it with caution) XXX with force (with state transition check)?
-	 */
-	// @POST
-	// @Path("{orderId}/status")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// public void updateOrderStatus(@PathParam("orderId") String orderId,
-	// @NotNull @QueryParam("status") Order.Status status) {
-	// commonOrderService.updateOrderStatus(orderId, status);
-	// }
-
 }

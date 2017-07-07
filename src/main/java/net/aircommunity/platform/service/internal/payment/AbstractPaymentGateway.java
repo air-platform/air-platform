@@ -10,15 +10,19 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderPrices;
-import net.aircommunity.platform.model.PaymentResponse;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.StandardOrder;
+import net.aircommunity.platform.model.domain.Trade;
+import net.aircommunity.platform.model.payment.PaymentResponse;
+import net.aircommunity.platform.model.payment.Payments;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.RefundRepository;
 import net.aircommunity.platform.service.internal.AbstractServiceSupport;
 import net.aircommunity.platform.service.order.CommonOrderService;
-import net.aircommunity.platform.service.payment.PaymentService;
 import net.aircommunity.platform.service.spi.PaymentGateway;
 
 /**
@@ -27,7 +31,7 @@ import net.aircommunity.platform.service.spi.PaymentGateway;
  * @author Bin.Zhang
  */
 public abstract class AbstractPaymentGateway extends AbstractServiceSupport implements PaymentGateway {
-	protected static final Logger LOG = LoggerFactory.getLogger(PaymentService.LOGGER_NAME);
+	protected static final Logger LOG = LoggerFactory.getLogger(Payments.LOGGER_NAME);
 
 	// .e.g http://aircommunity.net/api/v2/payment/alipay/notify
 	private static final String PAYMENT_BASE_URI = "/payment/";
@@ -40,14 +44,6 @@ public abstract class AbstractPaymentGateway extends AbstractServiceSupport impl
 
 	@Resource
 	protected RefundRepository refundRepository;
-
-	// protected PaymentResponse getPaymentFailureResponse() {
-	// return NOTIFICATION_RESPONSE_FAILURE;
-	// }
-	//
-	// protected PaymentResponse getPaymentSuccessResponse() {
-	// return NOTIFICATION_RESPONSE_SUCCESS;
-	// }
 
 	// server async notification
 	protected String getServerNotifyUrl() {
@@ -70,17 +66,31 @@ public abstract class AbstractPaymentGateway extends AbstractServiceSupport impl
 		return builder.toString();
 	}
 
-	protected PaymentResponse doProcessPaymentSuccess(BigDecimal totalAmount, String orderNo, String tradeNo,
+	/**
+	 * Convert order
+	 */
+	protected StandardOrder convertOrder(Order order) {
+		// XXX NOTE: we only support StandardOrder ATM
+		if (!StandardOrder.class.isAssignableFrom(order.getClass())) {
+			LOG.error("{} is not a StandardOrder, cannot refund!", order);
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+		}
+		return (StandardOrder) order;
+	}
+
+	protected PaymentResponse doProcessPaymentSuccess(BigDecimal totalAmount, String outTradeNo, String tradeNo,
 			Date paymentDate) {
 		// 1) check if same tradeNo to avoid pay multiple time
 		Optional<Payment> paymentRef = commonOrderService.findPaymentByTradeNo(getPaymentMethod(), tradeNo);
 		if (paymentRef.isPresent()) {
-			LOG.warn("Order No: {} is already paid with {} with tradeNo: {}, notification ignored", orderNo,
+			LOG.warn("Order No: {} is already paid with {} with tradeNo: {}, notification ignored", outTradeNo,
 					getPaymentMethod(), tradeNo);
 			return PaymentResponse.success();
 		}
 
 		// 2) check orderNo existence
+		// this outTradeNo is the one received from payment gateway MAY generated based on original orderNo
+		String orderNo = Payments.extractOrderNo(outTradeNo);
 		Optional<Order> orderRef = commonOrderService.lookupByOrderNo(orderNo);
 		if (!orderRef.isPresent()) {
 			LOG.error("OrderNo: {} not exists, payment failed", orderNo);
@@ -115,9 +125,11 @@ public abstract class AbstractPaymentGateway extends AbstractServiceSupport impl
 		payment.setMethod(getPaymentMethod());
 		payment.setOrderNo(orderNo);
 		payment.setTradeNo(tradeNo);
+		payment.setRequestNo(outTradeNo);
 		payment.setTimestamp(paymentDate);
+		payment.setStatus(Trade.Status.SUCCESS);
 		payment.setNote(M.msg(M.PAYMENT_SUCCESS_SERVER_NOTIFY));
-		order = commonOrderService.payOrder(order, payment);
+		order = commonOrderService.acceptOrderPayment(order, payment);
 		LOG.debug("Payment success, order is updated: {}", order);
 		return PaymentResponse.success();
 	}

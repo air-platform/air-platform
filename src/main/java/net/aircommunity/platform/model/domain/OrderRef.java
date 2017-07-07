@@ -48,6 +48,11 @@ public class OrderRef implements DomainConstants, Serializable {
 	@Column(name = "status", length = ORDER_STATUS_LEN, nullable = false)
 	private Status status;
 
+	// order payment method (the method is null, if this order is never attempted to pay)
+	@Enumerated(EnumType.STRING)
+	@Column(name = "payment_method", length = PAYMENT_METHOD_LEN)
+	private Trade.Method method;
+
 	// order type = product type
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type", length = ORDER_TYPE_LEN, nullable = false)
@@ -91,6 +96,14 @@ public class OrderRef implements DomainConstants, Serializable {
 		this.status = status;
 	}
 
+	public Trade.Method getMethod() {
+		return method;
+	}
+
+	public void setMethod(Trade.Method method) {
+		this.method = method;
+	}
+
 	public Type getType() {
 		return type;
 	}
@@ -111,8 +124,8 @@ public class OrderRef implements DomainConstants, Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("OrderRef [orderId=").append(orderId).append(", ownerId=").append(ownerId).append(", orderNo=")
-				.append(orderNo).append(", status=").append(status).append(", type=").append(type)
-				.append(", creationDate=").append(creationDate).append("]");
+				.append(orderNo).append(", status=").append(status).append(", method=").append(method).append(", type=")
+				.append(type).append(", creationDate=").append(creationDate).append("]");
 		return builder.toString();
 	}
 }

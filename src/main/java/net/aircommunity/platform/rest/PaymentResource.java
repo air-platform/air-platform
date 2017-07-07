@@ -1,5 +1,8 @@
 package net.aircommunity.platform.rest;
 
+import static net.aircommunity.platform.model.payment.Payments.KEY_PAYMENT_METHOD;
+import static net.aircommunity.platform.model.payment.Payments.PAYMENT_CONFIRMATION_STATUS;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -9,16 +12,19 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -31,12 +37,16 @@ import com.google.common.base.Joiner;
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
-import net.aircommunity.platform.model.PaymentNotification;
-import net.aircommunity.platform.model.PaymentResponse;
-import net.aircommunity.platform.model.PaymentVerification;
+import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.Trade;
+import net.aircommunity.platform.model.payment.PaymentNotification;
+import net.aircommunity.platform.model.payment.PaymentResponse;
+import net.aircommunity.platform.model.payment.PaymentVerification;
+import net.aircommunity.platform.model.payment.Payments;
 import net.aircommunity.platform.service.order.CommonOrderService;
 import net.aircommunity.platform.service.payment.PaymentService;
+import net.aircommunity.platform.service.payment.PaymentSynchronizer;
 
 /**
  * Payment RESTful API.
@@ -47,16 +57,16 @@ import net.aircommunity.platform.service.payment.PaymentService;
 @RESTful
 @Path("payment")
 public class PaymentResource {
-	private static final Logger LOG = LoggerFactory.getLogger(PaymentService.LOGGER_NAME);
-
-	private static final String PAYMENT_CONFIRMATION_STATUS = "status";
-	private static final String KEY_PAYMENT_METHOD = "paymentMethod";
+	private static final Logger LOG = LoggerFactory.getLogger(Payments.LOGGER_NAME);
 
 	@Resource
 	private PaymentService paymentService;
 
 	@Resource
 	private CommonOrderService commonOrderService;
+
+	@Resource
+	private PaymentSynchronizer paymentSynchronizer;
 
 	/**
 	 * Client notification JSON (APP). On payment success, payment notification from client APP.
@@ -68,16 +78,20 @@ public class PaymentResource {
 	@Authenticated
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JsonObject notifyPaymentFromClient(@PathParam("paymentMethod") Payment.Method paymentMethod,
+	public JsonObject notifyPaymentFromClient(@PathParam("paymentMethod") Trade.Method method,
 			@NotNull Map<String, Object> result) throws Exception {
-		MDC.put(KEY_PAYMENT_METHOD, paymentMethod.name());
-		LOG.info("Payment notification(JSON) from client: {}", result);
-		PaymentVerification verification = paymentService.verifyClientPaymentNotification(paymentMethod,
-				new PaymentNotification(result));
-		LOG.info("Payment notification verification result: {}", verification);
-		MDC.remove(KEY_PAYMENT_METHOD);
-		return Json.createObjectBuilder()
-				.add(PAYMENT_CONFIRMATION_STATUS, verification.name().toLowerCase(Locale.ENGLISH)).build();
+		MDC.put(KEY_PAYMENT_METHOD, method.name());
+		try {
+			LOG.info("Payment notification(JSON) from client: {}", result);
+			PaymentVerification verification = paymentService.verifyClientNotification(method,
+					new PaymentNotification(result));
+			LOG.info("Payment notification verification result: {}", verification);
+			return Json.createObjectBuilder()
+					.add(PAYMENT_CONFIRMATION_STATUS, verification.name().toLowerCase(Locale.ENGLISH)).build();
+		}
+		finally {
+			MDC.remove(KEY_PAYMENT_METHOD);
+		}
 	}
 
 	/**
@@ -86,19 +100,22 @@ public class PaymentResource {
 	@POST
 	@PermitAll
 	@Path("{paymentMethod}/client/return")
-	public void notifyPaymentFromClient(@PathParam("paymentMethod") Payment.Method paymentMethod,
+	public void notifyPaymentFromClient(@PathParam("paymentMethod") Trade.Method method,
 			@Context HttpServletRequest request, @Context HttpServletResponse response) throws Exception {
-		MDC.put(KEY_PAYMENT_METHOD, paymentMethod.name());
+		MDC.put(KEY_PAYMENT_METHOD, method.name());
 		Map<String, String> params = extractRequestParams(request);
-		LOG.debug("Payment notification(RAW) from client: {}", params);
-		PaymentVerification verification = paymentService.verifyClientPaymentNotification(paymentMethod,
-				new PaymentNotification(params));
-		LOG.debug("Payment notification verification result: {}", verification);
 		PrintWriter out = response.getWriter();
-		out.write(verification.name());
-		out.flush();
-		out.close();
-		MDC.remove(KEY_PAYMENT_METHOD);
+		try {
+			LOG.debug("Payment notification(RAW) from client: {}", params);
+			PaymentVerification verification = paymentService.verifyClientNotification(method,
+					new PaymentNotification(params));
+			LOG.debug("Payment notification verification result: {}", verification);
+			out.write(verification.name());
+		}
+		finally {
+			out.flush();
+			MDC.remove(KEY_PAYMENT_METHOD);
+		}
 	}
 
 	/**
@@ -122,7 +139,7 @@ public class PaymentResource {
 	public void notifyPaymentNewpay(@Context HttpServletRequest request, @Context HttpServletResponse response)
 			throws Exception {
 		Map<String, String> params = extractRequestParams(request);
-		handleNotification(Payment.Method.NEWPAY, new PaymentNotification(params), response);
+		handleNotification(Trade.Method.NEWPAY, new PaymentNotification(params), response);
 	}
 
 	/**
@@ -133,20 +150,24 @@ public class PaymentResource {
 	@Path("wechat/notify")
 	public void notifyPaymentWechat(String data, @Context HttpServletRequest request,
 			@Context HttpServletResponse response) throws Exception {
-		handleNotification(Payment.Method.WECHAT, new PaymentNotification(data), response);
+		handleNotification(Trade.Method.WECHAT, new PaymentNotification(data), response);
 	}
 
-	private void handleNotification(Payment.Method method, PaymentNotification notification,
-			HttpServletResponse response) throws IOException {
+	private void handleNotification(Trade.Method method, PaymentNotification notification, HttpServletResponse response)
+			throws IOException {
 		MDC.put(KEY_PAYMENT_METHOD, method.name());
-		LOG.debug("[{}] Payment notification(RAW) data from server: {}", method, notification.getData());
-		PaymentResponse paymentResponse = paymentService.processServerPaymentNotification(method, notification);
-		LOG.debug("[{}] Payment response to server: {}", method, paymentResponse);
-		response.setStatus(paymentResponse.getStatus().getHttpStatusCode());
 		PrintWriter out = response.getWriter();
-		out.println(paymentResponse.getMessage());
-		out.flush();
-		MDC.remove(KEY_PAYMENT_METHOD);
+		try {
+			LOG.debug("Payment notification(RAW) data from server: {}", notification.getData());
+			PaymentResponse paymentResponse = paymentService.processServerNotification(method, notification);
+			LOG.debug("Payment response to server: {}", method, paymentResponse);
+			response.setStatus(paymentResponse.getStatus().getHttpStatusCode());
+			out.println(paymentResponse.getMessage());
+		}
+		finally {
+			out.flush();
+			MDC.remove(KEY_PAYMENT_METHOD);
+		}
 	}
 
 	private Map<String, String> extractRequestParams(HttpServletRequest request) {
@@ -156,16 +177,48 @@ public class PaymentResource {
 			String name = iter.next();
 			String[] values = (String[]) requestParams.get(name);
 			String valueStr = Joiner.on(",").join(values);
-			// String valueStr = "";
-			// for (int i = 0; i < values.length; i++) {
-			// valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
-			// }
-			// 乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
-			// valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
 			params.put(name, valueStr);
 		}
 		return params;
 	}
+
+	// *****************
+	// ADMIN ONLY
+	// *****************
+	/**
+	 * Sync payment
+	 */
+	@POST
+	@Path("sync")
+	@RolesAllowed(Roles.ROLE_ADMIN)
+	public void syncPayments(@QueryParam("days") @DefaultValue("0") int days) {
+		paymentSynchronizer.syncPayments(days);
+	}
+
+	// TODO FIXME why this works only called directly from orderRefRepository, NOT working if its called from a service
+	// just keep it for reference
+	// @Resource
+	// private Configuration configuration;
+	//
+	// @Resource
+	// private OrderRefRepository orderRefRepository;
+	//
+	// /**
+	// * Sync payment with data streaming
+	// */
+	// @POST
+	// @Path("sync2")
+	// @PermitAll
+	// @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+	// public void syncPaymentsStreaming() {
+	// Date today = Date.from(LocalDate.now().atStartOfDay(configuration.getZoneId()).toInstant());
+	// // payment
+	// try (Stream<OrderRef> paymentPendingOrders = orderRefRepository.findPaymentPendingOrders(today)) {
+	// paymentPendingOrders.forEach(orderRef -> {
+	// LOG.debug("Test sync: {}", orderRef);
+	// });
+	// }
+	// }
 
 	// @POST
 	// @PermitAll
@@ -203,7 +256,7 @@ public class PaymentResource {
 	// }
 
 	/**
-	 * On payment success, server notification from payment gateway (JSON) (XXX NOT USED)
+	 * On payment success, server notification from payment gateway (JSON) (NOT USED)
 	 */
 	// @POST
 	// @PermitAll

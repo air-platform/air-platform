@@ -14,21 +14,30 @@ public class LocalizedMessages extends NLSResource {
 	private static final String RESOURCE_BUNDLE_BASENAME = LocalizedMessages.class.getPackage().getName() + ".message";
 
 	// message for display
+	public static String USERNAME_ANONYMOUS;
+	public static String FLEET_OFFERED;
+	public static String FLEET_NOT_SELECTED;
+	// payment
 	public static String PAYMENT_SERVICE_UNAVAILABLE;
 	public static String PAYMENT_SUCCESS_SERVER_NOTIFY;
 	public static String PAYMENT_SUCCESS_SERVER_QUERY;
 	public static String PAYMENT_PRODUCT_DESCRIPTION;
 	public static String PAYMENT_SERVER_NOTIFY_BIZ_FAILURE;
 	public static String PAYMENT_SERVER_NOTIFY_TRADE_FAILURE;
-	public static String REFUND_SERVER_NOTIFY_TRADE_FAILURE;
-	public static String USERNAME_ANONYMOUS;
-	public static String FLEET_OFFERED;
-	public static String FLEET_NOT_SELECTED;
+	public static String PAYMENT_REQUESTED;
+	public static String PAYMENT_AUTO_REFUND_ON_FAILURE;
+
+	// refund
 	public static String REFUND_SUCCESS;
 	public static String REFUND_FAILURE;
+	public static String REFUND_BIZ_FAILURE;
 	public static String REFUND_REQUEST_REJECTED;
 	public static String REFUND_REASON_MISSING;
 	public static String REFUND_REASON_FORCE;
+	public static String REFUND_REQUESTED;
+	public static String REFUND_SUCCESS_SERVER_NOTIFY;
+	public static String REFUND_SUCCESS_SERVER_QUERY;
+	public static String REFUND_SERVER_NOTIFY_TRADE_FAILURE;
 	public static String REFUND_ON_PAYMENT_NOTIFY_FAILURE; // auto refund message
 
 	// generic
@@ -59,8 +68,12 @@ public class LocalizedMessages extends NLSResource {
 	public static String AIRCLASS_NOT_FOUND;
 
 	// order
+	// operation used in email notfication
 	public static String ORDER_OPERATION_SUBMIT;
 	public static String ORDER_OPERATION_CANCEL;
+	public static String ORDER_OPERATION_PAY;
+	public static String ORDER_OPERATION_REFUND_REQUESTED;
+	//
 	public static String ORDER_NOT_FOUND;
 	public static String ORDER_TOTAL_AMOUNT_MISMATCH;
 	public static String ORDER_INSTALMENT_NOT_FOUND;
@@ -68,6 +81,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String ORDER_ILLEGAL_STATUS;
 	public static String ORDER_PAYMENT_NOT_FOUND;
 	public static String ORDER_NOT_PAYABLE;
+	public static String ORDER_ALREADY_PAID;
 	public static String ORDER_REFUND_FAILURE;
 	public static String ORDER_INVALID_OFFER_TOTAL_AMOUNT;
 	public static String ORDER_CANNOT_BE_DELETED;

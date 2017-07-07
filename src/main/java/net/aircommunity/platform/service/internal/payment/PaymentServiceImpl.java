@@ -1,8 +1,18 @@
 package net.aircommunity.platform.service.internal.payment;
 
+import static net.aircommunity.platform.model.payment.Payments.ACTION_PAY_REQUEST;
+import static net.aircommunity.platform.model.payment.Payments.ACTION_PROCESS_SERVER_NOTIFY;
+import static net.aircommunity.platform.model.payment.Payments.ACTION_QUERY_PAYMENT;
+import static net.aircommunity.platform.model.payment.Payments.ACTION_QUERY_REFUND;
+import static net.aircommunity.platform.model.payment.Payments.ACTION_REFUND;
+import static net.aircommunity.platform.model.payment.Payments.ACTION_VERIFY_CLIENT_NOTIFY;
+import static net.aircommunity.platform.model.payment.Payments.KEY_PAYMENT_ACTION;
+import static net.aircommunity.platform.model.payment.Payments.KEY_PAYMENT_METHOD;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import javax.annotation.PostConstruct;
@@ -19,13 +29,16 @@ import com.google.common.collect.ImmutableMap;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.PaymentNotification;
-import net.aircommunity.platform.model.PaymentRequest;
-import net.aircommunity.platform.model.PaymentResponse;
-import net.aircommunity.platform.model.PaymentVerification;
-import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.Trade;
+import net.aircommunity.platform.model.payment.PaymentNotification;
+import net.aircommunity.platform.model.payment.PaymentRequest;
+import net.aircommunity.platform.model.payment.PaymentResponse;
+import net.aircommunity.platform.model.payment.PaymentVerification;
+import net.aircommunity.platform.model.payment.Payments;
+import net.aircommunity.platform.model.payment.RefundResponse;
+import net.aircommunity.platform.model.payment.TradeQueryResult;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.order.CommonOrderService;
 import net.aircommunity.platform.service.payment.PaymentService;
@@ -39,15 +52,8 @@ import net.aircommunity.platform.service.spi.PaymentGateway;
 @Service
 @Transactional(readOnly = true)
 public class PaymentServiceImpl implements PaymentService {
-	private static final Logger LOG = LoggerFactory.getLogger(LOGGER_NAME);
+	private static final Logger LOG = LoggerFactory.getLogger(Payments.LOGGER_NAME);
 
-	private static final String KEY_PAYMENT_METHOD = "paymentMethod";
-	private static final String KEY_PAYMENT_ACTION = "paymentAction";
-
-	private static final String ACTION_PAY_REQUEST = "PAY_REQUEST";
-	private static final String ACTION_REFUND = "REFUND";
-	private static final String ACTION_VERIFY_CLIENT_NOTIFY = "CLT_NOTIFY";
-	private static final String ACTION_PROCESS_SERVER_NOTIFY = "SRV_NOTIFY";
 	private final Map<Payment.Method, PaymentGateway> paymentGatewayRegistry;
 
 	@Resource
@@ -63,55 +69,61 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@PostConstruct
 	private void init() {
-		LOG.info("Loaded payment gateway: {}", paymentGatewayRegistry);
+		LOG.info("Loaded payment gateways: {}", paymentGatewayRegistry);
 	}
 
+	// NOTE: order status is not checked (whether payable or not)
 	@Override
-	public PaymentRequest createPaymentRequest(Payment.Method paymentMethod, Order order) {
-		if (!order.isPayable()) {
-			LOG.error("Order [{}] status is {}, and it is not ready to pay", order.getOrderNo(), order.getStatus());
-			throw new AirException(Codes.ORDER_NOT_PAYABLE, M.msg(M.ORDER_NOT_PAYABLE, order.getOrderNo()));
-		}
-		PaymentGateway paymentGateway = getPaymentGateway(paymentMethod);
-		return call(paymentMethod, ACTION_PAY_REQUEST, () -> paymentGateway.createPaymentRequest(order));
+	public PaymentRequest createPaymentRequest(Trade.Method method, Order order) {
+		// TODO check if payment is available? order.getPayment!=null ?
+		PaymentGateway paymentGateway = getPaymentGateway(method);
+		return call(method, ACTION_PAY_REQUEST, () -> paymentGateway.createPaymentRequest(order));
 	}
 
 	@Transactional
 	@Override
-	public PaymentVerification verifyClientPaymentNotification(Payment.Method paymentMethod,
-			PaymentNotification notification) {
-		PaymentGateway paymentGateway = getPaymentGateway(paymentMethod);
-		return call(paymentMethod, ACTION_VERIFY_CLIENT_NOTIFY,
-				() -> paymentGateway.verifyClientPaymentNotification(notification));
+	public PaymentVerification verifyClientNotification(Trade.Method method, PaymentNotification notification) {
+		PaymentGateway paymentGateway = getPaymentGateway(method);
+		return call(method, ACTION_VERIFY_CLIENT_NOTIFY, () -> paymentGateway.verifyClientNotification(notification));
 	}
 
 	@Transactional
 	@Override
-	public PaymentResponse processServerPaymentNotification(Payment.Method paymentMethod,
-			PaymentNotification notification) {
-		PaymentGateway paymentGateway = getPaymentGateway(paymentMethod);
-		return call(paymentMethod, ACTION_PROCESS_SERVER_NOTIFY,
-				() -> paymentGateway.processServerPaymentNotification(notification));
+	public PaymentResponse processServerNotification(Trade.Method method, PaymentNotification notification) {
+		PaymentGateway paymentGateway = getPaymentGateway(method);
+		return call(method, ACTION_PROCESS_SERVER_NOTIFY, () -> paymentGateway.processServerNotification(notification));
 	}
 
 	@Transactional
 	@Override
-	public RefundResponse refundPayment(Payment.Method paymentMethod, Order order, BigDecimal refundAmount) {
-		PaymentGateway paymentGateway = getPaymentGateway(paymentMethod);
-		return call(paymentMethod, ACTION_REFUND, () -> paymentGateway.refundPayment(order, refundAmount));
+	public RefundResponse refundPayment(Trade.Method method, Order order, BigDecimal refundAmount) {
+		PaymentGateway paymentGateway = getPaymentGateway(method);
+		return call(method, ACTION_REFUND, () -> paymentGateway.refundPayment(order, refundAmount));
 	}
 
-	private PaymentGateway getPaymentGateway(Payment.Method paymentMethod) {
-		PaymentGateway paymentGateway = paymentGatewayRegistry.get(paymentMethod);
+	@Override
+	public Optional<TradeQueryResult> queryPayment(Trade.Method method, Order order) {
+		PaymentGateway paymentGateway = getPaymentGateway(method);
+		return call(method, ACTION_QUERY_PAYMENT, () -> paymentGateway.queryPayment(order));
+	}
+
+	@Override
+	public Optional<TradeQueryResult> queryRefund(Trade.Method method, Order order) {
+		PaymentGateway paymentGateway = getPaymentGateway(method);
+		return call(method, ACTION_QUERY_REFUND, () -> paymentGateway.queryRefund(order));
+	}
+
+	private PaymentGateway getPaymentGateway(Trade.Method method) {
+		PaymentGateway paymentGateway = paymentGatewayRegistry.get(method);
 		if (paymentGateway == null) {
-			LOG.error("Payment gateway not found for payment method: {}", paymentMethod);
+			LOG.error("Payment gateway not found for payment method: {}", method);
 			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.PAYMENT_SERVICE_UNAVAILABLE));
 		}
 		return paymentGateway;
 	}
 
-	private <T> T call(Payment.Method paymentMethod, String action, Callable<T> call) {
-		MDC.put(KEY_PAYMENT_METHOD, paymentMethod.name());
+	private <T> T call(Trade.Method method, String action, Callable<T> call) {
+		MDC.put(KEY_PAYMENT_METHOD, method.name());
 		MDC.put(KEY_PAYMENT_ACTION, action);
 		try {
 			T result = call.call();
@@ -127,4 +139,5 @@ public class PaymentServiceImpl implements PaymentService {
 			MDC.remove(KEY_PAYMENT_METHOD);
 		}
 	}
+
 }

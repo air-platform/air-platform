@@ -126,17 +126,4 @@ public class CourseResource extends ProductResourceSupport<Course> {
 	protected StandardProductService<Course> getProductService() {
 		return courseService;
 	}
-
-	/**
-	 * Find
-	 */
-	// TODO REMOVE
-	// @GET
-	// @Path("{courseId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @JsonView(JsonViews.Public.class)
-	// public Course find(@PathParam("courseId") String courseId) {
-	// return courseService.findCourse(courseId);
-	// }
-
 }

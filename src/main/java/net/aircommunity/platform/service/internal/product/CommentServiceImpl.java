@@ -158,11 +158,11 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	@Override
 	public Page<Comment> listComments(String productId, Source source, int page, int pageSize) {
 		if (source == null) {
-			return Pages.adapt(commentRepository.findByProductIdOrderByDateDesc(productId,
-					Pages.createPageRequest(page, pageSize)));
+			return Pages.adapt(
+					commentRepository.findByProductIdOrderByDateDesc(productId, createPageRequest(page, pageSize)));
 		}
 		return Pages.adapt(commentRepository.findByProductIdAndSourceOrderByDateDesc(productId, source,
-				Pages.createPageRequest(page, pageSize)));
+				createPageRequest(page, pageSize)));
 	}
 
 	@Transactional

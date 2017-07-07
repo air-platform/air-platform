@@ -15,7 +15,7 @@ import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.service.product.CommonProductService;
 
 /**
- * Product administrative RESTful API. NOTE: <b>all permission</b> for ADMIN
+ * Product administrative RESTful API for ADMIN ONLY.
  * 
  * @author Bin.Zhang
  * @deprecated (because of two level sub-resource is NOT working)

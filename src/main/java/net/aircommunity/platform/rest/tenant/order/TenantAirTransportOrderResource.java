@@ -19,7 +19,6 @@ import net.aircommunity.platform.service.order.OrderService;
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 public class TenantAirTransportOrderResource extends TenantBaseOrderResourceSupport<AirTransportOrder> {
-	// private static final Logger LOG = LoggerFactory.getLogger(TenantAirTransportOrderResource.class);
 
 	@Resource
 	private AirTransportOrderService airTransportOrderService;
@@ -28,18 +27,4 @@ public class TenantAirTransportOrderResource extends TenantBaseOrderResourceSupp
 	protected OrderService<AirTransportOrder> getOrderService() {
 		return airTransportOrderService;
 	}
-
-	/**
-	 * List //
-	 */
-	// @GET
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	// public Page<AirTransportOrder> list(@PathParam("tenantId") String tenantId,
-	// @QueryParam("status") Order.Status status, @QueryParam("page") @DefaultValue("0") int page,
-	// @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-	// LOG.debug("List all orders with status: {} for tenant: {} ", status, tenantId);
-	// return airTransportOrderService.listTenantAirTransportOrders(tenantId, status, page, pageSize);
-	// }
-
 }

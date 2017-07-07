@@ -21,13 +21,15 @@ import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.domain.OrderRef;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.order.CommonOrderService;
-import net.aircommunity.platform.service.order.OrderServiced;
 import net.aircommunity.platform.service.order.StandardOrderService;
+import net.aircommunity.platform.service.order.annotation.ManagedOrderService;
 
 /**
- * Common order service implementation.
+ * Common order service implementation using OrderRef as index to accelerate lookup and then delegate to corresponding
+ * concrete order service to do the real job via {@code OrderProcessor}.
  * 
  * @author Bin.Zhang
  */
@@ -51,9 +53,9 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order>
 	}
 
 	// XXX NOTE: @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-	// orderRepository.findAllByOrderByCreationDateDesc() NOT working
+	// orderRepository.findAllByOrderByCreationDateDesc() streaming is NOT working with lifecycle callback
+	// always try-resource when streaming data from DB:
 	private void rebuildOrderRef() {
-		// always try-resource when streaming data from DB:
 		orderRefRepository.deleteAllInBatch();
 		try (Stream<Order> stream = orderRepository
 				.findAllByOrderByCreationDateDesc(Pages.createPageRequest(1, Integer.MAX_VALUE)).getContent()
@@ -95,8 +97,18 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order>
 			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")//
 	})
 	@Override
-	public Order payOrder(Order order, Payment payment) {
-		return doPayOrder(order, payment);
+	public Order acceptOrderPayment(Order order, Payment payment) {
+		return doAcceptOrderPayment(order, payment);
+	}
+
+	@Transactional
+	@Caching(put = { //
+			@CachePut(cacheNames = CACHE_NAME, key = "#order.id"),
+			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")//
+	})
+	@Override
+	public Order acceptOrderRefund(Order order, Refund refund) {
+		return doAcceptOrderRefund(order, refund);
 	}
 
 	@Transactional
@@ -125,7 +137,7 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order>
 		Map<String, StandardOrderService> orderServices = context.getBeansOfType(StandardOrderService.class);
 		ImmutableMap.Builder<Product.Type, StandardOrderService<Order>> builder = ImmutableMap.builder();
 		orderServices.values().stream().forEach(service -> {
-			OrderServiced serviced = service.getClass().getAnnotation(OrderServiced.class);
+			ManagedOrderService serviced = service.getClass().getAnnotation(ManagedOrderService.class);
 			if (serviced != null) {
 				builder.put(serviced.value(), service);
 			}

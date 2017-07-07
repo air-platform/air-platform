@@ -1,4 +1,4 @@
-package net.aircommunity.platform.service.internal.payment.newpay;
+package net.aircommunity.platform.service.internal.payment.newpay.client;
 
 import java.io.Serializable;
 
@@ -23,6 +23,9 @@ public class NewpayRefundModel implements Serializable {
 	@XmlElement(name = "refundAmount", required = true)
 	private int refundAmount;
 
+	// not newpay prop (as refundOrderID)
+	private String requestNo;
+
 	// not newpay prop
 	private String refundReason;
 
@@ -35,6 +38,14 @@ public class NewpayRefundModel implements Serializable {
 
 	public void setOrderNo(String orderNo) {
 		this.orderNo = orderNo;
+	}
+
+	public String getRequestNo() {
+		return requestNo;
+	}
+
+	public void setRequestNo(String requestNo) {
+		this.requestNo = requestNo;
 	}
 
 	public int getRefundAmount() {
@@ -65,8 +76,8 @@ public class NewpayRefundModel implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("NewpayRefundModel [orderNo=").append(orderNo).append(", refundAmount=").append(refundAmount)
-				.append(", refundReason=").append(refundReason).append(", isPartialRefund=").append(isPartialRefund)
-				.append("]");
+				.append(", requestNo=").append(requestNo).append(", refundReason=").append(refundReason)
+				.append(", isPartialRefund=").append(isPartialRefund).append("]");
 		return builder.toString();
 	}
 }

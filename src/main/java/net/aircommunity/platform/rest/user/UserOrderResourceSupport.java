@@ -47,7 +47,7 @@ import net.aircommunity.platform.service.order.StandardOrderService;
 public abstract class UserOrderResourceSupport<T extends Order> extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(UserOrderResourceSupport.class);
 
-	private final Parser uaParser = Parser.newParser();
+	private static final Parser UA_PARSER = Parser.newParser();
 
 	/**
 	 * Create
@@ -81,7 +81,7 @@ public abstract class UserOrderResourceSupport<T extends Order> extends BaseReso
 	}
 
 	private String parseForChannel(String userAgent) {
-		Client c = uaParser.parse(userAgent);
+		Client c = UA_PARSER.parse(userAgent);
 		StringBuilder builder = new StringBuilder(c.os.family);
 		if (Strings.isNotBlank(c.os.major)) {
 			builder.append(" ").append(c.os.major);
@@ -100,7 +100,12 @@ public abstract class UserOrderResourceSupport<T extends Order> extends BaseReso
 		else {
 			builder.append(c.device.family);
 		}
-		return builder.append(")").toString();
+		String channel = builder.append(")").toString();
+		// 50 is max channel column size (just in case this happens, normally it will not exceed this size)
+		if (channel.length() > 50) {
+			channel = channel.substring(0, 50);
+		}
+		return channel;
 	}
 
 	/**

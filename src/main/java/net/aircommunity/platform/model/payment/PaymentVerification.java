@@ -1,4 +1,4 @@
-package net.aircommunity.platform.model;
+package net.aircommunity.platform.model.payment;
 
 /**
  * Payment verification of an order.

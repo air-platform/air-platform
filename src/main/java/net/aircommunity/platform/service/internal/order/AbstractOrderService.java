@@ -19,6 +19,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
 
 import com.codahale.metrics.Timer;
 
@@ -31,11 +32,9 @@ import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.common.OrderPrices;
 import net.aircommunity.platform.model.OrderEvent;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.PointRules;
 import net.aircommunity.platform.model.PointsExchange;
 import net.aircommunity.platform.model.PricePolicy;
-import net.aircommunity.platform.model.RefundResponse;
 import net.aircommunity.platform.model.UnitProductPrice;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.AircraftAwareOrder;
@@ -53,7 +52,11 @@ import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.model.domain.SalesPackage;
 import net.aircommunity.platform.model.domain.StandardOrder;
 import net.aircommunity.platform.model.domain.StandardProduct;
+import net.aircommunity.platform.model.domain.Trade;
 import net.aircommunity.platform.model.domain.User;
+import net.aircommunity.platform.model.payment.PaymentRequest;
+import net.aircommunity.platform.model.payment.Payments;
+import net.aircommunity.platform.model.payment.RefundResponse;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.OrderRefRepository;
@@ -207,20 +210,21 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			LOG.info("[Creating order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), order);
 			BigDecimal totalPrice = newOrder.getTotalPrice();
 
-			// 5.1) check if first order price off for this user (XXX DISABLED)
-			// boolean existsOrder = getOrderRepository().existsByOwnerId(userId);
-			// if (!existsOrder) {
-			// long priceOff = memberPointsService.getPointsEarnedFromRule(Constants.PointRules.FIRST_ORDER_PRICE_OFF);
-			// LOG.info("Offer first order price off [-{}] for user: {}", priceOff, userId);
-			// BigDecimal newTotalPrice = totalPrice.subtract(BigDecimal.valueOf(priceOff));
-			// if (newTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
-			// newOrder.setTotalPrice(newTotalPrice);
-			// }
-			// LOG.info("Updated total price [{}] for user: {}", newTotalPrice, userId);
-			// }
+			// 5.1) check if first order price off for this user
+			boolean existsOrder = orderRefRepository.existsByOwnerId(userId);
+			if (!existsOrder) {
+				long priceOff = memberPointsService.getPointsEarnedFromRule(PointRules.FIRST_ORDER_PRICE_OFF);
+				LOG.info("Offer first order price off [-{}] for user: {}", priceOff, userId);
+				if (priceOff > 0) {
+					BigDecimal newTotalPrice = totalPrice.subtract(BigDecimal.valueOf(priceOff));
+					if (newTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
+						newOrder.setTotalPrice(newTotalPrice);
+					}
+					LOG.info("Updated total price [{}] for user: {}", newTotalPrice, userId);
+				}
+			}
 
 			// 5.2) Calculate points to exchange
-			// max: 50% percent of totalPrice
 			int exchangePercent = memberPointsService.getPointsExchangePercent();
 			int exchangeRate = memberPointsService.getPointsExchangeRate();
 			LOG.debug("Point exchange percent: {},  exchange rate: {}", exchangePercent, exchangeRate);
@@ -457,6 +461,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return Optional.of(order);
 	}
 
+	/**
+	 * Update Order
+	 */
 	protected T doUpdateOrder(String orderId, T newOrder) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
@@ -480,7 +487,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
-	 * Mark as commented
+	 * Mark order as commented
 	 */
 	protected T doUpdateOrderCommented(String orderId) {
 		T order = doFindOrder(orderId);
@@ -497,6 +504,15 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		T order = doFindOrder(orderId);
 		order.setLastModifiedDate(new Date());
 		order.setTotalPrice(newTotalAmount);
+		// XXX NOTE: we need re-generate a requestNo for WECHAT in case of total amount changed
+		if (StandardOrder.class.isAssignableFrom(order.getClass())) {
+			StandardOrder standardOrder = StandardOrder.class.cast(order);
+			Payment payment = standardOrder.getPayment();
+			if (payment != null && payment.getMethod() == Trade.Method.WECHAT) {
+				String requestNo = Payments.generateTradeNo(order.getOrderNo());
+				payment.setRequestNo(requestNo);
+			}
+		}
 		return safeExecute(() -> orderProcessor.saveOrder(order), "Update %s price: %s to %d failed",
 				type.getSimpleName(), orderId, newTotalAmount);
 	}
@@ -507,56 +523,98 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 	}
 
+	// ***************************
+	// Payment
+	// ***************************
+
 	/**
-	 * Payment request
+	 * Payment request from client
 	 */
-	protected PaymentRequest doRequestOrderPayment(String orderId, Payment.Method paymentMethod) {
+	protected PaymentRequest doRequestOrderPayment(String orderId, Trade.Method method) {
 		T order = doFindOrder(orderId);
-		return paymentService.createPaymentRequest(paymentMethod, order);
+		if (order.isPaid()) {
+			LOG.error("Order [{}] status is already {}", order.getOrderNo(), order.getStatus());
+			throw new AirException(Codes.ORDER_NOT_PAYABLE, M.msg(M.ORDER_ALREADY_PAID, order.getOrderNo()));
+		}
+		if (!order.isPayable()) {
+			LOG.error("Order [{}] status is {}, and it is not ready to pay", order.getOrderNo(), order.getStatus());
+			throw new AirException(Codes.ORDER_NOT_PAYABLE, M.msg(M.ORDER_NOT_PAYABLE, order.getOrderNo()));
+		}
+		// NOTE: ONLY support standard order ATM
+		if (StandardOrder.class.isAssignableFrom(order.getClass())) {
+			StandardOrder standardOrder = StandardOrder.class.cast(order);
+			Payment payment = standardOrder.getPayment();
+			LOG.debug("Requesting... payment for {}, and now payment is: {}", order, payment);
+			if (payment == null) {
+				// NOTE: important! create a payment request first, the requestNo can be used for querying from payment
+				// gateway in case the server notification is not received.
+				payment = new Payment();
+				payment.setAmount(order.getTotalPrice());
+				payment.setMethod(method);
+				// tradeNo is meaningless at request time (just ensure not null and uniqueness)
+				payment.setTradeNo(order.getOrderNo());
+				payment.setOrderNo(order.getOrderNo());
+				String requestNo = Payments.generateTradeNo(order.getOrderNo());
+				payment.setRequestNo(requestNo);
+				payment.setStatus(Trade.Status.REQUESTED);
+				payment.setTimestamp(new Date());
+				payment.setOwner(order.getOwner());
+				payment.setVendor(order.getProduct().getVendor());
+				payment.setNote(M.msg(M.PAYMENT_REQUESTED));
+				standardOrder.setPayment(payment);
+				order = orderProcessor.saveOrder(order);
+				LOG.info("IMPORTANT! Payment request {} is created for {}", payment, order);
+				// No good to update cache, just use raw cache API
+				updateOrderCache(order);
+			}
+			// NOTE: IMPORTANT!
+			// update orderRef with the payment method that can be used in PaymentSynchronizer to query payment later
+			orderRefRepository.updateOrderPaymentMethod(orderId, method);
+		}
+		// TODO InstalmentOrder in future
+		LOG.debug("Creating... payment request for {}", order);
+		return paymentService.createPaymentRequest(method, order);
 	}
 
 	/**
-	 * Pay order
+	 * Accept payment
 	 */
-	protected T doPayOrder(String orderId, Payment payment) {
+	protected T doAcceptOrderPayment(String orderId, Payment payment) {
 		T order = doFindOrder(orderId);
-		return doPayOrder(order, null, payment);
+		return doAcceptOrderPayment(order, null, payment);
 	}
 
-	protected T doPayOrder(T order, Payment payment) {
-		return doPayOrder(order, null, payment);
+	protected T doAcceptOrderPayment(T order, Payment payment) {
+		return doAcceptOrderPayment(order, null, payment);
 	}
 
-	/**
-	 * Pay order
-	 */
-	protected T doPayOrder(T order, String instalmentId, Payment payment) {
+	protected T doAcceptOrderPayment(T order, String instalmentId, Payment payment) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = orderOperationTimer(type, ORDER_ACTION_PAYMENT);
 			timerContext = timer.time();
 		}
 		try {
-			Payment newPayment = new Payment();
-			newPayment.setAmount(payment.getAmount());
-			newPayment.setMethod(payment.getMethod());
-			newPayment.setOrderNo(payment.getOrderNo());
-			newPayment.setTimestamp(payment.getTimestamp());
-			newPayment.setTradeNo(payment.getTradeNo());
-			newPayment.setOwner(order.getOwner());
-			newPayment.setVendor(order.getProduct().getVendor());
-
 			T orderPaid = null;
 			// standard order
 			if (StandardOrder.class.isAssignableFrom(order.getClass())) {
 				StandardOrder standardOrder = StandardOrder.class.cast(order);
 				Payment orderPayment = standardOrder.getPayment();
-				// check existence of the payment
-				if (orderPayment != null) {
-					LOG.warn("Payment is already done for {}, skip current payment: {}", order, newPayment);
-					return order;
+				// check existence of the payment, payment request should be created before
+				// it SHOULD NOT be null here
+				if (orderPayment == null) {
+					orderPayment = payment;
+					LOG.warn(
+							"Accepting payment {}... payment request is not found for {}, just accept current payment as initial payment.",
+							payment, order);
 				}
-				standardOrder.setPayment(newPayment);
+				else {
+					orderPayment.update(payment);
+					LOG.debug("Accepting payment {}... merged payment for {}", payment, order);
+				}
+				// apply the ORM relation in case it's missing
+				orderPayment.setOwner(order.getOwner());
+				orderPayment.setVendor(order.getProduct().getVendor());
 				orderPaid = doUpdateOrderStatus(order, Order.Status.PAID);
 			}
 
@@ -572,7 +630,16 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 					LOG.error("Order {} instalment {} not found", order, instalmentId);
 					throw new AirException(Codes.ORDER_INSTALMENT_NOT_FOUND, M.msg(M.ORDER_INSTALMENT_NOT_FOUND));
 				}
-				// TODO check existence of payment
+				// FIXME check existence of payment
+				Payment newPayment = new Payment();
+				newPayment.setAmount(payment.getAmount());
+				newPayment.setMethod(payment.getMethod());
+				newPayment.setOrderNo(payment.getOrderNo());
+				newPayment.setTimestamp(payment.getTimestamp());
+				newPayment.setTradeNo(payment.getTradeNo());
+				newPayment.setNote(payment.getNote());
+				newPayment.setOwner(order.getOwner());
+				newPayment.setVendor(order.getProduct().getVendor());
 				instalment.get().setPayment(newPayment);
 				if (instalmentOrder.isPaidFully()) {
 					orderPaid = doUpdateOrderStatus(order, Order.Status.PAID);
@@ -593,6 +660,26 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
+	 * Payment failure
+	 */
+	protected T doHandleOrderPaymentFailure(String orderNo, String paymentFailureCause) {
+		T order = doFindOrderByOrderNo(orderNo);
+		return doHandleOrderPaymentFailure(order, paymentFailureCause);
+	}
+
+	/**
+	 * Payment failure
+	 */
+	protected T doHandleOrderPaymentFailure(T order, String paymentFailureCause) {
+		order.setPaymentFailureCause(paymentFailureCause);
+		return doUpdateOrderStatus(order, Order.Status.PAYMENT_FAILED);
+	}
+
+	// ***************************
+	// Refund
+	// ***************************
+
+	/**
 	 * Request refund
 	 */
 	protected T doRequestOrderRefund(String orderId, String refundReason) {
@@ -602,14 +689,15 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			reason = M.msg(M.REFUND_REASON_MISSING);
 		}
 		order.setRefundReason(reason);
-		return doUpdateOrderStatus(order, Order.Status.REFUND_REQUESTED);
+		T updated = doUpdateOrderStatus(order, Order.Status.REFUND_REQUESTED);
+		eventBus.post(new OrderEvent(OrderEvent.EventType.REFUND_REQUESTED, updated));
+		return updated;
 	}
 
 	/**
-	 * Reject refund
+	 * Reject refund and rollback status to PAID
 	 */
 	protected T doRejectOrderRefund(String orderId, String rejectReason) {
-		// rollback status to PAID
 		T order = doFindOrder(orderId);
 		order.setRefundFailureCause(M.msg(M.REFUND_REQUEST_REJECTED, rejectReason));
 		return doUpdateOrderStatus(order, Order.Status.PAID);
@@ -619,18 +707,47 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * Accept refund
 	 */
 	protected T doAcceptOrderRefund(String orderId, Refund refund) {
-		T orderRefund = null;
-		T order = doUpdateOrderStatus(orderId, Order.Status.REFUNDING);
+		T order = doFindOrder(orderId);
+		return doAcceptOrderRefund(order, refund);
+	}
+
+	/**
+	 * Accept refund normally called from payment gateway notification
+	 */
+	protected T doAcceptOrderRefund(T order, Refund refund) {
+		T orderRefund = doUpdateOrderStatus(order, Order.Status.REFUNDING);
 		if (StandardOrder.class.isAssignableFrom(order.getClass())) {
-			StandardOrder standardOrder = StandardOrder.class.cast(order);
-			refund.setVendor(standardOrder.getProduct().getVendor());
-			refund.setOwner(standardOrder.getOwner());
-			if (Strings.isBlank(refund.getRefundReason())) {
-				refund.setRefundReason(M.msg(M.REFUND_REASON_MISSING));
+			StandardOrder standardOrder = StandardOrder.class.cast(orderRefund);
+			// it may be not null
+			Refund existingRefund = standardOrder.getRefund();
+			if (existingRefund == null) {
+				existingRefund = refund;
+				LOG.debug("Accepting refund {} for {}", refund, order);
 			}
-			standardOrder.setRefund(refund);
+			else {
+				existingRefund.update(refund);
+				LOG.info("Attempted refund {} before, try to accept and merge with current refund  for {}",
+						existingRefund, refund, order);
+			}
+
+			// ensure ORM relation in case it's missing
+			existingRefund.setVendor(standardOrder.getProduct().getVendor());
+			existingRefund.setOwner(standardOrder.getOwner());
+			existingRefund.setStatus(Trade.Status.SUCCESS);
+			// ensure reason
+			String reason = existingRefund.getRefundReason();
+			if (Strings.isBlank(reason)) {
+				reason = standardOrder.getRefundReason();
+			}
+			// still blank? just mark it missing as defaults
+			if (Strings.isBlank(reason)) {
+				reason = M.msg(M.REFUND_REASON_MISSING);
+			}
+			existingRefund.setRefundReason(reason);
+			standardOrder.setRefund(existingRefund);
+			// clear previous failure if any
 			standardOrder.setRefundFailureCause(null);
-			orderRefund = doUpdateOrderStatus(order, Order.Status.REFUNDED);
+			orderRefund = doUpdateOrderStatus(orderRefund, Order.Status.REFUNDED);
 			eventBus.post(new OrderEvent(OrderEvent.EventType.REFUNDED, orderRefund));
 		}
 		// TODO NOT IMPLED
@@ -642,7 +759,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
-	 * Refund initiated from tenant and admin
+	 * Refund initiated from tenant or admin (normally from admin console)
 	 */
 	protected T doInitiateOrderRefund(String orderId, BigDecimal refundAmount, String refundReason) {
 		T order = doFindOrder(orderId);
@@ -651,7 +768,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
-	 * Accept refund
+	 * Accept refund (normally from admin console)
 	 */
 	protected T doAcceptOrderRefund(String orderId, BigDecimal refundAmount) {
 		T order = doFindOrder(orderId);
@@ -674,23 +791,52 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			if (StandardOrder.class.isAssignableFrom(orderRefund.getClass())) {
 				StandardOrder standardOrder = StandardOrder.class.cast(orderRefund);
 				Payment payment = standardOrder.getPayment();
-				LOG.debug("Order {} payment: {}", orderRefund, payment);
+				Refund refund = standardOrder.getRefund();
+				LOG.debug("{} payment: {}, refund: {}", orderRefund, payment, refund);
 				if (payment == null) {
 					throw new AirException(Codes.ORDER_ILLEGAL_STATUS,
 							M.msg(M.ORDER_PAYMENT_NOT_FOUND, orderRefund.getOrderNo()));
 				}
+				// NOTE: create a refund request before refund.
+				// So, we can use the requestNo to query the refund result later if needed (in case the refund request
+				// is sent to payment gateway, but our server crashed before we process the refund response, although
+				// this may happen very rare)
+				if (refund == null) {
+					refund = new Refund();
+					refund.setAmount(refundAmount);
+					refund.setMethod(payment.getMethod());
+					refund.setOrderNo(standardOrder.getOrderNo());
+					refund.setRequestNo(Payments.generateTradeNo(standardOrder.getOrderNo()));
+					// just use orderNo as tradeNo (this is not really meaningful, just ensure uniqueness)
+					// it will be updated once refund response is processed
+					refund.setTradeNo(standardOrder.getOrderNo());
+					refund.setRefundReason(standardOrder.getRefundReason());
+					refund.setRefundResult(M.msg(M.REFUND_REQUESTED));
+					refund.setNote(M.msg(M.REFUND_REQUESTED));
+					refund.setOwner(standardOrder.getOwner());
+					refund.setVendor(standardOrder.getProduct().getVendor());
+					refund.setTimestamp(new Date());// considered as requested time
+					refund.setStatus(Refund.Status.REQUESTED);
+					standardOrder.setRefund(refund);
+				}
+				// persist refund request before refund (XXX TXN may be not committed in case of failure?)
+				// orderRefund = orderProcessor.saveOrder(orderRefund);
+
+				// perform refund to the payment gateway
 				RefundResponse refundResponse = paymentService.refundPayment(payment.getMethod(), orderRefund,
 						refundAmount);
 				int code = refundResponse.getCode();
 				switch (code) {
 				case RefundResponse.PENDING:
-					// just left order status as REFUNDING
+					// just update refund status to pending
+					refund.setTimestamp(new Date());
+					refund.setStatus(Refund.Status.PENDING);
+					// refresh order when refund status updated
+					orderRefund = doUpdateOrderStatus(orderRefund, Order.Status.REFUNDING);
 					break;
 
 				case RefundResponse.SUCCESS:
-					Refund refund = refundResponse.getRefund();
-					refund.setVendor(standardOrder.getProduct().getVendor());
-					refund.setOwner(standardOrder.getOwner());
+					refund.update(refundResponse.getRefund());
 					String refundReason = standardOrder.getRefundReason();
 					if (Strings.isBlank(refundReason)) {
 						refundReason = M.msg(M.REFUND_REASON_MISSING);
@@ -704,6 +850,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 					break;
 
 				case RefundResponse.FAILURE:
+					refund.setTimestamp(new Date());
+					refund.setStatus(Refund.Status.FAILURE);
+					refund.setRefundResult(refundResponse.getFailureCause());
 					orderRefund.setRefundFailureCause(refundResponse.getFailureCause());
 					orderRefund = doUpdateOrderStatus(orderRefund, Order.Status.REFUND_FAILED);
 					eventBus.post(new OrderEvent(OrderEvent.EventType.REFUND_FAILED, orderRefund));
@@ -729,26 +878,31 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
-	 * Payment failure
-	 */
-	protected T doHandleOrderPaymentFailure(T order, String paymentFailureCause) {
-		order.setPaymentFailureCause(paymentFailureCause);
-		return doUpdateOrderStatus(order, Order.Status.PAYMENT_FAILED);
-	}
-
-	/**
 	 * Refund failure
 	 */
-	protected T doHandleOrderRefundFailure(String orderId, String refundFailureCause) {
-		// NOTE: not from cache, in case it's updated
-		T order = doFindOrder(orderId);
+	protected T doHandleOrderRefundFailure(String orderNo, String refundFailureCause) {
+		T order = doFindOrderByOrderNo(orderNo);
 		return doHandleOrderRefundFailure(order, refundFailureCause);
 	}
 
 	protected T doHandleOrderRefundFailure(T order, String refundFailureCause) {
 		order.setRefundFailureCause(refundFailureCause);
+		if (StandardOrder.class.isAssignableFrom(order.getClass())) {
+			StandardOrder standardOrder = StandardOrder.class.cast(order);
+			Refund refund = standardOrder.getRefund();
+			// SHOULD NOT BE NULL here
+			if (refund != null) {
+				refund.setStatus(Refund.Status.FAILURE);
+				refund.setRefundResult(refundFailureCause);
+				refund.setTimestamp(new Date());
+			}
+		}
 		return doUpdateOrderStatus(order, Order.Status.REFUND_FAILED);
 	}
+
+	// ***************************
+	// Others (cancel, close etc.)
+	// ***************************
 
 	/**
 	 * Cancel
@@ -796,20 +950,17 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			LOG.debug("It's order initial status, cannot update status to {}", newStatus);
 			throw invalidOrderStatus(order, newStatus);
 
-			// AirJet
 		case CUSTOMER_CONFIRMED:
 			LOG.debug("Expect order intial statuss & confirmationRequired");
 			expectOrderStatusCondition(order.isInitialStatus());
 			expectOrderStatusCondition(order.confirmationRequired());
 			break;
 
-		// AirJet, AirTravel
 		case CONFIRMED:
 			LOG.debug("Expect order confirmationRequired");
 			expectOrderStatusCondition(order.confirmationRequired());
 			break;
 
-		// AirJet, Course
 		case CONTRACT_SIGNED:
 			// should be already confirmed
 			LOG.debug("Expect order contractRequired");
@@ -830,7 +981,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			break;
 
 		case PARTIAL_PAID:
-			// TODO check later
+			// TODO check once it's implemented
 			LOG.debug("Check {} is NOT implemented yet", newStatus);
 			break;
 
@@ -862,21 +1013,19 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			expectOrderStatusCondition(order.isPayable());
 			break;
 
-		//
 		case REFUND_REQUESTED:
 			// should be already paid
 			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.PARTIAL_PAID,
 					Order.Status.PAID, Order.Status.TICKET_RELEASED));
 			break;
 
-		//
 		case REFUNDING:
 			// should be already paid (directly by TENANT) or refund requested (by USER)
-			expectOrderStatus(order, newStatus,
-					EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.REFUND_REQUESTED, Order.Status.PAID));
+			// we still allow refund after TICKET_RELEASED
+			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.REFUND_REQUESTED,
+					Order.Status.PAID, Order.Status.TICKET_RELEASED));
 			break;
 
-		//
 		case REFUNDED:
 			// should be already refunding in progress
 			expectOrderStatus(order, newStatus, Order.Status.REFUNDING);
@@ -884,7 +1033,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			returnBackPoints(order, newStatus);
 			break;
 
-		//
 		case REFUND_FAILED:
 			expectOrderStatus(order, newStatus, Order.Status.REFUNDING);
 			break;
@@ -930,7 +1078,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			break;
 
 		default:// noop
-			LOG.warn("Unhandled order status: {}", newStatus);
+			// handle all the status if any new status is added
+			LOG.warn("Unhandled order status: {}, SHOULD NOT HAPPEN!", newStatus);
+			throw new AirException(Codes.ORDER_ILLEGAL_STATUS, M.msg(M.ORDER_ILLEGAL_STATUS));
 		}
 		order.setStatus(newStatus);
 		order.setLastModifiedDate(new Date());
@@ -943,7 +1093,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			return orderUpdated;
 		}, "Update %s: %s to status %s failed", type.getSimpleName(), order.getId(), newStatus);
 
-		// update the status of order ref
+		// NOTE: IMPORTANT! update the status of order ref
 		orderRefRepository.updateOrderStatus(updated.getId(), updated.getStatus());
 		return updated;
 	}
@@ -981,6 +1131,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return new AirException(Codes.ORDER_ILLEGAL_STATUS, M.msg(M.ORDER_ILLEGAL_STATUS));
 	}
 
+	// ***************************
+	// Order List APIs
+	// ***************************
+
 	/**
 	 * For USER (Exclude orders in DELETED status) (all)
 	 */
@@ -1013,7 +1167,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		try {
 			return orderProcessor.listUserOrders(userId, statuses, page, pageSize);
 		}
-		// metrics
 		finally {
 			if (isMetricsEnabled()) {
 				timerContext.stop();
@@ -1033,7 +1186,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		try {
 			return orderProcessor.listUserOrdersOfRecentDays(userId, days, page, pageSize);
 		}
-		// metrics
 		finally {
 			if (isMetricsEnabled()) {
 				timerContext.stop();
@@ -1108,6 +1260,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 	}
 
+	// ***************************
+	// Delete
+	// ***************************
 	/**
 	 * For ADMIN
 	 */
@@ -1131,5 +1286,11 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		safeDeletion(orderRepository, () -> orderRepository.deleteByOwnerId(userId), Codes.ORDER_CANNOT_BE_DELETED,
 				M.msg(M.USER_ORDERS_CANNOT_BE_DELETED, userId));
 		orderRefRepository.deleteByOwnerId(userId);
+	}
+
+	private void updateOrderCache(Order order) {
+		Cache cache = cacheManager.getCache(CACHE_NAME);
+		cache.put(order.getId(), order);
+		cache.put(order.getOrderNo(), order);
 	}
 }

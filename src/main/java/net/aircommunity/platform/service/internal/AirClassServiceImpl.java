@@ -82,7 +82,7 @@ public class AirClassServiceImpl extends AbstractServiceSupport implements AirCl
 
 	@Override
 	public Page<AirClass> listAirClasses(int page, int pageSize) {
-		return Pages.adapt(airClassRepository.findAll(Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(airClassRepository.findAll(createPageRequest(page, pageSize)));
 	}
 
 	@Transactional

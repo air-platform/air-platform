@@ -90,16 +90,4 @@ public class FleetResource extends ProductResourceSupport<Fleet> {
 	protected StandardProductService<Fleet> getProductService() {
 		return fleetService;
 	}
-
-	/**
-	 * Find
-	 */
-	// @GET
-	// @Path("{fleetId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @JsonView(JsonViews.Public.class)
-	// public Fleet find(@PathParam("fleetId") String fleetId) {
-	// return fleetService.findFleet(fleetId);
-	// }
-
 }

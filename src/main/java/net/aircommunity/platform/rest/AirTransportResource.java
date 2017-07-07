@@ -102,16 +102,4 @@ public class AirTransportResource extends ProductResourceSupport<AirTransport> {
 		return airTransportService;
 	}
 
-	/**
-	 * Find
-	 */
-	// TODO REMOVE
-	// @GET
-	// @Path("{transportId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @JsonView(JsonViews.Public.class)
-	// public AirTransport find(@PathParam("transportId") String transportId) {
-	// return airTransportService.findAirTransport(transportId);
-	// }
-
 }

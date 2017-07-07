@@ -74,15 +74,4 @@ public class FerryFlightResource extends ProductResourceSupport<FerryFlight> {
 		return ferryFlightService;
 	}
 
-	/**
-	 * Find one
-	 */
-	// @GET
-	// @Path("{ferryFlightId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @JsonView(JsonViews.Public.class)
-	// public FerryFlight find(@PathParam("ferryFlightId") String ferryFlightId) {
-	// return ferryFlightService.findFerryFlight(ferryFlightId);
-	// }
-
 }

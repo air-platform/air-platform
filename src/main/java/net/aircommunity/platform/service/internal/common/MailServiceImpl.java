@@ -90,7 +90,9 @@ public class MailServiceImpl implements MailService {
 	@PreDestroy
 	private void shutdown() {
 		running = false;
-		executorService.shutdownNow();
+		if (executorService != null) {
+			executorService.shutdownNow();
+		}
 	}
 
 	@Override

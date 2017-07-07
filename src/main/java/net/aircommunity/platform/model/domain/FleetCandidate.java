@@ -98,6 +98,32 @@ public class FleetCandidate extends Persistable {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((fleet == null) ? 0 : fleet.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FleetCandidate other = (FleetCandidate) obj;
+		if (fleet == null) {
+			if (other.fleet != null)
+				return false;
+		}
+		else if (!fleet.equals(other.fleet))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("FleetCandidate [offeredPrice=").append(offeredPrice).append(", status=").append(status)

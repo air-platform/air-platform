@@ -1,16 +1,21 @@
-package net.aircommunity.platform.service.internal.payment.newpay;
+package net.aircommunity.platform.service.internal.payment.newpay.client;
 
 import java.util.Map;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.aircommunity.platform.service.internal.payment.newpay.NewpayConfig;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Newpay Gateway client.
+ * Newpay gateway client (XXX NOTE: NOT an official implementation, there is NO server SDK provided by NEWPAY at the
+ * time of implementation ).
  * 
  * @author Bin.Zhang
  */
@@ -22,21 +27,22 @@ public class NewpayClient {
 	private final NewpaySignature signature;
 	private final OkHttpClient httpClient;
 
-	public NewpayClient(NewpayConfig config, OkHttpClient httpClient) {
-		this.config = config;
-		this.signature = new NewpaySignature(this.config);
-		this.httpClient = httpClient;
+	public NewpayClient(@Nonnull NewpayConfig newpayConfig, @Nonnull OkHttpClient okHttpClient) {
+		config = Objects.requireNonNull(newpayConfig, "newpayConfig cannot be null");
+		signature = new NewpaySignature(config);
+		httpClient = Objects.requireNonNull(okHttpClient, "okHttpClient cannot be null");
 	}
 
 	/**
-	 * Create payment request for payment gateway.
+	 * Create pay request.
 	 * 
-	 * @param model the payment model
+	 * @param model the pay model
 	 * @return NewpayPayRequest
 	 */
-	public NewpayPayRequest createPayRequest(NewpayPayModel model) {
+	@Nonnull
+	public NewpayPayRequest createPayRequest(@Nonnull NewpayPayModel model) {
 		NewpayPayRequest request = new NewpayPayRequest();
-		request.setModel(model);
+		request.setModel(Objects.requireNonNull(model, "payModel cannot be null"));
 		// generic
 		request.setPartnerId(config.getPartnerId());
 		request.setNotifyUrl(config.getNotifyUrl());

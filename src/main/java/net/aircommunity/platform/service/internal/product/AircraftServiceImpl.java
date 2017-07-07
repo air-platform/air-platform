@@ -42,7 +42,6 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 	@Override
 	public Aircraft createAircraft(String tenantId, Aircraft aircraft) {
 		Tenant vendor = findAccount(tenantId, Tenant.class);
-		// TODO shared?
 		Aircraft aircraftExisting = aircraftRepository.findByFlightNo(aircraft.getFlightNo());
 		if (aircraftExisting != null) {
 			throw new AirException(Codes.AIRCRAFT_ALREADY_EXISTS,
@@ -94,12 +93,12 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 
 	@Override
 	public Page<Aircraft> listAircrafts(String tenantId, int page, int pageSize) {
-		return Pages.adapt(aircraftRepository.findByVendorId(tenantId, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(aircraftRepository.findByVendorId(tenantId, createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<Aircraft> listAircrafts(int page, int pageSize) {
-		return Pages.adapt(aircraftRepository.findAll(Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(aircraftRepository.findAll(createPageRequest(page, pageSize)));
 	}
 
 	@Transactional

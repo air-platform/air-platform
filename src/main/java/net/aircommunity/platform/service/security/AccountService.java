@@ -11,11 +11,11 @@ import net.aircommunity.platform.model.AuthContext;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.domain.Account;
+import net.aircommunity.platform.model.domain.Account.Status;
 import net.aircommunity.platform.model.domain.AccountAuth;
+import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 import net.aircommunity.platform.model.domain.Address;
 import net.aircommunity.platform.model.domain.Passenger;
-import net.aircommunity.platform.model.domain.Account.Status;
-import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 import net.aircommunity.platform.model.domain.Tenant.VerificationStatus;
 
 /**
@@ -37,7 +37,7 @@ public interface AccountService {
 	Account authenticateAccount(@Nonnull String principal, @Nonnull String credential, @Nonnull AuthContext context);
 
 	/**
-	 * Authenticate an account with external auth methods (external, a.k.a. 3rd party).
+	 * Authenticate an account with external auth methods (external, A.K.A. 3rd party).
 	 * 
 	 * @param type auth type
 	 * @param principal the auth principal
@@ -122,10 +122,24 @@ public interface AccountService {
 	 * 
 	 * @param accountId the accountId
 	 * @param newStatus the new verification status
+	 * @param verificationResult the verificationResult (success or reject reason)
 	 * @return updated account
 	 */
 	@Nonnull
-	Account updateTenantVerificationStatus(@Nonnull String accountId, @Nonnull VerificationStatus newStatus);
+	Account updateTenantVerificationStatus(@Nonnull String accountId, @Nonnull VerificationStatus newStatus,
+			@Nullable String verificationResult);
+
+	/**
+	 * Update tenant account verification status.
+	 * 
+	 * @param accountId the accountId
+	 * @param newStatus the new verification status
+	 * @return updated account
+	 */
+	@Nonnull
+	default Account updateTenantVerificationStatus(@Nonnull String accountId, @Nonnull VerificationStatus newStatus) {
+		return updateTenantVerificationStatus(accountId, newStatus, null);
+	}
 
 	/**
 	 * Find an account by apiKey.
@@ -302,7 +316,7 @@ public interface AccountService {
 	Account dailySignin(@Nonnull String accountId);
 
 	/**
-	 * Delete an account by principal.
+	 * Delete an account by principal. (NOTE: it remove all the related data of this account, use it with CAUTION )
 	 * 
 	 * @param accountId the accountId
 	 * @throws AirException if Account with the given is not found

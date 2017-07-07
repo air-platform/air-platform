@@ -15,6 +15,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -29,6 +30,7 @@ import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.domain.OrderRef;
 import net.aircommunity.platform.model.domain.OrderRef_;
 import net.aircommunity.platform.model.domain.Product.Type;
+import net.aircommunity.platform.model.domain.Trade;
 
 /**
  * Repository interface for {@link OrderRef} instances. Provides basic CRUD operations due to the extension of
@@ -123,7 +125,7 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String>, Jpa
 			Pageable pageable);
 
 	/**
-	 * Find user order in status for recent N days (USER)
+	 * Find user order in status for history data before the {@code creationDate} (USER)
 	 */
 	Page<OrderRef> findByOwnerIdAndStatusInAndCreationDateLessThanEqualOrderByCreationDateDesc(String userId,
 			Collection<Status> statuses, Date creationDate, Pageable pageable);
@@ -163,7 +165,7 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String>, Jpa
 	Page<OrderRef> findByOwnerIdOrderByCreationDateDesc(String userId, Pageable pageable);
 
 	/**
-	 * Find user orders in statuses (USER)
+	 * Find user orders in statuses for recent N days (USER)
 	 */
 	Page<OrderRef> findByOwnerIdAndStatusInAndCreationDateGreaterThanEqualOrderByCreationDateDesc(String userId,
 			Collection<Status> statuses, Date creationDate, Pageable pageable);
@@ -188,6 +190,23 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String>, Jpa
 	Page<OrderRef> findByTypeOrderByCreationDateDesc(Type type, Pageable pageable);
 
 	/**
+	 * Slice of orders in PAYMENT pending status (ADMIN)
+	 */
+	default Slice<OrderRef> findPaymentPendingOrders(Date sinceDate, Pageable pageable) {
+		return findByStatusInAndCreationDateGreaterThanEqual(PAYMENT_PENDING_STATUSES, sinceDate, pageable);
+	}
+
+	/**
+	 * Slice of orders in REFUND pending status (ADMIN)
+	 */
+	default Slice<OrderRef> findRefundPendingOrders(Date sinceDate, Pageable pageable) {
+		return findByStatusInAndCreationDateGreaterThanEqual(REFUND_PENDING_STATUSES, sinceDate, pageable);
+	}
+
+	Slice<OrderRef> findByStatusInAndCreationDateGreaterThanEqual(Collection<Status> statuses, Date sinceDate,
+			Pageable pageable);
+
+	/**
 	 * Stream of orders in statuses (ADMIN)
 	 */
 	// it seems that when using MySQL in order to really stream the results we need to satisfy three conditions:
@@ -200,6 +219,10 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String>, Jpa
 	@Modifying
 	@Query("UPDATE #{#entityName} e set e.status = :status where e.orderId = :orderId")
 	void updateOrderStatus(@Param("orderId") String orderId, @Param("status") Order.Status status);
+
+	@Modifying
+	@Query("UPDATE #{#entityName} e set e.method = :method where e.orderId = :orderId")
+	void updateOrderPaymentMethod(@Param("orderId") String orderId, @Param("method") Trade.Method method);
 
 	/**
 	 * Delete all the order refs of a user.

@@ -10,6 +10,7 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
 
 import org.slf4j.Logger;
@@ -70,8 +71,9 @@ public class AccessLoggingFilter implements ContainerRequestFilter {
 			ip = Constants.LOOPBACK_LOCALHOST;
 		}
 		counterService.increment(Constants.COUNTER_API_REQUESTS);
+		MediaType mediaType = requestContext.getMediaType();
 		LOG.info("[{}] [{}] [{}] {} {} {}", ip, username, role, requestContext.getMethod(),
-				requestContext.getUriInfo().getRequestUri().getPath(), requestContext.getMediaType());
+				requestContext.getUriInfo().getRequestUri().getPath(), mediaType == null ? "" : mediaType);
 	}
 
 }

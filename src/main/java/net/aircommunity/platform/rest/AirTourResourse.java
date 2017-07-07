@@ -75,16 +75,4 @@ public class AirTourResourse extends ProductResourceSupport<AirTour> {
 		return airTourService;
 	}
 
-	/**
-	 * Find
-	 */
-	// TODO REMOVE
-	// @GET
-	// @Path("{airTourId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @JsonView(JsonViews.Public.class)
-	// public AirTour find(@PathParam("airTourId") String airTourId) {
-	// return airTourService.findAirTour(airTourId);
-	// }
-
 }

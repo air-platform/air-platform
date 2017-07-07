@@ -15,15 +15,22 @@ import net.aircommunity.platform.model.domain.JetTravel;
 public interface JetTravelRepository extends BaseProductRepository<JetTravel> {
 
 	/**
-	 * Find JetTravel by name.
+	 * Find JetTravels by name starts with.
 	 * 
-	 * @param name
-	 * @param pageable
+	 * @param name the travel name
+	 * @param pageable the pageable
 	 * @return page of JetTravel
 	 */
 	Page<JetTravel> findByPublishedTrueAndNameStartingWithIgnoreCaseOrderByRankDescScoreDesc(String name,
 			Pageable pageable);
 
+	/**
+	 * Find JetTravel by name containing (Fuzzy match)
+	 * 
+	 * @param name the travel name
+	 * @param pageable the pageable
+	 * @return page of JetTravel
+	 */
 	// NOTE: Containing -> full table scan
 	Page<JetTravel> findByPublishedTrueAndNameContainingIgnoreCaseOrderByRankDescScoreDesc(String name,
 			Pageable pageable);

@@ -33,9 +33,6 @@ import net.aircommunity.platform.service.product.FleetService;
 @Transactional(readOnly = true)
 public class FleetServiceImpl extends AbstractStandardProductService<Fleet> implements FleetService {
 
-	// TODO REMOVE
-	// private static final String CACHE_NAME = "cache.fleet";
-
 	@Resource
 	private FleetRepository fleetRepository;
 
@@ -48,13 +45,6 @@ public class FleetServiceImpl extends AbstractStandardProductService<Fleet> impl
 		}
 		return doCreateProduct(tenantId, fleet);
 	}
-
-	// XXX
-	// @Cacheable(cacheNames = CACHE_NAME)
-	// @Override
-	// public Fleet findFleet(String fleetId) {
-	// return doFindProduct(fleetId);
-	// }
 
 	@Override
 	public Fleet findFleetByFlightNo(String flightNo) {
@@ -78,6 +68,32 @@ public class FleetServiceImpl extends AbstractStandardProductService<Fleet> impl
 	}
 
 	@Override
+	public Page<Fleet> listFleetsByType(String aircraftType, int page, int pageSize) {
+		return Pages.adapt(fleetRepository.findByPublishedTrueAndAircraftTypeOrderByRankDescScoreDesc(aircraftType,
+				createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<Fleet> listFleetsByProvider(String provider, int page, int pageSize) {
+		return Pages.adapt(fleetRepository.findByPublishedTrueAndVendorIdOrderByRankDescScoreDesc(provider,
+				createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<Fleet> listFleets(String aircraftType, String provider, int page, int pageSize) {
+		return Pages.adapt(fleetRepository.findByPublishedTrueAndVendorIdAndAircraftTypeOrderByRankDescScoreDesc(
+				provider, aircraftType, createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public List<FleetProvider> listFleetProviders() {
+		List<Account> tenants = accountService.listAccounts(Role.TENANT, 1, Integer.MAX_VALUE).getContent();
+		return tenants.stream().filter(account -> countTenantFleets(account.getId(), ReviewStatus.APPROVED) > 0)
+				.map(account -> new FleetProvider(account.getId(), account.getNickName(), account.getAvatar()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
 	protected void copyProperties(Fleet src, Fleet tgt) {
 		tgt.setFlightNo(src.getFlightNo());
 		tgt.setAircraftType(src.getAircraftType());
@@ -91,71 +107,6 @@ public class FleetServiceImpl extends AbstractStandardProductService<Fleet> impl
 		tgt.setAppearances(src.getAppearances());
 		tgt.setInterior(src.getInterior());
 	}
-
-	// XXX
-	// @Override
-	// public Page<Fleet> listAllFleets(ReviewStatus reviewStatus, int page, int pageSize) {
-	// return doListAllProducts(reviewStatus, page, pageSize);
-	// }
-
-	// @Override
-	// public long countAllFleets(ReviewStatus reviewStatus) {
-	// return doCountAllProducts(reviewStatus);
-	// }
-
-	// @Override
-	// public Page<Fleet> listTenantFleets(String tenantId, ReviewStatus reviewStatus, int page, int pageSize) {
-	// return doListTenantProducts(tenantId, reviewStatus, page, pageSize);
-	// }
-
-	// @Override
-	// public long countTenantFleets(String tenantId, ReviewStatus reviewStatus) {
-	// return doCountTenantProducts(tenantId, reviewStatus);
-	// }
-
-	// @Override
-	// public Page<Fleet> listFleets(int page, int pageSize) {
-	// return doListProductsForUsers(page, pageSize);
-	// }
-
-	@Override
-	public Page<Fleet> listFleetsByType(String aircraftType, int page, int pageSize) {
-		return Pages.adapt(fleetRepository.findByPublishedTrueAndAircraftTypeOrderByRankDescScoreDesc(aircraftType,
-				Pages.createPageRequest(page, pageSize)));
-	}
-
-	@Override
-	public Page<Fleet> listFleetsByProvider(String provider, int page, int pageSize) {
-		return Pages.adapt(fleetRepository.findByPublishedTrueAndVendorIdOrderByRankDescScoreDesc(provider,
-				Pages.createPageRequest(page, pageSize)));
-	}
-
-	@Override
-	public Page<Fleet> listFleets(String aircraftType, String provider, int page, int pageSize) {
-		return Pages.adapt(fleetRepository.findByPublishedTrueAndVendorIdAndAircraftTypeOrderByRankDescScoreDesc(
-				provider, aircraftType, Pages.createPageRequest(page, pageSize)));
-	}
-
-	@Override
-	public List<FleetProvider> listFleetProviders() {
-		List<Account> tenants = accountService.listAccounts(Role.TENANT, 1, Integer.MAX_VALUE).getContent();
-		return tenants.stream().filter(account -> countTenantFleets(account.getId(), ReviewStatus.APPROVED) > 0)
-				.map(account -> new FleetProvider(account.getId(), account.getNickName(), account.getAvatar()))
-				.collect(Collectors.toList());
-	}
-
-	// XXX
-	// @CacheEvict(cacheNames = CACHE_NAME, key = "#fleetId")
-	// @Override
-	// public void deleteFleet(String fleetId) {
-	// doDeleteProduct(fleetId);
-	// }
-
-	// @CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
-	// @Override
-	// public void deleteFleets(String tenantId) {
-	// doDeleteProducts(tenantId);
-	// }
 
 	@Override
 	protected Code productNotFoundCode() {

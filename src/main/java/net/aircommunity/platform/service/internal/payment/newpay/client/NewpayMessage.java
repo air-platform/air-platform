@@ -1,4 +1,4 @@
-package net.aircommunity.platform.service.internal.payment.newpay;
+package net.aircommunity.platform.service.internal.payment.newpay.client;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -24,15 +24,15 @@ public class NewpayMessage implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static final ObjectMapper MAPPER = ObjectMappers.getObjectMapper();
-	protected final static String VERSION = "2.6";
-	protected final static String RC_SUCCESS = "0000";
+	protected static final String VERSION = "2.6";
+	protected static final String RC_SUCCESS = "0000";
 	// stateCode:
 	// - PAYMENT: 0:已接受 1:处理中 2:交易成功 3:交易失败
 	// - REFUND: 1:退款处理中 2:退款成功 3:退款失败
-	protected final static String SC_SUCCESS = "2";
+	protected static final String SC_SUCCESS = "2";
 	protected static final SimpleDateFormat TIME_FORMATTER = DateFormats.simple("yyyyMMddHHmmss");
 
-	private transient NewpaySignature signature;
+	protected transient NewpaySignature signature;
 
 	public static <T> T convert(Map<String, String> data, Class<T> type) {
 		try {
@@ -91,6 +91,9 @@ public class NewpayMessage implements Serializable {
 	 * @return true if valid
 	 */
 	protected void verifyRsaSignature(String signMsg, String sign, NewpayCharset charset) {
+		if (signature == null) {
+			throw new NewpayException("Signature of this message is not set, cannot verify RSA signature");
+		}
 		if (!signature.verifyRsaSignature(signMsg, sign, charset)) {
 			throw new NewpayException(String.format("Invalid RSA Signature: %s for msg: %s", sign, signMsg));
 		}

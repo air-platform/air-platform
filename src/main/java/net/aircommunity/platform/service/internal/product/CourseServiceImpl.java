@@ -34,9 +34,6 @@ import net.aircommunity.platform.service.product.CourseService;
 @Service
 @Transactional(readOnly = true)
 public class CourseServiceImpl extends AbstractStandardProductService<Course> implements CourseService {
-	// TODO REMOVE
-	// private static final String CACHE_NAME = "cache.course";
-
 	private static final String CACHE_NAME_AIRCRAFT_TYPES = "cache.course.aircraft-types";
 	private static final String CACHE_NAME_AIRCRAFT_LICENSES = "cache.course.aircraft-licenses";
 	private static final String CACHE_NAME_AIRCRAFT_LOCATIONS = "cache.course.aircraft-locations";
@@ -70,13 +67,6 @@ public class CourseServiceImpl extends AbstractStandardProductService<Course> im
 		return doCreateProduct(schoolId, course);
 	}
 
-	// XXX
-	// @Cacheable(cacheNames = CACHE_NAME)
-	// @Override
-	// public Course findCourse(String courseId) {
-	// return doFindProduct(courseId);
-	// }
-
 	@Transactional
 	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#courseId"), evict = @CacheEvict(cacheNames = {
 			CACHE_NAME_AIRCRAFT_TYPES, CACHE_NAME_AIRCRAFT_LICENSES }, allEntries = true))
@@ -91,7 +81,6 @@ public class CourseServiceImpl extends AbstractStandardProductService<Course> im
 	protected void copyProperties(Course src, Course tgt) {
 		// just set school that find previously
 		tgt.setSchool(src.getSchool());
-		//
 		tgt.setAircraftType(src.getAircraftType());
 		tgt.setCourseService(src.getCourseService());
 		tgt.setEnrollment(src.getEnrollment());
@@ -102,32 +91,11 @@ public class CourseServiceImpl extends AbstractStandardProductService<Course> im
 		tgt.setTotalNum(src.getTotalNum());
 	}
 
-	// XXX
-	// @Override
-	// public Page<Course> listAllCourses(ReviewStatus reviewStatus, int page, int pageSize) {
-	// return doListAllProducts(reviewStatus, page, pageSize);
-	// }
-	//
-	// @Override
-	// public long countAllCourses(ReviewStatus reviewStatus) {
-	// return doCountAllProducts(reviewStatus);
-	// }
-	//
-	// @Override
-	// public Page<Course> listTenantCourses(String tenantId, ReviewStatus reviewStatus, int page, int pageSize) {
-	// return doListTenantProducts(tenantId, reviewStatus, page, pageSize);
-	// }
-	//
-	// @Override
-	// public long countTenantCourses(String tenantId, ReviewStatus reviewStatus) {
-	// return doCountTenantProducts(tenantId, reviewStatus);
-	// }
-
 	// never called from REST
 	@Override
 	public Page<Course> listCourses(int page, int pageSize) {
 		return Pages.adapt(courseRepository
-				.findByPublishedTrueOrderByRankDescStartDateDescScoreDesc(Pages.createPageRequest(page, pageSize)));
+				.findByPublishedTrueOrderByRankDescStartDateDescScoreDesc(createPageRequest(page, pageSize)));
 	}
 
 	@Override
@@ -137,22 +105,22 @@ public class CourseServiceImpl extends AbstractStandardProductService<Course> im
 
 	@Override
 	public Page<Course> listCoursesBySchool(String schoolId, int page, int pageSize) {
-		return Pages.adapt(courseRepository.findBySchoolId(schoolId, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseRepository.findBySchoolId(schoolId, createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<Course> listCoursesByLocation(String location, int page, int pageSize) {
 		if (Strings.isBlank(location)) {
-			return Pages.adapt(courseRepository.findAllCourses(Pages.createPageRequest(page, pageSize)));
+			return Pages.adapt(courseRepository.findAllCourses(createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(courseRepository.findByFuzzyLocation(location, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(courseRepository.findByFuzzyLocation(location, createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<Course> listCoursesWithConditions(String location, String aircraftType, String license, int page,
 			int pageSize) {
-		return Pages.adapt(courseRepository.findByConditions(location, aircraftType, license,
-				Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(
+				courseRepository.findByConditions(location, aircraftType, license, createPageRequest(page, pageSize)));
 	}
 
 	@Transactional
@@ -193,10 +161,10 @@ public class CourseServiceImpl extends AbstractStandardProductService<Course> im
 	// public Page<Course> listCoursesByAircraftType(String aircraftType, int page, int pageSize) {
 	// Date now = new Date();
 	// if (Strings.isBlank(aircraftType)) {
-	// return Pages.adapt(courseRepository.findValidCourses(now, Pages.createPageRequest(page, pageSize)));
+	// return Pages.adapt(courseRepository.findValidCourses(now, createPageRequest(page, pageSize)));
 	// }
 	// return Pages.adapt(courseRepository.findValidCoursesByAircraftType(aircraftType, now,
-	// Pages.createPageRequest(page, pageSize)));
+	// createPageRequest(page, pageSize)));
 	// }
 
 }

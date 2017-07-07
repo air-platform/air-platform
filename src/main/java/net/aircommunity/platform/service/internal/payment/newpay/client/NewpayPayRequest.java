@@ -1,4 +1,4 @@
-package net.aircommunity.platform.service.internal.payment.newpay;
+package net.aircommunity.platform.service.internal.payment.newpay.client;
 
 import java.util.Date;
 
@@ -149,11 +149,11 @@ public class NewpayPayRequest extends NewpayRequest {
 	}
 
 	NewpayPayRequest build() {
+		if (signature == null) {
+			throw new NewpayException("Signature of this request is not set");
+		}
 		requestId = newRequestId();
 		submitTime = new Date();
-		// TODO REMOVE (TESTING)
-		// requestId = "dde03550527111e7d2395f079d75b256";
-		// submitTime = "20170616165746";
 		totalAmount = model.getTotalAmount();
 		orderDetails = model.toOrderDetails();
 		String signMsg = buildSignMsg();

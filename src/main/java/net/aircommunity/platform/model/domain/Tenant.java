@@ -29,6 +29,11 @@ public class Tenant extends Account {
 	@Column(name = "verification", nullable = false, length = TENANT_VERIFICATION_STATUS_LEN)
 	private VerificationStatus verification = VerificationStatus.UNVERIFIED;
 
+	// verification reject reason
+	@Size(max = DEFAULT_FIELD_LEN)
+	@Column(name = "verification_result", length = DEFAULT_FIELD_LEN)
+	private String verificationResult;
+
 	// vender website
 	@Size(max = DOMAIN_NAME_LEN)
 	@Column(name = "website", length = DOMAIN_NAME_LEN)
@@ -73,6 +78,14 @@ public class Tenant extends Account {
 		this.verification = verification;
 	}
 
+	public String getVerificationResult() {
+		return verificationResult;
+	}
+
+	public void setVerificationResult(String verificationResult) {
+		this.verificationResult = verificationResult;
+	}
+
 	public String getWebsite() {
 		return website;
 	}
@@ -109,10 +122,11 @@ public class Tenant extends Account {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Tenant [email=").append(email).append(", verification=").append(verification)
-				.append(", website=").append(website).append(", address=").append(address).append(", hotline=")
-				.append(hotline).append(", description=").append(description).append(", nickName=").append(nickName)
-				.append(", role=").append(role).append(", status=").append(status).append(", creationDate=")
-				.append(creationDate).append(", avatar=").append(avatar).append(", id=").append(id).append("]");
+				.append(", verificationResult=").append(verificationResult).append(", website=").append(website)
+				.append(", address=").append(address).append(", hotline=").append(hotline).append(", description=")
+				.append(description).append(", nickName=").append(nickName).append(", role=").append(role)
+				.append(", status=").append(status).append(", creationDate=").append(creationDate).append(", avatar=")
+				.append(avatar).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

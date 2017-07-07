@@ -34,7 +34,7 @@ import net.aircommunity.platform.repository.CharterOrderRepository;
 import net.aircommunity.platform.repository.FleetCandidateRepository;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.order.CharterOrderService;
-import net.aircommunity.platform.service.order.OrderServiced;
+import net.aircommunity.platform.service.order.annotation.ManagedOrderService;
 import net.aircommunity.platform.service.product.FleetService;
 
 /**
@@ -42,7 +42,7 @@ import net.aircommunity.platform.service.product.FleetService;
  * 
  * @author Bin.Zhang
  */
-@OrderServiced(Product.Type.FLEET)
+@ManagedOrderService(Product.Type.FLEET)
 @Transactional(readOnly = true)
 public class CharterOrderServiceImpl extends AbstractStandardOrderService<CharterOrder> implements CharterOrderService {
 	private static final Logger LOG = LoggerFactory.getLogger(CharterOrderServiceImpl.class);
@@ -209,53 +209,4 @@ public class CharterOrderServiceImpl extends AbstractStandardOrderService<Charte
 	public Function<CharterOrder, CharterOrder> getOrderPersister() {
 		return t -> charterOrderRepository.save(t);
 	}
-
-	// TODO REMOVE
-	// private static final String CACHE_NAME = "cache.charterorder";
-	// XXX
-	// @CachePut(cacheNames = CACHE_NAME, key = "#orderId")
-	// @Override
-	// public CharterOrder updateCharterOrderTotalAmount(String orderId, BigDecimal totalAmount) {
-	// return doUpdateOrderTotalAmount(orderId, totalAmount);
-	// }
-
-	// @Cacheable(cacheNames = CACHE_NAME)
-	// @Override
-	// public CharterOrder findCharterOrder(String orderId) {
-	// return doFindOrder(orderId);
-	// }
-	//
-	// @Override
-	// public CharterOrder findCharterOrderByOrderNo(String orderNo) {
-	// return doFindOrderByOrderNo(orderNo);
-	// }
-
-	// @CachePut(cacheNames = CACHE_NAME, key = "#orderId")
-	// @Override
-	// public CharterOrder updateCharterOrder(String orderId, CharterOrder newOrder) {
-	// return doUpdateOrder(orderId, newOrder);
-	// }
-
-	// @Override
-	// public Page<CharterOrder> listUserCharterOrders(String userId, Status status, int page, int pageSize) {
-	// return doListUserOrders(userId, status, page, pageSize);
-	// }
-
-	// @Override
-	// public Page<CharterOrder> listCharterOrders(Status status, int page, int pageSize) {
-	// return doListAllOrders(status, page, pageSize);
-	// }
-	//
-	// @CacheEvict(cacheNames = CACHE_NAME, key = "#orderId")
-	// @Override
-	// public void deleteCharterOrder(String orderId) {
-	// doDeleteOrder(orderId);
-	// }
-	//
-	// @CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
-	// @Override
-	// public void deleteCharterOrders(String userId) {
-	// doDeleteOrders(userId);
-	// }
-
 }

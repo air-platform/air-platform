@@ -143,8 +143,8 @@ public class CommonOrderProcessor implements OrderProcessor<Order> {
 		Date creationDate = LocalDateTime.now().minusDays(days).toDate();
 		LOG.debug("List recent {} days({}) orders for user: {}", days, creationDate, userId);
 		Page<OrderRef> refs = Pages.adapt(
-				orderRefRepository.findByOwnerIdAndStatusInAndCreationDateLessThanEqualOrderByCreationDateDesc(userId,
-						Order.Status.VISIBLE_STATUSES, creationDate, Pages.createPageRequest(page, pageSize)));
+				orderRefRepository.findByOwnerIdAndStatusInAndCreationDateGreaterThanEqualOrderByCreationDateDesc(
+						userId, Order.Status.VISIBLE_STATUSES, creationDate, Pages.createPageRequest(page, pageSize)));
 		return transform(refs);
 	}
 

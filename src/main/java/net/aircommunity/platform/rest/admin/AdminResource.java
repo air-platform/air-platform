@@ -77,7 +77,7 @@ import net.aircommunity.platform.rest.user.UserCourseOrderResource;
 import net.aircommunity.platform.service.PlatformService;
 
 /**
- * Admin RESTful API.
+ * ADMIN RESTful API.
  * 
  * @author Bin.Zhang
  */
@@ -185,10 +185,11 @@ public class AdminResource extends BaseResourceSupport {
 		return airportResource;
 	}
 
+	// TODO REMOVE
 	// @Resource
 	// private AdminProductResource adminProductResource;
 	//
-	// @Path("") // path already in the resource
+	// @Path("")
 	// public AdminProductResource products() {
 	// return adminProductResource;
 	// }
@@ -281,9 +282,9 @@ public class AdminResource extends BaseResourceSupport {
 		return adminAirTransportResource;
 	}
 
-	// *********
+	// ************
 	// FERRYFLIGHT
-	// *********
+	// ************
 	@Resource
 	private AdminFerryFlightResource adminFerryFlightResource;
 
@@ -384,7 +385,7 @@ public class AdminResource extends BaseResourceSupport {
 	}
 
 	// **************************************************************************//
-	// Tenant Products (XXX NOT USED FOR NOW)?
+	// Tenant Products (XXX NOT USED FOR NOW, it may be useful in future?)
 	// **************************************************************************//
 
 	// ***********************
@@ -490,7 +491,7 @@ public class AdminResource extends BaseResourceSupport {
 	}
 
 	// **************************************************************************//
-	// Tenant orders (XXX NOT USED FOR NOW)?
+	// Tenant orders (XXX NOT USED FOR NOW, it may be useful in future?)
 	// **************************************************************************//
 
 	// Air Jet
@@ -554,7 +555,7 @@ public class AdminResource extends BaseResourceSupport {
 	}
 
 	// **************************************************************************
-	// User orders (XXX NOT USED FOR NOW)?
+	// User orders (XXX NOT USED FOR NOW, it may be useful in future?)
 	// **************************************************************************
 
 	// ***********************

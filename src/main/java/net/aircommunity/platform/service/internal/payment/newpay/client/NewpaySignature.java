@@ -1,4 +1,4 @@
-package net.aircommunity.platform.service.internal.payment.newpay;
+package net.aircommunity.platform.service.internal.payment.newpay.client;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.util.Objects;
+
+import net.aircommunity.platform.service.internal.payment.newpay.NewpayConfig;
 
 /**
  * Newpay RSA Signature Signer.

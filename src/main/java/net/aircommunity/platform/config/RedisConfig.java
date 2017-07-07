@@ -87,17 +87,17 @@ public class RedisConfig extends CachingConfigurerSupport {
 		return new CacheErrorHandler() {
 			@Override
 			public void handleCacheGetError(RuntimeException exception, Cache cache, Object key) {
-				LOG.warn("handleCacheGetError in redis: {}", exception.getMessage());
+				LOG.warn("[Redis offline] handleCacheGetError in redis: {}", exception.getMessage());
 			}
 
 			@Override
 			public void handleCachePutError(RuntimeException exception, Cache cache, Object key, Object value) {
-				LOG.warn("handleCachePutError in redis: {}", exception.getMessage());
+				LOG.warn("[Redis offline] handleCachePutError in redis: {}", exception.getMessage());
 			}
 
 			@Override
 			public void handleCacheEvictError(RuntimeException exception, Cache cache, Object key) {
-				LOG.warn("handleCacheEvictError in redis: {}", exception.getMessage());
+				LOG.warn("[Redis offline] handleCacheEvictError in redis: {}", exception.getMessage());
 			}
 
 			@Override

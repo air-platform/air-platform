@@ -22,7 +22,7 @@ import net.aircommunity.platform.service.AirqTopicService;
 @Api
 @RESTful
 @PermitAll
-@Path("topics") // TODO rename to airq/topics?
+@Path("topics") // XXX rename to airq/topics?
 public class AirqTopicsResource {
 
 	@Resource

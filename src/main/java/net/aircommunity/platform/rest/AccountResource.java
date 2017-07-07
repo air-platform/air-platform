@@ -2,10 +2,13 @@ package net.aircommunity.platform.rest;
 
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.annotation.Resource;
@@ -32,6 +35,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
@@ -62,7 +66,6 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.AccessToken;
-import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.AuthContext;
 import net.aircommunity.platform.model.AuthcRequest;
 import net.aircommunity.platform.model.AvatarImage;
@@ -74,6 +77,7 @@ import net.aircommunity.platform.model.PasswordRequest;
 import net.aircommunity.platform.model.PasswordResetRequest;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.TenantAccountRequest;
 import net.aircommunity.platform.model.UserAccountRequest;
 import net.aircommunity.platform.model.UsernameRequest;
 import net.aircommunity.platform.model.domain.Account;
@@ -124,7 +128,7 @@ public class AccountResource {
 	private Configuration configuration;
 
 	/**
-	 * Create user (registration)
+	 * User registration
 	 */
 	@POST
 	@PermitAll
@@ -141,21 +145,39 @@ public class AccountResource {
 	}
 
 	/**
-	 * Create tenant (registration)
+	 * Tenant registration
 	 */
 	@POST
 	@PermitAll
 	@Path("tenant")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "tenant-register", hidden = true)
-	public Response createTenantAccount(@NotNull @Valid AccountRequest request, @Context UriInfo uriInfo) {
+	public Response createTenantAccount(@NotNull @Valid TenantAccountRequest request, @Context UriInfo uriInfo) {
 		Account account = accountService.createAccount(request.getUsername(), request.getPassword(),
 				Role.TENANT /* force tenant */);
-		// FIXME URI
-		// URI uri = UriBuilder.fromMethod(getClass(), "findAccount").segment(account.getId()).build();
-		URI uri = URI.create("account/" + account.getId());
+		// NOTE: need to convert URI:
+		// FROM URI: http://localhost:8080/api/v2/account/tenant/7f000001-5d1d-1abc-815d-1dcd75560000
+		// TO URI: http://localhost:8080/api/v2/account/7f000001-5d1d-1abc-815d-1dcd75560000
+		URI uriRoot = uriInfo.getAbsolutePathBuilder().build();
+		String baseUri = uriRoot.toString();
+		URI uri = UriBuilder.fromUri(URI.create(baseUri.substring(0, baseUri.lastIndexOf("/"))))
+				.segment(account.getId()).build();
 		LOG.debug("Created tenant account: {}", uri);
 		return Response.created(uri).build();
+	}
+
+	/**
+	 * Authenticate ADMIN/TENANT/CUSTOMER_SERVICE
+	 */
+	@POST
+	@PermitAll
+	@Path("auth/mgt")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response authManagement(@HeaderParam(value = "x-forwarded-for") String ip,
+			@HeaderParam("user-agent") String userAgent, @NotNull @Valid AuthcRequest request) {
+		return doAuthenticate(ip, userAgent, AuthType.USERNAME, request,
+				EnumSet.of(Role.ADMIN, Role.TENANT, Role.CUSTOMER_SERVICE));
 	}
 
 	/**
@@ -171,6 +193,11 @@ public class AccountResource {
 	public Response authenticate(@HeaderParam(value = "x-forwarded-for") String ip,
 			@HeaderParam("user-agent") String userAgent, @QueryParam("type") AuthType type,
 			@NotNull @Valid AuthcRequest request) {
+		return doAuthenticate(ip, userAgent, type, request, Collections.emptySet());// allow all roles
+	}
+
+	private Response doAuthenticate(String ip, String userAgent, AuthType type, AuthcRequest request,
+			Set<Role> allowedRoles) {
 		// Authenticate the user using the credentials provided against a database credentials can be account not found
 		// or via external auth
 		Account account = null;
@@ -182,8 +209,9 @@ public class AccountResource {
 		else {
 			account = accountService.authenticateAccount(request.getPrincipal(), request.getCredential(), ctx);
 		}
-		// should never happen here, just check it for sure
-		if (account == null) {
+		// 1) account = null: should never happen here, just check it for sure
+		// 2) ensure allowed roles (allowedRoles is empty means role is not checked)
+		if (account == null || (!allowedRoles.isEmpty() && allowedRoles.contains(account.getRole()))) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 		try {
@@ -200,7 +228,7 @@ public class AccountResource {
 			return Response.ok(new AccessToken(token)).build();
 		}
 		catch (Exception e) {
-			LOG.error(e.getLocalizedMessage(), e);
+			LOG.error(String.format("Failed to auth %s, cause: %", request, e.getMessage()), e);
 			throw new AirException(Codes.SERVICE_UNAVAILABLE, M.msg(M.SERVICE_UNAVAILABLE));
 		}
 	}
@@ -410,19 +438,18 @@ public class AccountResource {
 	@ApiOperation(value = "profile-update", response = Account.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "") })
 	@JsonView(JsonViews.User.class)
-	public Account updateAccount(@NotNull @Valid JsonObject newData, @Context SecurityContext context) {
+	public Account updateAccount(@NotNull @Valid JsonObject accountData, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		Account account = accountService.findAccount(accountId);
 		// convert to json string
 		StringWriter stringWriter = new StringWriter();
 		try (JsonWriter jsonWriter = Json.createWriter(stringWriter)) {
-			jsonWriter.writeObject(newData);
+			jsonWriter.writeObject(accountData);
 		}
 		String json = stringWriter.toString();
 		try {
 			Account newAccount = objectMapper.readValue(json, account.getClass());
-			Account accountUpdated = accountService.updateAccount(accountId, newAccount);
-			return accountUpdated;
+			return accountService.updateAccount(accountId, newAccount);
 		}
 		catch (Exception e) {
 			LOG.error(String.format("Failed to update account: %, cause: %s", json, e.getMessage()), e);
@@ -553,7 +580,6 @@ public class AccountResource {
 		accountService.deleteAccount(account.getId());
 	}
 
-	// TODO AirQ
 	/**
 	 * @deprecated
 	 */
@@ -593,7 +619,6 @@ public class AccountResource {
 	 * AirQ
 	 * @deprecated
 	 */
-	// TODO AirQ
 	// @ApiOperation(value = "airq", response = AccessToken.class)
 	// @ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 403, message = "") })
 	// @GET

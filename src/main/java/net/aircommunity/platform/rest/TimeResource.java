@@ -16,7 +16,7 @@ import io.micro.common.DateFormats;
 import io.swagger.annotations.Api;
 
 /**
- * Time service RESTful API used to allow client to sync time with server
+ * Time service RESTful API used to allow client to sync time with server(act as NTP)
  * 
  * @author Bin.Zhang
  */
@@ -25,7 +25,6 @@ import io.swagger.annotations.Api;
 @PermitAll
 @Path("time")
 public class TimeResource {
-
 	private static final SimpleDateFormat SAFE_TIME_FORMATTER = DateFormats.simple("yyyy-MM-dd HH:mm:ss");
 
 	/**

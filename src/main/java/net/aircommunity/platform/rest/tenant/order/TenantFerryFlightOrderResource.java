@@ -19,7 +19,6 @@ import net.aircommunity.platform.service.order.OrderService;
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
 public class TenantFerryFlightOrderResource extends TenantBaseOrderResourceSupport<FerryFlightOrder> {
-	// private static final Logger LOG = LoggerFactory.getLogger(TenantFerryFlightOrderResource.class);
 
 	@Resource
 	private FerryFlightOrderService ferryFlightOrderService;
@@ -28,17 +27,4 @@ public class TenantFerryFlightOrderResource extends TenantBaseOrderResourceSuppo
 	protected OrderService<FerryFlightOrder> getOrderService() {
 		return ferryFlightOrderService;
 	}
-
-	/**
-	 * List
-	 */
-	// @GET
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
-	// public Page<FerryFlightOrder> list(@PathParam("tenantId") String tenantId,
-	// @QueryParam("status") Order.Status status, @QueryParam("page") @DefaultValue("0") int page,
-	// @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-	// LOG.debug("List all orders with status: {} for tenant: {} ", status, tenantId);
-	// return ferryFlightOrderService.listTenantFerryFlightOrders(tenantId, status, page, pageSize);
-	// }
 }

@@ -16,7 +16,7 @@ import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.common.VerificationService;
 
 /**
- * Verification service implementation.
+ * Verification service implementation (rely on Redis).
  * 
  * @author Bin.Zhang
  */
@@ -26,7 +26,8 @@ public class VerificationServiceImpl implements VerificationService {
 
 	private static final int REQUEST_PER_IP = 10;
 	private static final int VERIFICATION_CODE_LENGTH = 6;
-	private static final String VERIFICATION_CODD_KEY_FORMAT = "account:vc:%s"; // account verification code
+	// account verification code
+	private static final String VERIFICATION_CODD_KEY_FORMAT = "account:vc:%s";
 	private static final String IP_KEY_FORMAT = "account:ip:%s";
 
 	@Resource

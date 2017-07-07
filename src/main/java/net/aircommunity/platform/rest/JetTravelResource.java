@@ -57,15 +57,4 @@ public class JetTravelResource extends ProductResourceSupport<JetTravel> {
 	protected StandardProductService<JetTravel> getProductService() {
 		return jetTravelService;
 	}
-
-	/**
-	 * Find
-	 */
-	// @GET
-	// @Path("{jetTravelId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @JsonView(JsonViews.Public.class)
-	// public JetTravel find(@PathParam("jetTravelId") String jetTravelId) {
-	// return jetTravelService.findJetTravel(jetTravelId);
-	// }
 }

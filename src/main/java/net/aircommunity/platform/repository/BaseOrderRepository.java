@@ -52,6 +52,9 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	Page<T> findByOwnerIdAndStatusInAndCreationDateLessThanEqualOrderByCreationDateDesc(String userId,
 			Collection<Status> statuses, Date creationDate, Pageable pageable);
 
+	Page<T> findByOwnerIdAndStatusInAndCreationDateGreaterThanEqualOrderByCreationDateDesc(String userId,
+			Collection<Status> statuses, Date creationDate, Pageable pageable);
+
 	/**
 	 * Find all user orders not status (type: range, Using index condition; Using filesort)
 	 * 

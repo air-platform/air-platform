@@ -54,15 +54,4 @@ public class TenantCharterOrderResource extends TenantOrderResourceSupport<Chart
 		return charterOrderService.listTenantCharterOrders(tenantId, status, page, pageSize);
 	}
 
-	/**
-	 * Offer a fleet and provide a price (only allow one to be offered)
-	 */
-	// TODO REMOVE {@see TenantBaseOrderResource#updateOrderPrice) use this instead
-	// @POST
-	// @Path("{orderId}/offer")
-	// public void offerFleet(@PathParam("orderId") String orderId,
-	// @NotNull @QueryParam("candidate") String fleetCandidateId, @NotNull JsonObject request) {
-	// BigDecimal totalAmount = getAmount(request);
-	// charterOrderService.offerFleetCandidate(orderId, fleetCandidateId, totalAmount);
-	// }
 }

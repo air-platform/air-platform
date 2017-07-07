@@ -9,15 +9,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
+import net.aircommunity.platform.model.domain.Trade;
+import net.aircommunity.platform.model.payment.PaymentRequest;
 
 /**
  * Basic order service shared by all orders type for a {@code User} (can be implemented as common order service not
- * necessary a concrete order).
+ * necessary a concrete order). TODO cleanup default interfaces of concrete order service
  *
  * @author Bin.Zhang
  */
@@ -58,7 +59,7 @@ public interface OrderService<T extends Order> {
 	 * @return payment
 	 */
 	@Nonnull
-	Optional<Payment> findPaymentByTradeNo(@Nonnull Payment.Method method, @Nonnull String tradeNo);
+	Optional<Payment> findPaymentByTradeNo(@Nonnull Trade.Method method, @Nonnull String tradeNo);
 
 	/**
 	 * Find order (DELETED status considered as NOT FOUND)
@@ -118,10 +119,10 @@ public interface OrderService<T extends Order> {
 	Order updateOrderCommented(@Nonnull String orderId);
 
 	@Nonnull
-	PaymentRequest requestOrderPayment(@Nonnull String orderId, @Nonnull Payment.Method method);
+	PaymentRequest requestOrderPayment(@Nonnull String orderId, @Nonnull Trade.Method method);
 
 	@Nonnull
-	Order payOrder(@Nonnull String orderId, @Nonnull Payment payment);
+	Order acceptOrderPayment(@Nonnull String orderId, @Nonnull Payment payment);
 
 	@Nonnull
 	Order initiateOrderRefund(@Nonnull String orderId, @Nonnull BigDecimal refundAmount, @Nonnull String refundReason);
@@ -138,8 +139,18 @@ public interface OrderService<T extends Order> {
 	@Nonnull
 	Order requestOrderRefund(@Nonnull String orderId, @Nonnull String refundReason);
 
+	/**
+	 * Handle payment failure for order.
+	 * 
+	 * @param order the order to refund
+	 * @param failureCause the payment failure cause
+	 * @return order updated
+	 */
 	@Nonnull
-	Order handleOrderRefundFailure(@Nonnull String orderId, @Nonnull String refundFailureCause);
+	Order handleOrderPaymentFailure(@Nonnull String orderNo, @Nonnull String failureCause);
+
+	@Nonnull
+	Order handleOrderRefundFailure(@Nonnull String doFindOrderByOrderNo, @Nonnull String failureCause);
 
 	@Nonnull
 	Order cancelOrder(@Nonnull String orderId, @Nonnull String cancelReason);
@@ -241,7 +252,7 @@ public interface OrderService<T extends Order> {
 			int page, int pageSize);
 
 	/**
-	 * List all orders of a user without status in DELETED. (for USER)
+	 * List all orders of a user. (without status in DELETED) (for USER)
 	 * 
 	 * @param userId the userId
 	 * @param status the order status
@@ -257,14 +268,31 @@ public interface OrderService<T extends Order> {
 		return listUserOrders(userId, (Order.Status) null, page, pageSize);
 	}
 
-	// order within 6 months (days <= 6*30)
+	/**
+	 * List user order recent N days. (without status in DELETED) (for USER)
+	 * 
+	 * @param userId the userId
+	 * @param days recent N days
+	 * @param page the page number
+	 * @param pageSize the page size
+	 * @return a page of orders
+	 */
 	Page<T> listUserOrders(@Nonnull String userId, int days, int page, int pageSize);
 
+	/**
+	 * List user order with the requested statuses. (without status in DELETED) (for USER)
+	 * 
+	 * @param userId the userId
+	 * @param statuses the request statuses
+	 * @param page the page number
+	 * @param pageSize the page size
+	 * @return a page of orders
+	 */
 	@Nonnull
 	Page<T> listUserOrders(@Nonnull String userId, @Nonnull Set<Order.Status> statuses, int page, int pageSize);
 
 	/**
-	 * Orders Pending NOT IN (REFUNDED, FINISHED, CLOSED, CANCELLED)
+	 * Orders Pending
 	 */
 	@Nonnull
 	default Page<T> listUserPendingOrders(@Nonnull String userId, int page, int pageSize) {
@@ -272,7 +300,7 @@ public interface OrderService<T extends Order> {
 	}
 
 	/**
-	 * Orders Finished (REFUNDED, FINISHED, CLOSED, CANCELLED)
+	 * Orders Finished
 	 */
 	@Nonnull
 	default Page<T> listUserFinishedOrders(@Nonnull String userId, int page, int pageSize) {
@@ -280,11 +308,19 @@ public interface OrderService<T extends Order> {
 	}
 
 	/**
-	 * Orders Refund (REFUND_REQUESTED, REFUNDING)
+	 * Orders Refund
 	 */
 	@Nonnull
 	default Page<T> listUserRefundOrders(@Nonnull String userId, int page, int pageSize) {
 		return listUserOrders(userId, Order.REFUND_STATUSES, page, pageSize);
+	}
+
+	/**
+	 * Orders Cancelled
+	 */
+	@Nonnull
+	default Page<T> listUserCancelledOrders(@Nonnull String userId, int page, int pageSize) {
+		return listUserOrders(userId, Order.Status.CANCELLED, page, pageSize);
 	}
 
 }

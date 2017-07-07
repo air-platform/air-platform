@@ -32,7 +32,7 @@ public final class OrderPrices {
 	}
 
 	/**
-	 * 金额，转换单位：分－>元 (convert back to our platform)
+	 * CNY 金额，转换单位：分－>元 (convert back to our platform)
 	 * 
 	 * @param price the price in smallest unit
 	 * @return converted BigDecimal standard unit our platform

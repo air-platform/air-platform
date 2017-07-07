@@ -36,29 +36,8 @@ public class AirTransportServiceImpl extends AbstractSalesPackageProductService<
 		implements AirTransportService {
 	private static final Logger LOG = LoggerFactory.getLogger(AirTransportServiceImpl.class);
 
-	// TODO REMOVE
-	// private static final String CACHE_NAME = "cache.airtransport";
-
 	@Resource
 	private AirTransportRepository airTransportRepository;
-
-	// XXX
-	// @Override
-	// public AirTransport createAirTransport(String tenantId, AirTransport airTransport) {
-	// return doCreateProduct(tenantId, airTransport);
-	// }
-
-	// @Cacheable(cacheNames = CACHE_NAME)
-	// @Override
-	// public AirTransport findAirTransport(String airTransportId) {
-	// return doFindProduct(airTransportId);
-	// }
-	//
-	// @CachePut(cacheNames = CACHE_NAME, key = "#airTransportId")
-	// @Override
-	// public AirTransport updateAirTransport(String airTransportId, AirTransport newAirTransport) {
-	// return doUpdateProduct(airTransportId, newAirTransport);
-	// }
 
 	@Override
 	protected void doCopyProperties(AirTransport src, AirTransport tgt) {
@@ -77,40 +56,13 @@ public class AirTransportServiceImpl extends AbstractSalesPackageProductService<
 		return productFamilyService.listProductFamilies(Category.AIR_TRANS, 1, Integer.MAX_VALUE).getContent();
 	}
 
-	// XXX
-	// @Override
-	// public Page<AirTransport> listAllAirTransports(ReviewStatus reviewStatus, int page, int pageSize) {
-	// return doListAllProducts(reviewStatus, page, pageSize);
-	// }
-	//
-	// @Override
-	// public long countAllAirTransports(ReviewStatus reviewStatus) {
-	// return doCountAllProducts(reviewStatus);
-	// }
-	//
-	// @Override
-	// public Page<AirTransport> listTenantAirTransports(String tenantId, ReviewStatus reviewStatus, int page,
-	// int pageSize) {
-	// return doListTenantProducts(tenantId, reviewStatus, page, pageSize);
-	// }
-	//
-	// @Override
-	// public long countTenantAirTransports(String tenantId, ReviewStatus reviewStatus) {
-	// return doCountTenantProducts(tenantId, reviewStatus);
-	// }
-	//
-	// @Override
-	// public Page<AirTransport> listAirTransports(int page, int pageSize) {
-	// return doListProductsForUsers(page, pageSize);
-	// }
-
 	@Override
 	public Page<AirTransport> listAirTransportsByFamily(String familyId, int page, int pageSize) {
 		if (Strings.isBlank(familyId)) {
 			return listAirTransports(page, pageSize);
 		}
 		return Pages.adapt(airTransportRepository.findByFamilyIdAndPublishedTrueOrderByRankAscScoreDesc(familyId,
-				Pages.createPageRequest(page, pageSize)));
+				createPageRequest(page, pageSize)));
 	}
 
 	@Override
@@ -125,29 +77,15 @@ public class AirTransportServiceImpl extends AbstractSalesPackageProductService<
 
 	@Override
 	public Page<AirTransport> listAirTransportsByFuzzyLocation(String location, int page, int pageSize) {
-		return Pages
-				.adapt(airTransportRepository.findFuzzyByLocation(location, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(airTransportRepository.findFuzzyByLocation(location, createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<AirTransport> listAirTransportsWithConditions(String familyId, String departure, String arrival,
 			String tenantId, int page, int pageSize) {
 		return Pages.adapt(airTransportRepository.findWithConditions(familyId, departure, arrival, tenantId,
-				Pages.createPageRequest(page, pageSize)));
+				createPageRequest(page, pageSize)));
 	}
-
-	// XXX
-	// @CacheEvict(cacheNames = CACHE_NAME, key = "#airTransportId")
-	// @Override
-	// public void deleteAirTransport(String airTransportId) {
-	// doDeleteProduct(airTransportId);
-	// }
-	//
-	// @CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
-	// @Override
-	// public void deleteAirTransports(String tenantId) {
-	// doDeleteProducts(tenantId);
-	// }
 
 	@Override
 	protected Code productNotFoundCode() {

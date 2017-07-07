@@ -59,16 +59,4 @@ public class AirTaxiResource extends ProductResourceSupport<AirTaxi> {
 		return airTaxiService;
 	}
 
-	/**
-	 * Find
-	 */
-	// TODO REMOVE
-	// @GET
-	// @Path("{airTaxiId}")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @JsonView(JsonViews.Public.class)
-	// public AirTaxi find(@PathParam("airTaxiId") String airTaxiId) {
-	// return airTaxiService.findAirTaxi(airTaxiId);
-	// }
-
 }

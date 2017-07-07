@@ -1,4 +1,4 @@
-package net.aircommunity.platform.service.order;
+package net.aircommunity.platform.service.order.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -21,7 +21,7 @@ import net.aircommunity.platform.model.domain.Product;
 @Documented
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface OrderServiced {
+public @interface ManagedOrderService {
 
 	/**
 	 * The value may indicate the type of product this order service manages

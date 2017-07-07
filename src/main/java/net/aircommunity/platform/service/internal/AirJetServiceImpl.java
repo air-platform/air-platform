@@ -129,7 +129,7 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 
 	@Override
 	public Page<AirJet> listAirJets(int page, int pageSize) {
-		return Pages.adapt(airjetRepository.findAll(Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(airjetRepository.findAll(createPageRequest(page, pageSize)));
 	}
 
 	@Transactional

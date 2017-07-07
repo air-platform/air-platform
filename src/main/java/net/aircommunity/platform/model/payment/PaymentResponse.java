@@ -1,4 +1,4 @@
-package net.aircommunity.platform.model;
+package net.aircommunity.platform.model.payment;
 
 import javax.annotation.concurrent.Immutable;
 import javax.xml.bind.annotation.XmlAccessType;

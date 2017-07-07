@@ -73,12 +73,12 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 
 	@Override
 	public Page<School> listAllSchools(int page, int pageSize) {
-		return Pages.adapt(schoolRepository.findAll(Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(schoolRepository.findAll(createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<School> listSchools(String tenantId, int page, int pageSize) {
-		return Pages.adapt(schoolRepository.findByVendorId(tenantId, Pages.createPageRequest(page, pageSize)));
+		return Pages.adapt(schoolRepository.findByVendorId(tenantId, createPageRequest(page, pageSize)));
 	}
 
 	@Transactional

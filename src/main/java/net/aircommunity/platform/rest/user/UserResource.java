@@ -36,12 +36,12 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Address;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Passenger;
-import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.Trade;
+import net.aircommunity.platform.model.payment.PaymentRequest;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.order.CharterOrderService;
@@ -61,6 +61,11 @@ public class UserResource extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(UserResource.class);
 
 	private static final String HEADER_FIRST_ORDER = "First-Order";
+	// filtered user orders into 4 categories
+	private static final String ORDER_FILTER_STATUS_FINISHED = "finished";
+	private static final String ORDER_FILTER_STATUS_PENDING = "pending";
+	private static final String ORDER_FILTER_STATUS_CANCELLED = "cancelled";
+	private static final String ORDER_FILTER_STATUS_REFUND = "refund";
 
 	@Resource
 	private AccountService accountService;
@@ -72,7 +77,7 @@ public class UserResource extends BaseResourceSupport {
 	private CharterOrderService charterOrderService;
 
 	// ***********************
-	// User information
+	// User basic information
 	// ***********************
 
 	/**
@@ -151,11 +156,6 @@ public class UserResource extends BaseResourceSupport {
 	// Orders //
 	// *******//
 
-	private static final String ORDER_FILTER_STATUS_PENDING = "pending";
-	private static final String ORDER_FILTER_STATUS_FINISHED = "finished";
-	private static final String ORDER_FILTER_STATUS_CANCELLED = "cancelled";
-	private static final String ORDER_FILTER_STATUS_REFUND = "refund";
-
 	/**
 	 * List All
 	 */
@@ -168,34 +168,33 @@ public class UserResource extends BaseResourceSupport {
 			@Context SecurityContext context) {
 		String userId = context.getUserPrincipal().getName();
 		LOG.debug("List user {} orders in status: {}, page: {}, pageSize: {}", userId, status, page, pageSize);
+
+		if (Strings.isBlank(status)) {
+			return commonOrderService.listUserOrders(userId, page, pageSize);
+		}
+		//
 		switch (status) {
 		case ORDER_FILTER_STATUS_PENDING:
 			// PUBLISHED + CREATED + PAID + CONFIRMED + CONTRACT_SIGNED + TICKET_RELEASED + REFUND_REQUESTED + REFUNDING
 			// etc.
 			return commonOrderService.listUserPendingOrders(userId, page, pageSize);
 
-		case ORDER_FILTER_STATUS_FINISHED:
-			// REFUNDED FINISHED CLOSED
+		case ORDER_FILTER_STATUS_FINISHED: // REFUNDED FINISHED CLOSED etc.
 			return commonOrderService.listUserFinishedOrders(userId, page, pageSize);
 
-		case ORDER_FILTER_STATUS_REFUND:
-			// REFUND_REQUESTED, REFUNDING
+		case ORDER_FILTER_STATUS_REFUND: // REFUND_REQUESTED, REFUNDING etc.
 			return commonOrderService.listUserRefundOrders(userId, page, pageSize);
 
-		case ORDER_FILTER_STATUS_CANCELLED:
-			// CANCELLED
-			return commonOrderService.listUserOrders(userId, Order.Status.CANCELLED, page, pageSize);
+		case ORDER_FILTER_STATUS_CANCELLED:// CANCELLED
+			return commonOrderService.listUserCancelledOrders(userId, page, pageSize);
 
-		default: // noops
-		}
-		if (Strings.isBlank(status)) {
-			return commonOrderService.listUserOrders(userId, page, pageSize);
+		default: // NEVER HAPPEN
 		}
 		return Page.emptyPage(page, pageSize);
 	}
 
 	/**
-	 * Search (order within 6 months)
+	 * Search (order within N days)
 	 */
 	@GET
 	@Path("orders/search")
@@ -266,8 +265,8 @@ public class UserResource extends BaseResourceSupport {
 	@Path("orders/{orderId}/pay/{paymentMethod}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public PaymentRequest payOrder(@PathParam("orderId") String orderId,
-			@PathParam("paymentMethod") Payment.Method paymentMethod) {
-		return commonOrderService.requestOrderPayment(orderId, paymentMethod);
+			@PathParam("paymentMethod") Trade.Method method) {
+		return commonOrderService.requestOrderPayment(orderId, method);
 	}
 
 	@POST
@@ -281,8 +280,8 @@ public class UserResource extends BaseResourceSupport {
 	@POST
 	@Path("orders/{orderId}/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void cancelOrder(@PathParam("orderId") String orderId, JsonObject request) {
-		String reason = getReason(request);
+	public void cancelOrder(@PathParam("orderId") String orderId, @NotNull JsonObject cancelReason) {
+		String reason = getReason(cancelReason);
 		commonOrderService.cancelOrder(orderId, reason);
 	}
 
@@ -292,10 +291,10 @@ public class UserResource extends BaseResourceSupport {
 		commonOrderService.softDeleteOrder(orderId);
 	}
 
-	// ****************************
-	// XXX NOTE: NOT USED FOR NOW
-	// Detailed Order APIs
-	// ****************************
+	// *************************************************
+	// XXX NOTE: NOT IN USE ATM
+	// Detailed Order APIs, just in case when its useful
+	// *************************************************
 
 	// ***********************
 	// Air Jet

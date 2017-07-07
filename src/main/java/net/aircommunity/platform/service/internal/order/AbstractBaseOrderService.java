@@ -12,12 +12,13 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.PaymentRequest;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
+import net.aircommunity.platform.model.domain.Trade;
+import net.aircommunity.platform.model.payment.PaymentRequest;
 import net.aircommunity.platform.service.order.OrderService;
 
 /**
@@ -46,8 +47,8 @@ abstract class AbstractBaseOrderService<T extends Order> extends AbstractOrderSe
 	}
 
 	@Override
-	public Optional<Payment> findPaymentByTradeNo(Payment.Method paymentMethod, String tradeNo) {
-		return paymentRepository.findByTradeNoAndMethod(tradeNo, paymentMethod);
+	public Optional<Payment> findPaymentByTradeNo(Trade.Method method, String tradeNo) {
+		return paymentRepository.findByTradeNoAndMethod(tradeNo, method);
 	}
 
 	// NOTE: need update this cache in case order is updated
@@ -86,9 +87,10 @@ abstract class AbstractBaseOrderService<T extends Order> extends AbstractOrderSe
 		return doUpdateOrderTotalAmount(orderId, newTotalAmount);
 	}
 
+	@Transactional
 	@Override
-	public PaymentRequest requestOrderPayment(String orderId, Payment.Method paymentMethod) {
-		return doRequestOrderPayment(orderId, paymentMethod);
+	public PaymentRequest requestOrderPayment(String orderId, Trade.Method method) {
+		return doRequestOrderPayment(orderId, method);
 	}
 
 	@Transactional
@@ -97,8 +99,8 @@ abstract class AbstractBaseOrderService<T extends Order> extends AbstractOrderSe
 			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")//
 	})
 	@Override
-	public Order payOrder(String orderId, Payment payment) {
-		return doPayOrder(orderId, payment);
+	public Order acceptOrderPayment(String orderId, Payment payment) {
+		return doAcceptOrderPayment(orderId, payment);
 	}
 
 	@Transactional
@@ -117,8 +119,18 @@ abstract class AbstractBaseOrderService<T extends Order> extends AbstractOrderSe
 			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")//
 	})
 	@Override
-	public Order handleOrderRefundFailure(String orderId, String refundFailureCause) {
-		return doHandleOrderRefundFailure(orderId, refundFailureCause);
+	public Order handleOrderPaymentFailure(String orderNo, String paymentFailureCause) {
+		return doHandleOrderPaymentFailure(orderNo, paymentFailureCause);
+	}
+
+	@Transactional
+	@Caching(put = { //
+			@CachePut(cacheNames = CACHE_NAME, key = "#orderId"),
+			@CachePut(cacheNames = CACHE_NAME_ORDER_NO, key = "#result.orderNo")//
+	})
+	@Override
+	public Order handleOrderRefundFailure(String orderNo, String refundFailureCause) {
+		return doHandleOrderRefundFailure(orderNo, refundFailureCause);
 	}
 
 	@Transactional
@@ -242,27 +254,27 @@ abstract class AbstractBaseOrderService<T extends Order> extends AbstractOrderSe
 
 	@Override
 	public Page<T> listAllOrders(Order.Status status, Product.Type type, int page, int pageSize) {
-		return doListAllOrders(status, type, page, pageSize); // ADMIN full scan
+		return doListAllOrders(status, type, page, pageSize); // ADMIN
 	}
 
 	@Override
 	public Page<T> listAllUserOrders(String userId, Order.Status status, Product.Type type, int page, int pageSize) {
-		return doListAllUserOrders(userId, status, type, page, pageSize); // ADMIN full scan
+		return doListAllUserOrders(userId, status, type, page, pageSize); // ADMIN
 	}
 
 	@Override
 	public Page<T> listUserOrders(String userId, Order.Status status, int page, int pageSize) {
-		return doListUserOrders(userId, status, page, pageSize);// OK ? full scan?
+		return doListUserOrders(userId, status, page, pageSize);
 	}
 
 	@Override
 	public Page<T> listUserOrders(String userId, int days, int page, int pageSize) {
-		return doListUserOrdersOfRecentDays(userId, days, page, pageSize);// OK ? full scan?
+		return doListUserOrdersOfRecentDays(userId, days, page, pageSize);
 	}
 
 	@Override
 	public Page<T> listUserOrders(String userId, Set<Order.Status> statuses, int page, int pageSize) {
-		return doListUserOrdersInStatuses(userId, statuses, page, pageSize); // OK ? full scan?
+		return doListUserOrdersInStatuses(userId, statuses, page, pageSize);
 	}
 
 }

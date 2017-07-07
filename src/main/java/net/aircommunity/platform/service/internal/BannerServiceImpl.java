@@ -90,9 +90,9 @@ public class BannerServiceImpl extends AbstractServiceSupport implements BannerS
 	@Override
 	public Page<Banner> listBanners(Category category, int page, int pageSize) {
 		if (category == null) {
-			return Pages.adapt(bannerRepository.findAll(Pages.createPageRequest(page, pageSize)));
+			return Pages.adapt(bannerRepository.findAll(createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(bannerRepository.findByCategory(category, Pages.createPageRequest(1, Integer.MAX_VALUE)));
+		return Pages.adapt(bannerRepository.findByCategory(category, createPageRequest(1, Integer.MAX_VALUE)));
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME_CATEGORY)
