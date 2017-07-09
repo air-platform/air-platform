@@ -24,7 +24,8 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
  */
 @Entity
 @Table(name = "air_platform_fleet_candidate", indexes = {
-		@Index(name = "idx_tenant_id_status", columnList = "tenant_id,status") })
+		@Index(name = "idx_tenant_id_status", columnList = "tenant_id,status") //
+})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FleetCandidate extends Persistable {
 	private static final long serialVersionUID = 1L;

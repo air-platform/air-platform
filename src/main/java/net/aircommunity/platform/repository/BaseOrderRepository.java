@@ -31,6 +31,26 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	boolean existsByOwnerId(String userId);
 
 	/**
+	 * Count new order for current month. (e.g. 2017-07-01 00:00:00 - 2017-07-01 23:59:59)
+	 * 
+	 * @return count of new orders
+	 */
+	default long countThisMonth() {
+		return CountSupport.countThisMonth(this::countByCreationDateBetween);
+	}
+
+	/**
+	 * Count new order for today. (e.g. 2017-07-11 00:00:00 - 2017-07-11 23:59:59)
+	 * 
+	 * @return count of new orders
+	 */
+	default long countToday() {
+		return CountSupport.countToday(this::countByCreationDateBetween);
+	}
+
+	long countByCreationDateBetween(Date firstDate, Date lastDate);
+
+	/**
 	 * Find all user orders
 	 * 
 	 * @param userId the userId

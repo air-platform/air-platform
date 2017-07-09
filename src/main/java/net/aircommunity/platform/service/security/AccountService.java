@@ -17,6 +17,7 @@ import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 import net.aircommunity.platform.model.domain.Address;
 import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.Tenant.VerificationStatus;
+import net.aircommunity.platform.model.metrics.AccountMetrics;
 
 /**
  * Account service manages {@code Account}s. The account principal can be username, mobile or email.
@@ -322,5 +323,13 @@ public interface AccountService {
 	 * @throws AirException if Account with the given is not found
 	 */
 	void deleteAccount(@Nonnull String accountId);
+
+	/**
+	 * Get account metrics. (ADMIN)
+	 * 
+	 * @return account metrics
+	 */
+	@Nonnull
+	AccountMetrics getAccountMetrics();
 
 }

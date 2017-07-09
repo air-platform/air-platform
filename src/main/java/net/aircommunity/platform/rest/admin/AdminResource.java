@@ -32,6 +32,10 @@ import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.metrics.AccountMetrics;
+import net.aircommunity.platform.model.metrics.OrderMetrics;
+import net.aircommunity.platform.model.metrics.ProductMetrics;
+import net.aircommunity.platform.model.metrics.TradeMetrics;
 import net.aircommunity.platform.rest.AirClassResource;
 import net.aircommunity.platform.rest.AirJetResource;
 import net.aircommunity.platform.rest.AirportResource;
@@ -75,6 +79,7 @@ import net.aircommunity.platform.rest.user.FerryFlightOrderResource;
 import net.aircommunity.platform.rest.user.JetTravelOrderResource;
 import net.aircommunity.platform.rest.user.UserCourseOrderResource;
 import net.aircommunity.platform.service.PlatformService;
+import net.aircommunity.platform.service.security.AccountService;
 
 /**
  * ADMIN RESTful API.
@@ -94,6 +99,9 @@ public class AdminResource extends BaseResourceSupport {
 	@Resource
 	private AccessTokenService accessTokenService;
 
+	@Resource
+	private AccountService accountService;
+
 	/**
 	 * Ping server to make sure server is still responsive, it is used for monitoring purpose.
 	 */
@@ -102,6 +110,37 @@ public class AdminResource extends BaseResourceSupport {
 	@PermitAll
 	public void ping() {
 		LOG.info("Got ping");
+	}
+
+	// ***********************
+	// Platform metrics
+	// ***********************
+	@GET
+	@Path("account/metrics")
+	@Produces(MediaType.APPLICATION_JSON)
+	public AccountMetrics accountMetrics() {
+		return accountService.getAccountMetrics();
+	}
+
+	@GET
+	@Path("product/metrics")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ProductMetrics productMetrics() {
+		return commonProductService.getProductMetrics();
+	}
+
+	@GET
+	@Path("order/metrics")
+	@Produces(MediaType.APPLICATION_JSON)
+	public OrderMetrics orderMetrics() {
+		return commonOrderService.getOrderMetrics();
+	}
+
+	@GET
+	@Path("trade/metrics")
+	@Produces(MediaType.APPLICATION_JSON)
+	public TradeMetrics tradeMetrics() {
+		return paymentService.getTradeMetrics();
 	}
 
 	// ***********************

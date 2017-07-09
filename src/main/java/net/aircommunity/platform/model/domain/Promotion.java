@@ -37,7 +37,8 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
  */
 @Entity
 @Table(name = "air_platform_promotion", indexes = {
-		@Index(name = "idx_category_rank_creation_date", columnList = "category,rank,creation_date") })
+		@Index(name = "idx_category_rank_creation_date", columnList = "category,rank,creation_date") //
+})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Promotion extends Persistable {
 	private static final long serialVersionUID = 1L;

@@ -1,5 +1,6 @@
 package net.aircommunity.platform.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -16,6 +17,26 @@ import net.aircommunity.platform.model.domain.Order;
  * @author Bin.Zhang
  */
 public interface FleetCandidateRepository extends JpaRepository<FleetCandidate, String> {
+
+	/**
+	 * Count new order for current month. (e.g. 2017-07-01 00:00:00 - 2017-07-01 23:59:59)
+	 * 
+	 * @return count of new orders
+	 */
+	default long countThisMonth() {
+		return CountSupport.countThisMonth(this::countByOrderCreationDateBetween);
+	}
+
+	/**
+	 * Count new order for today. (e.g. 2017-07-11 00:00:00 - 2017-07-11 23:59:59)
+	 * 
+	 * @return count of new orders
+	 */
+	default long countToday() {
+		return CountSupport.countToday(this::countByOrderCreationDateBetween);
+	}
+
+	long countByOrderCreationDateBetween(Date firstDate, Date lastDate);
 
 	Page<FleetCandidate> findDistinctOrderByVendorId(String tenantId, Pageable pageable);
 

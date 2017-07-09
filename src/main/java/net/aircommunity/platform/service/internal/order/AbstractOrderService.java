@@ -173,20 +173,22 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			}
 			// 1) retrieve product related to this order
 			// fleet product is set in FleetCandidate, ignored
-			if (order.getType() != Product.Type.FLEET) {
-				Product product = order.getProduct();
-				if (product == null) {
-					LOG.error("Failed to create order {} for user {}, cause: product is not set", order, userId);
-					throw newInternalException();
-				}
+			Product product = order.getProduct();
+			if (product != null) {
 				product = commonProductService.findProduct(product.getId());
-				LOG.debug("Product: {}", product);
 				order.setProduct(product);
 				newOrder.setProduct(product);
 				if (StandardProduct.class.isAssignableFrom(product.getClass())) {
 					newOrder.setCurrencyUnit(StandardProduct.class.cast(product).getCurrencyUnit());
 				}
+				LOG.debug("Creating order {} for product {}", order, product);
 			}
+			// product MUST be set, except for fleet.
+			if (product == null && order.getType() != Product.Type.FLEET) {
+				LOG.error("Failed to create order {} for user {}, cause: product is not set", order, userId);
+				throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.PRODUCT_NOT_SET, order.getType()));
+			}
+
 			// 2) set currency unit
 			// should be SalesPackageProduct
 			if (AircraftAwareOrder.class.isAssignableFrom(type)) {
@@ -271,8 +273,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			// 7) create ref
 			OrderRef orderRef = new OrderRef();
 			orderRef.setOrderId(saved.getId());
-			orderRef.setOrderNo(saved.getOrderNo());
 			orderRef.setOwnerId(owner.getId());
+			orderRef.setVendorId(product == null ? null : product.getVendor().getId());
+			orderRef.setOrderNo(saved.getOrderNo());
 			orderRef.setStatus(saved.getStatus());
 			orderRef.setType(saved.getType());
 			orderRef.setCreationDate(saved.getCreationDate());
@@ -950,10 +953,19 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			LOG.debug("It's order initial status, cannot update status to {}", newStatus);
 			throw invalidOrderStatus(order, newStatus);
 
+			// specific for fleet only ATM
 		case CUSTOMER_CONFIRMED:
 			LOG.debug("Expect order intial statuss & confirmationRequired");
 			expectOrderStatusCondition(order.isInitialStatus());
 			expectOrderStatusCondition(order.confirmationRequired());
+			// update order ref for fleet
+			OrderRef orderRef = orderRefRepository.findOne(order.getId());
+			if (orderRef != null) {
+				// NOTE: should not be null here, and if null we've got a problem with the orderRef
+				Product product = order.getProduct();
+				orderRef.setVendorId(product == null ? null : product.getVendor().getId());
+				orderRefRepository.save(orderRef);
+			}
 			break;
 
 		case CONFIRMED:

@@ -1,5 +1,7 @@
 package net.aircommunity.platform.repository;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
@@ -24,7 +26,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 
+import io.micro.common.DateTimes;
 import io.micro.common.Strings;
+import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.domain.OrderRef;
@@ -88,6 +92,112 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String>, Jpa
 	 * @return true if there is an order of this user, false otherwise
 	 */
 	boolean existsByOwnerId(String userId);
+
+	/**
+	 * (USER)
+	 */
+	long countByOwnerId(String userId);
+
+	long countByOwnerIdAndStatus(String userId, Status status);
+
+	long countByOwnerIdAndStatusIn(String userId, Collection<Status> statuses);
+
+	/**
+	 * (ADMIN)
+	 */
+	long countByType(Type type);
+
+	default long countAllToday() {
+		return countToday(null, null);
+	}
+
+	default long countAllToday(Type type) {
+		return countToday(null, type);
+	}
+
+	default long countAllThisMonth() {
+		return countThisMonth(null, null);
+	}
+
+	default long countAllThisMonth(Type type) {
+		return countThisMonth(null, type);
+	}
+
+	long countByCreationDateBetween(Date firstDate, Date lastDate);
+
+	long countByTypeAndCreationDateBetween(Type type, Date firstDate, Date lastDate);
+
+	/**
+	 * (TENANT)
+	 */
+	long countByVendorId(String tenantId);
+
+	long countByVendorIdAndType(String tenantId, Type type);
+
+	default long countTenantToday(String tenantId) {
+		return countToday(tenantId, null);
+	}
+
+	default long countTenantToday(String tenantId, Type type) {
+		return countToday(tenantId, type);
+	}
+
+	default long countTenantThisMonth(String tenantId) {
+		return countThisMonth(tenantId, null);
+	}
+
+	default long countTenantThisMonth(String tenantId, Type type) {
+		return countThisMonth(tenantId, type);
+	}
+
+	/**
+	 * Count new records for today. (e.g. 2017-07-11 00:00:00 - 2017-07-11 23:59:59)
+	 * 
+	 * @param counter the counter
+	 * @return count of new records
+	 */
+	default long countToday(String tenantId, Type type) {
+		ZoneId zone = Configuration.getZoneId();
+		LocalDateTime now = LocalDateTime.now();
+		Date from = DateTimes.getStartOfDay(now, zone);
+		Date to = DateTimes.getEndOfDay(now, zone);
+		if (type != null) {
+			if (Strings.isNotBlank(tenantId)) {
+				return countByVendorIdAndTypeAndCreationDateBetween(tenantId, type, from, to);
+			}
+			return countByTypeAndCreationDateBetween(type, from, to);
+		}
+		if (Strings.isNotBlank(tenantId)) {
+			return countByVendorIdAndCreationDateBetween(tenantId, from, to);
+		}
+		return countByCreationDateBetween(from, to);
+	}
+
+	/**
+	 * Count new order for current month. (e.g. 2017-07-01 00:00:00 - 2017-07-01 23:59:59)
+	 * 
+	 * @return count of new orders
+	 */
+	default long countThisMonth(String tenantId, Type type) {
+		ZoneId zone = Configuration.getZoneId();
+		LocalDateTime now = LocalDateTime.now();
+		Date firstDayOfMonth = DateTimes.getFirstDayOfMonth(now, zone);
+		Date lastDayOfMonth = DateTimes.getLastDayOfMonth(now, zone);
+		if (type != null) {
+			if (Strings.isNotBlank(tenantId)) {
+				return countByVendorIdAndTypeAndCreationDateBetween(tenantId, type, firstDayOfMonth, lastDayOfMonth);
+			}
+			return countByTypeAndCreationDateBetween(type, firstDayOfMonth, lastDayOfMonth);
+		}
+		if (Strings.isNotBlank(tenantId)) {
+			return countByVendorIdAndCreationDateBetween(tenantId, firstDayOfMonth, lastDayOfMonth);
+		}
+		return countByCreationDateBetween(firstDayOfMonth, lastDayOfMonth);
+	}
+
+	long countByVendorIdAndCreationDateBetween(String tenantId, Date firstDate, Date lastDate);
+
+	long countByVendorIdAndTypeAndCreationDateBetween(String tenantId, Type type, Date firstDate, Date lastDate);
 
 	/**
 	 * Find order by order id. (NOTE: same as findOne(id))

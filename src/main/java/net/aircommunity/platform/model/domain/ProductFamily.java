@@ -30,7 +30,8 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
  */
 @Entity
 @Table(name = "air_platform_product_family", indexes = {
-		@Index(name = "idx_review_status_category_tenant_id", columnList = "review_status,category,tenant_id") })
+		@Index(name = "idx_review_status_category_tenant_id", columnList = "review_status,category,tenant_id") //
+})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProductFamily extends Reviewable {
 	private static final long serialVersionUID = 1L;

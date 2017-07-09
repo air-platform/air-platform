@@ -38,7 +38,8 @@ import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 		// one same auth type per account
 		@Index(name = "idx_account_id_type", columnList = "account_id, type", unique = true),
 		// unique principal per auth type
-		@Index(name = "idx_type_principal", columnList = "type, principal", unique = true) })
+		@Index(name = "idx_type_principal", columnList = "type, principal", unique = true) //
+})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AccountAuth extends Persistable {
 	private static final long serialVersionUID = 1L;

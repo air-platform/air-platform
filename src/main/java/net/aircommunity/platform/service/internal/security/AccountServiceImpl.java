@@ -50,6 +50,7 @@ import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.model.domain.Tenant.VerificationStatus;
 import net.aircommunity.platform.model.domain.User;
+import net.aircommunity.platform.model.metrics.AccountMetrics;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AccountAuthRepository;
 import net.aircommunity.platform.repository.AccountRepository;
@@ -78,15 +79,11 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	private static final Logger LOG = LoggerFactory.getLogger(AccountServiceImpl.class);
 
 	private static final String CACHE_NAME = "cache.account";
-	private static final String CACHE_NAME_APIKEY = "cache.account_apikey";
-
+	private static final String CACHE_NAME_APIKEY = "cache.account-apikey";
 	// FORMAT: http://host:port/context/api-version/account/email/confirm?token=xxx&code=xxx
-	private static final String EMAIL_CONFIRMATION_LINK_WITH_PORT_BASE_FORMAT = "http%s://%s:%d%s/%s/account/email/confirm?%s";
-	private static final String EMAIL_CONFIRMATION_LINK_BASE_FORMAT = "http%s://%s%s/%s/account/email/confirm?%s";
-	private static final String EMAIL_CONFIRMATION_LINK_PARAMS = "token=%s&code=%s";
+	private static final String EMAIL_CONFIRMATION_LINK_FORMAT = "/account/email/confirm?token=%s&code=%s";
 	private static final String VERIFICATION_CODE_SEPARATOR = ":";
 	private static final String VERIFICATION_CODE_FORMAT = "%s" + VERIFICATION_CODE_SEPARATOR + "%s"; // code:timestamp
-
 	// private static final String EMAIL_BINDING_RESETPASSWORDLINK = "resetPasswordLink";
 	private static final int PASSWORD_LENGTH = 20;
 
@@ -123,10 +120,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	@Resource
 	private IdentityCardService identityCardService;
 
-	// TODO REMOVE
-	// @Resource
-	// private AirqAccountService airqAccountService;
-
 	@Resource
 	private MemberPointsService memberPointsService;
 
@@ -138,31 +131,22 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	private String emailConfirmationLink;
 
+	// TODO list all/cleanup unconfirmed/expired accounts, need to re-send email if confirm link expired
+
 	@PostConstruct
 	private void init() {
-		AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(AuthType.USERNAME,
-				Constants.DEFAULT_ADMIN_USERNAME);
 		try {
+			AccountAuth auth = accountAuthRepository.findByTypeAndPrincipal(AuthType.USERNAME,
+					Constants.DEFAULT_ADMIN_USERNAME);
 			if (auth == null) {
 				createAdminAccount(Constants.DEFAULT_ADMIN_USERNAME, Constants.DEFAULT_ADMIN_PASSWORD);
 				LOG.debug("Created default admin account");
 			}
 		}
 		catch (Exception e) {
-			LOG.warn(e.getMessage(), e);
+			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR), e);
 		}
-
-		boolean tls = configuration.getPublicPort() == 443;
-		if (configuration.getPublicPort() == 80 || tls) {
-			emailConfirmationLink = String.format(EMAIL_CONFIRMATION_LINK_BASE_FORMAT, tls ? "s" : "",
-					configuration.getPublicHost(), configuration.getContextPath(), configuration.getApiVersion(),
-					EMAIL_CONFIRMATION_LINK_PARAMS);
-		}
-		else {
-			emailConfirmationLink = String.format(EMAIL_CONFIRMATION_LINK_WITH_PORT_BASE_FORMAT, "",
-					configuration.getPublicHost(), configuration.getPublicPort(), configuration.getContextPath(),
-					configuration.getApiVersion(), EMAIL_CONFIRMATION_LINK_PARAMS);
-		}
+		emailConfirmationLink = configuration.getApiBaseUrl() + EMAIL_CONFIRMATION_LINK_FORMAT;
 	}
 
 	@Transactional
@@ -317,7 +301,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 		case TENANT:
 			newAccount = new Tenant();
-			// TODO: make it UNVERIFIED by default later
+			// TODO: make it UNVERIFIED by default later once tenant registration is enabled
 			((Tenant) newAccount).setVerification(VerificationStatus.VERIFIED);
 			newAccount.setRole(Role.TENANT);
 			break;
@@ -338,10 +322,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		newAccount.setCreationDate(new Date());
 		newAccount.setStatus(Status.ENABLED);
 		newAccount.setAvatar(configuration.getDefaultAvatar());
-
-		// save for airq user
-		// TODO REMOVE
-		// String password = credential;
 
 		// auth type
 		boolean verified = false;
@@ -386,7 +366,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		case QQ:
 		case WEIBO:
 			verified = true;
-			// TODO LATER: LEAVE IT AS-IS FOR NOW
+			// XXX NOTE: NOT implemented, LEAVE IT AS-IS FOR NOW
 			break;
 
 		default:
@@ -410,12 +390,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			auth.setCreationDate(new Date());
 			auth.setLastAccessedDate(auth.getCreationDate());
 			auth = accountAuthRepository.save(auth);
-			// TODO REMOVE
-			// create account in AirQ
-			// if (configuration.isAirqAccountSync()) {
-			// LOG.info("Create corresponding account on AirQ for {}", principal);
-			// airqAccountService.createAccount(principal, password);
-			// }
 			return Pair.of(accountCreated, auth);
 		}
 		catch (Exception e) {
@@ -679,8 +653,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return Pages.adapt(accountRepository.findByRole(role, createPageRequest(page, pageSize)));
 	}
 
-	// TODO list all/cleanup unconfirmed/expired accounts, need to re-send email if confirm link expired
-
 	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
@@ -735,12 +707,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		final AccountAuth authToSave = auth;
 		safeExecute(() -> accountAuthRepository.save(authToSave), "Update account %s email to %s failed", accountId,
 				email);
-		// update AirQ user email
-		// TODO REMOVE
-		// if (configuration.isAirqAccountSync()) {
-		// LOG.info("Update corresponding account on AirQ for {}", account);
-		// airqAccountService.updateAccountProfile(account.getNickName(), email);
-		// }
 		sendConfirmationEmail(email, verificationCode, account, AccountAuth.EXPIRES_IN_ONE_DAY);
 	}
 
@@ -813,13 +779,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			throw new AirException(Codes.ACCOUNT_PASSWORD_MISMATCH, M.msg(M.ACCOUNT_PASSWORD_MISMATCH));
 		}
 		account.setPassword(passwordEncoder.encode(newPassword));
-
-		// update AirQ account password
-		// TODO REMOVE
-		// if (configuration.isAirqAccountSync()) {
-		// LOG.info("Update corresponding account password on AirQ for {}", account);
-		// airqAccountService.updateAccountPassword(account.getNickName(), newPassword);
-		// }
 		return safeExecute(() -> accountRepository.save(account), "Update account %s password failed", accountId);
 	}
 
@@ -863,7 +822,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		bindings.put(Constants.TEMPLATE_BINDING_COMPANY, configuration.getCompany());
 		bindings.put(Constants.TEMPLATE_BINDING_WEBSITE, configuration.getWebsite());
 		bindings.put(Constants.TEMPLATE_BINDING_RNDPASSWORD, rndPassword);
-		// bindings.put(EMAIL_BINDING_RESETPASSWORDLINK, "#TODO"); // XXX NOT USED FOR NOW
+		// bindings.put(EMAIL_BINDING_RESETPASSWORDLINK, "xxx"); // XXX NOT USED FOR NOW
 		String mailBody = templateService.renderFile(Constants.TEMPLATE_MAIL_RESET_PASSOWRD, bindings);
 		mailService.sendMail(auth.getPrincipal(), configuration.getMailResetPasswordSubject(), mailBody);
 		return accountUpdated;
@@ -958,12 +917,23 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		// delete all auth data related to this account
 		accountAuthRepository.deleteByAccountId(account.getId());
 		accountRepository.delete(account);
-		// delete AirQ account
-		// TODO REMOVE
-		// if (configuration.isAirqAccountSync()) {
-		// LOG.info("Delete corresponding account on AirQ for {}", account);
-		// airqAccountService.deleteAccount(account.getNickName());
-		// }
 		LOG.info("Delete account: {}", account);
 	}
+
+	@Override
+	public AccountMetrics getAccountMetrics() {
+		long totalCount = accountRepository.count();
+		long adminCount = accountRepository.countByRole(Role.ADMIN);
+		long tenantCount = accountRepository.countByRole(Role.TENANT);
+		long userCount = accountRepository.countByRole(Role.USER);
+		long userCountThisMonth = userRepository.countThisMonth();
+		AccountMetrics metrics = new AccountMetrics();
+		metrics.setTotalCount(totalCount);
+		metrics.setAdminCount(adminCount);
+		metrics.setTenantCount(tenantCount);
+		metrics.setUserCount(userCount);
+		metrics.setUserCountThisMonth(userCountThisMonth);
+		return metrics;
+	}
+
 }

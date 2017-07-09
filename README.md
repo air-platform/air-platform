@@ -42,10 +42,10 @@ Air Community Platform.
 	skip-character-set-client-handshake
 	collation-server=utf8_unicode_ci
 	character-set-server=utf8
-* Check charset: `SHOW VARIABLES WHERE Variable_name LIKE 'character_set_%' OR Variable_name LIKE 'collation%';`
+* Check charset: 
 
-	
-	
+    SHOW VARIABLES WHERE Variable_name LIKE 'character_set_%' OR Variable_name LIKE 'collation%';
+
 * Create database
 
 	CREATE USER 'airadmin' IDENTIFIED BY 'air@p0o9i8u7';
@@ -53,3 +53,20 @@ Air Community Platform.
 	GRANT ALL PRIVILEGES ON *.* TO 'airadmin'@'localhost' IDENTIFIED BY 'air@p0o9i8u7' WITH GRANT OPTION;
 	FLUSH PRIVILEGES;
 	CREATE DATABASE air_platform CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+* Update Table 
+   
+    Update table after all tables are auto generated:
+    update air_platform_product_comment column: content set encoding to utf8mb4 and collation to utf8mb4_general_ci to support emoji
+
+* Config Redis Cache
+    
+    # maxmemory in bytes, e.g. 3G=3221225472
+    maxmemory 3221225472
+ 
+ * Run Platform
+   
+    AIR_HOME/start.sh - start platform
+    AIR_HOME/stop.sh  - stop platform
+    Where AIR_HOME is the home of AIR Platform deployment
+ 

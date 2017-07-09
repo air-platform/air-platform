@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 
 /**
@@ -90,12 +91,27 @@ public interface BaseProductRepository<T extends Product>
 			Pageable pageable);
 
 	/**
-	 * Count all products by review status. (For ADMIN ONLY)
+	 * Count all products by review status. (For ADMIN ONLY) (bad performance when used without a concrete type, use it
+	 * only when necessary)
 	 * 
 	 * @param reviewStatus the review status
 	 * @return count of products
 	 */
 	long countByReviewStatus(ReviewStatus reviewStatus);
+
+	long countByPublished(boolean published);
+
+	long countByVendorIdAndPublished(String tenantId, boolean published);
+
+	/**
+	 * Count all products by type. (For ADMIN ONLY) (bad performance when used without a concrete product type, use it
+	 * only when necessary, and it's USELESS when used in a concrete product type, because type is always same for a
+	 * concrete product type)
+	 * 
+	 * @param type the product type
+	 * @return count of products
+	 */
+	long countByType(Type type);
 
 	// iterator over products (For ADMIN ONLY)
 	Stream<T> findByVendorId(String tenantId);

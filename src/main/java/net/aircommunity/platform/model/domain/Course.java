@@ -35,13 +35,12 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
 		@Index(name = "idx_published_rank_score", columnList = "published,rank,start_date,score"),
 		// XXX seems not selected, how to force
 		// @Index(name = "idx_idx_location_aircraft_type", columnList = "published,location,aircraft_type")
-		//
 })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Course extends StandardProduct {
 	private static final long serialVersionUID = 1L;
 
-	// TODO 分期付款 instalment stage number?
+	// TODO instalment stage number?
 	// @Column(name = "instalments")
 	// private int instalments;
 
@@ -184,28 +183,25 @@ public class Course extends StandardProduct {
 
 	@PrePersist
 	private void prePersist() {
+		setType(Type.COURSE);
 		setCategory(Category.AIR_TRAINING);
-	}
-
-	@Override
-	public Type getType() {
-		return Type.COURSE;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Course [aircraftType=").append(aircraftType).append(", location=").append(location)
-				.append(", license=").append(license).append(", startDate=").append(startDate).append(", endDate=")
-				.append(endDate).append(", enrollment=").append(enrollment).append(", courseService=")
-				.append(courseService).append(", totalNum=").append(totalNum).append(", enrollNum=").append(enrollNum)
-				.append(", school=").append(school).append(", price=").append(price).append(", currencyUnit=")
-				.append(currencyUnit).append(", name=").append(name).append(", image=").append(image).append(", score=")
-				.append(score).append(", totalSales=").append(totalSales).append(", rank=").append(rank)
-				.append(", published=").append(published).append(", creationDate=").append(creationDate)
-				.append(", clientManagers=").append(clientManagers).append(", description=").append(description)
-				.append(", reviewStatus=").append(reviewStatus).append(", rejectedReason=").append(rejectedReason)
-				.append(", id=").append(id).append("]");
+		builder.append("Course [id=").append(id).append(", price=").append(price).append(", currencyUnit=")
+				.append(currencyUnit).append(", name=").append(name).append(", type=").append(type)
+				.append(", category=").append(category).append(", image=").append(image).append(", stock=")
+				.append(stock).append(", score=").append(score).append(", totalSales=").append(totalSales)
+				.append(", rank=").append(rank).append(", published=").append(published).append(", creationDate=")
+				.append(creationDate).append(", clientManagers=").append(clientManagers).append(", description=")
+				.append(description).append(", reviewStatus=").append(reviewStatus).append(", rejectedReason=")
+				.append(rejectedReason).append(", aircraftType=").append(aircraftType).append(", location=")
+				.append(location).append(", license=").append(license).append(", startDate=").append(startDate)
+				.append(", endDate=").append(endDate).append(", enrollment=").append(enrollment)
+				.append(", courseService=").append(courseService).append(", totalNum=").append(totalNum)
+				.append(", enrollNum=").append(enrollNum).append("]");
 		return builder.toString();
 	}
 }

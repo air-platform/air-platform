@@ -48,6 +48,8 @@ interface DomainConstants {
 	int PRODUCT_NAME_LEN = 50;
 	int PRODUCT_REVIEW_STATUS_LEN = 10;
 	// current used max is 12
+	int PRODUCT_TYPE_LEN = 15;
+	// current used max is 12
 	int PRODUCT_CATEGORY_LEN = 15;
 	int PRODUCT_FAQ_TITLE_LEN = 255;
 	// current used max is 5

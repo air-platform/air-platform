@@ -39,6 +39,10 @@ public class OrderRef implements DomainConstants, Serializable {
 	@Column(name = "user_id", length = ID_LEN, nullable = false)
 	private String ownerId;
 
+	// allow nullable, because charter order may not selected, so tenant is not available
+	@Column(name = "tenant_id", length = ID_LEN)
+	private String vendorId;
+
 	// order number
 	@Column(name = "order_no", length = ORDER_NO_LEN, nullable = false, unique = true)
 	private String orderNo;
@@ -78,6 +82,14 @@ public class OrderRef implements DomainConstants, Serializable {
 
 	public void setOwnerId(String ownerId) {
 		this.ownerId = ownerId;
+	}
+
+	public String getVendorId() {
+		return vendorId;
+	}
+
+	public void setVendorId(String vendorId) {
+		this.vendorId = vendorId;
 	}
 
 	public String getOrderNo() {

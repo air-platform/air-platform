@@ -41,11 +41,11 @@ import net.aircommunity.platform.model.domain.Address;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.Trade;
+import net.aircommunity.platform.model.metrics.UserOrderMetrics;
 import net.aircommunity.platform.model.payment.PaymentRequest;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.order.CharterOrderService;
-import net.aircommunity.platform.service.order.CommonOrderService;
 import net.aircommunity.platform.service.security.AccountService;
 
 /**
@@ -69,9 +69,6 @@ public class UserResource extends BaseResourceSupport {
 
 	@Resource
 	private AccountService accountService;
-
-	@Resource
-	private CommonOrderService commonOrderService;
 
 	@Resource
 	private CharterOrderService charterOrderService;
@@ -260,6 +257,14 @@ public class UserResource extends BaseResourceSupport {
 	// - refund
 	// - cancel
 	// ***********************************
+
+	@GET
+	@Path("order/metrics")
+	@Produces(MediaType.APPLICATION_JSON)
+	public UserOrderMetrics orderMetrics(@Context SecurityContext context) {
+		String userId = context.getUserPrincipal().getName();
+		return commonOrderService.getUserOrderMetrics(userId);
+	}
 
 	@POST
 	@Path("orders/{orderId}/pay/{paymentMethod}")

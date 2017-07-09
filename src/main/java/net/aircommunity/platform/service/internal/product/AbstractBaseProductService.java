@@ -24,7 +24,7 @@ import net.aircommunity.platform.service.product.ProductService;
 abstract class AbstractBaseProductService<T extends Product> extends AbstractProductService<T>
 		implements ProductService<T>, ProductFaqService {
 
-	// TODO: improve cache per tenant basis and also enable cache for list ?
+	// TODO: improve cache per tenant basis and also enable cache for list(probably be NOT necessary) ?
 
 	// *******
 	// Product

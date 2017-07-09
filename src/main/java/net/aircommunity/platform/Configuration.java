@@ -18,7 +18,7 @@ public class Configuration {
 	// REST
 	private String publicBaseUrl;
 	private String apiBaseUrl;
-	private ZoneId zoneId;
+	private static ZoneId zoneId;
 
 	@Value("${micro.rest.context-path}")
 	private String contextPath;
@@ -146,7 +146,6 @@ public class Configuration {
 			builder.append(":").append(port);
 		}
 		publicBaseUrl = builder.toString();
-
 		// API URL
 		String apiVersion = getApiVersion();
 		String contextPath = getContextPath();
@@ -160,12 +159,16 @@ public class Configuration {
 		}
 		// it should be now: contextPath=/path/
 		apiBaseUrl = builder.append(contextPath).append(apiVersion).toString();
-
 		//
 		zoneId = ZoneId.of(getTimeZone());
 	}
 
-	public ZoneId getZoneId() {
+	/**
+	 * Make it static allow to call it from anywhere.
+	 * 
+	 * @return configured ZoneId of current platform
+	 */
+	public static ZoneId getZoneId() {
 		return zoneId;
 	}
 

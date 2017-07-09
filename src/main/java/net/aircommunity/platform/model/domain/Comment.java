@@ -31,7 +31,8 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
  */
 @Entity
 @Table(name = "air_platform_product_comment", indexes = {
-		@Index(name = "idx_product_id_date", columnList = "product_id,date,source") })
+		@Index(name = "idx_product_id_date", columnList = "product_id,date,source")//
+})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Comment extends Persistable {
 	private static final long serialVersionUID = 1L;

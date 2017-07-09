@@ -10,6 +10,8 @@ import javax.json.JsonString;
 
 import io.micro.common.Strings;
 import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.service.order.CommonOrderService;
+import net.aircommunity.platform.service.payment.PaymentService;
 import net.aircommunity.platform.service.product.CommonProductService;
 
 /**
@@ -36,6 +38,12 @@ public abstract class BaseResourceSupport {
 
 	@Resource
 	protected CommonProductService commonProductService;
+	
+	@Resource
+	protected CommonOrderService commonOrderService;
+	
+	@Resource
+	protected PaymentService paymentService;
 
 	protected JsonObject buildCountResponse(long count) {
 		return Json.createObjectBuilder().add(JSON_PROP_COUNT, count).build();

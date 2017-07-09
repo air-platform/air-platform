@@ -276,5 +276,4 @@ abstract class AbstractBaseOrderService<T extends Order> extends AbstractOrderSe
 	public Page<T> listUserOrders(String userId, Set<Order.Status> statuses, int page, int pageSize) {
 		return doListUserOrdersInStatuses(userId, statuses, page, pageSize);
 	}
-
 }

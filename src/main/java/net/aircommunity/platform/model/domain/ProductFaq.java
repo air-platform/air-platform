@@ -27,7 +27,8 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
  */
 @Entity
 @Table(name = "air_platform_product_faq", indexes = {
-		@Index(name = "idx_product_id_date", columnList = "product_id,creation_date") })
+		@Index(name = "idx_product_id_date", columnList = "product_id,creation_date") //
+})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProductFaq extends Persistable {
 	private static final long serialVersionUID = 1L;

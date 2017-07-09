@@ -111,8 +111,6 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			newProduct.setTotalSales(0);
 			newProduct.setStock(product.getStock());
 			newProduct.setPublished(false);
-			// actually set when @PrePersist
-			newProduct.setCategory(product.getCategory());
 			newProduct.setReviewStatus(ReviewStatus.PENDING);
 			// standard
 			if (StandardProduct.class.isAssignableFrom(product.getClass())) {

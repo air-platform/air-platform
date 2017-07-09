@@ -24,6 +24,14 @@ public interface SchoolRepository extends JpaRepository<School, String> {
 	Page<School> findByVendorId(String tenantId, Pageable pageable);
 
 	/**
+	 * Count tenant products. (TENANT)
+	 * 
+	 * @param tenantId the tenantId
+	 * @return count of schools
+	 */
+	long countByVendorId(String tenantId);
+
+	/**
 	 * Delete all the orders of a vendor.
 	 * 
 	 * @param tenantId the tenantId

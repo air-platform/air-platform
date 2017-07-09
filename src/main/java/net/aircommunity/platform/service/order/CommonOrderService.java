@@ -5,6 +5,8 @@ import javax.annotation.Nonnull;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Refund;
+import net.aircommunity.platform.model.metrics.OrderMetrics;
+import net.aircommunity.platform.model.metrics.UserOrderMetrics;
 
 /**
  * Common order service list/query all {@code Order}s for a {@code User}.
@@ -70,5 +72,31 @@ public interface CommonOrderService extends OrderService<Order> {
 	 */
 	@Nonnull
 	Order handleOrderRefundFailure(@Nonnull Order order, @Nonnull String refundFailureCause);
+
+	/**
+	 * Get the overall order metrics.
+	 * 
+	 * @return the order metrics
+	 */
+	@Nonnull
+	OrderMetrics getOrderMetrics();
+
+	/**
+	 * Get the overall order metrics for a tenant.
+	 * 
+	 * @param tenantId the tenantId
+	 * @return the order metrics
+	 */
+	@Nonnull
+	OrderMetrics getOrderMetrics(@Nonnull String tenantId);
+
+	/**
+	 * Get the overall order metrics for a user.
+	 * 
+	 * @param userId the userId
+	 * @return the order metrics
+	 */
+	@Nonnull
+	UserOrderMetrics getUserOrderMetrics(@Nonnull String userId);
 
 }

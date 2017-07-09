@@ -65,6 +65,11 @@ public abstract class Product extends Reviewable {
 	@Column(name = "name", length = PRODUCT_NAME_LEN, nullable = false)
 	protected String name;
 
+	// product type
+	@Enumerated(EnumType.STRING)
+	@Column(name = "type", length = PRODUCT_TYPE_LEN, nullable = false)
+	protected Type type;
+
 	// product category
 	@Enumerated(EnumType.STRING)
 	@Column(name = "category", length = PRODUCT_CATEGORY_LEN, nullable = false)
@@ -84,7 +89,7 @@ public abstract class Product extends Reviewable {
 	@Column(name = "score", nullable = false)
 	protected double score = 0.0;
 
-	// TODO useful?
+	// XXX useful?
 	// @Column(name = "discount", nullable = true)
 	// protected double discount;
 
@@ -140,6 +145,14 @@ public abstract class Product extends Reviewable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public Category getCategory() {
@@ -237,9 +250,6 @@ public abstract class Product extends Reviewable {
 		this.vendor = vendor;
 	}
 
-	// product type
-	public abstract Type getType();
-
 	/**
 	 * Product type
 	 */
@@ -254,11 +264,6 @@ public abstract class Product extends Reviewable {
 			}
 			return null;
 		}
-
-		// @JsonValue
-		// public String toString() {
-		// return super.toString().toLowerCase();
-		// }
 	}
 
 	/**

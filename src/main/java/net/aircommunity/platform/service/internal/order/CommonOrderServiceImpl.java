@@ -22,6 +22,9 @@ import net.aircommunity.platform.model.domain.OrderRef;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
+import net.aircommunity.platform.model.metrics.OrderMetrics;
+import net.aircommunity.platform.model.metrics.PerOrderMetrics;
+import net.aircommunity.platform.model.metrics.UserOrderMetrics;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.order.CommonOrderService;
 import net.aircommunity.platform.service.order.StandardOrderService;
@@ -64,6 +67,8 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order>
 				OrderRef orderRef = new OrderRef();
 				orderRef.setOrderId(order.getId());
 				orderRef.setOrderNo(order.getOrderNo());
+				Product product = order.getProduct();
+				orderRef.setVendorId(product == null ? null : product.getVendor().getId());
 				orderRef.setOwnerId(order.getOwner().getId());
 				orderRef.setStatus(order.getStatus());
 				orderRef.setType(order.getType());
@@ -144,6 +149,55 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order>
 		});
 		serviceRegistry = builder.build();
 		LOG.debug("Order service registry: {}", serviceRegistry);
+	}
+
+	@Override
+	public OrderMetrics getOrderMetrics() {
+		// NOTE: No need to set all for buildAndSum
+		// long totalCount = orderRefRepository.count();
+		// long countThisMonth = orderRefRepository.countAllThisMonth();
+		// long countToday = orderRefRepository.countAllToday();
+		// OrderMetrics.Builder builder = OrderMetrics.builder().setTotalCount(totalCount)
+		// .setCountThisMonth(countThisMonth).setCountToday(countToday);
+		OrderMetrics.Builder builder = OrderMetrics.builder();
+		for (Product.Type type : Product.Type.values()) {
+			long perTypeTotalCount = orderRefRepository.countByType(type);
+			long perTypeCountThisMonth = orderRefRepository.countAllThisMonth(type);
+			long perTypeCountToday = orderRefRepository.countAllToday(type);
+			builder.setPerOrderMetrics(type,
+					new PerOrderMetrics(perTypeTotalCount, perTypeCountThisMonth, perTypeCountToday));
+		}
+		return builder.buildAndSum();
+	}
+
+	@Override
+	public OrderMetrics getOrderMetrics(String tenantId) {
+		// NOTE: No need to set all for buildAndSum
+		// long totalCount = orderRefRepository.countByVendorId(tenantId);
+		// long countThisMonth = orderRefRepository.countTenantThisMonth(tenantId);
+		// long countToday = orderRefRepository.countTenantToday(tenantId);
+		// OrderMetrics.Builder builder = OrderMetrics.builder().setTotalCount(totalCount)
+		// .setCountThisMonth(countThisMonth).setCountToday(countToday);
+
+		OrderMetrics.Builder builder = OrderMetrics.builder();
+		for (Product.Type type : Product.Type.values()) {
+			long perTypeTotalCount = orderRefRepository.countByVendorIdAndType(tenantId, type);
+			long perTypeCountThisMonth = orderRefRepository.countTenantThisMonth(tenantId, type);
+			long perTypeCountToday = orderRefRepository.countTenantToday(tenantId, type);
+			builder.setPerOrderMetrics(type,
+					new PerOrderMetrics(perTypeTotalCount, perTypeCountThisMonth, perTypeCountToday));
+		}
+		return builder.buildAndSum();
+	}
+
+	@Override
+	public UserOrderMetrics getUserOrderMetrics(String userId) {
+		long totalCount = orderRefRepository.countByOwnerId(userId);
+		long finishedCount = orderRefRepository.countByOwnerIdAndStatusIn(userId, Order.COMPLETED_STATUSES);
+		long pendingCount = orderRefRepository.countByOwnerIdAndStatusIn(userId, Order.PENDING_STATUSES);
+		long cancelledCount = orderRefRepository.countByOwnerIdAndStatus(userId, Order.Status.CANCELLED);
+		long refundCount = orderRefRepository.countByOwnerIdAndStatusIn(userId, Order.REFUND_STATUSES);
+		return new UserOrderMetrics(totalCount, finishedCount, pendingCount, cancelledCount, refundCount);
 	}
 
 }

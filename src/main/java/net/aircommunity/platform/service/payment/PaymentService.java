@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Trade;
+import net.aircommunity.platform.model.metrics.TradeMetrics;
 import net.aircommunity.platform.model.payment.PaymentNotification;
 import net.aircommunity.platform.model.payment.PaymentRequest;
 import net.aircommunity.platform.model.payment.PaymentResponse;
@@ -83,5 +84,22 @@ public interface PaymentService {
 	 */
 	@Nonnull
 	Optional<TradeQueryResult> queryRefund(@Nullable Trade.Method method, @Nonnull Order order);
+
+	/**
+	 * Get the trade metrics for the platform.
+	 * 
+	 * @return trade metrics
+	 */
+	@Nonnull
+	TradeMetrics getTradeMetrics();
+
+	/**
+	 * Get the trade metrics for a tenant.
+	 * 
+	 * @param tenantId the tenantId
+	 * @return trade metrics
+	 */
+	@Nonnull
+	TradeMetrics getTradeMetrics(@Nonnull String tenantId);
 
 }

@@ -15,7 +15,7 @@ import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
  */
 public interface AccountAuthRepository extends JpaRepository<AccountAuth, String> {
 
-	// TODO enable cache for CRUD
+	// TODO enable cache for auth if necessary ?
 
 	/**
 	 * Find an account auths for accountId.

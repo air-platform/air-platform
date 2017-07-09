@@ -3,6 +3,7 @@ package net.aircommunity.platform.model.domain;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
@@ -19,7 +20,10 @@ import net.aircommunity.platform.model.jaxb.ProductFamilyAdapter;
  * @author Bin.Zhang
  */
 @Entity
-@Table(name = "air_platform_airtransport")
+@Table(name = "air_platform_airtransport", indexes = {
+		@Index(name = "idx_review_status_tenant_id", columnList = "review_status,tenant_id"),
+		@Index(name = "idx_published_rank_score", columnList = "published,rank,score")//
+})
 public class AirTransport extends SalesPackageProduct {
 	private static final long serialVersionUID = 1L;
 
@@ -70,24 +74,21 @@ public class AirTransport extends SalesPackageProduct {
 
 	@PrePersist
 	private void prePersist() {
+		setType(Type.AIRTRANSPORT);
 		setCategory(Category.AIR_TRANS);
-	}
-
-	@Override
-	public Type getType() {
-		return Type.AIRTRANSPORT;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AirTransport [family=").append(family).append(", timeEstimation=").append(timeEstimation)
-				.append(", flightRoute=").append(flightRoute).append(", name=").append(name).append(", image=")
-				.append(image).append(", score=").append(score).append(", totalSales=").append(totalSales)
+		builder.append("AirTransport [id=").append(id).append(", name=").append(name).append(", type=").append(type)
+				.append(", category=").append(category).append(", image=").append(image).append(", stock=")
+				.append(stock).append(", score=").append(score).append(", totalSales=").append(totalSales)
 				.append(", rank=").append(rank).append(", published=").append(published).append(", creationDate=")
 				.append(creationDate).append(", clientManagers=").append(clientManagers).append(", description=")
 				.append(description).append(", reviewStatus=").append(reviewStatus).append(", rejectedReason=")
-				.append(rejectedReason).append(", id=").append(id).append("]");
+				.append(rejectedReason).append(", family=").append(family).append(", timeEstimation=")
+				.append(timeEstimation).append(", flightRoute=").append(flightRoute).append("]");
 		return builder.toString();
 	}
 }

@@ -44,6 +44,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String FORM_INVALID_FILE_INPUT;
 
 	// product
+	public static String PRODUCT_NOT_SET;
 	public static String PRODUCT_NOT_FOUND;
 	public static String PRODUCT_NOT_APPROVED;
 	public static String PRODUCT_FAQ_NOT_FOUND;

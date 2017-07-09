@@ -136,4 +136,5 @@ public class StandardOrderProcessor<T extends Order> implements OrderProcessor<T
 		}
 		return Pages.adapt(orderRepository.findAllByOrderByCreationDateDesc(Pages.createPageRequest(page, pageSize)));
 	}
+
 }

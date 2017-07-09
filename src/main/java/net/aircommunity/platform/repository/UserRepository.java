@@ -1,5 +1,7 @@
 package net.aircommunity.platform.repository;
 
+import java.util.Date;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,5 +24,25 @@ public interface UserRepository extends JpaRepository<User, String> {
 	 * @return an account of page
 	 */
 	Page<User> findByRole(Role role, Pageable pageable);
+
+	/**
+	 * Count new users for current month. (e.g. 2017-07-01 00:00:00 - 2017-07-01 23:59:59)
+	 * 
+	 * @return count of new users
+	 */
+	default long countThisMonth() {
+		return CountSupport.countThisMonth(this::countByCreationDateBetween);
+	}
+
+	/**
+	 * Count new users for today. (e.g. 2017-07-11 00:00:00 - 2017-07-11 23:59:59)
+	 * 
+	 * @return count of new users
+	 */
+	default long countToday() {
+		return CountSupport.countToday(this::countByCreationDateBetween);
+	}
+
+	long countByCreationDateBetween(Date firstDate, Date lastDate);
 
 }

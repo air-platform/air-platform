@@ -31,4 +31,12 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 	 */
 	Page<Account> findByRole(Role role, Pageable pageable);
 
+	/**
+	 * Count by role.
+	 * 
+	 * @param role the role
+	 * @return the count of accounts
+	 */
+	long countByRole(Role role);
+
 }

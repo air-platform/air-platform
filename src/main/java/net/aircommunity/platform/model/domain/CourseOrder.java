@@ -25,8 +25,7 @@ import net.aircommunity.platform.model.domain.Product.Type;
 @Table(name = "air_platform_course_order", indexes = {
 		@Index(name = "idx_user_id_status", columnList = "user_id,status,creation_date"),
 		@Index(name = "idx_tenant_id_status", columnList = "tenant_id,status,creation_date"),
-		@Index(name = "idx_course_id_status", columnList = "course_id,status,creation_date")
-		//
+		@Index(name = "idx_course_id_status", columnList = "course_id,status,creation_date")//
 })
 public class CourseOrder extends VendorAwareOrder {
 	private static final long serialVersionUID = 1L;

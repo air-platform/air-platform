@@ -1,7 +1,6 @@
 package net.aircommunity.platform.model.domain;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
@@ -19,6 +18,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
@@ -102,7 +102,7 @@ public class DailySignin extends Persistable {
 		if (lastSigninDate == null) {
 			return false;
 		}
-		LocalDate lastSignin = lastSigninDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate lastSignin = lastSigninDate.toInstant().atZone(Configuration.getZoneId()).toLocalDate();
 		return ChronoUnit.DAYS.between(lastSignin, LocalDate.now()) == 0;
 	}
 
@@ -117,7 +117,7 @@ public class DailySignin extends Persistable {
 		if (lastSigninDate == null) {
 			return false;
 		}
-		LocalDate lastSignin = lastSigninDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate lastSignin = lastSigninDate.toInstant().atZone(Configuration.getZoneId()).toLocalDate();
 		return ChronoUnit.DAYS.between(lastSignin, LocalDate.now()) == 1;
 	}
 

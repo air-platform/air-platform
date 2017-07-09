@@ -26,8 +26,7 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
 @Entity
 @Table(name = "air_platform_ferryflight", indexes = {
 		@Index(name = "idx_review_status_tenant_id", columnList = "review_status,tenant_id"),
-		@Index(name = "idx_published_rank_score", columnList = "published,rank,departure_date,score")
-		//
+		@Index(name = "idx_published_rank_score", columnList = "published,rank,departure_date,score")//
 })
 public class FerryFlight extends CharterableProduct {
 	private static final long serialVersionUID = 1L;
@@ -148,25 +147,25 @@ public class FerryFlight extends CharterableProduct {
 
 	@PrePersist
 	private void prePersist() {
+		setType(Type.FERRYFLIGHT);
 		setCategory(Category.AIR_JET);
-	}
-
-	@Override
-	public Type getType() {
-		return Type.FERRYFLIGHT;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("FerryFlight [flightNo=").append(flightNo).append(", aircraftType=").append(aircraftType)
-				.append(", departure=").append(departure).append(", arrival=").append(arrival).append(", seatPrice=")
-				.append(seatPrice).append(", seats=").append(seats).append(", minPassengers=").append(minPassengers)
+		builder.append("FerryFlight [id=").append(id).append(", seatPrice=").append(seatPrice).append(", seats=")
+				.append(seats).append(", minPassengers=").append(minPassengers).append(", price=").append(price)
+				.append(", currencyUnit=").append(currencyUnit).append(", name=").append(name).append(", type=")
+				.append(type).append(", category=").append(category).append(", image=").append(image).append(", stock=")
+				.append(stock).append(", score=").append(score).append(", totalSales=").append(totalSales)
+				.append(", rank=").append(rank).append(", published=").append(published).append(", creationDate=")
+				.append(creationDate).append(", clientManagers=").append(clientManagers).append(", description=")
+				.append(description).append(", reviewStatus=").append(reviewStatus).append(", rejectedReason=")
+				.append(rejectedReason).append(", flightNo=").append(flightNo).append(", aircraftType=")
+				.append(aircraftType).append(", departure=").append(departure).append(", arrival=").append(arrival)
 				.append(", departureDate=").append(departureDate).append(", timeSlot=").append(timeSlot)
-				.append(", appearances=").append(appearances).append(", price=").append(price).append(", currencyUnit=")
-				.append(currencyUnit).append(", name=").append(name).append(", image=").append(image).append(", score=")
-				.append(score).append(", creationDate=").append(creationDate).append(", description=")
-				.append(description).append(", id=").append(id).append("]");
+				.append(", appearances=").append(appearances).append("]");
 		return builder.toString();
 	}
 }

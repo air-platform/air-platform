@@ -5,13 +5,19 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.metrics.OrderMetrics;
+import net.aircommunity.platform.model.metrics.ProductMetrics;
+import net.aircommunity.platform.model.metrics.TradeMetrics;
+import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.rest.CommentResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.rest.tenant.order.TenantAirTaxiOrderResource;
@@ -32,7 +38,34 @@ import net.aircommunity.platform.rest.tenant.order.TenantJetTravelOrderResource;
 @Path("tenant")
 @AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE })
-public class TenantResource {
+public class TenantResource extends BaseResourceSupport {
+
+	// ***********************
+	// Metrics
+	// ***********************
+	@GET
+	@Path("product/metrics")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ProductMetrics productMetrics(@Context SecurityContext context) {
+		String tenantId = context.getUserPrincipal().getName();
+		return commonProductService.getProductMetrics(tenantId);
+	}
+
+	@GET
+	@Path("order/metrics")
+	@Produces(MediaType.APPLICATION_JSON)
+	public OrderMetrics orderMetrics(@Context SecurityContext context) {
+		String tenantId = context.getUserPrincipal().getName();
+		return commonOrderService.getOrderMetrics(tenantId);
+	}
+
+	@GET
+	@Path("trade/metrics")
+	@Produces(MediaType.APPLICATION_JSON)
+	public TradeMetrics tradeMetrics(@Context SecurityContext context) {
+		String tenantId = context.getUserPrincipal().getName();
+		return paymentService.getTradeMetrics(tenantId);
+	}
 
 	// ***********************
 	// Air Jet
