@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 
 import io.micro.annotation.Authenticated;
@@ -198,6 +199,8 @@ public class AccountResource {
 
 	private Response doAuthenticate(String ip, String userAgent, AuthType type, AuthcRequest request,
 			Set<Role> allowedRoles) {
+		LOG.debug("Auth attempt from [{}][{}][{}] account: {}", ip, type, Joiner.on(",").join(allowedRoles),
+				request.getPrincipal());
 		// Authenticate the user using the credentials provided against a database credentials can be account not found
 		// or via external auth
 		Account account = null;
@@ -211,7 +214,7 @@ public class AccountResource {
 		}
 		// 1) account = null: should never happen here, just check it for sure
 		// 2) ensure allowed roles (allowedRoles is empty means role is not checked)
-		if (account == null || (!allowedRoles.isEmpty() && allowedRoles.contains(account.getRole()))) {
+		if (account == null || (!allowedRoles.isEmpty() && !allowedRoles.contains(account.getRole()))) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 		try {

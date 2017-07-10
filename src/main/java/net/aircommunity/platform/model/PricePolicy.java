@@ -20,6 +20,11 @@ public enum PricePolicy {
 	/**
 	 * Per hour price
 	 */
-	PER_HOUR;
+	PER_HOUR,
+
+	/**
+	 * Require an quotation of price
+	 */
+	QUOTED;
 
 }

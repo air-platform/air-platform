@@ -80,10 +80,10 @@ public class ProductSearchResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Map<String, Object> search(@QueryParam("q") String query, @QueryParam("topN") @DefaultValue("0") int topN) {
-		String location = query;
-		if (Strings.isBlank(location)) {
+		if (Strings.isBlank(query)) {
 			return EMPTY_SEARCH_RESULT;
 		}
+		String location = Strings.escapeSql(query);
 		int page = 1;
 		int pageSize = topN <= 0 ? SEARCH_RESULT_TOP_N : topN;
 		ImmutableMap.Builder<String, Object> result = ImmutableMap.builder();

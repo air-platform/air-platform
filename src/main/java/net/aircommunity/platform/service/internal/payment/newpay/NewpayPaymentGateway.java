@@ -305,13 +305,13 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 
 	@Override
 	public Optional<TradeQueryResult> queryPayment(Order order) {
-		// TODO Auto-generated method stub
+		// TODO
 		return Optional.empty();
 	}
 
 	@Override
 	public Optional<TradeQueryResult> queryRefund(Order order) {
-		// TODO Auto-generated method stub
+		// TODO
 		return Optional.empty();
 	}
 

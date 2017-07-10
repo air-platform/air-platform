@@ -69,6 +69,7 @@ import net.aircommunity.platform.service.payment.PaymentService;
 import net.aircommunity.platform.service.product.CommentService;
 import net.aircommunity.platform.service.product.CommonProductService;
 import net.aircommunity.platform.service.spi.OrderProcessor;
+import net.aircommunity.platform.service.spi.ProductPricingStrategy;
 
 /**
  * Abstract Order service support.
@@ -116,6 +117,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	@Resource
 	private PaymentService paymentService;
 
+	private ProductPricingStrategy productPricingStrategy = ProductPricingStrategy.NOOP;
+
 	/**
 	 * Initialize
 	 */
@@ -142,6 +145,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		this.orderProcessor = orderProcessor;
 	}
 
+	protected void setProductPricingStrategy(ProductPricingStrategy productPricingStrategy) {
+		this.productPricingStrategy = productPricingStrategy;
+	}
 	// *********************
 	// Generic CRUD shared
 	// *********************
@@ -159,7 +165,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		try {
 			User owner = findAccount(userId, User.class);
 			if (owner.getStatus() == Account.Status.LOCKED) {
-				LOG.warn("Account {} is locked, cannot place orders", owner);
+				LOG.warn("Account {} is locked, cannot place any orders", owner);
 				throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.ACCOUNT_PERMISSION_DENIED_LOCKED));
 			}
 			T newOrder = null;
@@ -280,9 +286,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			orderRef.setType(saved.getType());
 			orderRef.setCreationDate(saved.getCreationDate());
 			orderRefRepository.save(orderRef);
-			// returning finally
 			return saved;
-		} // metrics
+		}
 		finally {
 			if (isMetricsEnabled()) {
 				timerContext.stop();
@@ -343,8 +348,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		BigDecimal unitPrice = BigDecimal.ZERO;
 		UnitProductPrice unitProductPrice = tgt.getUnitProductPrice();
 		LOG.debug("unitProductPrice: {}", unitProductPrice);
-		if (unitProductPrice.getPricePolicy() == PricePolicy.PER_HOUR) {
-			// TODO calculated via external system if possible, just make it zero for now
+		if (unitProductPrice.getPricePolicy() == PricePolicy.PER_HOUR
+				|| unitProductPrice.getPricePolicy() == PricePolicy.QUOTED) {
+			// XXX calculated via external system if possible
+			unitPrice = productPricingStrategy.quotationFor(tgt);
 		}
 		else {
 			unitPrice = unitProductPrice.getUnitPrice();
@@ -415,7 +422,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	/**
 	 * For ADMIN without check DELETED
 	 */
-	protected T doAdminFindOrder(String orderId) {
+	protected T doForceFindOrder(String orderId) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = orderOperationTimer(type, ORDER_ACTION_READ);
@@ -438,7 +445,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	protected T doFindOrder(String orderId) {
-		T order = doAdminFindOrder(orderId);
+		T order = doForceFindOrder(orderId);
 		if (order.getStatus() == Order.Status.DELETED) {
 			LOG.error("{}: {} is in DELETED status, considered as not found", type.getSimpleName(), orderId);
 			throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderId));
