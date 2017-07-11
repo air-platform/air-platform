@@ -149,9 +149,9 @@ public class CommentResource extends BaseResourceSupport {
 		String accountId = context.getUserPrincipal().getName();
 		Tenant tenant = comment.getProduct().getVendor();
 		Account owner = comment.getOwner();
-		// allow comment owner, product owner (tenant), admin/customer service
+		// allow comment owner, product owner (tenant, TODO customer service of a tenant?), admin
 		boolean allowDeleteion = owner.getId().equals(accountId) || tenant.getId().equals(accountId)
-				|| context.isUserInRole(Role.ADMIN.name()) || context.isUserInRole(Role.CUSTOMER_SERVICE.name());
+				|| context.isUserInRole(Role.ADMIN.name());
 		if (!allowDeleteion) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
@@ -165,8 +165,7 @@ public class CommentResource extends BaseResourceSupport {
 	@DELETE
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	public Response deleteAll(@QueryParam("product") String productId, @Context SecurityContext context) {
-		boolean allowDeleteion = context.isUserInRole(Role.ADMIN.name())
-				|| context.isUserInRole(Role.CUSTOMER_SERVICE.name());
+		boolean allowDeleteion = context.isUserInRole(Role.ADMIN.name());
 		if (!allowDeleteion) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}

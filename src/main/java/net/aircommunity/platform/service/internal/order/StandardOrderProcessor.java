@@ -48,7 +48,7 @@ public class StandardOrderProcessor<T extends Order> implements OrderProcessor<T
 		if (Strings.isBlank(orderNo)) {
 			return Collections.emptyList();
 		}
-		return orderRepository.findByOrderNoStartingWithIgnoreCase(orderNo);
+		return orderRepository.findVisibleByFuzzyOrderNo(orderNo);
 	}
 
 	@Override

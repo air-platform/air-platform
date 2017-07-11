@@ -200,12 +200,23 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	T findByOrderNo(String orderNo);
 
 	/**
+	 * Find order by orderNo (fuzzy match, exclude DELETED)
+	 * 
+	 * @param orderNo
+	 * @return order refs list or empty
+	 */
+	default List<T> findVisibleByFuzzyOrderNo(String orderNo) {
+		return findByOrderNoStartingWithIgnoreCaseAndStatusNot(orderNo, Status.DELETED);
+	}
+
+	/**
 	 * Find order by orderNo (fuzzy match)
 	 * 
 	 * @param orderNo the orderNo
-	 * @return order list or empty
+	 * @param status the status to excluded
+	 * @return order refs list or empty
 	 */
-	List<T> findByOrderNoStartingWithIgnoreCase(String orderNo);
+	List<T> findByOrderNoStartingWithIgnoreCaseAndStatusNot(String orderNo, Status status);
 
 	/**
 	 * Delete by order NO.

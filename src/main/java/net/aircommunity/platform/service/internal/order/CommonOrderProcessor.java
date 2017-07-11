@@ -66,7 +66,7 @@ public class CommonOrderProcessor implements OrderProcessor<Order> {
 		if (Strings.isBlank(orderNo)) {
 			return Collections.emptyList();
 		}
-		List<OrderRef> refs = orderRefRepository.findByOrderNoStartingWithIgnoreCase(orderNo);
+		List<OrderRef> refs = orderRefRepository.findVisibleByFuzzyOrderNo(orderNo);
 		return transform(refs);
 	}
 

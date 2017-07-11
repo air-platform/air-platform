@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.eventbus.Subscribe;
 
 import io.micro.common.DateFormats;
+import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.TradeSyncEvent;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.OrderRef;
@@ -139,7 +140,7 @@ public class PaymentSynchronizerImpl extends AbstractServiceSupport implements P
 			if (recentDays > 0) {
 				sinceDate.minusDays(recentDays);
 			}
-			Date date = Date.from(sinceDate.atStartOfDay(configuration.getZoneId()).toInstant());
+			Date date = Date.from(sinceDate.atStartOfDay(Configuration.getZoneId()).toInstant());
 			LOG.info("Sync recent ({}) days (since date: {}) pending payments and refunds...", recentDays,
 					SAFE_FORMATTER.format(date));
 			Pageable pageable = Pages.createPageRequest(1, SYNC_BATCH_SIZE);
@@ -185,7 +186,7 @@ public class PaymentSynchronizerImpl extends AbstractServiceSupport implements P
 	public void syncPaymentsDaily() {
 		MDC.put(KEY_PAYMENT_ACTION, ACTION_TRADE_SYNC);
 		try {
-			Date today = Date.from(LocalDate.now().atStartOfDay(configuration.getZoneId()).toInstant());
+			Date today = Date.from(LocalDate.now().atStartOfDay(Configuration.getZoneId()).toInstant());
 			LOG.debug("Sync daily ({}) pending payments...", today);
 			// payment
 			try (Stream<OrderRef> paymentPendingOrders = orderRefRepository.findPaymentPendingOrders(today)) {

@@ -34,16 +34,16 @@ public interface OrderService<T extends Order> {
 	T findOrder(@Nonnull String orderId);
 
 	/**
-	 * Search by orderNo with fuzzy match.
+	 * Search by orderNo with fuzzy match. --> TODO ensure DELETED
 	 * 
 	 * @param orderNo the orderNo
 	 * @return a list of orders or empty if none
 	 */
 	@Nonnull
-	List<T> searchOrder(@Nonnull String orderNo);
+	List<T> searchOrder(@Nonnull String orderNo); // with userId or tenantId
 
 	/**
-	 * Find orders with the given order IDs
+	 * Find orders with the given order IDs --> TODO ensure DELETED
 	 * 
 	 * @param orderIds the order IDs
 	 * @return orders list or empty

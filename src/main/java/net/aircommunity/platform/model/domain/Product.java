@@ -2,6 +2,7 @@ package net.aircommunity.platform.model.domain;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -255,6 +256,12 @@ public abstract class Product extends Reviewable {
 	 */
 	public enum Type {
 		FLEET, FERRYFLIGHT, JETTRAVEL, AIRTAXI, AIRTOUR, AIRTRANSPORT, COURSE;
+
+		/**
+		 * Lower case names in string.
+		 */
+		public static final Set<String> NAMES = Stream.of(values()).map(e -> e.name().toLowerCase(Locale.ENGLISH))
+				.collect(Collectors.toSet());
 
 		public static Type fromString(String value) {
 			for (Type e : values()) {
