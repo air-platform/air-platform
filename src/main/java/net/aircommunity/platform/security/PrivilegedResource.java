@@ -11,21 +11,21 @@ public class PrivilegedResource implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final Type resourceType;
-	private final String resourceId; // should be always agentId ATM
-	private final String subResourceId;
+	private final String resourceId;
+	private final Object context;
 
-	public static PrivilegedResource of(Type resourceType, String resourceId, String subResourceId) {
-		return new PrivilegedResource(resourceType, resourceId, subResourceId);
+	public static PrivilegedResource of(Type resourceType, String resourceId, Object context) {
+		return new PrivilegedResource(resourceType, resourceId, context);
 	}
 
 	public static PrivilegedResource of(Type resourceType, String resourceId) {
 		return of(resourceType, resourceId, null);
 	}
 
-	private PrivilegedResource(Type resourceType, String resourceId, String subResourceId) {
+	private PrivilegedResource(Type resourceType, String resourceId, Object context) {
 		this.resourceType = resourceType;
 		this.resourceId = resourceId;
-		this.subResourceId = subResourceId;
+		this.context = context;
 	}
 
 	public Type getResourceType() {
@@ -36,20 +36,19 @@ public class PrivilegedResource implements Serializable {
 		return resourceId;
 	}
 
-	public String getSubResourceId() {
-		return subResourceId;
+	public Object getContext() {
+		return context;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("PrivilegedResource [resourceType=").append(resourceType).append(", resourceId=")
-				.append(resourceId).append(", subResourceId=").append(subResourceId).append("]");
+				.append(resourceId).append(", context=").append(context).append("]");
 		return builder.toString();
 	}
 
-	// TODO
 	public enum Type {
-		ACCOUNT, ORDER;
+		ORDER, PRODUCT, AIRCRAFT, SCHOOL, PRODUCT_FAMILY;
 	}
 }

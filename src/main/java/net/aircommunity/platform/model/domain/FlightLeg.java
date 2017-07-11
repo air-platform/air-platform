@@ -28,7 +28,7 @@ import net.aircommunity.platform.model.jaxb.OrderAdapter;
 @Entity
 @Table(name = "air_platform_flightleg")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class FlightLeg extends Persistable {
+public class FlightLeg extends Persistable implements Comparable<FlightLeg> {
 	private static final long serialVersionUID = 1L;
 
 	// departure city
@@ -145,6 +145,14 @@ public class FlightLeg extends Persistable {
 		else if (!departure.equals(other.departure))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(FlightLeg o) {
+		if (o == null) {
+			return 1;
+		}
+		return date.compareTo(o.date);
 	}
 
 	@Override

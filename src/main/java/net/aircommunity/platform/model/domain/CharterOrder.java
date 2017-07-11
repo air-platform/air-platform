@@ -1,23 +1,22 @@
 package net.aircommunity.platform.model.domain;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-
-import com.google.common.collect.ImmutableSet;
 
 import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.PricePolicy;
@@ -37,24 +36,22 @@ import net.aircommunity.platform.model.domain.Product.Type;
 public class CharterOrder extends StandardOrder implements Cloneable {
 	private static final long serialVersionUID = 1L;
 
-	// multiple flight legs (need to remove DUPs, but also requires flightLegs in order, make an copy of set, and then
-	// wrap in List)
+	// multiple flight legs (need to remove DUPs, but also requires flightLegs in order)
+	// ref: https://stackoverflow.com/questions/19871765/jpa-hibernate-sorted-collection-orderby-vs-sort
 	@NotEmpty
+	@OrderBy("date ASC")
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private List<FlightLeg> flightLegs = new ArrayList<>();
+	private SortedSet<FlightLeg> flightLegs = new TreeSet<>();
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<FleetCandidate> fleetCandidates = new HashSet<>();
 
-	public List<FlightLeg> getFlightLegs() {
+	public Set<FlightLeg> getFlightLegs() {
 		return flightLegs;
 	}
 
-	public void setFlightLegs(List<FlightLeg> legs) {
+	public void setFlightLegs(Set<FlightLeg> legs) {
 		if (legs != null) {
-			// make a copy of set to remove DUPs
-			Set<FlightLeg> legsCopy = ImmutableSet.copyOf(legs);
-			legs = new ArrayList<>(legsCopy);
 			legs.stream().forEach(flightLeg -> flightLeg.setOrder(this));
 			flightLegs.clear();
 			flightLegs.addAll(legs);

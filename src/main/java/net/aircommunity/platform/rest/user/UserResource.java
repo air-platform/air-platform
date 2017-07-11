@@ -45,6 +45,7 @@ import net.aircommunity.platform.model.metrics.UserOrderMetrics;
 import net.aircommunity.platform.model.payment.PaymentRequest;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
+import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.order.CharterOrderService;
 import net.aircommunity.platform.service.security.AccountService;
 
@@ -56,6 +57,7 @@ import net.aircommunity.platform.service.security.AccountService;
 @Api
 @RESTful
 @Path("user")
+@AllowResourceOwner
 @RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
 public class UserResource extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(UserResource.class);
