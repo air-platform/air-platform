@@ -4,24 +4,25 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirTour;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.repository.AirTourRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.product.AirTourService;
+import net.aircommunity.platform.service.product.annotation.ManagedProductService;
 
 /**
  * AirTour Service implementation.
  * 
  * @author guankai
  */
-@Service
+@ManagedProductService(Product.Type.AIRTOUR)
 @Transactional(readOnly = true)
 public class AirTourServiceImpl extends AbstractSalesPackageProductService<AirTour> implements AirTourService {
 

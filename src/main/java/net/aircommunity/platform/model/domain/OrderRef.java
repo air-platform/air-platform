@@ -19,7 +19,7 @@ import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
- * Order reference for fast lookup. really useful? (all order reference in a same table), ONLY status is mutable.
+ * Order reference for fast query, all order reference in a same table, ONLY status and method are mutable.
  * 
  * @author Bin.Zhang
  */

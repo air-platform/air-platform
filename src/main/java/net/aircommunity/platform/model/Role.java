@@ -18,8 +18,8 @@ public enum Role {
 	TENANT(Roles.ROLE_TENANT),
 
 	/**
-	 * Customer Service. (allow to login from APP & admin console)? TODO how? admin console require tenantId for
-	 * products
+	 * Customer Service of a tenant. (allow to login from APP & admin console)? TODO how? admin console require tenantId
+	 * for products
 	 */
 	CUSTOMER_SERVICE(Roles.ROLE_CUSTOMER_SERVICE),
 

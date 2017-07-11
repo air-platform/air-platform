@@ -126,7 +126,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	@Resource
 	private CommonProductService commonProductService;
 
-	@Resource
+	@Resource(name = "commonOrderService")
 	private CommonOrderService commonOrderService;
 
 	private String emailConfirmationLink;

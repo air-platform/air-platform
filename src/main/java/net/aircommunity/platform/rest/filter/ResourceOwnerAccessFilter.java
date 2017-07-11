@@ -11,12 +11,9 @@ import javax.annotation.Resource;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
@@ -33,21 +30,17 @@ import net.aircommunity.platform.security.PrivilegedResource;
 import net.aircommunity.platform.service.security.AccessControlService;
 
 /**
- * Access check for agent sub-resources TODO
+ * Access check for product, order and other related resources to ensure the ownership of the resource.
  * 
  * @author Bin.Zhang
  */
-@AllowResourceOwner
 @Provider
+@AllowResourceOwner
 @Priority(Priorities.USER + 1)
-public class ResourceOwnerAccessFilter implements ContainerRequestFilter, ContainerResponseFilter {
+public class ResourceOwnerAccessFilter implements ContainerRequestFilter {
 	private static final Logger LOG = LoggerFactory.getLogger(ResourceOwnerAccessFilter.class);
-
-	private static final Response RESPONSE_UNAUTHORIZED = Response.status(Response.Status.UNAUTHORIZED).build();
 	private static final String TENANT_ID_PATH_PARAM = "tenantId";
 	private static final String USER_ID_PATH_PARAM = "userId";
-	private static final String AIRCRAFT = "aircraft";
-	private static final String SCHOOL = "school";
 	private static final String RESOURCE_ID_PATTERN = "([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})";
 	private static final String PRODUCT_TYPE_PATTERN = Joiner.on("|").join(Product.Type.NAMES);
 
@@ -78,8 +71,6 @@ public class ResourceOwnerAccessFilter implements ContainerRequestFilter, Contai
 	private static final Pattern TENANT_PRODUCT_FAMILY_PATTERN = Pattern
 			.compile("^\\/tenant\\/product\\/families\\/" + RESOURCE_ID_PATTERN);
 
-	// orderNo and search TODO
-
 	@Context
 	private UriInfo info;
 
@@ -89,112 +80,72 @@ public class ResourceOwnerAccessFilter implements ContainerRequestFilter, Contai
 	@Override
 	public void filter(ContainerRequestContext context) throws IOException {
 		SecurityContext securityContext = context.getSecurityContext();
-		// allowed if admin or resource owner
+		// ADMIN
+		// allowed to access any resources if ADMIN
 		if (securityContext.isUserInRole(Role.ADMIN.name())) {
-			// skip check for admin
+			// skip check for ADMIN
 			return;
 		}
 
+		// allow resource owner
 		List<PathSegment> segs = info.getPathSegments();
 		String path = segs.stream().map(seg -> seg.getPath()).collect(Collectors.joining("/", "/", ""));
-		LOG.debug("Path segments: {}, normalized path: {}", segs, path); // [user, ferryflight, orders, a, 1]
-
 		MultivaluedMap<String, String> pathParams = info.getPathParameters();
+		LOG.debug("Path segments: {}, normalized path: {}, pathParams: {}", segs, path, pathParams);
+
+		// TENANT
 		// for tenant resource without tenantId passed from URI, but append it automatically
 		if (securityContext.isUserInRole(Role.TENANT.name())) {
+			Role role = Role.TENANT;
 			String tenantId = securityContext.getUserPrincipal().getName();
 			pathParams.add(TENANT_ID_PATH_PARAM, tenantId);
 			// check tenant resource permission
-
-			// TODO
-			// check product
-			// Matcher m = TENANT_PRODUCT_PATTERN.matcher(path);
-			// if (m.find()) {
-			// Product.Type productType = Product.Type.fromString(m.group(1));
-			// PrivilegedResource resource = PrivilegedResource.of(PrivilegedResource.Type.PRODUCT,
-			// m.group(2)/* productId */, productType);
-			// accessControlService.checkResourceAccess(tenantId, resource);
-			// return;
-			// }
-
-			// check order
-			// m = TENANT_ORDER_PATTERN.matcher(path);
-			// if (m.find()) {
-			// Product.Type productType = Product.Type.fromString(m.group(1));
-			// PrivilegedResource resource = PrivilegedResource.of(PrivilegedResource.Type.ORDER,
-			// m.group(2)/* productId */, productType);
-			// accessControlService.checkResourceAccess(tenantId, resource);
-			// return;
-			// }
-
-			// check product related resource
-			// m = TENANT_PRODUCT_RESOURCE_PATTERN.matcher(path);
-			// if (m.find()) {
-			// Product.Type productType = Product.Type.fromString(m.group(1));
-			// PrivilegedResource resource = PrivilegedResource.of(PrivilegedResource.Type.ORDER,
-			// m.group(2)/* productId */, productType);
-			// accessControlService.checkResourceAccess(tenantId, resource);
-			// return;
-			// }
+			// a) check product
+			Matcher m = TENANT_PRODUCT_PATTERN.matcher(path);
+			if (m.find()) {
+				Product.Type productType = Product.Type.fromString(m.group(1));
+				PrivilegedResource resource = PrivilegedResource.of(PrivilegedResource.Type.PRODUCT,
+						m.group(2)/* productId */, productType);
+				accessControlService.checkResourceAccess(tenantId, role, resource);
+				return;
+			}
+			// b) check order
+			m = TENANT_ORDER_PATTERN.matcher(path);
+			if (m.find()) {
+				PrivilegedResource resource = PrivilegedResource.of(PrivilegedResource.Type.ORDER,
+						m.group(2)/* orderId */);
+				accessControlService.checkResourceAccess(tenantId, role, resource);
+				return;
+			}
+			// c) check product related resource
+			m = TENANT_PRODUCT_RESOURCE_PATTERN.matcher(path);
+			if (m.find()) {
+				PrivilegedResource resource = PrivilegedResource.of(PrivilegedResource.Type.fromString(m.group(1)),
+						m.group(2)/* resourceId */);
+				accessControlService.checkResourceAccess(tenantId, role, resource);
+				return;
+			}
+			// d) check product family resource
+			m = TENANT_PRODUCT_FAMILY_PATTERN.matcher(path);
+			if (m.find()) {
+				PrivilegedResource resource = PrivilegedResource.of(PrivilegedResource.Type.PRODUCT_FAMILY,
+						m.group(1)/* resourceId */);
+				accessControlService.checkResourceAccess(tenantId, role, resource);
+				return;
+			}
 		}
 
+		// USER
 		if (securityContext.isUserInRole(Role.USER.name())) {
 			String userId = securityContext.getUserPrincipal().getName();
 			pathParams.add(USER_ID_PATH_PARAM, userId);
-
 			// check user resource permission
 			Matcher m = USER_ORDER_PATTERN.matcher(path);
 			if (m.find()) {
 				PrivilegedResource resource = PrivilegedResource.of(PrivilegedResource.Type.ORDER,
 						m.group(3)/* orderId */);
-				accessControlService.checkResourceAccess(userId, resource);
+				accessControlService.checkResourceAccess(userId, Role.USER, resource);
 			}
 		}
-
-		// SimplePrincipal principal = (SimplePrincipal) securityContext.getUserPrincipal();
-		// System.out.println(principal.getClaims());
-
-		// UriInfo uriInfo = context.getUriInfo();
-		// // convert baseUri to http://example.com/delegate/rest
-		// URI baseUri = uriInfo.getBaseUriBuilder().path(uriInfo.getPathSegments().get(0).getPath() + "/").build();
-		// URI requestUri = uriInfo.getRequestUri();
-		// // context.setRequestUri(baseUri, requestUri);
-
-		// SimplePrincipal principal = (SimplePrincipal) securityContext.getUserPrincipal();
-		// MultivaluedMap<String, String> pathParams = info.getPathParameters();
-		// pathParams.add(TENANT_ID_PATH_PARAM, principal.getName());
-		// String tenantId = pathParams.getFirst(TENANT_ID_PATH_PARAM);
-		// if (!principal.getName().equals(tenantId)) {
-		// LOG.warn("Cannot access account {} resource by account {}", tenantId, principal.getName());
-		// context.abortWith(RESPONSE_UNAUTHORIZED);
-		// return;
-		// }
-
-		// TODO API KEY
-		// String apiKey = (String) principal.getClaims().getClaimsMap().get(Constants.CLAIM_API_KEY);
-		// if (apiKey == null) {
-		// context.abortWith(RESPONSE_UNAUTHORIZED);
-		// LOG.warn("apiKey not found for {}", principal.getName());
-		// return;
-		// }
-
-		// TODO
-		// NOTE: the path pattern should be:
-		// 1) agents/<agentId>/[intents|entities]
-		// 2) platform/accounts/<account>/agents/<agentId>/[intents|entities] (skipped check)
-		// sub-resources
-		// PrivilegedResource resource = PrivilegedResource.of(PrivilegedResource.Type.ACCOUNT, accountId);
-		// String username = principal.getName();
-		// LOG.debug("Check user [{}] access to resource {}", username, resource);
-		// accessControlService.checkResourceAccess(username, resource);
 	}
-
-	@Override
-	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
-			throws IOException {
-		List<PathSegment> segs = info.getPathSegments();
-		LOG.debug("segs {}, res: {}", segs, responseContext.getEntity()); // [user, ferryflight, orders, a, 1]
-
-	}
-
 }

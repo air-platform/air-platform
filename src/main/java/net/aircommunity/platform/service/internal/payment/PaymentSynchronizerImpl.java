@@ -59,7 +59,7 @@ public class PaymentSynchronizerImpl extends AbstractServiceSupport implements P
 	@Resource
 	private OrderRefRepository orderRefRepository;
 
-	@Resource
+	@Resource(name = "commonOrderService")
 	private CommonOrderService commonOrderService;
 
 	@Resource

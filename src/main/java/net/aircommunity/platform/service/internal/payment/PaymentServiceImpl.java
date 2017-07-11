@@ -72,7 +72,7 @@ public class PaymentServiceImpl implements PaymentService {
 	@Resource
 	private RefundRepository refundRepository;
 
-	@Resource
+	@Resource(name = "commonOrderService")
 	private CommonOrderService commonOrderService;
 
 	@Autowired

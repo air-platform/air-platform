@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.micro.common.Strings;
@@ -16,6 +15,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirTransport;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.ProductFamily;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
@@ -24,13 +24,14 @@ import net.aircommunity.platform.repository.AirTransportRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.product.AirTransportService;
+import net.aircommunity.platform.service.product.annotation.ManagedProductService;
 
 /**
  * AirTransport service implementation.
  * 
  * @author Bin.Zhang
  */
-@Service
+@ManagedProductService(Product.Type.AIRTRANSPORT)
 @Transactional(readOnly = true)
 public class AirTransportServiceImpl extends AbstractSalesPackageProductService<AirTransport>
 		implements AirTransportService {

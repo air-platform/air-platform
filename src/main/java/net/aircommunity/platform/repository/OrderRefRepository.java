@@ -208,13 +208,17 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String>, Jpa
 	OrderRef findByOrderId(String orderId);
 
 	/**
-	 * Find order by orderNo (fuzzy match, exclude DELETED)
+	 * Find order by orderNo (fuzzy match)
 	 * 
-	 * @param orderNo
+	 * @param visibleOnly return visible order only or not
+	 * @param orderNo the order no
 	 * @return order refs list or empty
 	 */
-	default List<OrderRef> findVisibleByFuzzyOrderNo(String orderNo) {
-		return findByOrderNoStartingWithIgnoreCaseAndStatusNot(orderNo, Status.DELETED);
+	default List<OrderRef> findByFuzzyOrderNo(boolean visibleOnly, String orderNo) {
+		if (visibleOnly) {
+			return findByOrderNoStartingWithIgnoreCaseAndStatusNot(orderNo, Status.DELETED);
+		}
+		return findByOrderNoStartingWithIgnoreCase(orderNo);
 	}
 
 	/**
@@ -225,6 +229,8 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String>, Jpa
 	 * @return order refs list or empty
 	 */
 	List<OrderRef> findByOrderNoStartingWithIgnoreCaseAndStatusNot(String orderNo, Status status);
+
+	List<OrderRef> findByOrderNoStartingWithIgnoreCase(String orderNo);
 
 	/**
 	 * Find order by order number.

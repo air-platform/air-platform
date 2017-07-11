@@ -85,6 +85,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	protected Class<T> type;
 	protected OrderProcessor<T> orderProcessor;
+	protected ProductPricingStrategy productPricingStrategy = ProductPricingStrategy.NOOP;
 
 	@Resource
 	protected OrderRefRepository orderRefRepository;
@@ -117,16 +118,21 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	@Resource
 	private PaymentService paymentService;
 
-	private ProductPricingStrategy productPricingStrategy = ProductPricingStrategy.NOOP;
-
 	/**
 	 * Initialize
 	 */
 	@PostConstruct
 	@SuppressWarnings("unchecked")
 	private void init() {
-		ParameterizedType pt = ParameterizedType.class.cast(getClass().getGenericSuperclass());
-		type = (Class<T>) pt.getActualTypeArguments()[0];
+		java.lang.reflect.Type t = getClass().getGenericSuperclass();
+		if (ParameterizedType.class.isAssignableFrom(t.getClass())) {
+			ParameterizedType pt = ParameterizedType.class.cast(getClass().getGenericSuperclass());
+			type = (Class<T>) pt.getActualTypeArguments()[0];
+		}
+		else {
+			// just considered as generic order
+			type = (Class<T>) Order.class;
+		}
 		doInitialize();
 		LOG.debug("Order service {} initialized, order type: {}", this, type.getSimpleName());
 	}
@@ -156,6 +162,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		return doCreateOrder(userId, order, Order.Status.CREATED);
 	}
 
+	/**
+	 * Create Order
+	 */
 	protected T doCreateOrder(String userId, T order, Order.Status status) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
@@ -189,14 +198,13 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				}
 				LOG.debug("Creating order {} for product {}", order, product);
 			}
-			// product MUST be set, except for fleet.
+			// product MUST set, except for fleet.
 			if (product == null && order.getType() != Product.Type.FLEET) {
 				LOG.error("Failed to create order {} for user {}, cause: product is not set", order, userId);
 				throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.PRODUCT_NOT_SET, order.getType()));
 			}
 
-			// 2) set currency unit
-			// should be SalesPackageProduct
+			// 2) set currency unit, should be SalesPackageProduct
 			if (AircraftAwareOrder.class.isAssignableFrom(type)) {
 				newOrder.setCurrencyUnit(AircraftAwareOrder.class.cast(order).getSalesPackage().getCurrencyUnit());
 			}
@@ -208,65 +216,21 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			newOrder.setCreationDate(new Date());
 			newOrder.setLastModifiedDate(newOrder.getCreationDate());
 			newOrder.setCommented(false);
-			// actually set when @PrePersist
-			newOrder.setType(order.getType());
+			// actually set when @PrePersist (no need to set)
+			// newOrder.setType(order.getType());
 
 			// 4) copy common properties & copy order specific properties
 			copyCommonProperties(order, newOrder);
 			copyProperties(order, newOrder);
 
 			LOG.info("[Creating order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), order);
-			BigDecimal totalPrice = newOrder.getTotalPrice();
-
 			// 5.1) check if first order price off for this user
-			boolean existsOrder = orderRefRepository.existsByOwnerId(userId);
-			if (!existsOrder) {
-				long priceOff = memberPointsService.getPointsEarnedFromRule(PointRules.FIRST_ORDER_PRICE_OFF);
-				LOG.info("Offer first order price off [-{}] for user: {}", priceOff, userId);
-				if (priceOff > 0) {
-					BigDecimal newTotalPrice = totalPrice.subtract(BigDecimal.valueOf(priceOff));
-					if (newTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
-						newOrder.setTotalPrice(newTotalPrice);
-					}
-					LOG.info("Updated total price [{}] for user: {}", newTotalPrice, userId);
-				}
-			}
+			doFirstOrderPriceOff(newOrder);
 
 			// 5.2) Calculate points to exchange
-			int exchangePercent = memberPointsService.getPointsExchangePercent();
-			int exchangeRate = memberPointsService.getPointsExchangeRate();
-			LOG.debug("Point exchange percent: {},  exchange rate: {}", exchangePercent, exchangeRate);
-			long pointsMax = totalPrice.multiply(BigDecimal.valueOf(exchangePercent))
-					.multiply(BigDecimal.valueOf(exchangeRate)).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)
-					.longValue();
-			LOG.debug("Point exchange pointsMax: {} for order with total amount: {}", pointsMax, totalPrice);
 			long pointToExchange = order.getPointsUsed();
-			if (pointToExchange > 0) {
-				pointToExchange = Math.min(pointsMax, owner.getPoints());
-				PointsExchange pointsUsed = memberPointsService.exchangePoints(pointToExchange);
-				LOG.info("[Exchanging points] User[{}][{}]: order[{}], exchanged points {}", owner.getId(),
-						owner.getNickName(), newOrder.getOrderNo(), pointsUsed);
-				BigDecimal moneyExchanged = BigDecimal.valueOf(pointsUsed.getMoneyExchanged());
-				BigDecimal updatedTotalPrice = newOrder.getTotalPrice().subtract(moneyExchanged);
-				// cannot be less than 0 after points exchange, just ignore points exchange if less or equal than 0
-				if (updatedTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
-					newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
-					// update total price
-					newOrder.setTotalPrice(updatedTotalPrice);
-					newOrder.setOriginalTotalPrice(newOrder.getTotalPrice());
-					User account = (User) accountService.updateUserPoints(owner.getId(),
-							-pointsUsed.getPointsExchanged());
-					LOG.info(
-							"[Exchanged points] User[{}][{}]: order[{}], updated total price: {}, points used: {}, account points balance: {}",
-							owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice,
-							pointsUsed.getPointsExchanged(), account.getPoints());
-				}
-				else {
-					LOG.warn(
-							"[Exchange points] User[{}][{}]: order[{}]: update total price is: {} (less than 0), points exchange ignored.",
-							owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice);
-				}
-			}
+			doExchangePoints(newOrder, pointToExchange);
+
 			// 6) perform save
 			final T orderToSave = newOrder;
 			T saved = safeExecute(() -> {
@@ -276,7 +240,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				return orderSaved;
 			}, "Create %s: %s for user %s failed", type.getSimpleName(), order, userId);
 
-			// 7) create ref
+			// 7) create orderRef for later fast query (all type of orders will be available as orderRef)
 			OrderRef orderRef = new OrderRef();
 			orderRef.setOrderId(saved.getId());
 			orderRef.setOwnerId(owner.getId());
@@ -293,6 +257,64 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				timerContext.stop();
 			}
 		}
+	}
+
+	private void doFirstOrderPriceOff(T newOrder) {
+		User owner = newOrder.getOwner();
+		String userId = owner.getId();
+		boolean existsOrder = orderRefRepository.existsByOwnerId(userId);
+		if (existsOrder) {
+			LOG.info("User {} already placed order before, not first order, skipped first order price off.", owner);
+			return;
+		}
+		long priceOff = memberPointsService.getPointsEarnedFromRule(PointRules.FIRST_ORDER_PRICE_OFF);
+		LOG.info("Offer first order price off [-{}] for user [{}]", priceOff, userId);
+		if (priceOff > 0) {
+			BigDecimal totalPrice = newOrder.getTotalPrice();
+			BigDecimal newTotalPrice = totalPrice.subtract(BigDecimal.valueOf(priceOff));
+			if (newTotalPrice.compareTo(BigDecimal.ZERO) > 0) {
+				newOrder.setTotalPrice(newTotalPrice);
+			}
+			LOG.info("Updated total price [{}] for user [{}], because of its his first order.", newTotalPrice, userId);
+		}
+	}
+
+	private void doExchangePoints(T newOrder, long pointToExchange) {
+		User owner = newOrder.getOwner();
+		BigDecimal totalPrice = newOrder.getTotalPrice();
+		int exchangePercent = memberPointsService.getPointsExchangePercent();
+		int exchangeRate = memberPointsService.getPointsExchangeRate();
+		LOG.debug("Point exchange percent: {},  exchange rate: {}", exchangePercent, exchangeRate);
+		long pointsMax = totalPrice.multiply(BigDecimal.valueOf(exchangePercent))
+				.multiply(BigDecimal.valueOf(exchangeRate)).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)
+				.longValue();
+		LOG.debug("Point exchange pointsMax: {} for order with total amount: {}", pointsMax, totalPrice);
+		if (pointToExchange <= 0) {
+			return;
+		}
+		pointToExchange = Math.min(pointsMax, owner.getPoints());
+		PointsExchange pointsUsed = memberPointsService.exchangePoints(pointToExchange);
+		LOG.info("[Exchanging points] User[{}][{}]: order[{}], exchanged points {}", owner.getId(), owner.getNickName(),
+				newOrder.getOrderNo(), pointsUsed);
+		BigDecimal moneyExchanged = BigDecimal.valueOf(pointsUsed.getMoneyExchanged());
+		BigDecimal updatedTotalPrice = newOrder.getTotalPrice().subtract(moneyExchanged);
+		// cannot be less than 0 after points exchange, just ignore points exchange if less or equal than 0
+		if (updatedTotalPrice.compareTo(BigDecimal.ZERO) <= 0) {
+			LOG.warn(
+					"[Exchange points] User[{}][{}]: order[{}]: update total price is: {} (less than 0), points exchange ignored.",
+					owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice);
+
+			return;
+		}
+		// update total price
+		newOrder.setPointsUsed(pointsUsed.getPointsExchanged());
+		newOrder.setTotalPrice(updatedTotalPrice);
+		newOrder.setOriginalTotalPrice(newOrder.getTotalPrice());
+		User account = (User) accountService.updateUserPoints(owner.getId(), -pointsUsed.getPointsExchanged());
+		LOG.info(
+				"[Exchanged points] User[{}][{}]: order[{}], updated total price: {}, points used: {}, account points balance: {}",
+				owner.getId(), owner.getNickName(), newOrder.getOrderNo(), updatedTotalPrice,
+				pointsUsed.getPointsExchanged(), account.getPoints());
 	}
 
 	private String nextOrderNo() {
@@ -397,6 +419,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
+	 * Lookup the passenger info
+	 * 
 	 * @param passengers the input passengers
 	 * @return update passenger entities
 	 */
@@ -420,7 +444,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	/**
-	 * For ADMIN without check DELETED
+	 * For ADMIN without check DELETED status
 	 */
 	protected T doForceFindOrder(String orderId) {
 		Timer.Context timerContext = null;
@@ -436,7 +460,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			}
 			return order;
 		}
-		// metrics
 		finally {
 			if (isMetricsEnabled()) {
 				timerContext.stop();
@@ -488,7 +511,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			return safeExecute(() -> orderProcessor.saveOrder(order), "Update %s: %s with %s failed",
 					type.getSimpleName(), orderId, newOrder);
 		}
-		// metrics
 		finally {
 			if (isMetricsEnabled()) {
 				timerContext.stop();

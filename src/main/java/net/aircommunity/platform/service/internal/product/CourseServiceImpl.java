@@ -10,7 +10,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.micro.common.Strings;
@@ -18,6 +17,7 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Course;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.School;
 import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.nls.M;
@@ -25,13 +25,14 @@ import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.CourseRepository;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.product.CourseService;
+import net.aircommunity.platform.service.product.annotation.ManagedProductService;
 
 /**
  * Course service implementation.
  * 
  * @author Bin.Zhang
  */
-@Service
+@ManagedProductService(Product.Type.COURSE)
 @Transactional(readOnly = true)
 public class CourseServiceImpl extends AbstractStandardProductService<Course> implements CourseService {
 	private static final String CACHE_NAME_AIRCRAFT_TYPES = "cache.course.aircraft-types";

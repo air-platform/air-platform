@@ -44,7 +44,6 @@ import net.aircommunity.platform.model.payment.PaymentNotification;
 import net.aircommunity.platform.model.payment.PaymentResponse;
 import net.aircommunity.platform.model.payment.PaymentVerification;
 import net.aircommunity.platform.model.payment.Payments;
-import net.aircommunity.platform.service.order.CommonOrderService;
 import net.aircommunity.platform.service.payment.PaymentService;
 import net.aircommunity.platform.service.payment.PaymentSynchronizer;
 
@@ -56,14 +55,11 @@ import net.aircommunity.platform.service.payment.PaymentSynchronizer;
 @Api
 @RESTful
 @Path("payment")
-public class PaymentResource {
+public class PaymentResource extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(Payments.LOGGER_NAME);
 
 	@Resource
 	private PaymentService paymentService;
-
-	@Resource
-	private CommonOrderService commonOrderService;
 
 	@Resource
 	private PaymentSynchronizer paymentSynchronizer;

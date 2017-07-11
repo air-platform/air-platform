@@ -63,7 +63,9 @@ public abstract class TenantOrderResourceSupport<T extends Order> extends BaseRe
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	public T find(@PathParam("orderId") String orderId) {
-		return getOrderService().findOrder(orderId);
+		T order = getOrderService().findOrder(orderId);
+		// NOTE: it can be still returns order in DELETED status, because of ADMIN find order may cached
+		return ensureOrderVisible(order);
 	}
 
 	/**

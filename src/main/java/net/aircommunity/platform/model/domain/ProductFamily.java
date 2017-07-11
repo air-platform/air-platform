@@ -7,9 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Index;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,7 +19,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
-import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
  * Family of an product of a tenant.
@@ -30,8 +27,7 @@ import net.aircommunity.platform.model.jaxb.TenantAdapter;
  */
 @Entity
 @Table(name = "air_platform_product_family", indexes = {
-		@Index(name = "idx_review_status_category_tenant_id", columnList = "review_status,category,tenant_id") //
-})
+		@Index(name = "idx_review_status_category_tenant_id", columnList = "review_status,category,tenant_id") })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ProductFamily extends Reviewable {
 	private static final long serialVersionUID = 1L;
@@ -58,11 +54,6 @@ public class ProductFamily extends Reviewable {
 	@Lob
 	@Column(name = "description")
 	private String description;
-
-	@ManyToOne
-	@JoinColumn(name = "tenant_id", nullable = false)
-	@XmlJavaTypeAdapter(TenantAdapter.class)
-	private Tenant vendor;
 
 	public ProductFamily() {
 	}
@@ -109,14 +100,6 @@ public class ProductFamily extends Reviewable {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public Tenant getVendor() {
-		return vendor;
-	}
-
-	public void setVendor(Tenant vendor) {
-		this.vendor = vendor;
 	}
 
 	@Override

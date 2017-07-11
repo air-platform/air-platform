@@ -25,7 +25,7 @@ import net.aircommunity.platform.model.payment.PaymentRequest;
 public interface OrderService<T extends Order> {
 
 	/**
-	 * Find order (DELETED status considered as NOT FOUND)
+	 * Find order (DELETED status considered as NOT FOUND if access by non-admin)
 	 * 
 	 * @param orderId the orderId
 	 * @return order found
@@ -34,16 +34,16 @@ public interface OrderService<T extends Order> {
 	T findOrder(@Nonnull String orderId);
 
 	/**
-	 * Search by orderNo with fuzzy match. --> TODO ensure DELETED
+	 * Search by orderNo with fuzzy match.
 	 * 
 	 * @param orderNo the orderNo
 	 * @return a list of orders or empty if none
 	 */
 	@Nonnull
-	List<T> searchOrder(@Nonnull String orderNo); // with userId or tenantId
+	List<T> searchOrder(@Nonnull String orderNo); // TODO with userId or tenantId
 
 	/**
-	 * Find orders with the given order IDs --> TODO ensure DELETED
+	 * Find orders with the given order IDs
 	 * 
 	 * @param orderIds the order IDs
 	 * @return orders list or empty

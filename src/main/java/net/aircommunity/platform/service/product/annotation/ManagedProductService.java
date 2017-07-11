@@ -1,4 +1,4 @@
-package net.aircommunity.platform.service.order.annotation;
+package net.aircommunity.platform.service.product.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -12,21 +12,21 @@ import org.springframework.stereotype.Component;
 import net.aircommunity.platform.model.domain.Product;
 
 /**
- * Indicates that an annotated class is a order "Service".
+ * Indicates that an annotated class is a product "Service".
  *
  * @author Bin.Zhang
  */
-@Inherited // -> IMPORTANT, otherwise we cannot get this via getClass().getAnnotation(ManagedOrderService.class)
+@Inherited // -> IMPORTANT, otherwise we cannot get this via getClass().getAnnotation(ManagedProductService.class)
 @Component
 @Documented
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ManagedOrderService {
+public @interface ManagedProductService {
 
 	/**
-	 * The value may indicate the type of product this order service manages
+	 * The value may indicate the type of product this product service manages
 	 * 
-	 * @return the type of order
+	 * @return the type of product
 	 */
 	Product.Type value();
 

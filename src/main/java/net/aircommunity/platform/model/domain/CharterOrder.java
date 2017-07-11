@@ -176,6 +176,15 @@ public class CharterOrder extends StandardOrder implements Cloneable {
 		return new UnitProductPrice(PricePolicy.PER_HOUR, unitPrice);
 	}
 
+	@Override
+	public boolean isForTenant(String tenantId) {
+		boolean forTenant = super.isForTenant(tenantId);
+		if (forTenant) {
+			return true;
+		}
+		return fleetCandidates.stream().anyMatch(fleetCandidate -> fleetCandidate.getFleet().isOwner(tenantId));
+	}
+
 	@PrePersist
 	private void prePersist() {
 		setType(Type.FLEET);

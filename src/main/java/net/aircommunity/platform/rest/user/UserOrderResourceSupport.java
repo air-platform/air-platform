@@ -36,7 +36,6 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.order.CharterOrderService;
-import net.aircommunity.platform.service.order.CommonOrderService;
 import net.aircommunity.platform.service.order.StandardOrderService;
 
 /**
@@ -116,7 +115,9 @@ public abstract class UserOrderResourceSupport<T extends Order> extends BaseReso
 	@JsonView(JsonViews.User.class)
 	@Produces(MediaType.APPLICATION_JSON)
 	public T find(@PathParam("orderId") String orderId) {
-		return getStandardOrderService().findOrder(orderId);
+		T order = getStandardOrderService().findOrder(orderId);
+		// NOTE: it can be still returns order in DELETED status, because of ADMIN find order may cached
+		return ensureOrderVisible(order);
 	}
 
 	/**
@@ -156,9 +157,6 @@ public abstract class UserOrderResourceSupport<T extends Order> extends BaseReso
 	// ***********************
 	// ADMIN & USER ACTIONS
 	// ***********************
-
-	@Resource
-	private CommonOrderService commonOrderService;
 
 	@Resource
 	private CharterOrderService charterOrderService;

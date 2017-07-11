@@ -9,7 +9,11 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 
 import io.micro.common.Strings;
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.service.order.CommonOrderService;
 import net.aircommunity.platform.service.payment.PaymentService;
 import net.aircommunity.platform.service.product.CommonProductService;
@@ -38,10 +42,10 @@ public abstract class BaseResourceSupport {
 
 	@Resource
 	protected CommonProductService commonProductService;
-	
-	@Resource
+
+	@Resource(name = "commonOrderService")
 	protected CommonOrderService commonOrderService;
-	
+
 	@Resource
 	protected PaymentService paymentService;
 
@@ -110,6 +114,13 @@ public abstract class BaseResourceSupport {
 			return null;
 		}
 		return str.getString();
+	}
+
+	protected <T extends Order> T ensureOrderVisible(T order) {
+		if (order.getStatus() == Order.Status.DELETED) {
+			throw new AirException(Codes.ORDER_NOT_FOUND, M.msg(M.ORDER_NOT_FOUND));
+		}
+		return order;
 	}
 
 }

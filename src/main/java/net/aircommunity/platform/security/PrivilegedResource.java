@@ -50,5 +50,14 @@ public class PrivilegedResource implements Serializable {
 
 	public enum Type {
 		ORDER, PRODUCT, AIRCRAFT, SCHOOL, PRODUCT_FAMILY;
+
+		public static Type fromString(String value) {
+			for (Type e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
 	}
 }

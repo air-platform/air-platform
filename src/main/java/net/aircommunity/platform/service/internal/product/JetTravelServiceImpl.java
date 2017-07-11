@@ -2,7 +2,6 @@ package net.aircommunity.platform.service.internal.product;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.micro.common.Strings;
@@ -10,17 +9,19 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.JetTravel;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.JetTravelRepository;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.product.JetTravelService;
+import net.aircommunity.platform.service.product.annotation.ManagedProductService;
 
 /**
  * JetTravel service implementation.
  * 
  * @author Bin.Zhang
  */
-@Service
+@ManagedProductService(Product.Type.JETTRAVEL)
 @Transactional(readOnly = true)
 public class JetTravelServiceImpl extends AbstractStandardProductService<JetTravel> implements JetTravelService {
 

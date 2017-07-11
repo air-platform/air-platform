@@ -10,6 +10,7 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.domain.ProductFaq;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.service.product.ProductFaqService;
@@ -34,6 +35,14 @@ abstract class AbstractBaseProductService<T extends Product> extends AbstractPro
 	@Override
 	public T findProduct(String productId) {
 		return doFindProduct(productId);
+	}
+
+	@Transactional(readOnly = true)
+	@Cacheable(cacheNames = CACHE_NAME, key = "#productId")
+	@Override
+	public T findProduct(Type type, String productId) {
+		// just same as find by ID
+		return findProduct(productId);
 	}
 
 	@Transactional

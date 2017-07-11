@@ -435,8 +435,22 @@ public abstract class Order extends Persistable {
 		this.owner = owner;
 	}
 
+	/**
+	 * Test if the user is the owner of this order
+	 */
 	public boolean isOwner(String userId) {
 		return owner.getId().equals(userId);
+	}
+
+	/**
+	 * Test if this order is placed for the given tenant.
+	 */
+	public boolean isForTenant(String tenantId) {
+		Product product = getProduct();
+		if (product != null) {
+			return product.isOwner(tenantId);
+		}
+		return false;
 	}
 
 	public boolean confirmationRequired() {

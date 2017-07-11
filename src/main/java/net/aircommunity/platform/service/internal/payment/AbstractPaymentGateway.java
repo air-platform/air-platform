@@ -39,7 +39,7 @@ public abstract class AbstractPaymentGateway extends AbstractServiceSupport impl
 	private static final String PAYMENT_CLIENT_NOTIFY_URI = "/client/notify";
 	private static final String PAYMENT_CLIENT_RETURN_URI = "/client/return";
 
-	@Resource
+	@Resource(name = "commonOrderService")
 	protected CommonOrderService commonOrderService;
 
 	@Resource

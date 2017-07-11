@@ -40,12 +40,15 @@ import net.aircommunity.platform.service.spi.OrderProcessor;
 public class CommonOrderProcessor implements OrderProcessor<Order> {
 	private static final Logger LOG = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
 
+	// IMPORTANT, visibleOrderOnly=false, is considered as ADMIN MODE
+	private final boolean visibleOrderOnly;
 	private final Configuration configuration;
 	private final OrderRefRepository orderRefRepository;
 	private final Map<Product.Type, StandardOrderService<Order>> orderServiceRegistry;
 
-	public CommonOrderProcessor(Configuration config, OrderRefRepository repository,
+	public CommonOrderProcessor(boolean visibleOrderOnly, Configuration config, OrderRefRepository repository,
 			Map<Type, StandardOrderService<Order>> registry) {
+		this.visibleOrderOnly = visibleOrderOnly;
 		configuration = Objects.requireNonNull(config, "config cannot be null");
 		orderServiceRegistry = Objects.requireNonNull(registry, "orderServiceRegistry cannot be null");
 		orderRefRepository = Objects.requireNonNull(repository, "orderRefRepository cannot be null");
@@ -56,7 +59,7 @@ public class CommonOrderProcessor implements OrderProcessor<Order> {
 		OrderRef ref = orderRefRepository.findOne(orderId);
 		if (ref == null) {
 			LOG.warn("OrderRef orderId: {} is not found", orderId);
-			return null;
+			throw new AirException(Codes.ORDER_NOT_FOUND, M.msg(M.ORDER_NOT_FOUND));
 		}
 		return findOrderByRef(ref);
 	}
@@ -66,13 +69,20 @@ public class CommonOrderProcessor implements OrderProcessor<Order> {
 		if (Strings.isBlank(orderNo)) {
 			return Collections.emptyList();
 		}
-		List<OrderRef> refs = orderRefRepository.findVisibleByFuzzyOrderNo(orderNo);
+		List<OrderRef> refs = orderRefRepository.findByFuzzyOrderNo(visibleOrderOnly, orderNo);
 		return transform(refs);
 	}
 
 	@Override
 	public List<Order> findOrders(List<String> orderIds) {
+		if (orderIds == null || orderIds.isEmpty()) {
+			return Collections.emptyList();
+		}
 		List<OrderRef> refs = orderRefRepository.findAll(orderIds);
+		if (visibleOrderOnly) {
+			// return non-deleted order only for non-admin
+			refs = refs.stream().filter(ref -> ref.getStatus() != Order.Status.DELETED).collect(Collectors.toList());
+		}
 		return transform(refs);
 	}
 
@@ -81,14 +91,22 @@ public class CommonOrderProcessor implements OrderProcessor<Order> {
 		OrderRef ref = orderRefRepository.findByOrderNo(orderNo);
 		if (ref == null) {
 			LOG.warn("OrderRef orderNo: {} is not found", orderNo);
-			return null;
+			throw new AirException(Codes.ORDER_NOT_FOUND, M.msg(M.ORDER_NOT_FOUND));
 		}
 		return findOrderByRef(ref);
 	}
 
 	private Order findOrderByRef(OrderRef ref) {
 		StandardOrderService<Order> service = getOrderService(ref.getType());
-		return service.findOrder(ref.getOrderId());
+		Order order = service.getOrderFinder().apply(ref.getOrderId());
+		if (order == null) {
+			throw new AirException(Codes.ORDER_NOT_FOUND, M.msg(M.ORDER_NOT_FOUND));
+		}
+		// NOTE: DELETED status considered as not found for non-admin
+		if (order.getStatus() == Order.Status.DELETED && visibleOrderOnly) {
+			throw new AirException(Codes.ORDER_NOT_FOUND, M.msg(M.ORDER_NOT_FOUND));
+		}
+		return order;
 	}
 
 	private StandardOrderService<Order> getOrderService(Type type) {

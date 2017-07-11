@@ -206,6 +206,11 @@ public class CharterOrderServiceImpl extends AbstractStandardOrderService<Charte
 	}
 
 	@Override
+	public Function<String, CharterOrder> getOrderFinder() {
+		return orderId -> charterOrderRepository.findOne(orderId);
+	}
+
+	@Override
 	public Function<CharterOrder, CharterOrder> getOrderPersister() {
 		return t -> charterOrderRepository.save(t);
 	}

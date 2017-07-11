@@ -26,6 +26,16 @@ public interface ProductService<T extends Product> {
 	T findProduct(@Nonnull String productId);
 
 	/**
+	 * Find product
+	 * 
+	 * @param type the product type
+	 * @param productId the productId
+	 * @return product found
+	 */
+	@Nonnull
+	T findProduct(@Nonnull Product.Type type, @Nonnull String productId);
+
+	/**
 	 * Increase product sale by 1 (ADMIN)
 	 * 
 	 * @param productId the productId

@@ -2,7 +2,6 @@ package net.aircommunity.platform.service.internal.order;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +17,12 @@ import com.google.common.collect.ImmutableMap;
 
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
-import net.aircommunity.platform.model.domain.OrderRef;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.model.metrics.OrderMetrics;
 import net.aircommunity.platform.model.metrics.PerOrderMetrics;
 import net.aircommunity.platform.model.metrics.UserOrderMetrics;
-import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.order.CommonOrderService;
 import net.aircommunity.platform.service.order.StandardOrderService;
 import net.aircommunity.platform.service.order.annotation.ManagedOrderService;
@@ -36,49 +33,18 @@ import net.aircommunity.platform.service.order.annotation.ManagedOrderService;
  * 
  * @author Bin.Zhang
  */
-@Service
+@Service("commonOrderService")
 @Transactional(readOnly = true)
 public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order>
 		implements CommonOrderService, ApplicationContextAware {
 	private static final Logger LOG = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
 
-	private Map<Product.Type, StandardOrderService<Order>> serviceRegistry = Collections.emptyMap();
+	protected Map<Product.Type, StandardOrderService<Order>> serviceRegistry = Collections.emptyMap();
 
 	@Override
 	protected void doInitialize() {
-		setOrderProcessor(new CommonOrderProcessor(configuration, orderRefRepository, serviceRegistry));
-		// !!! NOTE:
-		// use it with caution when production, it will load all data, ONLY for initialization
-		if (configuration.isOrderRebuildRef()) {
-			rebuildOrderRef();
-			LOG.debug("Finished order rebuild with order refs: {}", orderRefRepository.count());
-		}
-	}
-
-	// XXX NOTE: @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-	// orderRepository.findAllByOrderByCreationDateDesc() streaming is NOT working with lifecycle callback
-	// always try-resource when streaming data from DB:
-	private void rebuildOrderRef() {
-		orderRefRepository.deleteAllInBatch();
-		try (Stream<Order> stream = orderRepository
-				.findAllByOrderByCreationDateDesc(Pages.createPageRequest(1, Integer.MAX_VALUE)).getContent()
-				.stream()) {
-			stream.forEach(order -> {
-				OrderRef orderRef = new OrderRef();
-				orderRef.setOrderId(order.getId());
-				orderRef.setOrderNo(order.getOrderNo());
-				Product product = order.getProduct();
-				orderRef.setVendorId(product == null ? null : product.getVendor().getId());
-				orderRef.setOwnerId(order.getOwner().getId());
-				orderRef.setStatus(order.getStatus());
-				orderRef.setType(order.getType());
-				orderRef.setCreationDate(order.getCreationDate());
-				orderRefRepository.save(orderRef);
-			});
-		}
-		finally {
-			orderRefRepository.flush();
-		}
+		setOrderProcessor(new CommonOrderProcessor(true/* visibleOrderOnly */, configuration, orderRefRepository,
+				serviceRegistry));
 	}
 
 	@Override
@@ -136,21 +102,6 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order>
 		return doHandleOrderRefundFailure(order, refundFailureCause);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public void setApplicationContext(ApplicationContext context) throws BeansException {
-		Map<String, StandardOrderService> orderServices = context.getBeansOfType(StandardOrderService.class);
-		ImmutableMap.Builder<Product.Type, StandardOrderService<Order>> builder = ImmutableMap.builder();
-		orderServices.values().stream().forEach(service -> {
-			ManagedOrderService serviced = service.getClass().getAnnotation(ManagedOrderService.class);
-			if (serviced != null) {
-				builder.put(serviced.value(), service);
-			}
-		});
-		serviceRegistry = builder.build();
-		LOG.debug("Order service registry: {}", serviceRegistry);
-	}
-
 	@Override
 	public OrderMetrics getOrderMetrics() {
 		// NOTE: No need to set all for buildAndSum
@@ -198,6 +149,21 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order>
 		long cancelledCount = orderRefRepository.countByOwnerIdAndStatus(userId, Order.Status.CANCELLED);
 		long refundCount = orderRefRepository.countByOwnerIdAndStatusIn(userId, Order.REFUND_STATUSES);
 		return new UserOrderMetrics(totalCount, finishedCount, pendingCount, cancelledCount, refundCount);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public void setApplicationContext(ApplicationContext context) throws BeansException {
+		Map<String, StandardOrderService> orderServices = context.getBeansOfType(StandardOrderService.class);
+		ImmutableMap.Builder<Product.Type, StandardOrderService<Order>> builder = ImmutableMap.builder();
+		orderServices.values().stream().forEach(service -> {
+			ManagedOrderService serviced = service.getClass().getAnnotation(ManagedOrderService.class);
+			if (serviced != null) {
+				builder.put(serviced.value(), service);
+			}
+		});
+		serviceRegistry = builder.build();
+		LOG.debug("Order service registry: {}", serviceRegistry);
 	}
 
 }

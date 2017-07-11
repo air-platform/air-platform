@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
@@ -17,19 +16,21 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.Fleet;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.FleetRepository;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.product.FleetService;
+import net.aircommunity.platform.service.product.annotation.ManagedProductService;
 
 /**
  * Fleet service implementation.
  * 
  * @author Bin.Zhang
  */
-@Service
+@ManagedProductService(Product.Type.FLEET)
 @Transactional(readOnly = true)
 public class FleetServiceImpl extends AbstractStandardProductService<Fleet> implements FleetService {
 

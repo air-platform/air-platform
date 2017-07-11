@@ -1,7 +1,5 @@
 package net.aircommunity.platform.service.order;
 
-import java.util.function.Function;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -13,7 +11,7 @@ import net.aircommunity.platform.model.domain.Order;
  *
  * @author Bin.Zhang
  */
-public interface StandardOrderService<T extends Order> extends OrderService<T> {
+public interface StandardOrderService<T extends Order> extends InternalOrderOperation<T>, OrderService<T> {
 
 	/**
 	 * Create a order.
@@ -34,14 +32,6 @@ public interface StandardOrderService<T extends Order> extends OrderService<T> {
 	 */
 	@Nonnull
 	T updateOrder(@Nonnull String orderId, @Nonnull T order);
-
-	/**
-	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed
-	 * the entity instance completely. The function accept entity as input and returns the saved entity
-	 * 
-	 * @return persister function
-	 */
-	Function<T, T> getOrderPersister();
 
 	/**
 	 * List all the orders placed on this tenant (but NOT DELETED). NOTE: it cannot be implemented without concrete

@@ -19,7 +19,7 @@ import net.aircommunity.platform.model.JsonViews;
  */
 @MappedSuperclass
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Reviewable extends Persistable {
+public class Reviewable extends VendorAware {
 	private static final long serialVersionUID = 1L;
 
 	// whether a product is approved or not by platform ADMIN

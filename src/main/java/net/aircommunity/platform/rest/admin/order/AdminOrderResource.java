@@ -33,8 +33,9 @@ import net.aircommunity.platform.service.order.OrderService;
 @RolesAllowed(Roles.ROLE_ADMIN)
 public class AdminOrderResource extends TenantOrderResourceSupport<Order> {
 
-	@Resource
-	private CommonOrderService commonOrderService;
+	// IMPORTANT, should be adminOrderService instance
+	@Resource(name = "adminOrderService")
+	private CommonOrderService adminOrderService;
 
 	// **************
 	// ADMIN ONLY
@@ -56,6 +57,17 @@ public class AdminOrderResource extends TenantOrderResourceSupport<Order> {
 	}
 
 	/**
+	 * Find order (just override, ADMIN need return order in DELETED status)
+	 */
+	@GET
+	@Path("{orderId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
+	public Order find(@PathParam("orderId") String orderId) {
+		return getOrderService().findOrder(orderId);
+	}
+
+	/**
 	 * Delete
 	 */
 	@DELETE
@@ -74,7 +86,7 @@ public class AdminOrderResource extends TenantOrderResourceSupport<Order> {
 
 	@Override
 	protected OrderService<Order> getOrderService() {
-		return commonOrderService;
+		return adminOrderService;
 	}
 
 }

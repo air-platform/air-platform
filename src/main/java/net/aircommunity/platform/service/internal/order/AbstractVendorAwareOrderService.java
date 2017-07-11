@@ -33,6 +33,11 @@ abstract class AbstractVendorAwareOrderService<T extends VendorAwareOrder> exten
 	}
 
 	@Override
+	public Function<String, T> getOrderFinder() {
+		return orderId -> orderRepository.findOne(orderId);
+	}
+
+	@Override
 	public Function<T, T> getOrderPersister() {
 		return t -> orderRepository.save(t);
 	}

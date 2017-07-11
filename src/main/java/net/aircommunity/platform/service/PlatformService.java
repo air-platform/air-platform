@@ -13,11 +13,6 @@ import net.aircommunity.platform.model.domain.Contact;
  */
 public interface PlatformService {
 
-	// TODO
-	// metrics
-	// overall users, tenant
-	// overall orders, payments, trade finished, tenant income, platform income
-
 	/**
 	 * Clear specific cache.
 	 * 

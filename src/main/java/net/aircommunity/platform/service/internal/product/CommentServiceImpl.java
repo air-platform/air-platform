@@ -47,7 +47,7 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	@Resource
 	private CommonProductService commonProductService;
 
-	@Resource
+	@Resource(name = "commonOrderService")
 	private CommonOrderService commonOrderService;
 
 	@Override

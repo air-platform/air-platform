@@ -4,24 +4,25 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.AirTaxi;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.repository.AirTaxiRepository;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.product.AirTaxiService;
+import net.aircommunity.platform.service.product.annotation.ManagedProductService;
 
 /**
  * AirTaxiService implementation
  * 
  * @author Bin.Zhang
  */
-@Service
+@ManagedProductService(Product.Type.AIRTAXI)
 @Transactional(readOnly = true)
 public class AirTaxiServiceImpl extends AbstractSalesPackageProductService<AirTaxi> implements AirTaxiService {
 

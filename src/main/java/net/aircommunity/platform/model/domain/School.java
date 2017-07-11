@@ -2,27 +2,23 @@ package net.aircommunity.platform.model.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.micro.annotation.constraint.NotEmpty;
-import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
- * School model.
+ * School of a {@code Tenant}.
  * 
  * @author guankai
  */
 @Entity
 @Table(name = "air_platform_school")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class School extends Persistable {
+public class School extends VendorAware {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty
@@ -51,11 +47,6 @@ public class School extends Persistable {
 	@Lob
 	@Column(name = "base_description")
 	private String baseDescription;
-
-	@ManyToOne
-	@XmlJavaTypeAdapter(TenantAdapter.class)
-	@JoinColumn(name = "tenant_id", nullable = false)
-	private Tenant vendor;
 
 	public School() {
 	}
@@ -110,14 +101,6 @@ public class School extends Persistable {
 
 	public void setBaseDescription(String baseDescription) {
 		this.baseDescription = baseDescription;
-	}
-
-	public Tenant getVendor() {
-		return vendor;
-	}
-
-	public void setVendor(Tenant vendor) {
-		this.vendor = vendor;
 	}
 
 	@Override

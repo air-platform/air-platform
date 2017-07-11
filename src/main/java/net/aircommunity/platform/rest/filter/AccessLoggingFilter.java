@@ -48,7 +48,7 @@ public class AccessLoggingFilter implements ContainerRequestFilter {
 		// Information such as the URI, headers and HTTP entity are available
 		String forwardIp = "";
 		try {
-			// when using Heroku, the remote host is the AWS application tier, therefore the EC2 ip address.
+			// when using Heroku, the remote host is the AWS application tier, therefore the EC2 IP address.
 			forwardIp = request.getHeader(Constants.HEADER_X_FORWARDED_FOR).split(",")[0];
 		}
 		catch (Exception ignored) {
@@ -60,7 +60,7 @@ public class AccessLoggingFilter implements ContainerRequestFilter {
 			username = principal.getName();
 			role = Joiner.on(",").join(SimplePrincipal.class.cast(principal).getClaims().getRoles());
 		}
-		// TODO check if request.getRemoteAddr() and local server IP address is the same subnet
+		// XXX check if request.getRemoteAddr() and local server IP address is the same subnet
 		// And just use forwardIp for client IP in this case
 		// e.g. 192.168.100.195 106.37.175.130
 		String ip = request.getRemoteAddr();
