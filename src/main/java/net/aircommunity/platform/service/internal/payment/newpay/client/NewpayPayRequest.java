@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * NewpayPay Request
+ * Newpay pay request
  * 
  * @author Bin.Zhang
  */
@@ -94,6 +94,10 @@ public class NewpayPayRequest extends NewpayRequest {
 
 	@XmlTransient
 	private NewpayPayModel model;
+
+	// make accessible package private
+	NewpayPayRequest() {
+	}
 
 	public String getReturnUrl() {
 		return returnUrl;

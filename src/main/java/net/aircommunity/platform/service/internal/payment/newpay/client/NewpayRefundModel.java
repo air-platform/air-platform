@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
- * Refund Model
+ * Newpay refund model.
  * 
  * @author Bin.Zhang
  */

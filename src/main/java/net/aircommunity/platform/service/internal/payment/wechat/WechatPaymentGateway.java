@@ -408,7 +408,7 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 			WxPayRefundQueryResult response = wxPayService.refundQuery(null, null, requestNo, null);
 			LOG.debug("Refund query response: {}", response);
 			if (isSuccess(response)) {
-				// it should be one record, because we use requestNo (wechat: outRefundNo)
+				// it should be one record, because we use requestNo (WECHAT: outRefundNo)
 				// 同一退款单号多次请求只退一笔
 				List<RefundRecord> records = response.getRefundRecords();
 				if (records.size() != 1) {
@@ -421,11 +421,10 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 				// <refund_success_time_0><![CDATA[2017-07-06 14:32:39]]></refund_success_time_0>
 				Date timestamp = new Date();
 				String orderNo = Payments.extractOrderNo(response.getOutTradeNo());
-				return Optional
-						.of(TradeQueryResult.builder().setRequestNo(requestNo).setTradeNo(response.getTransactionId())
-								.setOrderNo(orderNo).setRequestNo(response.getOutTradeNo())
-								.setTradeMethod(Payment.Method.WECHAT).setTradeType(Trade.Type.REFUND)
-								.setAmount(new BigDecimal(record.getRefundFee())).setTimestamp(timestamp).build());
+				return Optional.of(TradeQueryResult.builder().setRequestNo(requestNo)
+						.setTradeNo(response.getTransactionId()).setOrderNo(orderNo)
+						.setTradeMethod(Payment.Method.WECHAT).setTradeType(Trade.Type.REFUND)
+						.setAmount(OrderPrices.convertPrice(record.getRefundFee())).setTimestamp(timestamp).build());
 			}
 		}
 		catch (Exception e) {

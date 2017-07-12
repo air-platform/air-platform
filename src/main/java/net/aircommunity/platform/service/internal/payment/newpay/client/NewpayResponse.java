@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
- * NewpayPay generic response (async notification from server)
+ * Newpay generic response (async notification from server) (XXX for payment only?)
  * 
  * @author Bin.Zhang
  */
@@ -13,17 +13,9 @@ import javax.xml.bind.annotation.XmlElement;
 public abstract class NewpayResponse extends NewpayMessage {
 	private static final long serialVersionUID = 1L;
 
-	// 商户 供的唯一订单号 String(32)
-	@XmlElement(name = "orderID", required = true)
-	protected String orderNo;
-
 	// 受理结果码 (该字段只标识本次请求的 受理结果,不表示订单的实际交易结果)
 	@XmlElement(name = "resultCode", required = true)
 	protected String resultCode;
-
-	// 交易状态码 (不同业务意思不同)
-	@XmlElement(name = "stateCode", required = true)
-	protected String stateCode;
 
 	// 商户 ID String(32) - 新生支付平台 供给商户的 ID 号 (11000002981)
 	@XmlElement(name = "partnerID", required = true)
@@ -45,80 +37,36 @@ public abstract class NewpayResponse extends NewpayMessage {
 	@XmlElement(name = "signMsg", required = true)
 	protected String sign;
 
-	public String getOrderNo() {
-		return orderNo;
-	}
-
-	public void setOrderNo(String orderNo) {
-		this.orderNo = orderNo;
-	}
-
 	public String getResultCode() {
 		return resultCode;
-	}
-
-	public void setResultCode(String resultCode) {
-		this.resultCode = resultCode;
 	}
 
 	public String getResultMessage() {
 		return getResultMessage(resultCode);
 	}
 
-	public String getStateCode() {
-		return stateCode;
-	}
-
-	public void setStateCode(String stateCode) {
-		this.stateCode = stateCode;
-	}
-
 	public String getPartnerId() {
 		return partnerId;
-	}
-
-	public void setPartnerId(String partnerId) {
-		this.partnerId = partnerId;
 	}
 
 	public String getRemark() {
 		return remark;
 	}
 
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
 	public String getCharset() {
 		return charset;
-	}
-
-	public void setCharset(String charset) {
-		this.charset = charset;
 	}
 
 	public String getSignType() {
 		return signType;
 	}
 
-	public void setSignType(String signType) {
-		this.signType = signType;
-	}
-
 	public String getSign() {
 		return sign;
 	}
 
-	public void setSign(String sign) {
-		this.sign = sign;
-	}
-
 	public boolean isRequestSuccessful() {
 		return RC_SUCCESS.equals(resultCode);
-	}
-
-	public boolean isTradeSuccessful() {
-		return SC_SUCCESS.equals(stateCode);
 	}
 
 	public abstract void verifySignature();

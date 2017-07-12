@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import net.aircommunity.platform.service.internal.payment.newpay.NewpayConfig;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -23,6 +24,7 @@ public class NewpayClient {
 	private static final Logger LOG = LoggerFactory.getLogger(NewpayClient.class);
 
 	private final static String REFUND_URL = "https://gateway.hnapay.com/website/refund.htm";
+	private final static String QUERY_URL = "https://gateway.hnapay.com/website/queryOrderResult.htm";
 	private final NewpayConfig config;
 	private final NewpaySignature signature;
 	private final OkHttpClient httpClient;
@@ -120,4 +122,40 @@ public class NewpayClient {
 					String.format("Failed to execute refund request: %s, cause: %s", refundRequest, e.getMessage()), e);
 		}
 	}
+
+	/**
+	 * Execute query request.
+	 * 
+	 * @param model the query model
+	 * @return NewpayQueryResponse
+	 */
+	@Nonnull
+	public NewpayQueryResponse executeQueryRequest(@Nonnull NewpayQueryModel model) {
+		NewpayQueryRequest queryRequest = new NewpayQueryRequest(model);
+		queryRequest.setPartnerId(config.getPartnerId());
+		queryRequest.setSignature(signature);
+		RequestBody body = queryRequest.build();
+		LOG.debug("queryRequest: {}", queryRequest);
+		Request request = new Request.Builder().url(QUERY_URL).post(body).build();
+		try {
+			Response response = httpClient.newCall(request).execute();
+			if (!response.isSuccessful()) {
+				throw new NewpayException(String.format("Query request HTTP code: %s, message: %s", response.code(),
+						response.body().string()));
+			}
+			Map<String, String> data = NewpayMessage.convertQueryString(response.body().string());
+			NewpayQueryResponse result = NewpayQueryResponse.parse(data);
+			result.setSignature(signature);
+			result.verifySignature();
+			return result;
+		}
+		catch (Exception e) {
+			if (NewpayException.class.isAssignableFrom(e.getClass())) {
+				throw (NewpayException) e;
+			}
+			throw new NewpayException(
+					String.format("Failed to execute query request: %s, cause: %s", queryRequest, e.getMessage()), e);
+		}
+	}
+
 }

@@ -422,6 +422,12 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 
 	@Override
 	public Optional<TradeQueryResult> queryPayment(Order order) {
+		StandardOrder theOrder = convertOrder(order);
+		Payment payment = theOrder.getPayment();
+		if (payment == null) {
+			LOG.warn("There is no payment for ({}){}", order.getType(), order.getOrderNo());
+			return Optional.empty();
+		}
 		AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
 		AlipayTradeQueryModel model = new AlipayTradeQueryModel();
 		model.setOutTradeNo(order.getOrderNo());
@@ -433,9 +439,10 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 			LOG.debug("Payment query response: {}", response.getBody());
 			if (response.isSuccess()) {
 				return Optional.of(TradeQueryResult.builder().setTradeNo(response.getTradeNo())
-						.setOrderNo(response.getOutTradeNo()).setTradeMethod(Payment.Method.ALIPAY)
-						.setTradeType(Trade.Type.PAYMENT).setAmount(new BigDecimal(response.getTotalAmount()))
-						.setTimestamp(response.getSendPayDate()).build());
+						.setOrderNo(response.getOutTradeNo()).setRequestNo(payment.getRequestNo())
+						.setTradeMethod(Payment.Method.ALIPAY).setTradeType(Trade.Type.PAYMENT)
+						.setAmount(new BigDecimal(response.getTotalAmount())).setTimestamp(response.getSendPayDate())
+						.build());
 			}
 		}
 		catch (Exception e) {

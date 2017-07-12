@@ -1,7 +1,6 @@
 package net.aircommunity.platform.service.internal.payment.newpay.client;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -17,6 +16,14 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class NewpayRefundResponse extends NewpayResponse {
 	private static final long serialVersionUID = 1L;
+
+	// 商户 供的唯一订单号 String(32)
+	@XmlElement(name = "orderID", required = true)
+	private String orderNo;
+
+	// 交易状态码 (不同业务意思不同)
+	@XmlElement(name = "stateCode", required = true)
+	private String stateCode;
 
 	// 商户退款订单号 String(32)
 	@XmlElement(name = "refundOrderID", required = true)
@@ -50,47 +57,34 @@ public class NewpayRefundResponse extends NewpayResponse {
 		return convert(data, NewpayRefundResponse.class);
 	}
 
-	public String getRefundOrderId() {
-		return refundOrderId;
+	public String getOrderNo() {
+		return orderNo;
 	}
 
-	public void setRefundOrderId(String refundOrderId) {
-		this.refundOrderId = refundOrderId;
+	public String getStateCode() {
+		return stateCode;
+	}
+
+	public String getRefundOrderId() {
+		return refundOrderId;
 	}
 
 	public int getRefundAmount() {
 		return refundAmount;
 	}
 
-	public void setRefundAmount(int refundAmount) {
-		this.refundAmount = refundAmount;
-	}
-
 	public Date getRefundTime() {
 		return refundTime;
-	}
-
-	public void setRefundTime(Date refundTime) {
-		this.refundTime = refundTime;
 	}
 
 	public Date getCompleteTime() {
 		return completeTime;
 	}
 
-	public void setCompleteTime(Date completeTime) {
-		this.completeTime = completeTime;
-	}
-
 	public String getTradeNo() {
 		return tradeNo;
 	}
 
-	public void setTradeNo(String tradeNo) {
-		this.tradeNo = tradeNo;
-	}
-
-	@Override
 	public boolean isTradeSuccessful() {
 		return NewpayRefundStateCode.SUCCESS.getCode().equals(stateCode);
 	}
@@ -132,26 +126,4 @@ public class NewpayRefundResponse extends NewpayResponse {
 				.append(signType).append(", sign=").append(sign).append("]");
 		return builder.toString();
 	}
-
-	public static void main(String argp[]) throws Exception {
-		Map<String, String> data = new HashMap<>();
-		data.put("orderID", "0123456789");
-		data.put("refundTime", "20170620130000");
-		data.put("refundOrderID", "8b3e1b40557411e78dd9b0ffdc6678c5");
-		data.put("completeTime", "20170621091800");
-		data.put("refundNo", "2017062082053529");
-		data.put("refundAmount", "100");
-
-		data.put("resultCode", "0000");
-		data.put("stateCode", "2");
-		data.put("remark", "test");
-		data.put("charset", "1");
-		data.put("signType", "1");
-		data.put("partnerID", "11000002981");
-		data.put("signMsg",
-				"113731b5a2e5fda82c434ad9da97a2e0638f4e0e67c62930e283977b2edeb626766370545fba89ef8fef8fae51d201204726bf90a4f29bc387ebdda9d06ce25cba6c91fd947330c4ef1913aefc334b1a92814a0a0d90fe3bad20c96bfa474712302888a0298bd6c92f041511992f80191b6d8257a193329426a11427b0f52183");
-		NewpayRefundResponse res = NewpayRefundResponse.parse(data);
-		System.out.println(res);
-	}
-
 }

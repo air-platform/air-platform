@@ -2,6 +2,7 @@ package net.aircommunity.platform.service.internal.payment.newpay;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,9 +16,11 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderPrices;
 import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.model.domain.StandardOrder;
+import net.aircommunity.platform.model.domain.Trade;
 import net.aircommunity.platform.model.domain.Trade.Method;
 import net.aircommunity.platform.model.payment.PaymentNotification;
 import net.aircommunity.platform.model.payment.PaymentRequest;
@@ -31,7 +34,13 @@ import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayCl
 import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayPayModel;
 import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayPayRequest;
 import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayPayResponse;
+import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayPaymentQueryDetails;
+import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayQueryMode;
+import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayQueryModel;
+import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayQueryResponse;
+import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayQueryType;
 import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayRefundModel;
+import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayRefundQueryDetails;
 import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayRefundResponse;
 import net.aircommunity.platform.service.internal.payment.newpay.client.NewpayRefundStateCode;
 import okhttp3.OkHttpClient;
@@ -161,7 +170,6 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 					return PaymentResponse.failure(PaymentResponse.Status.ORDER_NOT_FOUND,
 							M.msg(M.ORDER_NOT_FOUND, orderNo));
 				}
-
 				// check detailed status with doc, update order status, TODO: we save failure payment?
 				commonOrderService.handleOrderPaymentFailure(orderRef.get(), M.msg(
 						M.PAYMENT_SERVER_NOTIFY_TRADE_FAILURE, response.getStateCode(), response.getResultMessage()));
@@ -305,13 +313,75 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 
 	@Override
 	public Optional<TradeQueryResult> queryPayment(Order order) {
-		// TODO
+		StandardOrder theOrder = convertOrder(order);
+		Payment payment = theOrder.getPayment();
+		if (payment == null) {
+			LOG.warn("There is no payment for ({}){}", order.getType(), order.getOrderNo());
+			return Optional.empty();
+		}
+		try {
+			NewpayQueryModel query = new NewpayQueryModel();
+			query.setMode(NewpayQueryMode.SINGLE);
+			query.setType(NewpayQueryType.PAYMENT);
+			query.setOrderNo(order.getOrderNo());
+			NewpayQueryResponse response = client.executeQueryRequest(query);
+			LOG.debug("Payment query response: {}", response);
+			List<NewpayPaymentQueryDetails> queryDetails = response.getPaymentQueryDetails();
+			if (queryDetails.isEmpty()) {
+				return Optional.empty();
+			}
+			Optional<NewpayPaymentQueryDetails> ref = queryDetails.stream().filter(detail -> detail.isTradeSuccessful())
+					.findFirst();
+			if (ref.isPresent()) {
+				return Optional.empty();
+			}
+			NewpayPaymentQueryDetails result = ref.get();
+			return Optional
+					.of(TradeQueryResult.builder().setTradeNo(result.getTradeNo()).setOrderNo(result.getOrderNo())
+							.setRequestNo(payment.getRequestNo()).setTradeMethod(Payment.Method.NEWPAY)
+							.setTradeType(Trade.Type.PAYMENT).setAmount(OrderPrices.convertPrice(result.getPayAmount()))
+							.setTimestamp(result.getCompleteTime()).build());
+		}
+		catch (Exception e) {
+			LOG.error("Got error when query payment for order: " + order, e);
+		}
 		return Optional.empty();
 	}
 
 	@Override
 	public Optional<TradeQueryResult> queryRefund(Order order) {
-		// TODO
+		StandardOrder theOrder = convertOrder(order);
+		Refund refund = theOrder.getRefund();
+		if (refund == null) {
+			LOG.warn("There is no refund for ({}){}", order.getType(), order.getOrderNo());
+			return Optional.empty();
+		}
+		try {
+			NewpayQueryModel query = new NewpayQueryModel();
+			query.setMode(NewpayQueryMode.SINGLE);
+			query.setType(NewpayQueryType.REFUND);
+			query.setOrderNo(order.getOrderNo());
+			NewpayQueryResponse response = client.executeQueryRequest(query);
+			LOG.debug("Refund query response: {}", response);
+			List<NewpayRefundQueryDetails> queryDetails = response.getRefundQueryDetails();
+			if (queryDetails.isEmpty()) {
+				return Optional.empty();
+			}
+			Optional<NewpayRefundQueryDetails> ref = queryDetails.stream().filter(detail -> detail.isTradeSuccessful())
+					.findFirst();
+			if (ref.isPresent()) {
+				return Optional.empty();
+			}
+			NewpayRefundQueryDetails result = ref.get();
+			return Optional.of(TradeQueryResult.builder().setTradeNo(result.getTradeNo())
+					.setOrderNo(result.getOrderNo()).setRequestNo(refund.getRequestNo())
+					.setTradeMethod(Payment.Method.NEWPAY).setTradeType(Trade.Type.REFUND)
+					.setAmount(OrderPrices.convertPrice(result.getRefundAmount()))
+					.setTimestamp(result.getCompleteTime()).build());
+		}
+		catch (Exception e) {
+			LOG.error("Got error when query payment for order: " + order, e);
+		}
 		return Optional.empty();
 	}
 
