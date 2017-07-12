@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Role;
+import net.aircommunity.platform.model.domain.Aircraft;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.model.domain.VendorAware;
+import net.aircommunity.platform.model.domain.ProductFamily;
+import net.aircommunity.platform.model.domain.School;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.security.PrivilegedResource;
 import net.aircommunity.platform.security.PrivilegedResource.Type;
@@ -48,25 +50,25 @@ public class AccessControlServiceImpl implements AccessControlService {
 	@Resource
 	private ProductFamilyService productFamilyService;
 
-	private final Map<Type, BiPredicate<String, PrivilegedResource>> vendorAwareChecker = new HashMap<>();
+	private final Map<Type, BiPredicate<String, PrivilegedResource>> vendorResourceChecker = new HashMap<>();
 
 	@PostConstruct
 	private void init() {
-		vendorAwareChecker.put(Type.PRODUCT, (accountId, resource) -> {
+		vendorResourceChecker.put(Type.PRODUCT, (accountId, resource) -> {
 			Product.Type productType = (Product.Type) resource.getContext();
-			VendorAware product = commonProductService.findProduct(productType, resource.getResourceId());
+			Product product = commonProductService.findProduct(productType, resource.getResourceId());
 			return product.isOwner(accountId);
 		});
-		vendorAwareChecker.put(Type.AIRCRAFT, (accountId, resource) -> {
-			VendorAware aircraft = aircraftService.findAircraft(resource.getResourceId());
+		vendorResourceChecker.put(Type.AIRCRAFT, (accountId, resource) -> {
+			Aircraft aircraft = aircraftService.findAircraft(resource.getResourceId());
 			return aircraft.isOwner(accountId);
 		});
-		vendorAwareChecker.put(Type.SCHOOL, (accountId, resource) -> {
-			VendorAware school = schoolService.findSchool(resource.getResourceId());
+		vendorResourceChecker.put(Type.SCHOOL, (accountId, resource) -> {
+			School school = schoolService.findSchool(resource.getResourceId());
 			return school.isOwner(accountId);
 		});
-		vendorAwareChecker.put(Type.PRODUCT_FAMILY, (accountId, resource) -> {
-			VendorAware family = productFamilyService.findProductFamily(resource.getResourceId());
+		vendorResourceChecker.put(Type.PRODUCT_FAMILY, (accountId, resource) -> {
+			ProductFamily family = productFamilyService.findProductFamily(resource.getResourceId());
 			return family.isOwner(accountId);
 		});
 	}
@@ -91,7 +93,7 @@ public class AccessControlServiceImpl implements AccessControlService {
 			}
 
 		default:
-			BiPredicate<String, PrivilegedResource> checker = vendorAwareChecker.get(type);
+			BiPredicate<String, PrivilegedResource> checker = vendorResourceChecker.get(type);
 			if (checker != null) {
 				allowed = checker.test(accountId, resource);
 			}

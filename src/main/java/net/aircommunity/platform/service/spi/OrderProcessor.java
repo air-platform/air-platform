@@ -2,6 +2,7 @@ package net.aircommunity.platform.service.spi;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,6 +38,30 @@ public interface OrderProcessor<T extends Order> {
 	List<T> searchOrder(@Nonnull String orderNo);
 
 	/**
+	 * Search by orderNo with fuzzy match for a given user.
+	 * 
+	 * @param userId the userId
+	 * @param orderNo the orderNo
+	 * @return a list of orders or empty if none
+	 */
+	@Nonnull
+	default List<T> searchUserOrder(@Nonnull String userId, @Nonnull String orderNo) {
+		return searchOrder(orderNo).stream().filter(order -> order.isOwner(userId)).collect(Collectors.toList());
+	}
+
+	/**
+	 * Search by orderNo with fuzzy match for a given tenant.
+	 * 
+	 * @param tenantId the tenantId
+	 * @param orderNo the orderNo
+	 * @return a list of orders or empty if none
+	 */
+	@Nonnull
+	default List<T> searchTenantOrder(@Nonnull String tenantId, @Nonnull String orderNo) {
+		return searchOrder(orderNo).stream().filter(order -> order.isForTenant(tenantId)).collect(Collectors.toList());
+	}
+
+	/**
 	 * Find orders by order ids
 	 * 
 	 * @param orderIds the order id list
@@ -44,6 +69,30 @@ public interface OrderProcessor<T extends Order> {
 	 */
 	@Nonnull
 	List<T> findOrders(@Nonnull List<String> orderIds);
+
+	/**
+	 * Find orders by order IDs for a given user
+	 * 
+	 * @param userId the userId
+	 * @param orderIds the order id list
+	 * @return the order list or empty if none
+	 */
+	@Nonnull
+	default List<Order> findUserOrders(@Nonnull String userId, @Nonnull List<String> orderIds) {
+		return findOrders(orderIds).stream().filter(order -> order.isOwner(userId)).collect(Collectors.toList());
+	}
+
+	/**
+	 * Find orders by order IDs for a given tenant
+	 * 
+	 * @param tenantId the tenantId
+	 * @param orderIds the order id list
+	 * @return the order list or empty if none
+	 */
+	@Nonnull
+	default List<Order> findTenantOrders(@Nonnull String tenantId, @Nonnull List<String> orderIds) {
+		return findOrders(orderIds).stream().filter(order -> order.isForTenant(tenantId)).collect(Collectors.toList());
+	}
 
 	/**
 	 * Find an order by order number

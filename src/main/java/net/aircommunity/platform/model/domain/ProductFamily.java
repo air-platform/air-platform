@@ -7,7 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,6 +21,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
+import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
  * Family of an product of a tenant.
@@ -50,10 +53,14 @@ public class ProductFamily extends Reviewable {
 	@Column(name = "image", length = IMAGE_URL_LEN)
 	private String image;
 
-	// description
 	@Lob
 	@Column(name = "description")
 	private String description;
+
+	@ManyToOne
+	@JoinColumn(name = "tenant_id", nullable = false)
+	@XmlJavaTypeAdapter(TenantAdapter.class)
+	private Tenant vendor;
 
 	public ProductFamily() {
 	}
@@ -102,14 +109,28 @@ public class ProductFamily extends Reviewable {
 		this.description = description;
 	}
 
+	public Tenant getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(Tenant vendor) {
+		this.vendor = vendor;
+	}
+
+	/**
+	 * Test if current entity is the owner of the given tenant.
+	 */
+	public boolean isOwner(String tenantId) {
+		return vendor.getId().equals(tenantId);
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("ProductFamily [name=").append(name).append(", category=").append(category)
 				.append(", creationDate=").append(creationDate).append(", image=").append(image)
-				.append(", description=").append(description).append(", vendor=").append(vendor)
-				.append(", reviewStatus=").append(reviewStatus).append(", rejectedReason=").append(rejectedReason)
-				.append(", id=").append(id).append("]");
+				.append(", description=").append(description).append(", reviewStatus=").append(reviewStatus)
+				.append(", rejectedReason=").append(rejectedReason).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 

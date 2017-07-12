@@ -13,7 +13,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.PostLoad;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,6 +32,7 @@ import io.micro.common.Strings;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.constraint.ContactList;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
+import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
  * Product of an {@code Tenant} (AKA. vendor).
@@ -126,6 +129,11 @@ public abstract class Product extends Reviewable {
 	@Lob
 	@Column(name = "description")
 	protected String description;
+
+	@ManyToOne
+	@JoinColumn(name = "tenant_id", nullable = false)
+	@XmlJavaTypeAdapter(TenantAdapter.class)
+	protected Tenant vendor;
 
 	@PostLoad
 	private void onLoad() {
@@ -233,6 +241,21 @@ public abstract class Product extends Reviewable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Tenant getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(Tenant vendor) {
+		this.vendor = vendor;
+	}
+
+	/**
+	 * Test if current entity is the owner of the given tenant.
+	 */
+	public boolean isOwner(String tenantId) {
+		return vendor.getId().equals(tenantId);
 	}
 
 	/**

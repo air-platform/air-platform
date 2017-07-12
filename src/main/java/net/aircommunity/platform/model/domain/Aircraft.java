@@ -4,7 +4,9 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -12,8 +14,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.micro.annotation.constraint.NotEmpty;
+import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 /**
  * Aircraft for (Taxi, Transportation, Tour) of an {@code Tenant}.
@@ -23,7 +27,7 @@ import io.micro.annotation.constraint.NotEmpty;
 @Entity
 @Table(name = "air_platform_aircraft")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Aircraft extends VendorAware {
+public class Aircraft extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	// Flight NO. global unique, e.g. 353252
@@ -71,6 +75,11 @@ public class Aircraft extends VendorAware {
 	@Lob
 	@Column(name = "description")
 	private String description;
+
+	@ManyToOne
+	@JoinColumn(name = "tenant_id", nullable = false)
+	@XmlJavaTypeAdapter(TenantAdapter.class)
+	private Tenant vendor;
 
 	public Aircraft() {
 	}
@@ -149,6 +158,21 @@ public class Aircraft extends VendorAware {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Tenant getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(Tenant vendor) {
+		this.vendor = vendor;
+	}
+
+	/**
+	 * Test if current entity is the owner of the given tenant.
+	 */
+	public boolean isOwner(String tenantId) {
+		return vendor.getId().equals(tenantId);
 	}
 
 	@Override

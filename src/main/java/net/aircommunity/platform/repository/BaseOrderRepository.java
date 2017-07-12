@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -203,10 +204,11 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	 * Find order by orderNo (fuzzy match, exclude DELETED)
 	 * 
 	 * @param orderNo
+	 * @param maxResult the max result returned
 	 * @return order refs list or empty
 	 */
-	default List<T> findVisibleByFuzzyOrderNo(String orderNo) {
-		return findByOrderNoStartingWithIgnoreCaseAndStatusNot(orderNo, Status.DELETED);
+	default List<T> findVisibleByFuzzyOrderNo(String orderNo, int maxResult) {
+		return findByOrderNoStartingWithIgnoreCaseAndStatusNot(orderNo, Status.DELETED, new PageRequest(0, maxResult));
 	}
 
 	/**
@@ -216,7 +218,7 @@ public interface BaseOrderRepository<T extends Order> extends JpaRepository<T, S
 	 * @param status the status to excluded
 	 * @return order refs list or empty
 	 */
-	List<T> findByOrderNoStartingWithIgnoreCaseAndStatusNot(String orderNo, Status status);
+	List<T> findByOrderNoStartingWithIgnoreCaseAndStatusNot(String orderNo, Status status, Pageable pageable);
 
 	/**
 	 * Delete by order NO.

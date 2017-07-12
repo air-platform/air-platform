@@ -42,6 +42,16 @@ abstract class AbstractBaseOrderService<T extends Order> extends AbstractOrderSe
 	}
 
 	@Override
+	public List<T> searchUserOrder(String userId, String orderNo) {
+		return orderProcessor.searchUserOrder(userId, orderNo);
+	}
+
+	@Override
+	public List<T> searchTenantOrder(String tenantId, String orderNo) {
+		return orderProcessor.searchTenantOrder(tenantId, orderNo);
+	}
+
+	@Override
 	public List<T> findOrders(List<String> orderIds) {
 		return orderProcessor.findOrders(orderIds);
 	}

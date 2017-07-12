@@ -1,7 +1,10 @@
 package net.aircommunity.platform.rest.admin.order;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -20,7 +23,7 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.rest.tenant.order.TenantOrderResourceSupport;
+import net.aircommunity.platform.rest.ManagedOrderResourceSupport;
 import net.aircommunity.platform.service.order.CommonOrderService;
 import net.aircommunity.platform.service.order.OrderService;
 
@@ -31,7 +34,7 @@ import net.aircommunity.platform.service.order.OrderService;
  */
 @RESTful
 @RolesAllowed(Roles.ROLE_ADMIN)
-public class AdminOrderResource extends TenantOrderResourceSupport<Order> {
+public class AdminOrderResource extends ManagedOrderResourceSupport<Order> {
 
 	// IMPORTANT, should be adminOrderService instance
 	@Resource(name = "adminOrderService")
@@ -65,6 +68,17 @@ public class AdminOrderResource extends TenantOrderResourceSupport<Order> {
 	@JsonView(JsonViews.Admin.class)
 	public Order find(@PathParam("orderId") String orderId) {
 		return getOrderService().findOrder(orderId);
+	}
+
+	/**
+	 * Search order
+	 */
+	@GET
+	@Path("search")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
+	public List<Order> search(@NotNull @QueryParam("orderNo") String orderNo) {
+		return getOrderService().searchOrder(orderNo);
 	}
 
 	/**

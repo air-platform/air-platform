@@ -34,13 +34,33 @@ public interface OrderService<T extends Order> {
 	T findOrder(@Nonnull String orderId);
 
 	/**
-	 * Search by orderNo with fuzzy match.
+	 * Search by orderNo with fuzzy match without ownership checks.
 	 * 
 	 * @param orderNo the orderNo
 	 * @return a list of orders or empty if none
 	 */
 	@Nonnull
-	List<T> searchOrder(@Nonnull String orderNo); // TODO with userId or tenantId
+	List<T> searchOrder(@Nonnull String orderNo);
+
+	/**
+	 * Search by orderNo with fuzzy match for a given user.
+	 * 
+	 * @param userId the userId
+	 * @param orderNo the orderNo
+	 * @return a list of orders or empty if none
+	 */
+	@Nonnull
+	List<T> searchUserOrder(@Nonnull String userId, @Nonnull String orderNo);
+
+	/**
+	 * Search by orderNo with fuzzy match for a given tenant.
+	 * 
+	 * @param tenantId the tenantId
+	 * @param orderNo the orderNo
+	 * @return a list of orders or empty if none
+	 */
+	@Nonnull
+	List<T> searchTenantOrder(@Nonnull String tenantId, @Nonnull String orderNo);
 
 	/**
 	 * Find orders with the given order IDs

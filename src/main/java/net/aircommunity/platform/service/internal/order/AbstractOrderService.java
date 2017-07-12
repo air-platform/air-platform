@@ -188,15 +188,16 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			}
 			// 1) retrieve product related to this order
 			// fleet product is set in FleetCandidate, ignored
+			Product.Type orderType = order.getType();
 			Product product = order.getProduct();
 			if (product != null) {
-				product = commonProductService.findProduct(product.getId());
+				product = commonProductService.findProduct(orderType, product.getId());
 				order.setProduct(product);
 				newOrder.setProduct(product);
 				if (StandardProduct.class.isAssignableFrom(product.getClass())) {
 					newOrder.setCurrencyUnit(StandardProduct.class.cast(product).getCurrencyUnit());
 				}
-				LOG.debug("Creating order {} for product {}", order, product);
+				LOG.debug("Creating order {} for product {}, vendor {}", order, product, product.getVendor());
 			}
 			// product MUST set, except for fleet.
 			if (product == null && order.getType() != Product.Type.FLEET) {
@@ -233,24 +234,23 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 			// 6) perform save
 			final T orderToSave = newOrder;
-			T saved = safeExecute(() -> {
-				T orderSaved = orderProcessor.saveOrder(orderToSave);
-				LOG.info("[Created order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), orderSaved);
-				eventBus.post(new OrderEvent(OrderEvent.EventType.CREATION, orderSaved));
-				return orderSaved;
-			}, "Create %s: %s for user %s failed", type.getSimpleName(), order, userId);
+			T orderSaved = safeExecute(() -> orderProcessor.saveOrder(orderToSave), "Create %s: %s for user %s failed",
+					type.getSimpleName(), order, userId);
 
 			// 7) create orderRef for later fast query (all type of orders will be available as orderRef)
 			OrderRef orderRef = new OrderRef();
-			orderRef.setOrderId(saved.getId());
+			orderRef.setOrderId(orderSaved.getId());
 			orderRef.setOwnerId(owner.getId());
 			orderRef.setVendorId(product == null ? null : product.getVendor().getId());
-			orderRef.setOrderNo(saved.getOrderNo());
-			orderRef.setStatus(saved.getStatus());
-			orderRef.setType(saved.getType());
-			orderRef.setCreationDate(saved.getCreationDate());
+			orderRef.setOrderNo(orderSaved.getOrderNo());
+			orderRef.setStatus(orderSaved.getStatus());
+			orderRef.setType(orderSaved.getType());
+			orderRef.setCreationDate(orderSaved.getCreationDate());
 			orderRefRepository.save(orderRef);
-			return saved;
+
+			LOG.info("[Created order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), orderSaved);
+			eventBus.post(new OrderEvent(OrderEvent.EventType.CREATION, orderSaved));
+			return orderSaved;
 		}
 		finally {
 			if (isMetricsEnabled()) {

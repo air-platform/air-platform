@@ -16,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
@@ -212,13 +213,15 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String>, Jpa
 	 * 
 	 * @param visibleOnly return visible order only or not
 	 * @param orderNo the order no
+	 * @param maxResult the max result returned
 	 * @return order refs list or empty
 	 */
-	default List<OrderRef> findByFuzzyOrderNo(boolean visibleOnly, String orderNo) {
+	default List<OrderRef> findByFuzzyOrderNo(boolean visibleOnly, String orderNo, int maxResult) {
+		PageRequest request = new PageRequest(0, maxResult);
 		if (visibleOnly) {
-			return findByOrderNoStartingWithIgnoreCaseAndStatusNot(orderNo, Status.DELETED);
+			return findByOrderNoStartingWithIgnoreCaseAndStatusNot(orderNo, Status.DELETED, request);
 		}
-		return findByOrderNoStartingWithIgnoreCase(orderNo);
+		return findByOrderNoStartingWithIgnoreCase(orderNo, request);
 	}
 
 	/**
@@ -228,9 +231,9 @@ public interface OrderRefRepository extends JpaRepository<OrderRef, String>, Jpa
 	 * @param status the status to excluded
 	 * @return order refs list or empty
 	 */
-	List<OrderRef> findByOrderNoStartingWithIgnoreCaseAndStatusNot(String orderNo, Status status);
+	List<OrderRef> findByOrderNoStartingWithIgnoreCaseAndStatusNot(String orderNo, Status status, Pageable pageable);
 
-	List<OrderRef> findByOrderNoStartingWithIgnoreCase(String orderNo);
+	List<OrderRef> findByOrderNoStartingWithIgnoreCase(String orderNo, Pageable pageable);
 
 	/**
 	 * Find order by order number.

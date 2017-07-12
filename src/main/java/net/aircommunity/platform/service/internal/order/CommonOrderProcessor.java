@@ -66,24 +66,77 @@ public class CommonOrderProcessor implements OrderProcessor<Order> {
 
 	@Override
 	public List<Order> searchOrder(String orderNo) {
-		if (Strings.isBlank(orderNo)) {
-			return Collections.emptyList();
-		}
-		List<OrderRef> refs = orderRefRepository.findByFuzzyOrderNo(visibleOrderOnly, orderNo);
+		List<OrderRef> refs = doSearchOrderRef(orderNo);
 		return transform(refs);
 	}
 
 	@Override
-	public List<Order> findOrders(List<String> orderIds) {
-		if (orderIds == null || orderIds.isEmpty()) {
+	public List<Order> searchUserOrder(String userId, String orderNo) {
+		List<OrderRef> refs = doSearchOrderRef(orderNo);
+		// filter ref before lookup
+		refs = refs.stream().filter(ref -> ref.getOwnerId().equals(userId)).collect(Collectors.toList());
+		return transform(refs);
+	}
+
+	@Override
+	public List<Order> searchTenantOrder(String tenantId, String orderNo) {
+		List<OrderRef> refs = doSearchOrderRef(orderNo);
+		// filter ref before lookup
+		refs = refs.stream().filter(order -> order.getVendorId().equals(tenantId)).collect(Collectors.toList());
+		return transform(refs);
+	}
+
+	private List<OrderRef> doSearchOrderRef(String orderNo) {
+		if (Strings.isBlank(orderNo)) {
 			return Collections.emptyList();
 		}
-		List<OrderRef> refs = orderRefRepository.findAll(orderIds);
+		return orderRefRepository.findByFuzzyOrderNo(visibleOrderOnly, orderNo,
+				configuration.getOrderSearchResultMax());
+	}
+
+	@Override
+	public List<Order> findOrders(List<String> orderIds) {
+		List<OrderRef> refs = doFindOrderRefs(orderIds);
 		if (visibleOrderOnly) {
 			// return non-deleted order only for non-admin
 			refs = refs.stream().filter(ref -> ref.getStatus() != Order.Status.DELETED).collect(Collectors.toList());
 		}
 		return transform(refs);
+	}
+
+	@Override
+	public List<Order> findUserOrders(String userId, List<String> orderIds) {
+		List<OrderRef> refs = doFindOrderRefs(orderIds);
+		if (visibleOrderOnly) {
+			// return non-deleted order only for non-admin
+			refs = refs.stream().filter(ref -> ref.getStatus() != Order.Status.DELETED)
+					.filter(ref -> ref.getOwnerId().equals(userId)).collect(Collectors.toList());
+		}
+		else {
+			refs = refs.stream().filter(ref -> ref.getOwnerId().equals(userId)).collect(Collectors.toList());
+		}
+		return transform(refs);
+	}
+
+	@Override
+	public List<Order> findTenantOrders(String tenantId, List<String> orderIds) {
+		List<OrderRef> refs = doFindOrderRefs(orderIds);
+		if (visibleOrderOnly) {
+			// return non-deleted order only for non-admin
+			refs = refs.stream().filter(ref -> ref.getStatus() != Order.Status.DELETED)
+					.filter(ref -> ref.getVendorId().equals(tenantId)).collect(Collectors.toList());
+		}
+		else {
+			refs = refs.stream().filter(ref -> ref.getVendorId().equals(tenantId)).collect(Collectors.toList());
+		}
+		return transform(refs);
+	}
+
+	private List<OrderRef> doFindOrderRefs(List<String> orderIds) {
+		if (orderIds == null || orderIds.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return orderRefRepository.findAll(orderIds);
 	}
 
 	@Override

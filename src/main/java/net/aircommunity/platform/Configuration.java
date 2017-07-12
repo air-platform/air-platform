@@ -80,6 +80,9 @@ public class Configuration {
 	@Value("${air.order.query-day-max}")
 	private int orderQueryDayMax;
 
+	@Value("${air.order.search-result-max}")
+	private int orderSearchResultMax;
+
 	@Value("${air.order.rebuild-ref}")
 	private boolean orderRebuildRef;
 
@@ -254,6 +257,10 @@ public class Configuration {
 
 	public int getOrderQueryDayMax() {
 		return orderQueryDayMax;
+	}
+
+	public int getOrderSearchResultMax() {
+		return orderSearchResultMax;
 	}
 
 	public boolean isOrderRebuildRef() {

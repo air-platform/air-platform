@@ -30,12 +30,12 @@ import net.aircommunity.platform.service.spi.OrderProcessor;
 public class StandardOrderProcessor<T extends Order> implements OrderProcessor<T> {
 	private static final Logger LOG = LoggerFactory.getLogger(StandardOrderProcessor.class);
 
-	private final Configuration config;
+	private final Configuration configuration;
 	private final BaseOrderRepository<T> orderRepository;
 
-	public StandardOrderProcessor(Configuration config, BaseOrderRepository<T> orderRepository) {
-		this.config = Objects.requireNonNull(config, "config cannot be null");
-		this.orderRepository = Objects.requireNonNull(orderRepository, "orderRepository cannot be null");
+	public StandardOrderProcessor(Configuration config, BaseOrderRepository<T> repository) {
+		configuration = Objects.requireNonNull(config, "configuration cannot be null");
+		orderRepository = Objects.requireNonNull(repository, "orderRepository cannot be null");
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class StandardOrderProcessor<T extends Order> implements OrderProcessor<T
 		if (Strings.isBlank(orderNo)) {
 			return Collections.emptyList();
 		}
-		return orderRepository.findVisibleByFuzzyOrderNo(orderNo);
+		return orderRepository.findVisibleByFuzzyOrderNo(orderNo, configuration.getOrderSearchResultMax());
 	}
 
 	@Override
@@ -92,8 +92,8 @@ public class StandardOrderProcessor<T extends Order> implements OrderProcessor<T
 		if (days < 0) {
 			days = 0;
 		}
-		if (days > config.getOrderQueryDayMax()) {
-			days = config.getOrderQueryDayMax();
+		if (days > configuration.getOrderQueryDayMax()) {
+			days = configuration.getOrderQueryDayMax();
 		}
 		Date creationDate = LocalDateTime.now().minusDays(days).toDate();
 		LOG.debug("List recent {} days({}) orders for user: {}", days, creationDate, userId);
