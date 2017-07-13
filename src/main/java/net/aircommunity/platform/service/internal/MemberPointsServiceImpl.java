@@ -1,7 +1,16 @@
 package net.aircommunity.platform.service.internal;
 
+import static net.aircommunity.platform.model.PointRules.DEFAULT_ACCOUNT_REGISTRATION_POINTS;
+import static net.aircommunity.platform.model.PointRules.DEFAULT_EXCHANGE_PERCENT;
+import static net.aircommunity.platform.model.PointRules.DEFAULT_EXCHANGE_RATE;
+import static net.aircommunity.platform.model.PointRules.DEFAULT_FIRST_ORDER_PRICE_OFF;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -16,10 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableMap;
 
+import net.aircommunity.platform.model.PointRule;
 import net.aircommunity.platform.model.PointRules;
 import net.aircommunity.platform.model.PointsExchange;
 import net.aircommunity.platform.model.domain.Product.Category;
-import net.aircommunity.platform.model.domain.Settings;
+import net.aircommunity.platform.model.domain.Setting;
 import net.aircommunity.platform.service.MemberPointsService;
 
 /**
@@ -34,10 +44,6 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 
 	private static final String CACHE_NAME = "cache.points";
 	private static final String CACHE_NAME_DAILY_SIGNIN = "cache.points_daily_signin";
-	private static final int DEFAULT_ACCOUNT_REGISTRATION_POINTS = 100;
-	private static final int DEFAULT_EXCHANGE_RATE = 10; // 50%
-	private static final int DEFAULT_FIRST_ORDER_PRICE_OFF = 0;
-	private static final int DEFAULT_EXCHANGE_PERCENT = 50; // 50%
 	private static final String POINTS_INITIALIZED = "initialized";
 	// rate of exchange for money
 	private static final String POINTS_EXCHANGE_RATE = "exchange_rate";
@@ -91,36 +97,36 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 	}
 
 	private boolean isPointRulesInitialized() {
-		Settings settings = settingsRepository.findByName(POINTS_INITIALIZED);
+		Setting settings = settingRepository.findByName(POINTS_INITIALIZED);
 		return settings != null && Boolean.valueOf(settings.getValue());
 	}
 
 	private void pointRulesInitialized() {
-		Settings settings = settingsRepository.findByName(POINTS_INITIALIZED);
-		if (settings == null) {
-			settings = Settings.newSettings(POINT_SETTING_CATEGORY);
-			settings.setName(POINTS_INITIALIZED);
+		Setting setting = settingRepository.findByName(POINTS_INITIALIZED);
+		if (setting == null) {
+			setting = Setting.newSetting(POINT_SETTING_CATEGORY);
+			setting.setName(POINTS_INITIALIZED);
 		}
-		settings.setValue(Boolean.TRUE.toString());
-		settingsRepository.save(settings);
+		setting.setValue(Boolean.TRUE.toString());
+		settingRepository.save(setting);
 	}
 
 	@Transactional
 	@Override
 	public void setPointsExchangeRate(int percent) {
-		Settings settings = settingsRepository.findByName(POINTS_EXCHANGE_RATE);
-		if (settings == null) {
-			settings = Settings.newSettings(POINT_SETTING_CATEGORY);
-			settings.setName(POINTS_EXCHANGE_RATE);
+		Setting setting = settingRepository.findByName(POINTS_EXCHANGE_RATE);
+		if (setting == null) {
+			setting = Setting.newSetting(POINT_SETTING_CATEGORY);
+			setting.setName(POINTS_EXCHANGE_RATE);
 		}
-		LOG.debug("Set name: {}, value: {}", settings.getName(), percent);
-		settings.setValue(String.valueOf(percent));
-		settingsRepository.save(settings);
+		LOG.debug("Set name: {}, value: {}", setting.getName(), percent);
+		setting.setValue(String.valueOf(percent));
+		settingRepository.save(setting);
 	}
 
 	@Override
 	public int getPointsExchangeRate() {
-		Settings settings = settingsRepository.findByName(POINTS_EXCHANGE_RATE);
+		Setting settings = settingRepository.findByName(POINTS_EXCHANGE_RATE);
 		if (settings == null) {
 			return DEFAULT_EXCHANGE_RATE;
 		}
@@ -136,19 +142,19 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 	@Transactional
 	@Override
 	public void setPointsExchangePercent(int percent) {
-		Settings settings = settingsRepository.findByName(POINTS_EXCHANGE_PERCENT);
-		if (settings == null) {
-			settings = Settings.newSettings(POINT_SETTING_CATEGORY);
-			settings.setName(POINTS_EXCHANGE_PERCENT);
+		Setting setting = settingRepository.findByName(POINTS_EXCHANGE_PERCENT);
+		if (setting == null) {
+			setting = Setting.newSetting(POINT_SETTING_CATEGORY);
+			setting.setName(POINTS_EXCHANGE_PERCENT);
 		}
-		LOG.debug("Set name: {}, value: {}", settings.getName(), percent);
-		settings.setValue(String.valueOf(percent));
-		settingsRepository.save(settings);
+		LOG.debug("Set name: {}, value: {}", setting.getName(), percent);
+		setting.setValue(String.valueOf(percent));
+		settingRepository.save(setting);
 	}
 
 	@Override
 	public int getPointsExchangePercent() {
-		Settings settings = settingsRepository.findByName(POINTS_EXCHANGE_PERCENT);
+		Setting settings = settingRepository.findByName(POINTS_EXCHANGE_PERCENT);
 		if (settings == null) {
 			return DEFAULT_EXCHANGE_PERCENT;
 		}
@@ -165,20 +171,50 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 	@Caching(put = @CachePut(cacheNames = CACHE_NAME, key = "#pointRule"), evict = @CacheEvict(cacheNames = CACHE_NAME_DAILY_SIGNIN))
 	@Override
 	public void setEarnPointsForRule(String pointRule, long points) {
-		Settings settings = settingsRepository.findByName(pointRule);
-		if (settings == null) {
-			settings = Settings.newSettings(POINT_RULES_SETTING_CATEGORY);
-			settings.setName(pointRule);
+		Setting setting = settingRepository.findByName(pointRule);
+		if (setting == null) {
+			setting = Setting.newSetting(POINT_RULES_SETTING_CATEGORY);
+			setting.setName(pointRule);
 		}
 		LOG.debug("Set point earning setting with name: {}, value: {}", pointRule, points);
-		settings.setValue(String.valueOf(points));
-		settingsRepository.save(settings);
+		setting.setValue(String.valueOf(points));
+		settingRepository.save(setting);
+	}
+
+	@Override
+	public Set<PointRule> getEarnPointRules() {
+		List<Setting> settings = settingRepository.findByCategory(POINT_RULES_SETTING_CATEGORY);
+		return settings.stream().map(setting -> new PointRule(setting.getName(), Long.valueOf(setting.getValue())))
+				.collect(Collectors.toSet());
+	}
+
+	@Transactional
+	@CacheEvict(cacheNames = { CACHE_NAME, CACHE_NAME_DAILY_SIGNIN })
+	@Override
+	public Set<PointRule> setEarnPointRules(Set<PointRule> rules) {
+		if (rules == null || rules.isEmpty()) {
+			return Collections.emptySet();
+		}
+		List<Setting> settings = new ArrayList<>();
+		rules.stream().forEach(rule -> {
+			Setting setting = settingRepository.findByName(rule.getName());
+			if (setting == null) {
+				setting = Setting.newSetting(POINT_RULES_SETTING_CATEGORY);
+				setting.setName(rule.getName());
+			}
+			LOG.debug("Set point earning rule: {}", rule);
+			setting.setValue(String.valueOf(rule.getValue()));
+			settings.add(setting);
+		});
+		List<Setting> settingsSaved = settingRepository.save(settings);
+		return settingsSaved.stream().map(setting -> new PointRule(setting.getName(), Long.valueOf(setting.getValue())))
+				.collect(Collectors.toSet());
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
 	@Override
 	public long getPointsEarnedFromRule(String pointRule) {
-		Settings settings = settingsRepository.findByName(pointRule);
+		Setting settings = settingRepository.findByName(pointRule);
 		if (settings == null) {
 			return 0;
 		}
@@ -194,7 +230,7 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 	@Cacheable(cacheNames = CACHE_NAME_DAILY_SIGNIN)
 	@Override
 	public Map<Integer, Long> getDailySigninPointRules() {
-		List<Settings> settings = settingsRepository.findByNameStartingWith(PointRules.DAILY_SIGNIN_PREFIX);
+		List<Setting> settings = settingRepository.findByNameStartingWith(PointRules.DAILY_SIGNIN_PREFIX);
 		ImmutableMap.Builder<Integer, Long> signinRules = ImmutableMap.builder();
 		settings.stream().forEach(setting -> {
 			String signinRule = setting.getName();

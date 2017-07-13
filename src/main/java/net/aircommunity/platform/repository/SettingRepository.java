@@ -4,15 +4,15 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import net.aircommunity.platform.model.domain.Settings;
+import net.aircommunity.platform.model.domain.Setting;
 
 /**
- * Repository interface for {@link Settings} instances. Provides basic CRUD operations due to the extension of
+ * Repository interface for {@link Setting} instances. Provides basic CRUD operations due to the extension of
  * {@link JpaRepository}.
  * 
  * @author Bin.Zhang
  */
-public interface SettingsRepository extends JpaRepository<Settings, String> {
+public interface SettingRepository extends JpaRepository<Setting, String> {
 
 	/**
 	 * Find a Settings by name
@@ -20,7 +20,7 @@ public interface SettingsRepository extends JpaRepository<Settings, String> {
 	 * @param name the name
 	 * @return an Settings or null if none
 	 */
-	Settings findByName(String name);
+	Setting findByName(String name);
 
 	/**
 	 * Find all Settings by name starting with.
@@ -28,7 +28,7 @@ public interface SettingsRepository extends JpaRepository<Settings, String> {
 	 * @param name the name
 	 * @return an Settings or empty if none
 	 */
-	List<Settings> findByNameStartingWith(String name);
+	List<Setting> findByNameStartingWith(String name);
 
 	/**
 	 * Find all Settings with the given category
@@ -36,6 +36,6 @@ public interface SettingsRepository extends JpaRepository<Settings, String> {
 	 * @param category the category
 	 * @return an Settings or empty if none
 	 */
-	List<Settings> findByCategory(String category);
+	List<Setting> findByCategory(String category);
 
 }

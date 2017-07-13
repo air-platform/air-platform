@@ -1,9 +1,11 @@
 package net.aircommunity.platform.service;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import net.aircommunity.platform.model.PointRule;
 import net.aircommunity.platform.model.PointsExchange;
 
 /**
@@ -49,6 +51,12 @@ public interface MemberPointsService {
 	 * @param points points user will earned when this rule matches
 	 */
 	void setEarnPointsForRule(@Nonnull String pointRule, long points);
+
+	@Nonnull
+	Set<PointRule> setEarnPointRules(@Nonnull Set<PointRule> rules);
+
+	@Nonnull
+	Set<PointRule> getEarnPointRules();
 
 	/**
 	 * Get the points from the given rule.

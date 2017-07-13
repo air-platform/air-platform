@@ -20,8 +20,8 @@ import io.micro.annotation.constraint.NotEmpty;
  */
 @Entity
 @XmlAccessorType(XmlAccessType.FIELD)
-@Table(name = "air_platform_settings", indexes = { @Index(name = "idx_category", columnList = "category") })
-public class Settings extends Persistable {
+@Table(name = "air_platform_setting", indexes = { @Index(name = "idx_category", columnList = "category") })
+public class Setting extends Persistable {
 	private static final long serialVersionUID = 1L;
 
 	public static final String CATEGORY_SYSTEM = "system";
@@ -76,17 +76,17 @@ public class Settings extends Persistable {
 		return builder.toString();
 	}
 
-	public static Settings newSystemSettings() {
-		return newSettings(CATEGORY_SYSTEM);
+	public static Setting newSystemSetting() {
+		return newSetting(CATEGORY_SYSTEM);
 	}
 
-	public static Settings newUserSettings() {
-		return newSettings(CATEGORY_USER);
+	public static Setting newUserSetting() {
+		return newSetting(CATEGORY_USER);
 	}
 
-	public static Settings newSettings(String category) {
-		Settings settings = new Settings();
-		settings.category = Objects.requireNonNull(category, "category cannot be null");
-		return settings;
+	public static Setting newSetting(String category) {
+		Setting setting = new Setting();
+		setting.category = Objects.requireNonNull(category, "category cannot be null");
+		return setting;
 	}
 }

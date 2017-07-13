@@ -42,7 +42,7 @@ import io.micro.core.security.TokenVerificationService;
 import io.micro.core.security.filter.AuthenticationFilter;
 import io.micro.support.ObjectMappers;
 import net.aircommunity.platform.common.OrderNoGenerator;
-import net.aircommunity.platform.repository.SettingsRepository;
+import net.aircommunity.platform.repository.SettingRepository;
 import net.aircommunity.platform.security.DatabaseTokenConfigStorage;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
@@ -125,7 +125,7 @@ public class Application {
 
 	@Bean
 	public AccessTokenConfigStorage accessTokenKeyStorage(ApplicationContext ctx) {
-		return new DatabaseTokenConfigStorage(ctx.getBean(SettingsRepository.class), objectMapper());
+		return new DatabaseTokenConfigStorage(ctx.getBean(SettingRepository.class), objectMapper());
 	}
 
 	@Bean

@@ -37,7 +37,7 @@ import net.aircommunity.platform.model.domain.Fleet;
 import net.aircommunity.platform.model.domain.JetTravel;
 import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.nls.M;
-import net.aircommunity.platform.repository.SettingsRepository;
+import net.aircommunity.platform.repository.SettingRepository;
 import net.aircommunity.platform.service.security.AccountService;
 
 /**
@@ -124,7 +124,7 @@ public abstract class AbstractServiceSupport {
 	protected AccountService accountService;
 
 	@Resource
-	protected SettingsRepository settingsRepository;
+	protected SettingRepository settingRepository;
 
 	@Resource
 	protected CacheManager cacheManager;

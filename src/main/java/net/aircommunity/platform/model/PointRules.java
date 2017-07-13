@@ -12,6 +12,26 @@ import net.aircommunity.platform.model.domain.Product.Category;
 public final class PointRules {
 
 	/**
+	 * The default point earned for account registration
+	 */
+	public static final int DEFAULT_ACCOUNT_REGISTRATION_POINTS = 100;
+
+	/**
+	 * The default exchange rate for points to RMB, 10 means 10 points for 1 RMB
+	 */
+	public static final int DEFAULT_EXCHANGE_RATE = 10;
+
+	/**
+	 * The default exchange percent, the max points can be used for an order, 50 means 50% of the order total price.
+	 */
+	public static final int DEFAULT_EXCHANGE_PERCENT = 50;
+
+	/**
+	 * First user order price off in RMB, 0 means no price off
+	 */
+	public static final int DEFAULT_FIRST_ORDER_PRICE_OFF = 0;
+
+	/**
 	 * Account registration
 	 */
 	public static final String ACCOUNT_REGISTRATION = "account_registration";
@@ -19,7 +39,7 @@ public final class PointRules {
 	/**
 	 * First order price off
 	 */
-	public static final String FIRST_ORDER_PRICE_OFF = "first_order_price_off";
+	public static final String FIRST_ORDER_PRICE_OFF = "order_first_price_off";
 
 	/**
 	 * Order finished, points will get when order is finished (prefix+product category)

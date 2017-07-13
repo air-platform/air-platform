@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micro.core.security.AccessTokenConfig;
 import io.micro.core.security.AccessTokenConfigStorage;
-import net.aircommunity.platform.model.domain.Settings;
-import net.aircommunity.platform.repository.SettingsRepository;
+import net.aircommunity.platform.model.domain.Setting;
+import net.aircommunity.platform.repository.SettingRepository;
 
 /**
  * Database AccessTokenConfigStorage
@@ -18,17 +18,17 @@ import net.aircommunity.platform.repository.SettingsRepository;
 public class DatabaseTokenConfigStorage implements AccessTokenConfigStorage {
 	private static final Logger LOG = LoggerFactory.getLogger(DatabaseTokenConfigStorage.class);
 
-	private final SettingsRepository settingsRepository;
+	private final SettingRepository settingRepository;
 	private final ObjectMapper objectMapper;
 
-	public DatabaseTokenConfigStorage(SettingsRepository settingsRepository, ObjectMapper objectMapper) {
-		this.settingsRepository = settingsRepository;
+	public DatabaseTokenConfigStorage(SettingRepository settingRepository, ObjectMapper objectMapper) {
+		this.settingRepository = settingRepository;
 		this.objectMapper = objectMapper;
 	}
 
 	@Override
 	public AccessTokenConfig loadAccessTokenConfig(String keyId) {
-		Settings settings = settingsRepository.findByName(keyId);
+		Setting settings = settingRepository.findByName(keyId);
 		if (settings == null) {
 			return null;
 		}
@@ -44,14 +44,14 @@ public class DatabaseTokenConfigStorage implements AccessTokenConfigStorage {
 	@Override
 	public void saveAccessTokenConfig(String keyId, AccessTokenConfig config) {
 		try {
-			Settings settings = settingsRepository.findByName(keyId);
-			if (settings == null) {
-				settings = Settings.newSystemSettings();
+			Setting setting = settingRepository.findByName(keyId);
+			if (setting == null) {
+				setting = Setting.newSystemSetting();
 			}
 			String body = objectMapper.writeValueAsString(config);
-			settings.setName(keyId);
-			settings.setValue(body);
-			settingsRepository.save(settings);
+			setting.setName(keyId);
+			setting.setValue(body);
+			settingRepository.save(setting);
 		}
 		catch (Exception e) {
 			LOG.error("Failed to load saveAccessTokenConfig", e);

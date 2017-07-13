@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.domain.Contact;
-import net.aircommunity.platform.model.domain.Settings;
+import net.aircommunity.platform.model.domain.Setting;
 import net.aircommunity.platform.service.PlatformService;
 
 /**
@@ -49,23 +49,23 @@ public class PlatformServiceImpl extends AbstractServiceSupport implements Platf
 		String contacts = clientManagers.stream().map(e -> new StringBuilder().append(e.getPerson())
 				.append(Constants.CONTACT_INFO_SEPARATOR).append(e.getEmail()).toString())
 				.collect(Collectors.joining(Constants.CONTACT_SEPARATOR));
-		Settings settings = settingsRepository.findByName(PLATFORM_CLIENT_MANAGERS);
-		if (settings == null) {
-			settings = Settings.newSystemSettings();
-			settings.setName(PLATFORM_CLIENT_MANAGERS);
+		Setting setting = settingRepository.findByName(PLATFORM_CLIENT_MANAGERS);
+		if (setting == null) {
+			setting = Setting.newSystemSetting();
+			setting.setName(PLATFORM_CLIENT_MANAGERS);
 		}
-		settings.setValue(contacts);
+		setting.setValue(contacts);
 		LOG.debug("Set setting with name: {}, value: {}", PLATFORM_CLIENT_MANAGERS, contacts);
-		settingsRepository.save(settings);
+		settingRepository.save(setting);
 	}
 
 	@Override
 	public Set<Contact> getPlatformClientManagers() {
-		Settings settings = settingsRepository.findByName(PLATFORM_CLIENT_MANAGERS);
-		if (settings == null) {
+		Setting setting = settingRepository.findByName(PLATFORM_CLIENT_MANAGERS);
+		if (setting == null) {
 			return Collections.emptySet();
 		}
-		return Contact.parseContacts(settings.getValue());
+		return Contact.parseContacts(setting.getValue());
 	}
 
 }
