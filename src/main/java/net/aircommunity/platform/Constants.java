@@ -55,6 +55,7 @@ public final class Constants {
 	public static final String TEMPLATE_MAIL_RESET_PASSOWRD = TEMPLATE_DIR + "/mail-reset-password.template";
 	public static final String TEMPLATE_MAIL_ORDER_NOTIFICATION = TEMPLATE_DIR + "/mail-%s-order.template";
 	public static final String TEMPLATE_SMS_ORDER_EVENT_NOTIFICATION = TEMPLATE_DIR + "/sms-%s-event.template";
+	public static final String TEMPLATE_FEEDBACK_NOTIFICATION = TEMPLATE_DIR + "/mail-feedback.template";
 	// @formatter:on
 	// template binding keys
 	public static final String TEMPLATE_BINDING_USERNAME = "username";

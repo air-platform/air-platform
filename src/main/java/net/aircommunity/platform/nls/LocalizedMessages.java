@@ -17,6 +17,9 @@ public class LocalizedMessages extends NLSResource {
 	public static String USERNAME_ANONYMOUS;
 	public static String FLEET_OFFERED;
 	public static String FLEET_NOT_SELECTED;
+	public static String CUSTOMER_FEEDBACK;
+	public static String CUSTOMER_COOPERATION_INTENTION;
+
 	// payment
 	public static String PAYMENT_SERVICE_UNAVAILABLE;
 	public static String PAYMENT_SUCCESS_SERVER_NOTIFY;
