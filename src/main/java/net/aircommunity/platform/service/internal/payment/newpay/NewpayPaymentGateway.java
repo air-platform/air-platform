@@ -332,7 +332,7 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 			}
 			Optional<NewpayPaymentQueryDetails> ref = queryDetails.stream().filter(detail -> detail.isTradeSuccessful())
 					.findFirst();
-			if (ref.isPresent()) {
+			if (!ref.isPresent()) {
 				return Optional.empty();
 			}
 			NewpayPaymentQueryDetails result = ref.get();
@@ -369,7 +369,7 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 			}
 			Optional<NewpayRefundQueryDetails> ref = queryDetails.stream().filter(detail -> detail.isTradeSuccessful())
 					.findFirst();
-			if (ref.isPresent()) {
+			if (!ref.isPresent()) {
 				return Optional.empty();
 			}
 			NewpayRefundQueryDetails result = ref.get();
