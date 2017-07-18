@@ -19,7 +19,6 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Course;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.School;
-import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.BaseProductRepository;
 import net.aircommunity.platform.repository.CourseRepository;
@@ -62,10 +61,10 @@ public class CourseServiceImpl extends AbstractStandardProductService<Course> im
 
 	@Transactional
 	@Override
-	public Course createCourse(String schoolId, Course course) {
+	public Course createCourse(String tenantId, Course course) {
 		School school = schoolService.findSchool(course.getSchool().getId());
 		course.setSchool(school);
-		return doCreateProduct(schoolId, course);
+		return doCreateProduct(tenantId, course);
 	}
 
 	@Transactional
@@ -141,11 +140,13 @@ public class CourseServiceImpl extends AbstractStandardProductService<Course> im
 				M.msg(M.SCHOOL_COURSES_CANNOT_BE_DELETED, schoolId));
 	}
 
-	@Override
-	protected Tenant doGetVendor(String schoolId) {
-		School school = schoolService.findSchool(schoolId);
-		return school.getVendor();
-	}
+	// TODO REMOVE
+	// Course createCourse(String schoolId, Course course) --> Course createCourse(String tenantId, Course course)
+	// @Override
+	// protected Tenant doGetVendor(String schoolId) {
+	// School school = schoolService.findSchool(schoolId);
+	// return school.getVendor();
+	// }
 
 	@Override
 	protected Code productNotFoundCode() {

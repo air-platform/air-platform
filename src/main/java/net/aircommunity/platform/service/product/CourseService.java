@@ -27,7 +27,7 @@ public interface CourseService extends StandardProductService<Course> {
 	Set<String> listCourseLocations();
 
 	@Nonnull
-	Course createCourse(@Nonnull String schoolId, @Nonnull Course course);
+	Course createCourse(@Nonnull String tenantId, @Nonnull Course course);
 
 	@Nonnull
 	default Course findCourse(@Nonnull String courseId) {
