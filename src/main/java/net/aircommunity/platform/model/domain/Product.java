@@ -262,7 +262,7 @@ public abstract class Product extends Reviewable {
 	 * Product type
 	 */
 	public enum Type {
-		FLEET, FERRYFLIGHT, JETTRAVEL, AIRTAXI, AIRTOUR, AIRTRANSPORT, COURSE;
+		FLEET, FERRYFLIGHT, JETTRAVEL, AIRTAXI, AIRTOUR, AIRTRANSPORT, COURSE, QUICKFLIGHT;
 
 		/**
 		 * Lower case names in string.

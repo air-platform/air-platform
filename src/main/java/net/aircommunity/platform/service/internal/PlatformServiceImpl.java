@@ -46,6 +46,7 @@ public class PlatformServiceImpl extends AbstractServiceSupport implements Platf
 		if (clientManagers == null || clientManagers.isEmpty()) {
 			return;
 		}
+		// XXX NOTE: mobile is not saved for all contacts
 		String contacts = clientManagers.stream().map(e -> new StringBuilder().append(e.getPerson())
 				.append(Constants.CONTACT_INFO_SEPARATOR).append(e.getEmail()).toString())
 				.collect(Collectors.joining(Constants.CONTACT_SEPARATOR));

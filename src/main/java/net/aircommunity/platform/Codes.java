@@ -74,8 +74,9 @@ public final class Codes {
 	// common product related
 	public static final Code AIRJET_ALREADY_EXISTS = Code.alreadyExists(11_003_2001);
 	public static final Code AIRJET_NOT_FOUND = Code.notFound(11_003_2002);
-	public static final Code BANNER_NOT_FOUND = Code.notFound(11_003_2003);
-	public static final Code BANNER_INVALID_LINK_CATEGORY = Code.invalidArgument(11_003_2004);
+	public static final Code APRON_NOT_FOUND = Code.notFound(11_003_2003);
+	public static final Code BANNER_NOT_FOUND = Code.notFound(11_003_2004);
+	public static final Code BANNER_INVALID_LINK_CATEGORY = Code.invalidArgument(11_003_2005);
 
 	public static final Code AIRCRAFT_ALREADY_EXISTS = Code.alreadyExists(11_003_2005);
 	public static final Code AIRCRAFT_CANNOT_BE_DELETED = Code.illegalState(11_003_2005);

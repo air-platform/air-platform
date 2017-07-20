@@ -54,6 +54,8 @@ interface DomainConstants {
 	int PRODUCT_FAQ_TITLE_LEN = 255;
 	// current used max is 5
 	int PRODUCT_COMMENT_SOURCE_LEN = 8;
+	// current used max is 10
+	int APRON_TYPE_LEN = 10;
 	int SCHOOL_NAME_LEN = 50;
 	// XXX is it a reasonable length? (same as city name)
 	int COURSE_LOCATION_LEN = 50;
