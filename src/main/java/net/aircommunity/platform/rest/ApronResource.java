@@ -118,6 +118,30 @@ public class ApronResource {
 	}
 
 	/**
+	 * Publish
+	 */
+	@POST
+	@Path("{apronId}/publish")
+	@RolesAllowed(Roles.ROLE_ADMIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
+	public Apron publish(@PathParam("apronId") String apronId) {
+		return apronService.publishApron(apronId, true);
+	}
+
+	/**
+	 * Unpublish
+	 */
+	@POST
+	@Path("{apronId}/unpublish")
+	@RolesAllowed(Roles.ROLE_ADMIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Admin.class)
+	public Apron unpublish(@PathParam("apronId") String apronId) {
+		return apronService.publishApron(apronId, false);
+	}
+
+	/**
 	 * Delete
 	 */
 	@DELETE
