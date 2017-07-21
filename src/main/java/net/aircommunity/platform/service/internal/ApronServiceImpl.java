@@ -75,6 +75,7 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 
 	private void copyProperties(Apron src, Apron tgt) {
 		tgt.setName(src.getName());
+		tgt.setProvince(src.getProvince());
 		tgt.setCity(src.getCity());
 		tgt.setLocation(src.getLocation());
 		tgt.setType(src.getType());
