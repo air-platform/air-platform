@@ -16,6 +16,7 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Apron;
+import net.aircommunity.platform.model.domain.Apron.Type;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.ApronRepository;
 import net.aircommunity.platform.service.ApronService;
@@ -86,13 +87,18 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 	}
 
 	@Override
-	public List<Apron> listAprons(String city) {
-		return apronRepository.findByCity(city);
+	public List<Apron> listPublishedCityAprons(String city, Type type) {
+		return apronRepository.findPublishedByCity(city, type);
 	}
 
 	@Override
-	public List<Apron> listPublishedAprons(String city) {
-		return apronRepository.findByCityAndPublishedTrue(city);
+	public List<Apron> listPublishedProvinceAprons(String province, Type type) {
+		return apronRepository.findPublishedByProvince(province, type);
+	}
+
+	@Override
+	public List<String> listProvinces() {
+		return apronRepository.findDistinctProvince();
 	}
 
 	@Transactional

@@ -3,6 +3,7 @@ package net.aircommunity.platform.service;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Page;
@@ -55,32 +56,27 @@ public interface ApronService {
 	Apron publishApron(@Nonnull String apronId, boolean published);
 
 	/**
-	 * List all Aprons by pagination.
+	 * List all aprons by pagination.
 	 * 
 	 * @param page the page number
 	 * @param pageSize the pageSize
-	 * @return a page of Aprons or empty
+	 * @return a page of aprons or empty
 	 */
 	@Nonnull
 	Page<Apron> listAprons(int page, int pageSize);
 
 	/**
-	 * List all Aprons by pagination for a given city.
+	 * List all published aprons by pagination for a given city.
 	 * 
 	 * @param city the city
-	 * @return a page of Aprons or empty
+	 * @return a page of aprons or empty
 	 */
 	@Nonnull
-	List<Apron> listAprons(@Nonnull String city);
+	List<Apron> listPublishedCityAprons(@Nonnull String city, @Nullable Apron.Type type);
 
-	/**
-	 * List all published Aprons by pagination for a given city.
-	 * 
-	 * @param city the city
-	 * @return a page of Aprons or empty
-	 */
-	@Nonnull
-	List<Apron> listPublishedAprons(@Nonnull String city);
+	List<Apron> listPublishedProvinceAprons(@Nonnull String province, @Nullable Apron.Type type);
+
+	List<String> listProvinces();
 
 	/**
 	 * Delete a Apron.
@@ -90,7 +86,7 @@ public interface ApronService {
 	void deleteApron(@Nonnull String apronId);
 
 	/**
-	 * Delete All Aprons.
+	 * Delete All aprons.
 	 */
 	void deleteAprons();
 }

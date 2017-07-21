@@ -1,6 +1,8 @@
 package net.aircommunity.platform.rest;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -29,10 +31,12 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Apron;
+import net.aircommunity.platform.model.domain.Apron.Type;
 import net.aircommunity.platform.service.ApronService;
 
 /**
@@ -59,16 +63,37 @@ public class ApronResource {
 	 */
 	@GET
 	@PermitAll
+	@Path("provinces")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<String> listProvinces() {
+		return apronService.listProvinces();
+	}
+
+	/**
+	 * List all
+	 */
+	@GET
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
-	public Response listAll(@QueryParam("city") String city, @QueryParam("page") @DefaultValue("0") int page,
+	public Response listAll(@QueryParam("province") String province, @QueryParam("city") String city,
+			@QueryParam("type") Type type, @QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
 		LOG.debug("List all aprons with page: {} pageSize: {}", page, pageSize);
 		// for ADMIN with pagination and without filtered by published
 		if (context.isUserInRole(Roles.ROLE_ADMIN)) {
 			return Response.ok(apronService.listAprons(page, pageSize)).build();
 		}
-		return Response.ok(apronService.listPublishedAprons(city)).build();
+		// if province and city both present, city is ignored, both absent, empty is returned
+		// province
+		if (Strings.isNotBlank(province)) {
+			return Response.ok(apronService.listPublishedProvinceAprons(province, type)).build();
+		}
+		// city
+		if (Strings.isNotBlank(city)) {
+			return Response.ok(apronService.listPublishedCityAprons(city, type)).build();
+		}
+		return Response.ok(Collections.emptyList()).build();
 	}
 
 	/**
