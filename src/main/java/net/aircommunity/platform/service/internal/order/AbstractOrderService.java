@@ -24,6 +24,7 @@ import org.springframework.cache.Cache;
 import com.codahale.metrics.Timer;
 
 import io.micro.common.DateFormats;
+import io.micro.common.Reflections;
 import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
@@ -126,8 +127,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	private void init() {
 		java.lang.reflect.Type t = getClass().getGenericSuperclass();
 		if (ParameterizedType.class.isAssignableFrom(t.getClass())) {
-			ParameterizedType pt = ParameterizedType.class.cast(getClass().getGenericSuperclass());
-			type = (Class<T>) pt.getActualTypeArguments()[0];
+			type = (Class<T>) Reflections.findParameterizedType(this, AbstractOrderService.class, "T");
 		}
 		else {
 			// just considered as generic order

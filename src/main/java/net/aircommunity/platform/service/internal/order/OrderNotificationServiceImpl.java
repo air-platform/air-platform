@@ -14,11 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 import io.micro.common.Strings;
-import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.OrderEvent;
 import net.aircommunity.platform.model.domain.AirTaxiOrder;
@@ -40,6 +38,7 @@ import net.aircommunity.platform.service.PlatformService;
 import net.aircommunity.platform.service.common.MailService;
 import net.aircommunity.platform.service.common.SmsService;
 import net.aircommunity.platform.service.common.TemplateService;
+import net.aircommunity.platform.service.internal.AbstractServiceSupport;
 import net.aircommunity.platform.service.order.OrderNotificationService;
 import net.aircommunity.platform.service.product.FleetService;
 
@@ -49,14 +48,33 @@ import net.aircommunity.platform.service.product.FleetService;
  * @author Bin.Zhang
  */
 @Service
-public class OrderNotificationServiceImpl implements OrderNotificationService {
+public class OrderNotificationServiceImpl extends AbstractServiceSupport implements OrderNotificationService {
 	private static final Logger LOG = LoggerFactory.getLogger(OrderNotificationServiceImpl.class);
 
+	private static final String CTX_CUSTOMER = "customer";
+	private static final String CTX_ACTION = "action";
+	private static final String CTX_CLIENT_MANAGER = "clientManager";
+	private static final String CTX_ORDER = "order";
+	private static final String CTX_ORDER_NO = "orderNo";
+	private static final String CTX_ORDER_OPERATION = "orderOperation";
+	private static final String CTX_ORDER_TYPE = "orderType";
+	private static final String CTX_CREATION_DATE = "creationDate";
+	private static final String CTX_NOTE = "note";
+	private static final String CTX_CONTACT = "contact";
+	private static final String CTX_COMPANY = "company";
+	private static final String CTX_AIRCRAFT_TYPE = "aircraftType";
+	private static final String CTX_DATE = "date";
+	private static final String CTX_TIMESLOT = "timeSlot";
+	private static final String CTX_FLIGHT_LEGS = "flightLegs";
+	private static final String CTX_FERRYFLIGHT = "ferryFlight";
+	private static final String CTX_PASSENGERS = "passengers";
+	private static final String CTX_JETTRAVEL = "jetTravel";
+	private static final String CTX_AIRTAXI = "airTaxi";
+	private static final String CTX_AIRTOUR = "airTour";
+	private static final String CTX_AIRTRANSPORT = "airTransport";
+	private static final String CTX_COURSE = "course";
 	private static final Map<Product.Type, String> orderTypeMapping = new HashMap<>();
 	private static final Map<Order.Status, String> orderOperationsMapping = new HashMap<>();
-
-	@Resource
-	private Configuration configuration;
 
 	@Resource
 	private TemplateService templateService;
@@ -72,9 +90,6 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 
 	@Resource
 	private PlatformService platformService;
-
-	@Resource
-	private EventBus eventBus;
 
 	@PostConstruct
 	private void init() {
@@ -191,10 +206,9 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 			if (Strings.isBlank(customer)) {
 				customer = contact.getMobile();
 			}
-			// TODO make constants
-			context.put("customer", customer);
-			context.put("order", event.getOrder());
-			context.put("action", getActionForOrderEvent(event));
+			context.put(CTX_CUSTOMER, customer);
+			context.put(CTX_ORDER, event.getOrder());
+			context.put(CTX_ACTION, getActionForOrderEvent(event));
 			String message = templateService.renderFile(String.format(Constants.TEMPLATE_SMS_ORDER_EVENT_NOTIFICATION,
 					event.getType().name().replace("_", "-").toLowerCase(Locale.ENGLISH)), context);
 			LOG.debug("SMS message: {}", message);
@@ -248,16 +262,16 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 			Map<String, Object> context = new HashMap<>();
 			User customer = order.getOwner();
 			// use realName if available, otherwise use nickName
-			context.put("customer",
+			context.put(CTX_CUSTOMER,
 					Strings.isNotBlank(customer.getRealName()) ? customer.getRealName() : customer.getNickName());
-			context.put("clientManager", clientManager.getPerson());
-			context.put("orderNo", order.getOrderNo());
-			context.put("orderOperation", orderOperationsMapping.get(order.getStatus()));
-			context.put("orderType", orderTypeMapping.get(order.getType()));
-			context.put("creationDate", order.getCreationDate());
-			context.put("note", order.getNote());
-			context.put("contact", order.getContact());
-			context.put("company", configuration.getCompany());
+			context.put(CTX_CLIENT_MANAGER, clientManager.getPerson());
+			context.put(CTX_ORDER_NO, order.getOrderNo());
+			context.put(CTX_ORDER_OPERATION, orderOperationsMapping.get(order.getStatus()));
+			context.put(CTX_ORDER_TYPE, orderTypeMapping.get(order.getType()));
+			context.put(CTX_CREATION_DATE, order.getCreationDate());
+			context.put(CTX_NOTE, order.getNote());
+			context.put(CTX_CONTACT, order.getContact());
+			context.put(CTX_COMPANY, configuration.getCompany());
 			//
 			switch (order.getType()) {
 			case FLEET:
@@ -274,55 +288,52 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 								.distinct().collect(Collectors.joining(", "));
 					}
 				}
-				context.put("aircraftType", aircraftType);
-				context.put("flightLegs", charterOrder.getFlightLegs());
+				context.put(CTX_AIRCRAFT_TYPE, aircraftType);
+				context.put(CTX_FLIGHT_LEGS, charterOrder.getFlightLegs());
 				break;
 
 			case FERRYFLIGHT:
 				FerryFlightOrder ferryFlightOrder = FerryFlightOrder.class.cast(order);
-				context.put("ferryFlight", ferryFlightOrder.getProduct());
-				context.put("passengers", ferryFlightOrder.getPassengers());
+				context.put(CTX_FERRYFLIGHT, ferryFlightOrder.getProduct());
+				context.put(CTX_PASSENGERS, ferryFlightOrder.getPassengers());
 				break;
 
 			case JETTRAVEL:
 				JetTravelOrder jetTravelOrder = JetTravelOrder.class.cast(order);
-				context.put("jetTravel", jetTravelOrder.getProduct());
+				context.put(CTX_JETTRAVEL, jetTravelOrder.getProduct());
 				break;
 
 			case AIRTAXI:
 				AirTaxiOrder airTaxiOrder = AirTaxiOrder.class.cast(order);
-				context.put("airTaxi", airTaxiOrder.getProduct());
-				context.put("passengers", airTaxiOrder.getPassengers());
+				context.put(CTX_AIRTAXI, airTaxiOrder.getProduct());
+				context.put(CTX_PASSENGERS, airTaxiOrder.getPassengers());
 				// XXX need aircraft info in salesPackageInfo, just add Aircraft name in getSalesPackageInfo()?
-				context.put("aircraftType", airTaxiOrder.getSalesPackage().getAircraft().getName());
-				context.put("date", airTaxiOrder.getDepartureDate());
-				context.put("timeSlot", airTaxiOrder.getTimeSlot());
+				context.put(CTX_AIRCRAFT_TYPE, airTaxiOrder.getSalesPackage().getAircraft().getName());
+				context.put(CTX_DATE, airTaxiOrder.getDepartureDate());
+				context.put(CTX_TIMESLOT, airTaxiOrder.getTimeSlot());
 				break;
 
 			case AIRTOUR:
 				AirTourOrder airTourOrder = AirTourOrder.class.cast(order);
-				context.put("airTour", airTourOrder.getProduct());
-				context.put("passengers", airTourOrder.getPassengers());
-				context.put("aircraftType", airTourOrder.getSalesPackage().getAircraft().getName());
-				context.put("date", airTourOrder.getDepartureDate());
-				context.put("timeSlot", airTourOrder.getTimeSlot());
+				context.put(CTX_AIRTOUR, airTourOrder.getProduct());
+				context.put(CTX_PASSENGERS, airTourOrder.getPassengers());
+				context.put(CTX_AIRCRAFT_TYPE, airTourOrder.getSalesPackage().getAircraft().getName());
+				context.put(CTX_DATE, airTourOrder.getDepartureDate());
+				context.put(CTX_TIMESLOT, airTourOrder.getTimeSlot());
 				break;
 
 			case AIRTRANSPORT:
 				AirTransportOrder airTransportOrder = AirTransportOrder.class.cast(order);
-				context.put("airTransport", airTransportOrder.getProduct());
-				// TODO REMOVE
-				// context.put("passengerNum", airTransportOrder.getPassengerNum() == 0
-				// ? airTransportOrder.getPassengers().size() : airTransportOrder.getPassengerNum());
-				context.put("passengers", airTransportOrder.getPassengers());
-				context.put("aircraftType", airTransportOrder.getSalesPackage().getAircraft().getName());
-				context.put("date", airTransportOrder.getDepartureDate());
-				context.put("timeSlot", airTransportOrder.getTimeSlot());
+				context.put(CTX_AIRTRANSPORT, airTransportOrder.getProduct());
+				context.put(CTX_PASSENGERS, airTransportOrder.getPassengers());
+				context.put(CTX_AIRCRAFT_TYPE, airTransportOrder.getSalesPackage().getAircraft().getName());
+				context.put(CTX_DATE, airTransportOrder.getDepartureDate());
+				context.put(CTX_TIMESLOT, airTransportOrder.getTimeSlot());
 				break;
 
 			case COURSE:
-				CourseOrder enrollment = CourseOrder.class.cast(order);
-				context.put("enrollment", enrollment);
+				CourseOrder course = CourseOrder.class.cast(order);
+				context.put(CTX_COURSE, course);
 				break;
 
 			default:
