@@ -21,11 +21,11 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,7 +75,7 @@ public class PaymentServiceImpl implements PaymentService {
 	@Resource(name = "commonOrderService")
 	private CommonOrderService commonOrderService;
 
-	@Autowired
+	@Inject
 	public PaymentServiceImpl(List<PaymentGateway> paymentGateways) {
 		ImmutableMap.Builder<Payment.Method, PaymentGateway> builder = ImmutableMap.builder();
 		paymentGateways.stream()

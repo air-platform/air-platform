@@ -3,8 +3,8 @@ package net.aircommunity.platform.service.internal.order;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
@@ -33,7 +33,7 @@ public class CharterOrderServiceImpl extends AbstractOrderCandidateService<Fleet
 	@Resource
 	private FleetService fleetService;
 
-	@Autowired
+	@Inject
 	public CharterOrderServiceImpl(CharterOrderRepository orderRepository,
 			FleetCandidateRepository candidateRepository) {
 		super(orderRepository, candidateRepository);

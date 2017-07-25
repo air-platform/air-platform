@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.micro.common.Strings;
@@ -60,7 +60,7 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 	private final NewpayClient client;
 	private final NewpayConfig config;
 
-	@Autowired
+	@Inject
 	public NewpayPaymentGateway(NewpayConfig config, OkHttpClient httpClient) {
 		this.config = config;
 		this.client = new NewpayClient(this.config, httpClient);

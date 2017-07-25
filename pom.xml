@@ -20,6 +20,7 @@
 		<start-class>net.aircommunity.platform.Application</start-class>
 		<lib-path>${project.basedir}/lib</lib-path>
 
+		<javax.inject.version>1</javax.inject.version>
 		<jsr353.version>1.0.4</jsr353.version>
 
 		<!-- payment -->
@@ -174,6 +175,13 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jdk8</artifactId>
+		</dependency>
+
+		<!-- JSR 330 -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>${javax.inject.version}</version>
 		</dependency>
 
 		<!-- validation -->

@@ -4,8 +4,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +42,7 @@ public class QuickFlightOrderServiceImpl extends AbstractOrderCandidateService<A
 	@Resource
 	private AircraftService aircraftService;
 
-	@Autowired
+	@Inject
 	public QuickFlightOrderServiceImpl(QuickFlightOrderRepository orderRepository,
 			AircraftCandidateRepository candidateRepository) {
 		super(orderRepository, candidateRepository);

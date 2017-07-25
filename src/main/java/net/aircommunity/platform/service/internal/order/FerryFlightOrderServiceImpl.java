@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service.internal.order;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
@@ -21,7 +22,7 @@ import net.aircommunity.platform.service.order.annotation.ManagedOrderService;
 public class FerryFlightOrderServiceImpl extends AbstractVendorAwareOrderService<FerryFlightOrder>
 		implements FerryFlightOrderService {
 
-	@Autowired
+	@Inject
 	public FerryFlightOrderServiceImpl(FerryFlightOrderRepository ferryFlightOrderRepository) {
 		super(ferryFlightOrderRepository);
 	}

@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service.internal.order;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.Code;
@@ -23,7 +24,7 @@ import net.aircommunity.platform.service.order.annotation.ManagedOrderService;
 @Transactional(readOnly = true)
 public class CourseOrderServiceImpl extends AbstractVendorAwareOrderService<CourseOrder> implements CourseOrderService {
 
-	@Autowired
+	@Inject
 	public CourseOrderServiceImpl(CourseOrderRepository courseOrderRepository) {
 		super(courseOrderRepository);
 	}

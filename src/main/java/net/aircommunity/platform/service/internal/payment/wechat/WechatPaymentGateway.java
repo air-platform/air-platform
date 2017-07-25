@@ -11,8 +11,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.binarywang.wxpay.bean.WxPayOrderNotifyResponse;
@@ -79,7 +79,7 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 	private final WxPayService wxPayService;
 	private final WechatConfig config;
 
-	@Autowired
+	@Inject
 	public WechatPaymentGateway(WechatConfig wechatConfig) {
 		config = wechatConfig;
 		WxPayConfig wxconfig = new WxPayConfig();

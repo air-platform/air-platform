@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alipay.api.AlipayApiException;
@@ -84,7 +84,7 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 	private final AlipayClient client;
 	private final AlipayConfig config;
 
-	@Autowired
+	@Inject
 	public AlipayPaymentGateway(AlipayConfig alipayConfig) {
 		config = alipayConfig;
 		client = new DefaultAlipayClient(ALIPAY_GATEWAY_URL, config.getAppId(), config.getAppPrivateKey(),

@@ -34,6 +34,7 @@ import net.aircommunity.platform.service.security.AccessControlService;
  */
 @Service
 public class AccessControlServiceImpl implements AccessControlService {
+	private final Map<Type, BiPredicate<String, PrivilegedResource>> vendorResourceChecker = new HashMap<>();
 
 	@Resource(name = "commonOrderService")
 	private CommonOrderService commonOrderService;
@@ -49,8 +50,6 @@ public class AccessControlServiceImpl implements AccessControlService {
 
 	@Resource
 	private ProductFamilyService productFamilyService;
-
-	private final Map<Type, BiPredicate<String, PrivilegedResource>> vendorResourceChecker = new HashMap<>();
 
 	@PostConstruct
 	private void init() {
