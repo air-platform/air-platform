@@ -184,7 +184,7 @@ public class TenantResource extends BaseResourceSupport {
 	@Resource
 	private CommentResource commentResource;
 
-	@Path("comments") // TODO --> @Path("") path already in resource ?
+	@Path("comments")
 	public CommentResource comments() {
 		return commentResource;
 	}

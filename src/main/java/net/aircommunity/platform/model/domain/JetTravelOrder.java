@@ -38,6 +38,14 @@ public class JetTravelOrder extends VendorAwareOrder {
 		jetTravel = (JetTravel) product;
 	}
 
+	@Override
+	public Type getType() {
+		if (type == null) {
+			return Type.JETTRAVEL;
+		}
+		return type;
+	}
+
 	@PrePersist
 	private void prePersist() {
 		setType(Type.JETTRAVEL);

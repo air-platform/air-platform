@@ -65,4 +65,15 @@ public class AircraftResource {
 		return aircraftService.findAircraft(aircraftId);
 	}
 
+	// ***********************
+	// Comments
+	// ***********************
+	@Resource
+	private AircraftCommentResource aircraftCommentResource;
+
+	@Path("{aircraftId}/comments")
+	public AircraftCommentResource comments(@PathParam("aircraftId") String aircraftId) {
+		return aircraftCommentResource;
+	}
+
 }

@@ -91,6 +91,14 @@ public class CourseOrder extends VendorAwareOrder {
 		course = (Course) product;
 	}
 
+	@Override
+	public Type getType() {
+		if (type == null) {
+			return Type.COURSE;
+		}
+		return type;
+	}
+
 	@PrePersist
 	private void prePersist() {
 		setType(Type.COURSE);

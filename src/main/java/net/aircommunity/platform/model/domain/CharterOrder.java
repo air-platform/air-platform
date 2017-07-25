@@ -131,11 +131,6 @@ public class CharterOrder extends CandidateOrder<FleetCandidate> implements Clon
 		return new UnitProductPrice(PricePolicy.PER_HOUR, unitPrice);
 	}
 
-	@PrePersist
-	private void prePersist() {
-		setType(Type.FLEET);
-	}
-
 	@Override
 	public Type getType() {
 		// NOTE: specific case for charter, the product can be null
@@ -144,6 +139,11 @@ public class CharterOrder extends CandidateOrder<FleetCandidate> implements Clon
 			return Type.FLEET;
 		}
 		return type;
+	}
+
+	@PrePersist
+	private void prePersist() {
+		setType(Type.FLEET);
 	}
 
 	@Override

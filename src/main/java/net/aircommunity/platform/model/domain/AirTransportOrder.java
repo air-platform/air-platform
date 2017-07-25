@@ -38,6 +38,14 @@ public class AirTransportOrder extends AircraftAwareOrder {
 		airTransport = (AirTransport) product;
 	}
 
+	@Override
+	public Type getType() {
+		if (type == null) {
+			return Type.AIRTRANSPORT;
+		}
+		return type;
+	}
+
 	@PrePersist
 	private void prePersist() {
 		setType(Type.AIRTRANSPORT);

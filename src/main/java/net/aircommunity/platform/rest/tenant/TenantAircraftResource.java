@@ -31,6 +31,7 @@ import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Aircraft;
+import net.aircommunity.platform.rest.AircraftCommentResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.service.product.AircraftService;
 
@@ -111,6 +112,18 @@ public class TenantAircraftResource {
 	@DELETE
 	public void deleteAll(@PathParam("tenantId") String tenantId) {
 		aircraftService.deleteAircrafts(tenantId);
+	}
+
+	// ***********************
+	// Comments
+	// ***********************
+
+	@Resource
+	private AircraftCommentResource aircraftCommentResource;
+
+	@Path("{aircraftId}/comments")
+	public AircraftCommentResource comments(@PathParam("aircraftId") String aircraftId) {
+		return aircraftCommentResource;
 	}
 
 }

@@ -1,5 +1,6 @@
 package net.aircommunity.platform.service.product;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.AirException;
@@ -38,10 +39,20 @@ public interface AircraftService {
 	 * 
 	 * @param aircraftId the aircraftId
 	 * @param newAircraft the Aircraft to be updated
-	 * @return Aircraft created
+	 * @return Aircraft updated
 	 */
 	@Nonnull
 	Aircraft updateAircraft(@Nonnull String aircraftId, @Nonnull Aircraft newAircraft);
+
+	/**
+	 * Update a Aircraft score.
+	 * 
+	 * @param aircraftId the aircraftId
+	 * @param newScore the newScore
+	 * @return Aircraft updated
+	 */
+	@Nonnull
+	Aircraft updateAircraftScore(@Nonnull String aircraftId, @Nonnegative double newScore);
 
 	/**
 	 * List all Aircrafts by pagination filter by tenantId.

@@ -37,22 +37,6 @@ public abstract class VendorAwareOrder extends StandardOrder {
 
 	protected abstract void doSetProduct(Product product);
 
-	// TODO REMOVE
-	// related to product
-	// @NotNull
-	// @ManyToOne
-	// @JoinColumn(name = "product_id", nullable = false)
-	// protected Product product;
-	//
-	// public Product getProduct() {
-	// return product;
-	// }
-	//
-	// public void setProduct(Product product) {
-	// this.product = product;
-	// this.vendor = product.getVendor();
-	// }
-
 	// XXX doesn't work from REST API:
 	// com.fasterxml.jackson.databind.JsonMappingException: Can not construct instance of
 	// net.aircommunity.platform.model.Product: abstract types either need to be mapped to concrete types, have custom

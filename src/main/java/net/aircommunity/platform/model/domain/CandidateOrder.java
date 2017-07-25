@@ -54,6 +54,16 @@ public abstract class CandidateOrder<T extends OrderItemCandidate> extends Stand
 		return OrderItemCandidateSupport.selectCandidate(getCandidates(), candidateId);
 	}
 
+	/**
+	 * Return current selected candidate.
+	 * 
+	 * @return selected candidate
+	 */
+	@XmlTransient
+	public Optional<T> getSelectedCandidate() {
+		return getCandidates().stream().filter(OrderItemCandidate::isSelected).findFirst();
+	}
+
 	@Override
 	public boolean hasCandidates() {
 		return true;

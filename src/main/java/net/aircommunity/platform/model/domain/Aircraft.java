@@ -36,6 +36,10 @@ public class Aircraft extends Persistable {
 	@Column(name = "flight_no", length = AIRCRAFT_FLIGHT_NO_LEN, nullable = false, unique = true)
 	private String flightNo;
 
+	// score rated by customer
+	@Column(name = "score", nullable = false)
+	private double score = 0.0;
+
 	// Flight name
 	@NotEmpty
 	@Size(max = AIRCRAFT_NAME_LEN)
@@ -94,6 +98,14 @@ public class Aircraft extends Persistable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public double getScore() {
+		return score;
+	}
+
+	public void setScore(double score) {
+		this.score = score;
 	}
 
 	public String getImage() {
@@ -178,10 +190,10 @@ public class Aircraft extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Aircraft [flightNo=").append(flightNo).append(", type=").append(type).append(", category=")
-				.append(category).append(", seats=").append(seats).append(", minPassengers=").append(minPassengers)
-				.append(", image=").append(image).append(", description=").append(description).append(", id=")
-				.append(id).append("]");
+		builder.append("Aircraft [flightNo=").append(flightNo).append(", score=").append(score).append(", type=")
+				.append(type).append(", category=").append(category).append(", seats=").append(seats)
+				.append(", minPassengers=").append(minPassengers).append(", image=").append(image)
+				.append(", description=").append(description).append(", id=").append(id).append("]");
 		return builder.toString();
 	}
 }

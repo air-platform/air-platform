@@ -52,15 +52,15 @@ public abstract class OrderItemCandidate extends Persistable {
 		this.status = status;
 	}
 
+	public boolean isSelected() {
+		return status == OrderItemCandidate.Status.SELECTED;
+	}
+
 	public boolean isOwnedByTenant(String tenantId) {
 		return getVendor().getId().equals(tenantId);
 	}
 
 	protected abstract Tenant getVendor();
-
-	// public abstract CandidateOrder getOrder();
-	//
-	// public abstract void setOrder(CandidateOrder order);
 
 	/**
 	 * Candidate status

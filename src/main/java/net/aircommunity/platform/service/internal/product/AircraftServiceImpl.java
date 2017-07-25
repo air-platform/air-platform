@@ -80,6 +80,19 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 				aircraft);
 	}
 
+	@Transactional
+	@CachePut(cacheNames = CACHE_NAME, key = "#aircraftId")
+	@Override
+	public Aircraft updateAircraftScore(String aircraftId, double newScore) {
+		Aircraft aircraft = findAircraft(aircraftId);
+		if (newScore < 0) {
+			newScore = 0;
+		}
+		aircraft.setScore(newScore);
+		return safeExecute(() -> aircraftRepository.save(aircraft), "Update aircraft %s to %s failed", aircraftId,
+				aircraft);
+	}
+
 	private void copyProperties(Aircraft src, Aircraft tgt) {
 		tgt.setName(src.getName());
 		tgt.setImage(src.getImage());

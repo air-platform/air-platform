@@ -167,11 +167,6 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 				.forEach(candidateId -> OrderItemCandidateSupport.offerCandidate(getCandidates(), candidateId, null));
 	}
 
-	@PrePersist
-	private void prePersist() {
-		setType(Type.QUICKFLIGHT);
-	}
-
 	@Override
 	public Type getType() {
 		// NOTE: specific case, the product is always null
@@ -180,6 +175,11 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 			return Type.QUICKFLIGHT;
 		}
 		return type;
+	}
+
+	@PrePersist
+	private void prePersist() {
+		setType(Type.QUICKFLIGHT);
 	}
 
 	@Override

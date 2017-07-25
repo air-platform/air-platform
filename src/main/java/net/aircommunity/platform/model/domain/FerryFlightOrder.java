@@ -38,6 +38,14 @@ public class FerryFlightOrder extends CharterableOrder {
 		ferryFlight = (FerryFlight) product;
 	}
 
+	@Override
+	public Type getType() {
+		if (type == null) {
+			return Type.FERRYFLIGHT;
+		}
+		return type;
+	}
+
 	@PrePersist
 	private void prePersist() {
 		setType(Type.FERRYFLIGHT);

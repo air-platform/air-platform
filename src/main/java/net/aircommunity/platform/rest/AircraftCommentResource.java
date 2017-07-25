@@ -12,7 +12,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,37 +29,31 @@ import org.slf4j.LoggerFactory;
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
-import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Account;
-import net.aircommunity.platform.model.domain.Comment;
-import net.aircommunity.platform.model.domain.Comment.Source;
+import net.aircommunity.platform.model.domain.AircraftComment;
 import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.product.CommentService;
+import net.aircommunity.platform.service.product.AircraftCommentService;
 import net.aircommunity.platform.service.security.AccountService;
 
 /**
- * Comment RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT and <b>list/find/query</b> for ANYONE
+ * AircraftComment RESTful API. NOTE: <b>all permission</b> for ADMIN/TENANT and <b>list/find/query</b> for ANYONE
  * 
  * @author Bin.Zhang
  */
-@Api
 @RESTful
-@Path("comments")
 @AllowResourceOwner
-public class CommentResource extends BaseResourceSupport {
-	private static final Logger LOG = LoggerFactory.getLogger(CommentResource.class);
-
-	private static final String HEADER_COMMENT_ALLOWED = "Comment-Allowed";
+public class AircraftCommentResource extends BaseResourceSupport {
+	private static final Logger LOG = LoggerFactory.getLogger(AircraftCommentResource.class);
 
 	@Resource
 	private AccountService accountService;
 
 	@Resource
-	private CommentService commentService;
+	private AircraftCommentService aircraftCommentService;
 
 	// ***********************
 	// ANYONE
@@ -72,9 +65,9 @@ public class CommentResource extends BaseResourceSupport {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<Comment> list(@NotNull @QueryParam("product") String productId, @QueryParam("source") Source source,
+	public Page<AircraftComment> list(@PathParam("aircraftId") String aircraftId,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		return commentService.listComments(productId, source, page, pageSize);
+		return aircraftCommentService.listComments(aircraftId, page, pageSize);
 	}
 
 	/**
@@ -84,8 +77,8 @@ public class CommentResource extends BaseResourceSupport {
 	@PermitAll
 	@Path("{commentId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Comment find(@PathParam("commentId") String commentId) {
-		return commentService.findComment(commentId);
+	public AircraftComment find(@PathParam("commentId") String commentId) {
+		return aircraftCommentService.findComment(commentId);
 	}
 
 	/**
@@ -96,7 +89,7 @@ public class CommentResource extends BaseResourceSupport {
 	@Path("count")
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonObject totalCount() {
-		long count = commentService.getTotalCommentsCount();
+		long count = aircraftCommentService.getTotalCommentsCount();
 		return buildCountResponse(count);
 	}
 
@@ -105,32 +98,19 @@ public class CommentResource extends BaseResourceSupport {
 	// ***********************
 
 	/**
-	 * Test if can comment on an order
-	 */
-	@HEAD
-	@Authenticated
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response canComment(@NotNull @QueryParam("order") String orderId, @Context SecurityContext context) {
-		String accountId = context.getUserPrincipal().getName();
-		boolean canComment = commentService.isCommentAllowed(accountId, orderId);
-		return Response.noContent().header(HEADER_COMMENT_ALLOWED, canComment).build();
-	}
-
-	/**
-	 * Create: ?source=order&sourceId=xxx
+	 * Create
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Authenticated
-	public Response create(@NotNull @QueryParam("source") Source source,
-			@NotNull @QueryParam("sourceId") String sourceId, @QueryParam("replyTo") String replyTo,
-			@NotNull @Valid Comment comment, @Context UriInfo uriInfo, @Context SecurityContext context) {
+	public Response create(@NotNull @QueryParam("order") String orderId, @QueryParam("replyTo") String replyTo,
+			@NotNull @Valid AircraftComment comment, @Context UriInfo uriInfo, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		if (Strings.isNotBlank(replyTo)) {
 			Account replyToAccount = accountService.findAccount(replyTo);
 			comment.setReplyTo(replyToAccount);
 		}
-		Comment created = commentService.createComment(accountId, source, sourceId, comment);
+		AircraftComment created = aircraftCommentService.createComment(accountId, orderId, comment);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
@@ -143,9 +123,9 @@ public class CommentResource extends BaseResourceSupport {
 	@Authenticated
 	@Path("{commentId}")
 	public Response delete(@PathParam("commentId") String commentId, @Context SecurityContext context) {
-		Comment comment = commentService.findComment(commentId);
+		AircraftComment comment = aircraftCommentService.findComment(commentId);
 		String accountId = context.getUserPrincipal().getName();
-		Tenant tenant = comment.getProduct().getVendor();
+		Tenant tenant = comment.getAircraft().getVendor();
 		Account owner = comment.getOwner();
 		// allow comment owner, product owner (tenant, TODO customer service of a tenant?), admin
 		boolean allowDeleteion = owner.getId().equals(accountId) || tenant.getId().equals(accountId)
@@ -153,7 +133,7 @@ public class CommentResource extends BaseResourceSupport {
 		if (!allowDeleteion) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
-		commentService.deleteComment(commentId);
+		aircraftCommentService.deleteComment(commentId);
 		return Response.noContent().build();
 	}
 
@@ -162,12 +142,12 @@ public class CommentResource extends BaseResourceSupport {
 	 */
 	@DELETE
 	@RolesAllowed(Roles.ROLE_ADMIN)
-	public Response deleteAll(@QueryParam("product") String productId, @Context SecurityContext context) {
+	public Response deleteAll(@PathParam("aircraftId") String aircraftId, @Context SecurityContext context) {
 		boolean allowDeleteion = context.isUserInRole(Role.ADMIN.name());
 		if (!allowDeleteion) {
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
-		commentService.deleteComments(productId);
+		aircraftCommentService.deleteComments(aircraftId);
 		return Response.noContent().build();
 	}
 

@@ -419,7 +419,7 @@ public class AdminResource extends BaseResourceSupport {
 	@Resource
 	private CommentResource commentResource;
 
-	@Path("comments") // path already in the resource
+	@Path("comments")
 	public CommentResource comments() {
 		return commentResource;
 	}
