@@ -1,7 +1,9 @@
 package net.aircommunity.platform.service.internal;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -12,6 +14,10 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import io.micro.common.Strings;
+import io.micro.common.io.MoreFiles;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
@@ -32,9 +38,33 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 	private static final Logger LOG = LoggerFactory.getLogger(ApronServiceImpl.class);
 
 	private static final String CACHE_NAME = "cache.apron";
+	private static final String APRONS_INFO = "data/aprons.json";
 
 	@Resource
 	private ApronRepository apronRepository;
+
+	@PostConstruct
+	private void init() {
+		if (apronRepository.count() > 0) {
+			LOG.warn("Apron information is already imported, skip importing apron info to DB");
+			return;
+		}
+		try {
+			String json = MoreFiles.toString(APRONS_INFO);
+			if (json == null) {
+				LOG.warn("No apron information provided, skip importing apron info to DB");
+				return;
+			}
+			List<Apron> aprons = objectMapper.readValue(json, new TypeReference<List<Apron>>() {
+			});
+			for (Apron apron : aprons) {
+				createApron(apron);
+			}
+		}
+		catch (Exception e) {
+			LOG.warn("Failed to initialize aprons information, casue: " + e.getMessage(), e);
+		}
+	}
 
 	@Transactional
 	@Override
@@ -95,6 +125,13 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 	@Override
 	public List<Apron> listPublishedProvinceAprons(String province, Type type) {
 		return apronRepository.findPublishedByProvince(province, type);
+	}
+
+	@Override
+	public List<String> listCities() {
+		// because city allows null, so we need filter out null and empty cities
+		return apronRepository.findDistinctCity().stream().filter(city -> Strings.isNotBlank(city))
+				.collect(Collectors.toList());
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
+import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.model.metrics.OrderMetrics;
 import net.aircommunity.platform.model.metrics.UserOrderMetrics;
@@ -98,5 +99,15 @@ public interface CommonOrderService extends OrderService<Order> {
 	 */
 	@Nonnull
 	UserOrderMetrics getUserOrderMetrics(@Nonnull String userId);
+
+	/**
+	 * Adapt to a OrderService
+	 * 
+	 * @param type the product type
+	 * @return StandardOrderService
+	 */
+	@SuppressWarnings("rawtypes")
+	@Nonnull
+	<S extends StandardOrderService> S adaptOrderService(@Nonnull Product.Type type);
 
 }

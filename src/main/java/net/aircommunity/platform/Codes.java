@@ -52,14 +52,15 @@ public final class Codes {
 
 	// product
 	public static final Code PRODUCT_NOT_FOUND = Code.notFound(11_003_0001);
-	public static final Code PRODUCT_PROMOTION_NOT_FOUND = Code.notFound(11_003_0002);
-	public static final Code PRODUCT_FAQ_NOT_FOUND = Code.notFound(11_003_0003);
-	public static final Code PRODUCT_FAMILY_NOT_FOUND = Code.notFound(11_003_0004);
-	public static final Code PRODUCT_FAMILY_NOT_APPROVED = Code.notFound(11_003_0005);
-	public static final Code PRODUCT_INVALID_DEPARTURE_DATE = Code.notFound(11_003_0006);
-	public static final Code PRODUCT_CANNOT_BE_DELETED = Code.illegalState(11_003_0007);
-	public static final Code PRODUCT_CANNOT_BE_UPDATED = Code.illegalState(11_003_0008);
-	public static final Code PRODUCT_FAMILY_CANNOT_BE_DELETED = Code.illegalState(11_003_0009);
+	public static final Code PRODUCT_NOT_PUBLISHED = Code.illegalState(11_003_0002);
+	public static final Code PRODUCT_PROMOTION_NOT_FOUND = Code.notFound(11_003_0003);
+	public static final Code PRODUCT_FAQ_NOT_FOUND = Code.notFound(11_003_0004);
+	public static final Code PRODUCT_FAMILY_NOT_FOUND = Code.notFound(11_003_0005);
+	public static final Code PRODUCT_FAMILY_NOT_APPROVED = Code.notFound(11_003_0006);
+	public static final Code PRODUCT_INVALID_DEPARTURE_DATE = Code.notFound(11_003_0007);
+	public static final Code PRODUCT_CANNOT_BE_DELETED = Code.illegalState(11_003_0008);
+	public static final Code PRODUCT_CANNOT_BE_UPDATED = Code.illegalState(11_003_0009);
+	public static final Code PRODUCT_FAMILY_CANNOT_BE_DELETED = Code.illegalState(11_003_0010);
 
 	// order
 	public static final Code ORDER_ACCESS_DENIED = Code.notPerimitted(11_003_1001);
@@ -70,6 +71,8 @@ public final class Codes {
 	public static final Code ORDER_REFUND_FAILURE = Code.illegalState(11_003_1006);
 	public static final Code ORDER_INVALID_TOTAL_AMOUNT = Code.invalidArgument(11_003_1007);
 	public static final Code ORDER_CANNOT_BE_DELETED = Code.illegalState(11_003_1008);
+	public static final Code ORDER_ITEM_CANDIDATE_NOT_FOUND = Code.notFound(11_003_1009);
+	public static final Code ORDER_CANNOT_UPDATE_PRICE = Code.invalidArgument(11_003_1010);
 
 	// common product related
 	public static final Code AIRJET_ALREADY_EXISTS = Code.alreadyExists(11_003_2001);
@@ -91,9 +94,7 @@ public final class Codes {
 	// fleet
 	public static final Code FLEET_NOT_FOUND = Code.notFound(11_004_0001);
 	public static final Code FLEET_ALREADY_EXISTS = Code.alreadyExists(11_004_0002);
-	public static final Code FLEET_CANDIDATE_NOT_FOUND = Code.notFound(11_004_0003);
-	public static final Code CHARTERORDER_NOT_FOUND = Code.notFound(11_004_0004);
-	public static final Code CHARTERORDER_CANNOT_UPDATE_PRICE = Code.invalidArgument(11_004_0005);
+	public static final Code CHARTER_ORDER_NOT_FOUND = Code.notFound(11_004_0003);
 
 	// ferry flight
 	public static final Code FERRYFLIGHT_NOT_FOUND = Code.notFound(11_005_0001);
@@ -118,9 +119,11 @@ public final class Codes {
 	// school/course/enrollment
 	public static final Code SCHOOL_NOT_FOUND = Code.notFound(11_010_0001);
 	public static final Code SCHOOL_CANNOT_BE_DELETED = Code.illegalState(11_010_0002);
-
 	public static final Code COURSE_NOT_FOUND = Code.notFound(11_011_0001);
-	public static final Code COURSEORDER_NOT_FOUND = Code.notFound(12_010_0001);
+	public static final Code COURSEORDER_NOT_FOUND = Code.notFound(11_011_0002);
+
+	// quick flight
+	public static final Code QUICKFLIGHT_ORDER_NOT_FOUND = Code.notFound(11_012_0001);
 
 	// comment
 	public static final Code COMMENT_NOT_FOUND = Code.notFound(11_013_0001);

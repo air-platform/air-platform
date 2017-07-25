@@ -40,6 +40,7 @@
 			<includes>
 				<include>*.properties</include>
 				<include>*.jks</include>
+				<include>*.p12</include>
 			</includes>
 			<fileMode>0640</fileMode>
 		</fileSet>

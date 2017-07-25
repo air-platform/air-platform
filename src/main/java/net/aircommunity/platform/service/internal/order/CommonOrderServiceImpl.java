@@ -2,6 +2,7 @@ package net.aircommunity.platform.service.internal.order;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,6 +150,17 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order>
 		long cancelledCount = orderRefRepository.countByOwnerIdAndStatus(userId, Order.Status.CANCELLED);
 		long refundCount = orderRefRepository.countByOwnerIdAndStatusIn(userId, Order.REFUND_STATUSES);
 		return new UserOrderMetrics(totalCount, finishedCount, pendingCount, cancelledCount, refundCount);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public <S extends StandardOrderService> S adaptOrderService(Product.Type type) {
+		S service = (S) serviceRegistry.get(Objects.requireNonNull(type, "product type cannot be null"));
+		if (service == null) {
+			LOG.error("StandardOrderService is not found for product type: {}", type);
+			throw newServiceUnavailableException();
+		}
+		return service;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

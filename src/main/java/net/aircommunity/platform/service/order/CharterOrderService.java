@@ -1,14 +1,12 @@
 package net.aircommunity.platform.service.order;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.CharterOrder;
+import net.aircommunity.platform.model.domain.FleetCandidate;
 import net.aircommunity.platform.model.domain.Order;
 
 /**
@@ -16,7 +14,7 @@ import net.aircommunity.platform.model.domain.Order;
  * 
  * @author Bin.Zhang
  */
-public interface CharterOrderService extends StandardOrderService<CharterOrder> {
+public interface CharterOrderService extends CandidateOrderService<FleetCandidate, CharterOrder> {
 
 	/**
 	 * Create a CharterOrder.
@@ -66,38 +64,6 @@ public interface CharterOrderService extends StandardOrderService<CharterOrder> 
 	default CharterOrder updateCharterOrderStatus(@Nonnull String charterOrderId, @Nonnull Order.Status status) {
 		return updateOrderStatus(charterOrderId, status);
 	}
-
-	/**
-	 * Update CharterOrder to select a fleet candidate
-	 * 
-	 * @param charterOrderId the charterOrderId
-	 * @param fleetCandidateId the fleetCandidateId to be selected
-	 * @return updated CharterOrder
-	 */
-	@Nonnull
-	CharterOrder selectFleetCandidate(@Nonnull String charterOrderId, @Nonnull String fleetCandidateId);
-
-	/**
-	 * Update CharterOrder to offer a fleet candidate(optional) and a price by tenant
-	 * 
-	 * @param charterOrderId the charterOrderId
-	 * @param fleetCandidateId the fleetCandidateId to be selected
-	 * @param totalAmount the tenant offered totalAmount > 0 for the charter order
-	 * @return updated CharterOrder
-	 */
-	@Nonnull
-	CharterOrder offerFleetCandidate(@Nonnull String charterOrderId, String fleetCandidateId,
-			@Nonnull @Nonnegative BigDecimal totalAmount);
-
-	/**
-	 * Update CharterOrder to refuse a fleet candidate by tenant
-	 * 
-	 * @param charterOrderId the charterOrderId
-	 * @param fleetCandidateId the fleetCandidateId to be selected
-	 * @return updated CharterOrder
-	 */
-	@Nonnull
-	CharterOrder refuseFleetCandidate(@Nonnull String charterOrderId, @Nonnull String fleetCandidateId);
 
 	/**
 	 * List all CharterOrders by pagination filtered by userId and order status.

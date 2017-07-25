@@ -83,7 +83,7 @@
     </appender>
     
     <logger name="ch.qos.logback" level="OFF"/>
-    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.hibernate" level="ERROR"/>
     <logger name="com.fasterxml.jackson" level="WARN"/>
     <logger name="org.jboss.resteasy" level="WARN"/>
     <logger name="org.springframework" level="WARN"/>

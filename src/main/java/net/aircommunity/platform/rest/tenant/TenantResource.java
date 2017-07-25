@@ -27,6 +27,7 @@ import net.aircommunity.platform.rest.tenant.order.TenantCharterOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantCourseOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantFerryFlightOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantJetTravelOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantQuickFlightOrderResource;
 
 /**
  * Tenant resource.
@@ -191,6 +192,17 @@ public class TenantResource extends BaseResourceSupport {
 	// *******//
 	// Orders //
 	// *******//
+
+	// ***********************
+	// Quick Flight
+	// ***********************
+	@Resource
+	private TenantQuickFlightOrderResource tenantQuickFlightOrderResource;
+
+	@Path("quickflight/orders")
+	public TenantQuickFlightOrderResource quickFlightOrders() {
+		return tenantQuickFlightOrderResource;
+	}
 
 	// ***********************
 	// Air Jet

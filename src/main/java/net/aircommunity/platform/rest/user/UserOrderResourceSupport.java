@@ -36,6 +36,7 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.service.order.CharterOrderService;
+import net.aircommunity.platform.service.order.QuickFlightOrderService;
 import net.aircommunity.platform.service.order.StandardOrderService;
 
 /**
@@ -152,25 +153,6 @@ public abstract class UserOrderResourceSupport<T extends Order> extends BaseReso
 		getStandardOrderService().softDeleteOrder(orderId);
 	}
 
-	protected abstract StandardOrderService<T> getStandardOrderService();
-
-	// ***********************
-	// ADMIN & USER ACTIONS
-	// ***********************
-
-	@Resource
-	private CharterOrderService charterOrderService;
-
-	/**
-	 * Select a fleet (Only allow one vendor to be selected)
-	 */
-	@POST
-	@Path("{orderId}/fleet/select")
-	public void selectFleet(@PathParam("orderId") String orderId,
-			@NotNull @QueryParam("candidate") String fleetCandidateId) {
-		charterOrderService.selectFleetCandidate(orderId, fleetCandidateId);
-	}
-
 	/**
 	 * Cancel order
 	 */
@@ -180,6 +162,40 @@ public abstract class UserOrderResourceSupport<T extends Order> extends BaseReso
 	public void cancel(@PathParam("orderId") String orderId, JsonObject request) {
 		String reason = getReason(request);
 		commonOrderService.cancelOrder(orderId, reason);
+	}
+
+	protected abstract StandardOrderService<T> getStandardOrderService();
+
+	// ********************************************
+	// QuickFlightOrder ONLY
+	// ********************************************
+	@Resource
+	private QuickFlightOrderService quickFlightOrderService;
+
+	/**
+	 * Select a aircraft (Only allow one vendor to be selected)
+	 */
+	@POST
+	@Path("{orderId}/aircraft/select")
+	public void selectAircraft(@PathParam("orderId") String orderId,
+			@NotNull @QueryParam("candidate") String candidateId) {
+		quickFlightOrderService.selectOrderCandidate(orderId, candidateId);
+	}
+
+	// ********************************************
+	// CharterOrder ONLY
+	// ********************************************
+	@Resource
+	private CharterOrderService charterOrderService;
+
+	/**
+	 * Select a fleet (Only allow one vendor to be selected)
+	 */
+	@POST
+	@Path("{orderId}/fleet/select")
+	public void selectFleet(@PathParam("orderId") String orderId,
+			@NotNull @QueryParam("candidate") String candidateId) {
+		charterOrderService.selectOrderCandidate(orderId, candidateId);
 	}
 
 }

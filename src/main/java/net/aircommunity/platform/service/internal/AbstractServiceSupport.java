@@ -150,7 +150,7 @@ public abstract class AbstractServiceSupport {
 	}
 
 	protected boolean isMetricsEnabled() {
-		return true; // TODO configurable
+		return configuration.isApiMetricsEnabled();
 	}
 
 	private static final String TYPE_COMMON_PRODUCT = "common";

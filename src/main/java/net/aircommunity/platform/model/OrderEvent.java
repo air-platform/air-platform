@@ -40,7 +40,61 @@ public class OrderEvent implements Serializable {
 	}
 
 	public enum EventType {
-		CREATION, FLEET_OFFERED, UPDATE, PAYMENT, REFUND_REQUESTED, REFUNDED, REFUND_FAILED, CANCELLATION, DELETION;
+
+		/**
+		 * Order creation
+		 */
+		CREATION,
+
+		/**
+		 * Fleet is offered by TENANT (charter order)
+		 */
+		FLEET_OFFERED,
+
+		/**
+		 * Aircraft is offered by TENANT (quick flight order)
+		 */
+		AIRCRAFT_OFFERED,
+
+		/**
+		 * Quick flight is offered by ADMIN
+		 */
+		QUICK_FLIGHT_OFFERED,
+
+		/**
+		 * Order updated
+		 */
+		UPDATE,
+
+		/**
+		 * Order paid
+		 */
+		PAYMENT,
+
+		/**
+		 * Order refund requested
+		 */
+		REFUND_REQUESTED,
+
+		/**
+		 * Order refunded
+		 */
+		REFUNDED,
+
+		/**
+		 * Order refund failure
+		 */
+		REFUND_FAILED,
+
+		/**
+		 * Order cancellation
+		 */
+		CANCELLATION,
+
+		/**
+		 * Order deletion
+		 */
+		DELETION;
 	}
 
 }

@@ -41,10 +41,9 @@ public class Apron extends Persistable {
 	@Column(name = "province", length = PROVINCE_NAME_LEN, nullable = false)
 	private String province;
 
-	// in which city
-	@NotEmpty
+	// in which city (city can be empty according to current requirement)
 	@Size(max = CITY_NAME_LEN)
-	@Column(name = "city", length = CITY_NAME_LEN, nullable = false)
+	@Column(name = "city", length = CITY_NAME_LEN, nullable = true)
 	private String city;
 
 	// apron type

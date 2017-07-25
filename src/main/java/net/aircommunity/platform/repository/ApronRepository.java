@@ -19,6 +19,9 @@ public interface ApronRepository extends JpaRepository<Apron, String> {
 	@Query("SELECT DISTINCT t.province FROM #{#entityName} t")
 	List<String> findDistinctProvince();
 
+	@Query("SELECT DISTINCT t.city FROM #{#entityName} t")
+	List<String> findDistinctCity();
+
 	// City
 	default List<Apron> findPublishedByCity(String city, Type type) {
 		if (type == null) {

@@ -36,10 +36,13 @@ public class AirTourServiceImpl extends AbstractSalesPackageProductService<AirTo
 
 	@Override
 	public Page<AirTour> listAirToursByCity(String city, int page, int pageSize) {
-		// NOTE: the first 1 has better performance, but less match result
-		// return Pages.adapt(
-		// airTourRepository.findByCityStartingWithIgnoreCase(city, createPageRequest(page, pageSize)));
-		return Pages.adapt(airTourRepository.findByCityContainingIgnoreCase(city, createPageRequest(page, pageSize)));
+		return Pages.adapt(airTourRepository.findByPublishedTrueAndCityOrderByRankDescScoreDesc(city,
+				createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<AirTour> listAirToursByFuzzyCity(String city, int page, int pageSize) {
+		return Pages.adapt(airTourRepository.findByFuzzyCity(city, createPageRequest(page, pageSize)));
 	}
 
 	@Override
@@ -63,4 +66,5 @@ public class AirTourServiceImpl extends AbstractSalesPackageProductService<AirTo
 	protected BaseProductRepository<AirTour> getProductRepository() {
 		return airTourRepository;
 	}
+
 }

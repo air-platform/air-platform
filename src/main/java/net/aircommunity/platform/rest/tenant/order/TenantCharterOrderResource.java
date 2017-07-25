@@ -48,9 +48,6 @@ public class TenantCharterOrderResource extends TenantOrderResourceSupport<Chart
 	public Page<CharterOrder> list(@PathParam("tenantId") String tenantId, @QueryParam("status") Order.Status status,
 			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		LOG.debug("List all charter orders with status: {} for tenant: {} ", status, tenantId);
-		if (Order.Status.PUBLISHED == status) {
-			return charterOrderService.listCharterOrders(status, page, pageSize);
-		}
 		return charterOrderService.listTenantCharterOrders(tenantId, status, page, pageSize);
 	}
 

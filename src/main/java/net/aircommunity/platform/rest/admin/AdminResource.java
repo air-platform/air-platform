@@ -71,6 +71,7 @@ import net.aircommunity.platform.rest.tenant.order.TenantCharterOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantCourseOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantFerryFlightOrderResource;
 import net.aircommunity.platform.rest.tenant.order.TenantJetTravelOrderResource;
+import net.aircommunity.platform.rest.tenant.order.TenantQuickFlightOrderResource;
 import net.aircommunity.platform.rest.user.AirTaxiOrderResource;
 import net.aircommunity.platform.rest.user.AirTourOrderResource;
 import net.aircommunity.platform.rest.user.AirTransportOrderResource;
@@ -532,6 +533,14 @@ public class AdminResource extends BaseResourceSupport {
 	// **************************************************************************//
 	// Tenant orders (XXX NOT USED FOR NOW, it may be useful in future?)
 	// **************************************************************************//
+
+	@Resource
+	private TenantQuickFlightOrderResource tenantQuickFlightOrderResource;
+
+	@Path(TENANTS_PATH_PREFIX + "/{tenantId}/quickflight/orders")
+	public TenantQuickFlightOrderResource tenantQuickFlightOrders(@PathParam("tenantId") String tenantId) {
+		return tenantQuickFlightOrderResource;
+	}
 
 	// Air Jet
 	@Resource

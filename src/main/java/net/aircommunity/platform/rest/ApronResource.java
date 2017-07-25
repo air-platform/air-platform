@@ -74,6 +74,17 @@ public class ApronResource {
 	 */
 	@GET
 	@PermitAll
+	@Path("cities")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<String> listCities() {
+		return apronService.listCities();
+	}
+
+	/**
+	 * List all
+	 */
+	@GET
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Response listAll(@QueryParam("province") String province, @QueryParam("city") String city,

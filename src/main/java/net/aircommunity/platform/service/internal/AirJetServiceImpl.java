@@ -47,7 +47,7 @@ public class AirJetServiceImpl extends AbstractServiceSupport implements AirJetS
 		try {
 			String json = MoreFiles.toString(AIRJETS_INFO);
 			if (json == null) {
-				LOG.warn("No airjet information provided, skip importing jetair info to DB");
+				LOG.warn("No airjet information provided, skip importing airjet info to DB");
 				return;
 			}
 			List<AirJet> airjets = objectMapper.readValue(json, new TypeReference<List<AirJet>>() {

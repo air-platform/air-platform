@@ -51,6 +51,9 @@ public class Configuration {
 	@Value("${air.security.access-token-refresh-time}")
 	private long tokenRefreshTimeSeconds = 60 * 60 * 24 * 7; // 7 Days
 
+	@Value("${air.api.metrics-enabled}")
+	private boolean apiMetricsEnabled;
+
 	@Value("${air.account.default-avatar}")
 	private String defaultAvatar;
 
@@ -85,6 +88,10 @@ public class Configuration {
 
 	@Value("${air.order.rebuild-ref}")
 	private boolean orderRebuildRef;
+
+	// Redirect to a page after returned from payment gateway
+	@Value("${air.payment.gateway-redirect}")
+	private String paymentGatewayRedirect;
 
 	@Value("${air.mobile.verification}")
 	private boolean mobileVerificationEnabled;
@@ -164,6 +171,7 @@ public class Configuration {
 		apiBaseUrl = builder.append(contextPath).append(apiVersion).toString();
 		//
 		zoneId = ZoneId.of(getTimeZone());
+		paymentGatewayRedirect = new StringBuilder(publicBaseUrl).append("/").append(paymentGatewayRedirect).toString();
 	}
 
 	/**
@@ -193,6 +201,10 @@ public class Configuration {
 
 	public long getTokenRefreshTimeSeconds() {
 		return tokenRefreshTimeSeconds;
+	}
+
+	public boolean isApiMetricsEnabled() {
+		return apiMetricsEnabled;
 	}
 
 	public boolean isUseTls() {
@@ -249,6 +261,10 @@ public class Configuration {
 
 	public String getOrderEmailNotificationSubject() {
 		return orderEmailNotificationSubject;
+	}
+
+	public String getPaymentGatewayRedirect() {
+		return paymentGatewayRedirect;
 	}
 
 	public String getOrderPaymentSyncSchedule() {

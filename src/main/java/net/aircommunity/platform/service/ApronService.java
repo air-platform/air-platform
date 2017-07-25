@@ -76,6 +76,8 @@ public interface ApronService {
 
 	List<Apron> listPublishedProvinceAprons(@Nonnull String province, @Nullable Apron.Type type);
 
+	List<String> listCities();
+	
 	List<String> listProvinces();
 
 	/**

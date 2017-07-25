@@ -48,6 +48,7 @@ public abstract class Account extends Persistable {
 	@Column(name = "api_key", length = ACCOUNT_APIKEY_LEN, nullable = false, unique = true)
 	protected String apiKey;
 
+	// why password here, because username, mobile, email etc. internal auth will share the same password
 	@XmlTransient
 	@Size(max = ACCOUNT_PASSWORD_LEN)
 	@Basic(fetch = FetchType.LAZY)

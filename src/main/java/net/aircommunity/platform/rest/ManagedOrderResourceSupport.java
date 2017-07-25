@@ -1,9 +1,12 @@
 package net.aircommunity.platform.rest;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -15,15 +18,19 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.micro.annotation.constraint.NotEmpty;
 import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.domain.CharterOrder;
-import net.aircommunity.platform.model.domain.FleetCandidate;
+import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.AircraftCandidate;
 import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.OrderItemCandidate;
 import net.aircommunity.platform.nls.M;
+import net.aircommunity.platform.service.order.CandidateOrderService;
 import net.aircommunity.platform.service.order.CharterOrderService;
 import net.aircommunity.platform.service.order.OrderService;
+import net.aircommunity.platform.service.order.QuickFlightOrderService;
 
 /**
  * Base order RESTful API for ADMIN and TENANT
@@ -34,7 +41,41 @@ public abstract class ManagedOrderResourceSupport<T extends Order> extends BaseR
 	protected static final Logger LOG = LoggerFactory.getLogger(ManagedOrderResourceSupport.class);
 
 	@Resource
-	private CharterOrderService charterOrderService;
+	protected CharterOrderService charterOrderService;
+
+	@Resource
+	protected QuickFlightOrderService quickFlightOrderService;
+
+	// ************************
+	// QuickFlightOrder ONLY
+	// ************************
+
+	/**
+	 * Update order to initiate candidates (TENANT or ADMIN)
+	 */
+	@POST
+	@Path("{orderId}/candidates/initiate")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ Roles.ROLE_TENANT, Roles.ROLE_CUSTOMER_SERVICE, Roles.ROLE_ADMIN })
+	public void initiateCandidates(@PathParam("orderId") String orderId,
+			@Valid @NotEmpty Set<AircraftCandidate> candidates) {
+		quickFlightOrderService.initiateOrderCandidates(orderId, candidates);
+	}
+
+	/**
+	 * Update order to promote candidates (ADMIN)
+	 */
+	@POST
+	@Path("{orderId}/candidates/promote")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed(Roles.ROLE_ADMIN)
+	public void promoteCandidates(@PathParam("orderId") String orderId, @Valid @NotEmpty Set<String> candidateIds) {
+		quickFlightOrderService.promoteOrderCandidates(orderId, candidateIds);
+	}
+
+	// ************************
+	// Generic
+	// ************************
 
 	/**
 	 * Update order price
@@ -45,41 +86,41 @@ public abstract class ManagedOrderResourceSupport<T extends Order> extends BaseR
 	public void updateOrderPrice(@PathParam("orderId") String orderId, @NotNull JsonObject request) {
 		BigDecimal totalAmount = getAmount(request);
 		Order order = getOrderService().findOrder(orderId);
-		// specific case for charter (update price and also offer a fleetCandidate)
-		if (CharterOrder.class.isAssignableFrom(order.getClass())) {
-			updateCharterOrderPrice(order, totalAmount, request);
+		// specific case for orders that have candidates(update price and also offer a candidate)
+		if (order.hasCandidates()) {
+			updateCandidateOrderPrice(order, totalAmount, request);
 		}
 		else {
 			getOrderService().updateOrderTotalAmount(orderId, totalAmount);
 		}
 	}
 
-	private void updateCharterOrderPrice(Order order, BigDecimal totalAmount, JsonObject request) {
-		String fleetCandidateId = getFleetCandidate(request);
+	@SuppressWarnings("rawtypes")
+	private void updateCandidateOrderPrice(Order order, BigDecimal totalAmount, JsonObject request) {
+		String candidateId = getOrderItemCandidate(request);
 		String status = getStatus(request);
 		String orderId = order.getId();
-		if (Strings.isBlank(fleetCandidateId)) {
+		if (Strings.isBlank(candidateId)) {
 			getOrderService().updateOrderTotalAmount(orderId, totalAmount);
 			return;
 		}
+		CandidateOrderService service = commonOrderService.adaptOrderService(order.getType());
 		// offer or refuse
-		FleetCandidate.Status targetStatus = FleetCandidate.Status.fromString(status);
+		OrderItemCandidate.Status targetStatus = OrderItemCandidate.Status.fromString(status);
 		if (targetStatus == null) {
-			throw new AirException(Codes.CHARTERORDER_CANNOT_UPDATE_PRICE,
-					M.msg(M.CHARTERORDER_CANNOT_UPDATE_PRICE_INVALID_STATUS));
+			throw new AirException(Codes.ORDER_CANNOT_UPDATE_PRICE, M.msg(M.ORDER_INVALID_PRICING_ARGS));
 		}
 		switch (targetStatus) {
 		case CANDIDATE:
-			charterOrderService.refuseFleetCandidate(orderId, fleetCandidateId);
+			service.refuseOrderCandidate(orderId, candidateId);
 			break;
 
 		case OFFERED:
-			charterOrderService.offerFleetCandidate(orderId, fleetCandidateId, totalAmount);
+			service.offerOrderCandidate(orderId, candidateId, totalAmount);
 			break;
 
 		default:
-			throw new AirException(Codes.CHARTERORDER_CANNOT_UPDATE_PRICE,
-					M.msg(M.CHARTERORDER_CANNOT_UPDATE_PRICE_INVALID_STATUS));
+			throw new AirException(Codes.ORDER_CANNOT_UPDATE_PRICE, M.msg(M.ORDER_INVALID_PRICING_ARGS));
 		}
 	}
 

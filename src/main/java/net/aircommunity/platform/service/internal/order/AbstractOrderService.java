@@ -158,14 +158,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	// Generic CRUD shared
 	// *********************
 
-	protected T doCreateOrder(String userId, T order) {
-		return doCreateOrder(userId, order, Order.Status.CREATED);
-	}
-
 	/**
 	 * Create Order
 	 */
-	protected T doCreateOrder(String userId, T order, Order.Status status) {
+	protected T doCreateOrder(String userId, T order) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = orderOperationTimer(type, ORDER_ACTION_CREATE);
@@ -192,6 +188,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			Product product = order.getProduct();
 			if (product != null) {
 				product = commonProductService.findProduct(orderType, product.getId());
+				// test if published
+				if (!product.isPublished()) {
+					throw new AirException(Codes.PRODUCT_NOT_PUBLISHED, M.msg(M.PRODUCT_NOT_PUBLISHED));
+				}
 				order.setProduct(product);
 				newOrder.setProduct(product);
 				if (StandardProduct.class.isAssignableFrom(product.getClass())) {
@@ -199,8 +199,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				}
 				LOG.debug("Creating order {} for product {}, vendor {}", order, product, product.getVendor());
 			}
-			// product MUST set, except for fleet.
-			if (product == null && order.getType() != Product.Type.FLEET) {
+			// product MUST set, except for fleet & quick-flight order.
+			boolean isMultipleCandidate = order.getType() == Product.Type.FLEET
+					|| order.getType() == Product.Type.QUICKFLIGHT;
+			if (product == null && !isMultipleCandidate) {
 				LOG.error("Failed to create order {} for user {}, cause: product is not set", order, userId);
 				throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.PRODUCT_NOT_SET, order.getType()));
 			}
@@ -213,7 +215,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			// 3) set basic properties
 			newOrder.setOwner(owner);
 			newOrder.setOrderNo(nextOrderNo());
-			newOrder.setStatus(status);
+			newOrder.setStatus(Order.Status.CREATED);
 			newOrder.setCreationDate(new Date());
 			newOrder.setLastModifiedDate(newOrder.getCreationDate());
 			newOrder.setCommented(false);
@@ -233,7 +235,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			doExchangePoints(newOrder, pointToExchange);
 
 			// 6) perform save
-			final T orderToSave = newOrder;
+			final T orderToSave = newOrder; // make final when used in lambda
 			T orderSaved = safeExecute(() -> orderProcessor.saveOrder(orderToSave), "Create %s: %s for user %s failed",
 					type.getSimpleName(), order, userId);
 
@@ -976,7 +978,6 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 */
 	protected T doUpdateOrderStatus(T order, Order.Status newStatus) {
 		switch (newStatus) {
-		case PUBLISHED:
 		case CREATED:
 			// order initial status
 			LOG.debug("It's order initial status, cannot update status to {}", newStatus);
@@ -1035,12 +1036,11 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 						EnumSet.of(Order.Status.CONTRACT_SIGNED, Order.Status.PAYMENT_IN_PROCESS,
 								Order.Status.PARTIAL_PAID, Order.Status.PAYMENT_FAILED, Order.Status.REFUND_REQUESTED));
 			}
-			// otherwise, should be in CREATED | PUBLISHED (XXX require confirmation? or just paid and then confirm)
+			// otherwise, should be in CREATED (XXX require confirmation? or just paid and then confirm)
 			else {
 				// expectOrderStatusCondition(order.isInitialStatus());
-				expectOrderStatus(order, newStatus,
-						EnumSet.of(Order.Status.CREATED, Order.Status.PUBLISHED, Order.Status.PAYMENT_IN_PROCESS,
-								Order.Status.PARTIAL_PAID, Order.Status.PAYMENT_FAILED, Order.Status.REFUND_REQUESTED));
+				expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.CREATED, Order.Status.PAYMENT_IN_PROCESS,
+						Order.Status.PARTIAL_PAID, Order.Status.PAYMENT_FAILED, Order.Status.REFUND_REQUESTED));
 			}
 			// already paid for REFUND_REQUESTED (cannot re-setPaymentDate)
 			if (order.getStatus() != Order.Status.REFUND_REQUESTED) {

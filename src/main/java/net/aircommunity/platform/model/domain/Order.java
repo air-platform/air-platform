@@ -52,9 +52,9 @@ public abstract class Order extends Persistable {
 	/**
 	 * All not finished or closed or refund
 	 */
-	public static final EnumSet<Status> PENDING_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
-			Status.CUSTOMER_CONFIRMED, Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.TICKET_RELEASED,
-			Status.PAYMENT_IN_PROCESS, Status.PARTIAL_PAID, Status.PAID, Status.PAYMENT_FAILED);
+	public static final EnumSet<Status> PENDING_STATUSES = EnumSet.of(Status.CREATED, Status.CUSTOMER_CONFIRMED,
+			Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.TICKET_RELEASED, Status.PAYMENT_IN_PROCESS,
+			Status.PARTIAL_PAID, Status.PAID, Status.PAYMENT_FAILED);
 
 	/**
 	 * Refund
@@ -68,8 +68,8 @@ public abstract class Order extends Persistable {
 	public static final EnumSet<Status> COMPLETED_STATUSES = EnumSet.of(Status.FINISHED, Status.CLOSED);
 
 	// allow cancel
-	private static final EnumSet<Status> CANCELLABLE_STATUSES = EnumSet.of(Status.PUBLISHED, Status.CREATED,
-			Status.CONFIRMED, Status.CONTRACT_SIGNED, Status.PAYMENT_FAILED);
+	private static final EnumSet<Status> CANCELLABLE_STATUSES = EnumSet.of(Status.CREATED, Status.CONFIRMED,
+			Status.CONTRACT_SIGNED, Status.PAYMENT_FAILED);
 
 	// finished, closed, cancelled, payment failed or refunded, FIXME: Status.PAYMENT_FAILED also termination??
 	private static final EnumSet<Status> TERMINATION_STATUSES = EnumSet.of(Status.FINISHED, Status.CANCELLED,
@@ -464,7 +464,7 @@ public abstract class Order extends Persistable {
 
 	@XmlTransient
 	public boolean isInitialStatus() {
-		return status == Order.Status.CREATED || status == Order.Status.PUBLISHED;
+		return status == Order.Status.CREATED;
 	}
 
 	/**
@@ -533,6 +533,14 @@ public abstract class Order extends Persistable {
 		return status == Status.FINISHED;
 	}
 
+	/**
+	 * Order has order item candidates
+	 */
+	@XmlTransient
+	public boolean hasCandidates() {
+		return false;
+	}
+
 	@XmlTransient
 	@Nullable
 	public abstract Product getProduct();
@@ -547,13 +555,6 @@ public abstract class Order extends Persistable {
 	 * Order status, (NOTE: the status order matters before status PAID)
 	 */
 	public enum Status {
-
-		/**
-		 * Published (for airjet published without any aircraft info).
-		 * 
-		 * XXX NOT USED FOR NOW
-		 */
-		PUBLISHED,
 
 		/**
 		 * Initial state (Creation)

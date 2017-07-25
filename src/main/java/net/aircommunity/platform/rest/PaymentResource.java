@@ -33,10 +33,12 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import com.google.common.base.Joiner;
+import com.google.common.net.HttpHeaders;
 
 import io.micro.annotation.Authenticated;
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
+import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Trade;
@@ -57,6 +59,9 @@ import net.aircommunity.platform.service.payment.PaymentSynchronizer;
 @Path("payment")
 public class PaymentResource extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(Payments.LOGGER_NAME);
+
+	@Resource
+	private Configuration configuration;
 
 	@Resource
 	private PaymentService paymentService;
@@ -91,7 +96,7 @@ public class PaymentResource extends BaseResourceSupport {
 	}
 
 	/**
-	 * Client notification (return from gateway) RAW
+	 * Client notification (return from gateway and redirect to result page) RAW
 	 */
 	@POST
 	@PermitAll
@@ -106,7 +111,8 @@ public class PaymentResource extends BaseResourceSupport {
 			PaymentVerification verification = paymentService.verifyClientNotification(method,
 					new PaymentNotification(params));
 			LOG.debug("Payment notification verification result: {}", verification);
-			out.write(verification.name());
+			response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+			response.setHeader(HttpHeaders.LOCATION, configuration.getPaymentGatewayRedirect());
 		}
 		finally {
 			out.flush();

@@ -250,7 +250,7 @@ public class UserResource extends BaseResourceSupport {
 	@Path("orders/{orderId}/fleet/select")
 	public void selectFleet(@PathParam("orderId") String orderId,
 			@NotNull @QueryParam("candidate") String fleetCandidateId) {
-		charterOrderService.selectFleetCandidate(orderId, fleetCandidateId);
+		charterOrderService.selectOrderCandidate(orderId, fleetCandidateId);
 	}
 
 	// ***********************************
@@ -278,6 +278,7 @@ public class UserResource extends BaseResourceSupport {
 
 	@POST
 	@Path("orders/{orderId}/refund")
+	@SuppressWarnings("deprecation")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void refundOrder(@PathParam("orderId") String orderId, @NotNull JsonObject refundReason) {
 		String reason = getRefundReason(refundReason);
@@ -299,17 +300,23 @@ public class UserResource extends BaseResourceSupport {
 	}
 
 	// *************************************************
-	// XXX NOTE: NOT IN USE ATM
-	// Detailed Order APIs, just in case when its useful
+	// NOTE: Detailed Order APIs
 	// *************************************************
 
 	// ***********************
 	// Air Jet
 	// ***********************
 	@Resource
+	private QuickFlightOrderResource quickFlightOrderResource;
+
+	@Path("quickflight/orders")
+	public QuickFlightOrderResource quickFlightOrders() {
+		return quickFlightOrderResource;
+	}
+
+	@Resource
 	private CharterOrderResource charterOrderResource;
 
-	// @Path("chater/orders")
 	@Path("charter/orders")
 	public CharterOrderResource charterOrders() {
 		return charterOrderResource;

@@ -94,7 +94,7 @@ interface DomainConstants {
 	// unavailable, available, unknown etc.
 	int AIRCRAFT_STATUS_LEN = 20;
 	// current max is 9
-	int FLEET_CANDIDATE_STATUS_LEN = 10;
+	int ORDER_ITEM_CANDIDATE_STATUS_LEN = 10;
 	// the number of seats, e.g. 11-14 guests, TODO define a standard format to reduce length?
 	int AIRCRAFT_CAPACITY_LEN = 10;
 	// Private Pilot Certificate license

@@ -57,7 +57,7 @@ public abstract class BaseResourceSupport {
 		return getJsonString(request, JSON_PROP_STATUS);
 	}
 
-	protected String getFleetCandidate(JsonObject request) {
+	protected String getOrderItemCandidate(JsonObject request) {
 		return getJsonString(request, JSON_PROP_FLEET_CANDIDATE);
 	}
 

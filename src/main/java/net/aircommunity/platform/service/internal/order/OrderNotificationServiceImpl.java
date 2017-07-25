@@ -88,6 +88,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 		String airtrans = normalizeProductCategory(Category.AIR_TRANS);
 		String airtour = normalizeProductCategory(Category.AIR_TOUR);
 		String airtraining = normalizeProductCategory(Category.AIR_TRAINING);
+		String airtcall = normalizeProductCategory(Category.AIR_CALL);
 		orderTypeMapping.put(Product.Type.FLEET, airjet);
 		orderTypeMapping.put(Product.Type.FERRYFLIGHT, airjet);
 		orderTypeMapping.put(Product.Type.JETTRAVEL, airjet);
@@ -95,6 +96,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 		orderTypeMapping.put(Product.Type.AIRTOUR, airtour);
 		orderTypeMapping.put(Product.Type.AIRTRANSPORT, airtrans);
 		orderTypeMapping.put(Product.Type.COURSE, airtraining);
+		orderTypeMapping.put(Product.Type.QUICKFLIGHT, airtcall);
 		eventBus.register(this);
 	}
 
@@ -119,6 +121,11 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 			notifyCustomer(ImmutableSet.of(contactPerson), event);
 			break;
 
+		// flight is offer by a platform
+		case QUICK_FLIGHT_OFFERED:
+			// TODO SMS notification to customer
+			break;
+
 		case PAYMENT:
 		case REFUND_REQUESTED:
 			doNotifyClientManager(getClientManagerContacts(event), event.getOrder());
@@ -141,11 +148,16 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 
 	private Set<Contact> getClientManagerContacts(OrderEvent event) {
 		Order order = event.getOrder();
-		Product product = order.getProduct();
+		Product.Type type = order.getType();
 		ImmutableSet.Builder<Contact> contactsBuilder = ImmutableSet.builder();
-		if (CharterOrder.class.isAssignableFrom(order.getClass())) {
+		switch (type) {
+		case QUICKFLIGHT:
+			// just notify platform client managers
+			break;
+
+		case FLEET:
 			CharterOrder charterOrder = CharterOrder.class.cast(order);
-			Set<FleetCandidate> candidates = charterOrder.getFleetCandidates();
+			Set<FleetCandidate> candidates = charterOrder.getCandidates();
 			if (candidates.isEmpty()) {
 				Set<Contact> contacts = fleetService.listFleets().stream()
 						.flatMap(fleet -> fleet.getClientManagerContacts().stream()).collect(Collectors.toSet());
@@ -157,9 +169,12 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 						.collect(Collectors.toSet());
 				contactsBuilder.addAll(contacts);
 			}
-		}
-		else {
+			break;
+
+		default:
+			Product product = order.getProduct();
 			contactsBuilder.addAll(product.getClientManagerContacts());
+			break;
 		}
 		Set<Contact> platfromContacts = platformService.getPlatformClientManagers();
 		LOG.debug("Platfrom clientManagers: {}", platfromContacts);
@@ -253,7 +268,7 @@ public class OrderNotificationServiceImpl implements OrderNotificationService {
 					aircraftType = fleet.getAircraftType();
 				}
 				else {
-					Set<FleetCandidate> fleetCandidates = charterOrder.getFleetCandidates();
+					Set<FleetCandidate> fleetCandidates = charterOrder.getCandidates();
 					if (!fleetCandidates.isEmpty()) {
 						aircraftType = fleetCandidates.stream().map(candidate -> candidate.getFleet().getAircraftType())
 								.distinct().collect(Collectors.joining(", "));

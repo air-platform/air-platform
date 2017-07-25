@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -32,6 +33,7 @@ import io.micro.annotation.constraint.NotEmpty;
 import io.micro.common.Strings;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.CurrencyUnit;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.constraint.PriceList;
 import net.aircommunity.platform.model.jaxb.ProductAdapter;
 
@@ -43,17 +45,39 @@ import net.aircommunity.platform.model.jaxb.ProductAdapter;
 @Entity
 @Table(name = "air_platform_salespackage")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SalesPackage extends Persistable {
+public class SalesPackage extends Persistable implements Comparable<SalesPackage> {
 	private static final long serialVersionUID = 1L;
 
-	public static final int NUM_OF_PRICES = 30;
+	// Number of prices of this sales package
+	private static final int NUM_OF_PRICES = 30;
+
+	/**
+	 * Day range of this sales package
+	 */
 	public static final Range<Integer> DAYS_RANGE = Range.closedOpen(0, NUM_OF_PRICES);
+
+	/**
+	 * Lowest rank
+	 */
+	public static final int LOWEST_RANK = 0;
+
+	/**
+	 * Default rank
+	 */
+	public static final int DEFAULT_RANK = LOWEST_RANK;
 
 	// price package name
 	@NotEmpty
 	@Size(max = SALES_PACKAGE_NAME_LEN)
 	@Column(name = "name", length = SALES_PACKAGE_NAME_LEN, nullable = false)
 	private String name;
+
+	// product rank (high rank will considered as hot, sort by rank DESC, 0 will be the lowest rank)
+	@NotNull
+	@Min(LOWEST_RANK)
+	@Column(name = "rank")
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	private int rank = DEFAULT_RANK;
 
 	// the number of passengers of this package
 	@Min(0)
@@ -120,6 +144,14 @@ public class SalesPackage extends Persistable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
 	}
 
 	public int getPassengers() {
@@ -233,12 +265,20 @@ public class SalesPackage extends Persistable {
 	}
 
 	@Override
+	public int compareTo(SalesPackage other) {
+		if (other == null) {
+			return 1;
+		}
+		return Integer.compare(rank, other.rank);
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SalesPackage [name=").append(name).append(", passengers=").append(passengers)
-				.append(", prices=").append(prices).append(", presalesDays=").append(presalesDays)
-				.append(", currencyUnit=").append(currencyUnit).append(", description=").append(description)
-				.append(", id=").append(id).append("]");
+		builder.append("SalesPackage [id=").append(id).append(", name=").append(name).append(", rank=").append(rank)
+				.append(", passengers=").append(passengers).append(", prices=").append(prices).append(", priceList=")
+				.append(priceList).append(", presalesDays=").append(presalesDays).append(", currencyUnit=")
+				.append(currencyUnit).append(", description=").append(description).append("]");
 		return builder.toString();
 	}
 

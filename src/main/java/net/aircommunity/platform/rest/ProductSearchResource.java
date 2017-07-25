@@ -92,7 +92,7 @@ public class ProductSearchResource {
 		result.put(PROP_TAXIS, taxis);
 
 		// tour
-		List<AirTour> tours = airTourService.listAirToursByCity(location, page, pageSize).getContent();
+		List<AirTour> tours = airTourService.listAirToursByFuzzyCity(location, page, pageSize).getContent();
 		result.put(PROP_TOURS, tours);
 
 		// trans

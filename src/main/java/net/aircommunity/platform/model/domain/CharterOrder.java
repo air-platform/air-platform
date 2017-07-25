@@ -33,7 +33,7 @@ import net.aircommunity.platform.model.domain.Product.Type;
 		@Index(name = "idx_user_id_status", columnList = "user_id,status,creation_date")//
 })
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CharterOrder extends StandardOrder implements Cloneable {
+public class CharterOrder extends CandidateOrder<FleetCandidate> implements Cloneable {
 	private static final long serialVersionUID = 1L;
 
 	// multiple flight legs (need to remove DUPs, but also requires flightLegs in order)
@@ -58,11 +58,13 @@ public class CharterOrder extends StandardOrder implements Cloneable {
 		}
 	}
 
-	public Set<FleetCandidate> getFleetCandidates() {
+	@Override
+	public Set<FleetCandidate> getCandidates() {
 		return fleetCandidates;
 	}
 
-	public void setFleetCandidates(Set<FleetCandidate> candidates) {
+	@Override
+	public void setCandidates(Set<FleetCandidate> candidates) {
 		if (candidates != null) {
 			candidates.stream().forEach(fleetCandidate -> fleetCandidate.setOrder(this));
 			fleetCandidates.clear();
@@ -70,80 +72,38 @@ public class CharterOrder extends StandardOrder implements Cloneable {
 		}
 	}
 
-	/**
-	 * Only allow to select one FleetCandidate, other selected FleetCandidates will be reset to CANDIDATE status.
-	 * (Normally called by USER)
-	 * 
-	 * @param fleetCandidateId
-	 * @return the selected FleetCandidate or Optional.empty
-	 */
-	public Optional<FleetCandidate> selectFleetCandidate(String fleetCandidateId) {
-		if (fleetCandidateId == null) {
-			return Optional.empty();
-		}
-		Optional<FleetCandidate> optional = fleetCandidates.stream()
-				.filter(candidate -> candidate.getId().equals(fleetCandidateId)).findFirst();
-		if (optional.isPresent()) {
-			// reset all the SELECTED status to OFFERED
-			fleetCandidates.stream().forEach(candidate -> {
-				if (candidate.getStatus() == FleetCandidate.Status.SELECTED) {
-					// if the candidate is in SELECTED status, it should be OFFERED before
-					// so we just reset it to it's previous status OFFERED
-					candidate.setStatus(FleetCandidate.Status.OFFERED);
-				}
-			});
-			// make the current fleetCandidateId as SELECTED
-			optional.get().setStatus(FleetCandidate.Status.SELECTED);
-		}
-		return optional;
-	}
-
-	/**
-	 * Offer the FleetCandidate with the given fleetCandidateId, and other FleetCandidates of this tenant will be reset
-	 * to CANDIDATE status, that means allow offer multiple fleetCandidate per tenant. (Normally called by TENANT)
-	 * 
-	 * @param fleetCandidateId
-	 * @return the selected FleetCandidate or Optional.empty
-	 */
-	public Optional<FleetCandidate> offerFleetCandidate(String fleetCandidateId, BigDecimal offeredAmount) {
-		if (fleetCandidateId == null) {
-			return Optional.empty();
-		}
-		Optional<FleetCandidate> fleetCandidate = fleetCandidates.stream()
-				.filter(candidate -> candidate.getId().equals(fleetCandidateId)).findFirst();
-		if (fleetCandidate.isPresent()) {
-			Tenant vendor = fleetCandidate.get().getFleet().getVendor();
-			fleetCandidates.stream().filter(candidate -> candidate.isOwnedByTenant(vendor.getId()))
-					.forEach(candidate -> {
-						// only allow offer multiple fleetCandidate per tenant
-						if (candidate.getId().equals(fleetCandidateId)) {
-							candidate.setStatus(FleetCandidate.Status.OFFERED);
-							candidate.setOfferedPrice(offeredAmount);
-						}
-					});
-		}
-		return fleetCandidate;
-	}
-
-	/**
-	 * Refuse the FleetCandidate with the given fleetCandidateId, its status be reset to CANDIDATE status. (Normally
-	 * called by TENANT)
-	 * 
-	 * @param fleetCandidateId
-	 * @return the refused FleetCandidate or Optional.empty
-	 */
-	public Optional<FleetCandidate> refuseFleetCandidate(String fleetCandidateId) {
-		if (fleetCandidateId == null) {
-			return Optional.empty();
-		}
-		Optional<FleetCandidate> fleetCandidate = fleetCandidates.stream()
-				.filter(candidate -> candidate.getId().equals(fleetCandidateId)).findFirst();
-		if (fleetCandidate.isPresent()) {
-			fleetCandidate.get().setStatus(FleetCandidate.Status.CANDIDATE);
-			fleetCandidate.get().setOfferedPrice(BigDecimal.ZERO);
-		}
-		return fleetCandidate;
-	}
+	// /**
+	// * Only allow to select one FleetCandidate, other selected FleetCandidates will be reset to CANDIDATE status.
+	// * (Normally called by USER)
+	// *
+	// * @param candidateId
+	// * @return the selected FleetCandidate or Optional.empty
+	// */
+	// public Optional<FleetCandidate> selectFleetCandidate(String candidateId) {
+	// return OrderItemCandidateSupport.selectCandidate(fleetCandidates, candidateId);
+	// }
+	//
+	// /**
+	// * Offer the FleetCandidate with the given candidateId, and other FleetCandidates of this tenant will be reset to
+	// * CANDIDATE status, that means allow offer multiple fleetCandidate per tenant. (Normally called by TENANT)
+	// *
+	// * @param fleetCandidateId
+	// * @return the selected FleetCandidate or Optional.empty
+	// */
+	// public Optional<FleetCandidate> offerFleetCandidate(String candidateId, BigDecimal offeredAmount) {
+	// return OrderItemCandidateSupport.offerCandidate(fleetCandidates, candidateId, offeredAmount);
+	// }
+	//
+	// /**
+	// * Refuse the FleetCandidate with the given candidateId, its status be reset to CANDIDATE status. (Normally called
+	// * by TENANT)
+	// *
+	// * @param fleetCandidateId
+	// * @return the refused FleetCandidate or Optional.empty
+	// */
+	// public Optional<FleetCandidate> refuseFleetCandidate(String candidateId) {
+	// return OrderItemCandidateSupport.refuseCandidate(fleetCandidates, candidateId);
+	// }
 
 	@Override
 	public Fleet getProduct() {
@@ -161,11 +121,6 @@ public class CharterOrder extends StandardOrder implements Cloneable {
 	}
 
 	@Override
-	public void setProduct(Product product) {
-		// XXX noops, use FleetCandidate only
-	}
-
-	@Override
 	public UnitProductPrice getUnitProductPrice() {
 		Product product = getProduct();
 		BigDecimal unitPrice = BigDecimal.ZERO;
@@ -174,15 +129,6 @@ public class CharterOrder extends StandardOrder implements Cloneable {
 			unitPrice = ((StandardProduct) product).getPrice();
 		}
 		return new UnitProductPrice(PricePolicy.PER_HOUR, unitPrice);
-	}
-
-	@Override
-	public boolean isForTenant(String tenantId) {
-		boolean forTenant = super.isForTenant(tenantId);
-		if (forTenant) {
-			return true;
-		}
-		return fleetCandidates.stream().anyMatch(fleetCandidate -> fleetCandidate.getFleet().isOwner(tenantId));
 	}
 
 	@PrePersist

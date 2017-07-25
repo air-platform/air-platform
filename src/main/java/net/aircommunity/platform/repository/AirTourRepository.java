@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import net.aircommunity.platform.model.domain.AirTour;
 
@@ -26,14 +27,20 @@ public interface AirTourRepository extends BaseProductRepository<AirTour> {
 	Set<String> listCities();
 
 	/**
-	 * Find tour by city.
+	 * Find tour by city with fuzzy match.
 	 * 
-	 * @param city
+	 * @param city the city
 	 * @param pageable
 	 * @return page of tour
 	 */
-	Page<AirTour> findByCityStartingWithIgnoreCase(String city, Pageable pageable);
+	@Query("SELECT t FROM #{#entityName} t WHERE t.published = TRUE AND "
+			+ "t.city LIKE CONCAT('%',:city,'%')  ORDER BY t.rank DESC, t.score DESC")
+	Page<AirTour> findByFuzzyCity(@Param("city") String city, Pageable pageable);
+
+	Page<AirTour> findByPublishedTrueAndCityOrderByRankDescScoreDesc(String city, Pageable pageable);
+
+	// Page<AirTour> findByPublishedTrueAndCityStartingWithIgnoreCase(String city, Pageable pageable);
 
 	// just use starting with, and avoid using bellow that will perform full table scan
-	Page<AirTour> findByCityContainingIgnoreCase(String city, Pageable pageable);
+	// Page<AirTour> findByPublishedTrueAndCityContainingIgnoreCase(String city, Pageable pageable);
 }

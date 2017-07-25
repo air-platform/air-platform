@@ -50,6 +50,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String PRODUCT_NOT_SET;
 	public static String PRODUCT_NOT_FOUND;
 	public static String PRODUCT_NOT_APPROVED;
+	public static String PRODUCT_NOT_PUBLISHED;
 	public static String PRODUCT_ACCESS_DENIED;
 	public static String PRODUCT_FAQ_NOT_FOUND;
 	public static String PRODUCT_FAMILY_NOT_FOUND;
@@ -90,6 +91,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String ORDER_REFUND_FAILURE;
 	public static String ORDER_INVALID_OFFER_TOTAL_AMOUNT;
 	public static String ORDER_CANNOT_BE_DELETED;
+	public static String ORDER_INVALID_PRICING_ARGS;
 	public static String USER_ORDERS_CANNOT_BE_DELETED;
 
 	public static String AIRPORT_ICAO_ALREADY_EXISTS;
@@ -115,8 +117,9 @@ public class LocalizedMessages extends NLSResource {
 	public static String COURSE_NOT_FOUND;
 	public static String FLEET_NOT_FOUND;
 	public static String FLEET_ALREADY_EXISTS;
+	public static String ORDER_ITEM_CANDIDATE_NOT_FOUND; // generic
 	public static String FLEET_CANDIDATE_NOT_FOUND;
-	public static String CHARTERORDER_CANNOT_UPDATE_PRICE_INVALID_STATUS;
+	public static String AIRCRAFT_CANDIDATE_NOT_FOUND;
 
 	// account
 	public static String ACCOUNT_ADMIN_CANNOT_BE_DELETED;

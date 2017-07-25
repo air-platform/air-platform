@@ -76,6 +76,9 @@ public interface AirTourService extends StandardProductService<AirTour> {
 	@Nonnull
 	Page<AirTour> listAirToursByCity(@Nonnull String city, int page, int pageSize);
 
+	@Nonnull
+	Page<AirTour> listAirToursByFuzzyCity(@Nonnull String city, int page, int pageSize);
+
 	/**
 	 * Delete a AirTour.
 	 * 
