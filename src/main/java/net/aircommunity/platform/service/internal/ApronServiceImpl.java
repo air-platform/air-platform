@@ -119,12 +119,12 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 
 	@Override
 	public List<Apron> listPublishedCityAprons(String city, Type type) {
-		return apronRepository.findPublishedByCity(city, type);
+		return apronRepository.findPublishedByFuzzyCity(city, type);
 	}
 
 	@Override
 	public List<Apron> listPublishedProvinceAprons(String province, Type type) {
-		return apronRepository.findPublishedByProvince(province, type);
+		return apronRepository.findPublishedByFuzzyProvince(province, type);
 	}
 
 	@Override
