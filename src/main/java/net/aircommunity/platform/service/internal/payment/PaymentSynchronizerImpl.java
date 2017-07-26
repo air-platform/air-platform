@@ -190,15 +190,13 @@ public class PaymentSynchronizerImpl extends AbstractServiceSupport implements P
 			LOG.debug("Sync daily ({}) pending payments...", today);
 			// payment
 			try (Stream<OrderRef> paymentPendingOrders = orderRefRepository.findPaymentPendingOrders(today)) {
-				paymentPendingOrders.forEach(orderRef -> {
-					handleOrderSync(orderRef, (method, order) -> paymentService.queryPayment(method, order));
-				});
+				paymentPendingOrders.forEach(orderRef -> handleOrderSync(orderRef,
+						(method, order) -> paymentService.queryPayment(method, order)));
 			}
 			// refund
 			try (Stream<OrderRef> refundPendingOrders = orderRefRepository.findRefundPendingOrders(today)) {
-				refundPendingOrders.forEach(orderRef -> {
-					handleOrderSync(orderRef, (method, order) -> paymentService.queryRefund(method, order));
-				});
+				refundPendingOrders.forEach(orderRef -> handleOrderSync(orderRef,
+						(method, order) -> paymentService.queryRefund(method, order)));
 			}
 		}
 		finally {
@@ -208,12 +206,13 @@ public class PaymentSynchronizerImpl extends AbstractServiceSupport implements P
 
 	private void handleOrderSync(OrderRef orderRef,
 			BiFunction<Trade.Method, Order, Optional<TradeQueryResult>> handler) {
-		LOG.debug("Syncing... trade for {}", orderRef);
+		LOG.debug("Checking... trade for {}", orderRef);
 		Trade.Method method = orderRef.getMethod();
 		if (method == null) {
 			LOG.warn("No trade method is available for {}, sync skipped", orderRef);
 			return;
 		}
+		LOG.debug("Syncing... trade for {}", orderRef);
 		commonOrderService.lookupByOrderNo(orderRef.getOrderNo()).ifPresent(order -> {
 			handler.apply(method, order).ifPresent(result -> eventBus.post(new TradeSyncEvent(result, order)));
 		});

@@ -174,6 +174,7 @@ public class CommonOrderProcessor implements OrderProcessor<Order> {
 	@Override
 	public Order saveOrder(Order order) {
 		StandardOrderService<Order> service = getOrderService(order.getType());
+		LOG.debug("Service {} perform save order: {}", service, order);
 		return service.getOrderPersister().apply(order);
 	}
 

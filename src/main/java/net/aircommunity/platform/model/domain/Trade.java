@@ -165,7 +165,15 @@ public abstract class Trade extends Persistable {
 		this.vendor = vendor;
 	}
 
-	public void update(Trade another) {
+	public Trade updateFully(Trade another) {
+		if (another != null) {
+			id = another.id;
+			update(another);
+		}
+		return this;
+	}
+
+	public Trade update(Trade another) {
 		if (another != null) {
 			tradeNo = another.tradeNo;
 			orderNo = another.orderNo;
@@ -176,6 +184,7 @@ public abstract class Trade extends Persistable {
 			timestamp = another.timestamp;
 			note = another.note;
 		}
+		return this;
 	}
 
 	/**

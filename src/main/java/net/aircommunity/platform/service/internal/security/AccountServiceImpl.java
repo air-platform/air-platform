@@ -475,7 +475,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 			throw new AirException(Codes.ACCOUNT_INVALID_ROLE, M.msg(M.ACCOUNT_INVALID_ROLE));
 		}
 		Account account = findAccount(accountId);
-		if (account.getRole() != Role.USER) {
+		if (!User.class.isAssignableFrom(account.getClass())) {
 			LOG.warn("Only can update user account role, but account {} role is {}", accountId, account.getRole());
 			throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.ACCOUNT_UPDATE_ROLE_NOT_ALLOWED));
 		}
@@ -504,7 +504,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	public Account updateTenantVerificationStatus(String accountId, VerificationStatus newStatus,
 			String verificationResult) {
 		Account account = findAccount(accountId);
-		if (account.getRole() != Role.TENANT) {
+		if (!Tenant.class.isAssignableFrom(account.getClass())) {
 			LOG.warn("Tenant account required, but was: {}", account);
 			throw new AirException(Codes.ACCOUNT_NOT_TENANT, M.msg(M.ACCOUNT_NOT_TENANT));
 		}
@@ -556,7 +556,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	@Override
 	public List<Address> listUserAddresses(String accountId) {
 		Account account = findAccount(accountId);
-		if (account.getRole() != Role.USER) {
+		if (!User.class.isAssignableFrom(account.getClass())) {
 			return Collections.emptyList();
 		}
 		List<Address> addresses = User.class.cast(account).getAddresses();
@@ -568,7 +568,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	@Override
 	public Account addUserAddress(String accountId, Address address) {
 		Account account = findAccount(accountId);
-		if (account.getRole() != Role.USER) {
+		if (!User.class.isAssignableFrom(account.getClass())) {
 			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
 					M.msg(M.ACCOUNT_ADDRESS_NOT_ALLOWED, account.getNickName()));
 		}
@@ -582,7 +582,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	@Override
 	public Account removeUserAddress(String accountId, String addressId) {
 		Account account = findAccount(accountId);
-		if (account.getRole() != Role.USER) {
+		if (!User.class.isAssignableFrom(account.getClass())) {
 			throw new AirException(Codes.ACCOUNT_ADDRESS_NOT_ALLOWED,
 					M.msg(M.ACCOUNT_ADDRESS_NOT_ALLOWED, account.getNickName()));
 		}
@@ -595,7 +595,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	@Override
 	public List<Passenger> listUserPassengers(String accountId) {
 		Account account = findAccount(accountId);
-		if (account.getRole() != Role.USER) {
+		if (!User.class.isAssignableFrom(account.getClass())) {
 			return Collections.emptyList();
 		}
 		List<Passenger> passengers = User.class.cast(account).getPassengers();
@@ -608,18 +608,16 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	public Passenger addUserPassenger(String accountId, Passenger passenger) {
 		Account account = findAccount(accountId);
 		// pre-check if account is user
-		if (account.getRole() != Role.USER) {
+		if (!User.class.isAssignableFrom(account.getClass())) {
 			throw new AirException(Codes.ACCOUNT_PASSENGER_NOT_ALLOWED,
 					M.msg(M.ACCOUNT_PASSENGER_NOT_ALLOWED, account.getNickName()));
 		}
-
 		// check ID Card existence
 		Passenger passengerFound = passengerRepository.findByOwnerIdAndIdentity(accountId, passenger.getIdentity());
 		if (passengerFound != null) {
 			throw new AirException(Codes.ACCOUNT_PASSENGER_ALREADY_EXISTS,
 					M.msg(M.PASSENGER_ALREADY_EXISTS, passenger.getIdentity()));
 		}
-
 		// verify ID Card
 		boolean valid = identityCardService.verifyIdentityCard(passenger.getIdentity(), passenger.getName());
 		if (!valid) {
@@ -645,7 +643,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	@Override
 	public void removeUserPassenger(String accountId, String passengerId) {
 		Account account = findAccount(accountId);
-		if (account.getRole() != Role.USER) {
+		if (!User.class.isAssignableFrom(account.getClass())) {
 			throw new AirException(Codes.ACCOUNT_PASSENGER_NOT_ALLOWED,
 					M.msg(M.ACCOUNT_PASSENGER_NOT_ALLOWED, account.getNickName()));
 		}

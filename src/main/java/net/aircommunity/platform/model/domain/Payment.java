@@ -25,10 +25,10 @@ public class Payment extends Trade {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Payment [tradeNo=").append(tradeNo).append(", orderNo=").append(orderNo).append(", requestNo=")
-				.append(requestNo).append(", amount=").append(amount).append(", method=").append(method)
-				.append(", status=").append(status).append(", timestamp=").append(timestamp).append(", note=")
-				.append(note).append("]");
+		builder.append("Payment [id=").append(id).append(", tradeNo=").append(tradeNo).append(", orderNo=")
+				.append(orderNo).append(", requestNo=").append(requestNo).append(", amount=").append(amount)
+				.append(", method=").append(method).append(", status=").append(status).append(", timestamp=")
+				.append(timestamp).append(", note=").append(note).append("]");
 		return builder.toString();
 	}
 }

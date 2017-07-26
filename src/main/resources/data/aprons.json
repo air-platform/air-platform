@@ -1,7 +1,7 @@
 [
 	{
 		"name": "八达岭机场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "AERODROME",
 		"location": {
@@ -13,7 +13,7 @@
 	},
 	{
 		"name": "密云机场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "AERODROME",
 		"location": {
@@ -25,7 +25,7 @@
 	},
 	{
 		"name": "定陵机场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "AERODROME",
 		"location": {
@@ -37,7 +37,7 @@
 	},
 	{
 		"name": "平谷金海湖机场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "AERODROME",
 		"location": {
@@ -49,7 +49,7 @@
 	},
 	{
 		"name": "北安河机场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "AERODROME",
 		"location": {
@@ -61,7 +61,7 @@
 	},
 	{
 		"name": "天津塘沽机场",
-		"province": "天津",
+		"province": "天津市",
 		"city": "天津",
 		"type": "AERODROME",
 		"location": {
@@ -73,7 +73,7 @@
 	},
 	{
 		"name": "窦庄机场",
-		"province": "天津",
+		"province": "天津市",
 		"city": "天津",
 		"type": "AERODROME",
 		"location": {
@@ -85,7 +85,7 @@
 	},
 	{
 		"name": "天津滨海东方通用直升机场",
-		"province": "天津",
+		"province": "天津市",
 		"city": "天津",
 		"type": "AERODROME",
 		"location": {
@@ -97,7 +97,7 @@
 	},
 	{
 		"name": "河北黄骅防蝗机场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -109,7 +109,7 @@
 	},
 	{
 		"name": "河北平泉机场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -121,7 +121,7 @@
 	},
 	{
 		"name": "石家庄栾城机场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -133,7 +133,7 @@
 	},
 	{
 		"name": "迁安五重安机场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -145,7 +145,7 @@
 	},
 	{
 		"name": "张北中都机场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -157,7 +157,7 @@
 	},
 	{
 		"name": "郑州上街机场",
-		"province": "河南",
+		"province": "河南省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -169,7 +169,7 @@
 	},
 	{
 		"name": "安阳北郊机场",
-		"province": "河南",
+		"province": "河南省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -181,7 +181,7 @@
 	},
 	{
 		"name": "中宇直升机场",
-		"province": "河南",
+		"province": "河南省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -193,7 +193,7 @@
 	},
 	{
 		"name": "沈阳苏家屯红宝山机场",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -205,7 +205,7 @@
 	},
 	{
 		"name": "辽中机场",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -217,7 +217,7 @@
 	},
 	{
 		"name": "新民农用机场",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -229,7 +229,7 @@
 	},
 	{
 		"name": "财湖机场",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -241,7 +241,7 @@
 	},
 	{
 		"name": "鞍山新开河通用机场",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -253,7 +253,7 @@
 	},
 	{
 		"name": "东塔机场",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -265,7 +265,7 @@
 	},
 	{
 		"name": "长海机场",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -277,7 +277,7 @@
 	},
 	{
 		"name": "营口机场",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -289,7 +289,7 @@
 	},
 	{
 		"name": "上海国际赛车场直升机场",
-		"province": "上海",
+		"province": "上海市",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -301,7 +301,7 @@
 	},
 	{
 		"name": "徐州杨庙农用机场",
-		"province": "江苏",
+		"province": "江苏省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -313,7 +313,7 @@
 	},
 	{
 		"name": "浙江二院高架直升机场",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -325,7 +325,7 @@
 	},
 	{
 		"name": "舟山枸杞、嵊泗直升机场",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -337,7 +337,7 @@
 	},
 	{
 		"name": "滨州大高通用机场",
-		"province": "山东",
+		"province": "山东省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -349,7 +349,7 @@
 	},
 	{
 		"name": "青岛直升机航空有限公司",
-		"province": "山东",
+		"province": "山东省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -361,7 +361,7 @@
 	},
 	{
 		"name": "青岛新机场",
-		"province": "山东",
+		"province": "山东省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -373,7 +373,7 @@
 	},
 	{
 		"name": "山东雪野通航机场",
-		"province": "山东",
+		"province": "山东省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -385,7 +385,7 @@
 	},
 	{
 		"name": "济宁通用机场",
-		"province": "山东",
+		"province": "山东省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -397,7 +397,7 @@
 	},
 	{
 		"name": "合肥骆岗机场",
-		"province": "安徽",
+		"province": "安徽省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -409,7 +409,7 @@
 	},
 	{
 		"name": "安庆天柱山机场",
-		"province": "安徽",
+		"province": "安徽省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -421,7 +421,7 @@
 	},
 	{
 		"name": "展卓通航机场",
-		"province": "广西",
+		"province": "广西壮族自治区",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -433,7 +433,7 @@
 	},
 	{
 		"name": "海南安定甲子镇机场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -445,7 +445,7 @@
 	},
 	{
 		"name": "大同东王庄机场",
-		"province": "山西",
+		"province": "山西省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -457,7 +457,7 @@
 	},
 	{
 		"name": "桐坪通航机场",
-		"province": "江西",
+		"province": "江西省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -469,7 +469,7 @@
 	},
 	{
 		"name": "仙桃机场",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -481,7 +481,7 @@
 	},
 	{
 		"name": "福州竹岐直升机通航机场",
-		"province": "福建",
+		"province": "福建省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -493,7 +493,7 @@
 	},
 	{
 		"name": "武夷山角亭直升机场",
-		"province": "福建",
+		"province": "福建省",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -505,7 +505,7 @@
 	},
 	{
 		"name": "盐池通用机场",
-		"province": "宁夏",
+		"province": "宁夏回族自治区",
 		"city": "",
 		"type": "AERODROME",
 		"location": {
@@ -517,7 +517,7 @@
 	},
 	{
 		"name": "奥体中心",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -529,7 +529,7 @@
 	},
 	{
 		"name": "国家体育场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -541,7 +541,7 @@
 	},
 	{
 		"name": "国家体育中心网球场-钻石网球中心",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -553,7 +553,7 @@
 	},
 	{
 		"name": "石景山体育场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -565,7 +565,7 @@
 	},
 	{
 		"name": "石景山自行车赛场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -577,7 +577,7 @@
 	},
 	{
 		"name": "蓝调庄园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -589,7 +589,7 @@
 	},
 	{
 		"name": "金怀湾采摘园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -601,7 +601,7 @@
 	},
 	{
 		"name": "怀柔人济高尔夫",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -613,7 +613,7 @@
 	},
 	{
 		"name": "怀柔镇兴隆庄村",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -625,7 +625,7 @@
 	},
 	{
 		"name": "怀柔镇北宅村",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -637,7 +637,7 @@
 	},
 	{
 		"name": "石京龙滑雪场地",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -649,7 +649,7 @@
 	},
 	{
 		"name": "延庆辉煌高尔夫俱乐部",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -661,7 +661,7 @@
 	},
 	{
 		"name": "健一公馆",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -673,7 +673,7 @@
 	},
 	{
 		"name": "亦庄同仁医院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -685,7 +685,7 @@
 	},
 	{
 		"name": "999急救中心",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -697,7 +697,7 @@
 	},
 	{
 		"name": "原子能院科技馆",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -709,7 +709,7 @@
 	},
 	{
 		"name": "北京友谊医院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -721,7 +721,7 @@
 	},
 	{
 		"name": "北京天坛公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -733,7 +733,7 @@
 	},
 	{
 		"name": "北京天坛公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -745,7 +745,7 @@
 	},
 	{
 		"name": "北京天坛公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -757,7 +757,7 @@
 	},
 	{
 		"name": "北京积水潭医院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -769,7 +769,7 @@
 	},
 	{
 		"name": "北京市香山公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -781,7 +781,7 @@
 	},
 	{
 		"name": "北京市香山公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -793,7 +793,7 @@
 	},
 	{
 		"name": "房山燕山消防队",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -805,7 +805,7 @@
 	},
 	{
 		"name": "门头沟区清水镇灵山",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -817,7 +817,7 @@
 	},
 	{
 		"name": "昌平旧县消防队",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -829,7 +829,7 @@
 	},
 	{
 		"name": "昌平区十三陵沟崖",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -841,7 +841,7 @@
 	},
 	{
 		"name": "怀柔连石沟门村西",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -853,7 +853,7 @@
 	},
 	{
 		"name": "密云河南寨迎春桥",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -865,7 +865,7 @@
 	},
 	{
 		"name": "平谷大榕洞机场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -877,7 +877,7 @@
 	},
 	{
 		"name": "京煤集团斋堂山大贝梁",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -889,7 +889,7 @@
 	},
 	{
 		"name": "门头沟新桥中学",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -901,7 +901,7 @@
 	},
 	{
 		"name": "北京同仁医院分院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -913,7 +913,7 @@
 	},
 	{
 		"name": "北京市红十字会紧急救援中心",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -925,7 +925,7 @@
 	},
 	{
 		"name": "北京老年医院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -937,7 +937,7 @@
 	},
 	{
 		"name": "地坛医院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -949,7 +949,7 @@
 	},
 	{
 		"name": "北大国际医院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -961,7 +961,7 @@
 	},
 	{
 		"name": "积水潭医院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -973,7 +973,7 @@
 	},
 	{
 		"name": "陶然亭公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -985,7 +985,7 @@
 	},
 	{
 		"name": "海淀公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -997,7 +997,7 @@
 	},
 	{
 		"name": "东升文体公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1009,7 +1009,7 @@
 	},
 	{
 		"name": "奥林匹克公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1021,7 +1021,7 @@
 	},
 	{
 		"name": "太阳宫公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1033,7 +1033,7 @@
 	},
 	{
 		"name": "朝阳公园2处",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1045,7 +1045,7 @@
 	},
 	{
 		"name": "朝阳公园2处",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1057,7 +1057,7 @@
 	},
 	{
 		"name": "方庄体育公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1069,7 +1069,7 @@
 	},
 	{
 		"name": "园博园3号门外停车场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1081,7 +1081,7 @@
 	},
 	{
 		"name": "平谷桃花海停车场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1093,7 +1093,7 @@
 	},
 	{
 		"name": "丫髻山太极广场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1105,7 +1105,7 @@
 	},
 	{
 		"name": "龙庆峡旅游景区",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1117,7 +1117,7 @@
 	},
 	{
 		"name": "北京植物园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1129,7 +1129,7 @@
 	},
 	{
 		"name": "香山公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1141,7 +1141,7 @@
 	},
 	{
 		"name": "延庆千家店朝阳寺",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1153,7 +1153,7 @@
 	},
 	{
 		"name": "国家体育场（鸟巢）",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1165,7 +1165,7 @@
 	},
 	{
 		"name": "国家体育中心网球场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1177,7 +1177,7 @@
 	},
 	{
 		"name": "奥体中心",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1189,7 +1189,7 @@
 	},
 	{
 		"name": "石景山体育场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1201,7 +1201,7 @@
 	},
 	{
 		"name": "工人体育场北门停车场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1213,7 +1213,7 @@
 	},
 	{
 		"name": "朝阳体育场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1225,7 +1225,7 @@
 	},
 	{
 		"name": "丰台体育中心",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1237,7 +1237,7 @@
 	},
 	{
 		"name": "光彩体育馆",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1249,7 +1249,7 @@
 	},
 	{
 		"name": "玉泉营高尔夫训练场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1261,7 +1261,7 @@
 	},
 	{
 		"name": "老山自行车场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1273,7 +1273,7 @@
 	},
 	{
 		"name": "通州区体委操场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1285,7 +1285,7 @@
 	},
 	{
 		"name": "怀柔区体育中心操场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1297,7 +1297,7 @@
 	},
 	{
 		"name": "延庆体育场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1309,7 +1309,7 @@
 	},
 	{
 		"name": "北京第二十中学附属实验学校",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1321,7 +1321,7 @@
 	},
 	{
 		"name": "北京第二十中学",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1333,7 +1333,7 @@
 	},
 	{
 		"name": "北京服装学院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1345,7 +1345,7 @@
 	},
 	{
 		"name": "海淀东北旺小学",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1357,7 +1357,7 @@
 	},
 	{
 		"name": "北京电子科技学院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1369,7 +1369,7 @@
 	},
 	{
 		"name": "北京体育职业学院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1381,7 +1381,7 @@
 	},
 	{
 		"name": "丰台区实验小学",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1393,7 +1393,7 @@
 	},
 	{
 		"name": "门头沟北京矿务技校",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1405,7 +1405,7 @@
 	},
 	{
 		"name": "通州潞河中学",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1417,7 +1417,7 @@
 	},
 	{
 		"name": "北师大良乡附属中学",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1429,7 +1429,7 @@
 	},
 	{
 		"name": "延庆千家店小学",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1441,7 +1441,7 @@
 	},
 	{
 		"name": "怀柔区桥梓镇北宅村备勤点",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1453,7 +1453,7 @@
 	},
 	{
 		"name": "农展馆",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1465,7 +1465,7 @@
 	},
 	{
 		"name": "八达岭国际会议中心",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1477,7 +1477,7 @@
 	},
 	{
 		"name": "房山南窖体育飞行基地",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1489,7 +1489,7 @@
 	},
 	{
 		"name": "海淀北安河起降点",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1501,7 +1501,7 @@
 	},
 	{
 		"name": "昌平定陵机场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1513,7 +1513,7 @@
 	},
 	{
 		"name": "延庆八达岭机场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1525,7 +1525,7 @@
 	},
 	{
 		"name": "密云机场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1537,7 +1537,7 @@
 	},
 	{
 		"name": "白庙检查站",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1549,7 +1549,7 @@
 	},
 	{
 		"name": "应寺检查站",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1561,7 +1561,7 @@
 	},
 	{
 		"name": "张山营检查站",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1573,7 +1573,7 @@
 	},
 	{
 		"name": "消防保障基地",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1585,7 +1585,7 @@
 	},
 	{
 		"name": "国家体育场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1597,7 +1597,7 @@
 	},
 	{
 		"name": "北京市红十字会养老中心",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1609,7 +1609,7 @@
 	},
 	{
 		"name": "怀柔区人济山庄",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1621,7 +1621,7 @@
 	},
 	{
 		"name": "健一公馆",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1633,7 +1633,7 @@
 	},
 	{
 		"name": "原子能量科学馆",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1645,7 +1645,7 @@
 	},
 	{
 		"name": "怀柔区兴隆庄村",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1657,7 +1657,7 @@
 	},
 	{
 		"name": "北京307医院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1669,7 +1669,7 @@
 	},
 	{
 		"name": "北京海航合作医院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1681,7 +1681,7 @@
 	},
 	{
 		"name": "北京市大兴绿地缤纷城内",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1693,7 +1693,7 @@
 	},
 	{
 		"name": "怀柔怀北滑雪场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1705,7 +1705,7 @@
 	},
 	{
 		"name": "龙湾房车露营地",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1717,7 +1717,7 @@
 	},
 	{
 		"name": "滴水湖停车场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1729,7 +1729,7 @@
 	},
 	{
 		"name": "乌龙峡停车场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1741,7 +1741,7 @@
 	},
 	{
 		"name": "硅化木公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1753,7 +1753,7 @@
 	},
 	{
 		"name": "十渡景区",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1765,7 +1765,7 @@
 	},
 	{
 		"name": "十渡景区山下乐园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1777,7 +1777,7 @@
 	},
 	{
 		"name": "首都西南集散中心",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1789,7 +1789,7 @@
 	},
 	{
 		"name": "古崖居停机点第一起降点",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1801,7 +1801,7 @@
 	},
 	{
 		"name": "古崖居停机点第二起降点",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1813,7 +1813,7 @@
 	},
 	{
 		"name": "闫家坪",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1825,7 +1825,7 @@
 	},
 	{
 		"name": "朝阳公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1837,7 +1837,7 @@
 	},
 	{
 		"name": "北京外国语第二大学",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1849,7 +1849,7 @@
 	},
 	{
 		"name": "北京光彩体育馆篮球场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1861,7 +1861,7 @@
 	},
 	{
 		"name": "北京海鱼广场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1873,7 +1873,7 @@
 	},
 	{
 		"name": "北京欢乐谷",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1885,7 +1885,7 @@
 	},
 	{
 		"name": "北京航空航天大学操场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1897,7 +1897,7 @@
 	},
 	{
 		"name": "奥林匹克森林公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1909,7 +1909,7 @@
 	},
 	{
 		"name": "798艺术中心停车场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1921,7 +1921,7 @@
 	},
 	{
 		"name": "健一公馆",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1933,7 +1933,7 @@
 	},
 	{
 		"name": "酷车小镇",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1945,7 +1945,7 @@
 	},
 	{
 		"name": "辉腾国际",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1957,7 +1957,7 @@
 	},
 	{
 		"name": "798艺术区",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1969,7 +1969,7 @@
 	},
 	{
 		"name": "国家会议中心",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1981,7 +1981,7 @@
 	},
 	{
 		"name": "电子城国际电子总部6号院内",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -1993,7 +1993,7 @@
 	},
 	{
 		"name": "宏昌骏体育运动公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -2005,7 +2005,7 @@
 	},
 	{
 		"name": "长城脚下公社度假村",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -2017,7 +2017,7 @@
 	},
 	{
 		"name": "康屯镇屯军营村",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京",
 		"type": "HELICOPTER",
 		"location": {
@@ -2029,7 +2029,7 @@
 	},
 	{
 		"name": "天津滨海新区天平镇",
-		"province": "天津",
+		"province": "天津市",
 		"city": "窦庄通用机场",
 		"type": "HELICOPTER",
 		"location": {
@@ -2041,7 +2041,7 @@
 	},
 	{
 		"name": "天津空港中航工业园",
-		"province": "天津",
+		"province": "天津市",
 		"city": "空港经济区",
 		"type": "HELICOPTER",
 		"location": {
@@ -2053,7 +2053,7 @@
 	},
 	{
 		"name": "泊湖林奇郡项目",
-		"province": "天津",
+		"province": "天津市",
 		"city": "天津团泊湖",
 		"type": "HELICOPTER",
 		"location": {
@@ -2065,7 +2065,7 @@
 	},
 	{
 		"name": "武清区政府",
-		"province": "天津",
+		"province": "天津市",
 		"city": "武清",
 		"type": "HELICOPTER",
 		"location": {
@@ -2077,7 +2077,7 @@
 	},
 	{
 		"name": "杨村五中",
-		"province": "天津",
+		"province": "天津市",
 		"city": "武清",
 		"type": "HELICOPTER",
 		"location": {
@@ -2089,7 +2089,7 @@
 	},
 	{
 		"name": "天津市第一中心医院",
-		"province": "天津",
+		"province": "天津市",
 		"city": "天津",
 		"type": "HELICOPTER",
 		"location": {
@@ -2101,7 +2101,7 @@
 	},
 	{
 		"name": "天津市职业医院",
-		"province": "天津",
+		"province": "天津市",
 		"city": "天津市",
 		"type": "HELICOPTER",
 		"location": {
@@ -2113,7 +2113,7 @@
 	},
 	{
 		"name": "杨村五中",
-		"province": "天津",
+		"province": "天津市",
 		"city": "武清",
 		"type": "HELICOPTER",
 		"location": {
@@ -2125,7 +2125,7 @@
 	},
 	{
 		"name": "泊湖林奇郡项目",
-		"province": "天津",
+		"province": "天津市",
 		"city": "天津团泊湖",
 		"type": "HELICOPTER",
 		"location": {
@@ -2137,7 +2137,7 @@
 	},
 	{
 		"name": "天津医院",
-		"province": "天津",
+		"province": "天津市",
 		"city": "天津市河西区解放南路406",
 		"type": "HELICOPTER",
 		"location": {
@@ -2149,7 +2149,7 @@
 	},
 	{
 		"name": "蓟县黄崖关",
-		"province": "天津",
+		"province": "天津市",
 		"city": "蓟县",
 		"type": "HELICOPTER",
 		"location": {
@@ -2161,7 +2161,7 @@
 	},
 	{
 		"name": "蓟县桑园",
-		"province": "天津",
+		"province": "天津市",
 		"city": "蓟县",
 		"type": "HELICOPTER",
 		"location": {
@@ -2173,7 +2173,7 @@
 	},
 	{
 		"name": "崇礼云顶滑雪场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "张家口",
 		"type": "HELICOPTER",
 		"location": {
@@ -2185,7 +2185,7 @@
 	},
 	{
 		"name": "肃宁县中心公园",
-		"province": "河北",
+		"province": "河北省",
 		"city": "肃宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -2197,7 +2197,7 @@
 	},
 	{
 		"name": "滨河公园",
-		"province": "河北",
+		"province": "河北省",
 		"city": "承德",
 		"type": "HELICOPTER",
 		"location": {
@@ -2209,7 +2209,7 @@
 	},
 	{
 		"name": "迎祥酒店停车场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "宽城",
 		"type": "HELICOPTER",
 		"location": {
@@ -2221,7 +2221,7 @@
 	},
 	{
 		"name": "丰宁汽配城",
-		"province": "河北",
+		"province": "河北省",
 		"city": "丰宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -2233,7 +2233,7 @@
 	},
 	{
 		"name": "丰宁国家粮库",
-		"province": "河北",
+		"province": "河北省",
 		"city": "丰宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -2245,7 +2245,7 @@
 	},
 	{
 		"name": "兴隆粮库2",
-		"province": "河北",
+		"province": "河北省",
 		"city": "兴隆",
 		"type": "HELICOPTER",
 		"location": {
@@ -2257,7 +2257,7 @@
 	},
 	{
 		"name": "香河天下第一城",
-		"province": "河北",
+		"province": "河北省",
 		"city": "香河县",
 		"type": "HELICOPTER",
 		"location": {
@@ -2269,7 +2269,7 @@
 	},
 	{
 		"name": "石家庄市冀联医科院",
-		"province": "河北",
+		"province": "河北省",
 		"city": "石家庄",
 		"type": "HELICOPTER",
 		"location": {
@@ -2281,7 +2281,7 @@
 	},
 	{
 		"name": "张家口市第一人民医院",
-		"province": "河北",
+		"province": "河北省",
 		"city": "张家口",
 		"type": "HELICOPTER",
 		"location": {
@@ -2293,7 +2293,7 @@
 	},
 	{
 		"name": "邢台医学高等专科学校第二附属医院",
-		"province": "河北",
+		"province": "河北省",
 		"city": "邢台",
 		"type": "HELICOPTER",
 		"location": {
@@ -2305,7 +2305,7 @@
 	},
 	{
 		"name": "怀来县医院",
-		"province": "河北",
+		"province": "河北省",
 		"city": "怀来",
 		"type": "HELICOPTER",
 		"location": {
@@ -2317,7 +2317,7 @@
 	},
 	{
 		"name": "燕达医院",
-		"province": "河北",
+		"province": "河北省",
 		"city": "香河",
 		"type": "HELICOPTER",
 		"location": {
@@ -2329,7 +2329,7 @@
 	},
 	{
 		"name": "文安医院",
-		"province": "河北",
+		"province": "河北省",
 		"city": "廊坊市",
 		"type": "HELICOPTER",
 		"location": {
@@ -2341,7 +2341,7 @@
 	},
 	{
 		"name": "崇礼云顶滑雪场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "张家口",
 		"type": "HELICOPTER",
 		"location": {
@@ -2353,7 +2353,7 @@
 	},
 	{
 		"name": "故城机场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "衡水",
 		"type": "HELICOPTER",
 		"location": {
@@ -2365,7 +2365,7 @@
 	},
 	{
 		"name": "承德避暑山庄小学",
-		"province": "河北",
+		"province": "河北省",
 		"city": "承德",
 		"type": "HELICOPTER",
 		"location": {
@@ -2377,7 +2377,7 @@
 	},
 	{
 		"name": "任县雅诺图塑料制品有限公司 ",
-		"province": "河北",
+		"province": "河北省",
 		"city": "任县",
 		"type": "HELICOPTER",
 		"location": {
@@ -2389,7 +2389,7 @@
 	},
 	{
 		"name": "奇星橡胶科技有限公司",
-		"province": "河北",
+		"province": "河北省",
 		"city": "清河",
 		"type": "HELICOPTER",
 		"location": {
@@ -2401,7 +2401,7 @@
 	},
 	{
 		"name": "拉斐水岸",
-		"province": "河北",
+		"province": "河北省",
 		"city": "张家口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -2413,7 +2413,7 @@
 	},
 	{
 		"name": "S261省道旁院内",
-		"province": "河北",
+		"province": "河北省",
 		"city": "秦皇岛市",
 		"type": "HELICOPTER",
 		"location": {
@@ -2425,7 +2425,7 @@
 	},
 	{
 		"name": "灵宝豫西轴承有限公司",
-		"province": "河南",
+		"province": "河南省",
 		"city": "灵宝",
 		"type": "HELICOPTER",
 		"location": {
@@ -2437,7 +2437,7 @@
 	},
 	{
 		"name": "林州通用机场位于林州市以西约3km处",
-		"province": "河南",
+		"province": "河南省",
 		"city": "安阳",
 		"type": "HELICOPTER",
 		"location": {
@@ -2449,7 +2449,7 @@
 	},
 	{
 		"name": "白云通航安阳基地",
-		"province": "河南",
+		"province": "河南省",
 		"city": "安阳汤阴",
 		"type": "HELICOPTER",
 		"location": {
@@ -2461,7 +2461,7 @@
 	},
 	{
 		"name": "西部重工院内",
-		"province": "陕西",
+		"province": "陕西省",
 		"city": "渭南",
 		"type": "HELICOPTER",
 		"location": {
@@ -2473,7 +2473,7 @@
 	},
 	{
 		"name": "职中驾校",
-		"province": "陕西",
+		"province": "陕西省",
 		"city": "宁强",
 		"type": "HELICOPTER",
 		"location": {
@@ -2485,7 +2485,7 @@
 	},
 	{
 		"name": "草甸宾馆",
-		"province": "陕西",
+		"province": "陕西省",
 		"city": "凤县",
 		"type": "HELICOPTER",
 		"location": {
@@ -2497,7 +2497,7 @@
 	},
 	{
 		"name": "靖边县洲际环发垃圾资源无害化处理有限公司",
-		"province": "陕西",
+		"province": "陕西省",
 		"city": "靖边",
 		"type": "HELICOPTER",
 		"location": {
@@ -2509,7 +2509,7 @@
 	},
 	{
 		"name": "绥德正飞商贸有限公司",
-		"province": "陕西",
+		"province": "陕西省",
 		"city": "绥德",
 		"type": "HELICOPTER",
 		"location": {
@@ -2521,7 +2521,7 @@
 	},
 	{
 		"name": "南大街大型车辆停车场",
-		"province": "陕西",
+		"province": "陕西省",
 		"city": "榆林市定边县",
 		"type": "HELICOPTER",
 		"location": {
@@ -2533,7 +2533,7 @@
 	},
 	{
 		"name": "经济开发区岷海制药场内",
-		"province": "陕西",
+		"province": "陕西省",
 		"city": "定西市岷县",
 		"type": "HELICOPTER",
 		"location": {
@@ -2545,7 +2545,7 @@
 	},
 	{
 		"name": "城南芋则沟村安顺汽车服务公司",
-		"province": "陕西",
+		"province": "陕西省",
 		"city": "榆林市绥德县",
 		"type": "HELICOPTER",
 		"location": {
@@ -2557,7 +2557,7 @@
 	},
 	{
 		"name": "济宁通用机场",
-		"province": "山东",
+		"province": "山东省",
 		"city": "济宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -2569,7 +2569,7 @@
 	},
 	{
 		"name": "雪野湖通用机场",
-		"province": "山东",
+		"province": "山东省",
 		"city": "济宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -2581,7 +2581,7 @@
 	},
 	{
 		"name": "交通管理所",
-		"province": "山东",
+		"province": "山东省",
 		"city": "济南市高官寨",
 		"type": "HELICOPTER",
 		"location": {
@@ -2593,7 +2593,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "山东",
+		"province": "山东省",
 		"city": "济南机场北部路边",
 		"type": "HELICOPTER",
 		"location": {
@@ -2605,7 +2605,7 @@
 	},
 	{
 		"name": "水寨晶馫生态园",
-		"province": "山东",
+		"province": "山东省",
 		"city": "济南章丘",
 		"type": "HELICOPTER",
 		"location": {
@@ -2617,7 +2617,7 @@
 	},
 	{
 		"name": "未开通高速公路梁家村路段",
-		"province": "山东",
+		"province": "山东省",
 		"city": "济南商河",
 		"type": "HELICOPTER",
 		"location": {
@@ -2629,7 +2629,7 @@
 	},
 	{
 		"name": "S248和X252交汇处",
-		"province": "山东",
+		"province": "山东省",
 		"city": "济南商河",
 		"type": "HELICOPTER",
 		"location": {
@@ -2641,7 +2641,7 @@
 	},
 	{
 		"name": "李沧",
-		"province": "山东",
+		"province": "山东省",
 		"city": "青岛",
 		"type": "HELICOPTER",
 		"location": {
@@ -2653,7 +2653,7 @@
 	},
 	{
 		"name": "德州医院",
-		"province": "山东",
+		"province": "山东省",
 		"city": "德州",
 		"type": "HELICOPTER",
 		"location": {
@@ -2665,7 +2665,7 @@
 	},
 	{
 		"name": "姜屯镇镇政府后院停车场",
-		"province": "山东",
+		"province": "山东省",
 		"city": "滕州",
 		"type": "HELICOPTER",
 		"location": {
@@ -2677,7 +2677,7 @@
 	},
 	{
 		"name": "西岗镇工厂大院",
-		"province": "山东",
+		"province": "山东省",
 		"city": "滕州",
 		"type": "HELICOPTER",
 		"location": {
@@ -2689,7 +2689,7 @@
 	},
 	{
 		"name": "姜屯镇补油点",
-		"province": "山东",
+		"province": "山东省",
 		"city": "滕州",
 		"type": "HELICOPTER",
 		"location": {
@@ -2701,7 +2701,7 @@
 	},
 	{
 		"name": "级索镇工厂大院",
-		"province": "山东",
+		"province": "山东省",
 		"city": "滕州",
 		"type": "HELICOPTER",
 		"location": {
@@ -2713,7 +2713,7 @@
 	},
 	{
 		"name": "仁风镇工厂大院",
-		"province": "山东",
+		"province": "山东省",
 		"city": "济阳",
 		"type": "HELICOPTER",
 		"location": {
@@ -2725,7 +2725,7 @@
 	},
 	{
 		"name": "垛石镇菜市场大院",
-		"province": "山东",
+		"province": "山东省",
 		"city": "济阳",
 		"type": "HELICOPTER",
 		"location": {
@@ -2737,7 +2737,7 @@
 	},
 	{
 		"name": "玉皇庙镇农作物种植合作社大院",
-		"province": "山东",
+		"province": "山东省",
 		"city": "商河",
 		"type": "HELICOPTER",
 		"location": {
@@ -2749,7 +2749,7 @@
 	},
 	{
 		"name": "山东有斐食品有限公司",
-		"province": "山东",
+		"province": "山东省",
 		"city": "昌邑",
 		"type": "HELICOPTER",
 		"location": {
@@ -2761,7 +2761,7 @@
 	},
 	{
 		"name": "山东航远食品有限公司",
-		"province": "山东",
+		"province": "山东省",
 		"city": "禹城",
 		"type": "HELICOPTER",
 		"location": {
@@ -2773,7 +2773,7 @@
 	},
 	{
 		"name": "虎林农场",
-		"province": "山东",
+		"province": "山东省",
 		"city": "广饶",
 		"type": "HELICOPTER",
 		"location": {
@@ -2785,7 +2785,7 @@
 	},
 	{
 		"name": "高新区宝通街东侧",
-		"province": "山东",
+		"province": "山东省",
 		"city": "潍坊市",
 		"type": "HELICOPTER",
 		"location": {
@@ -2797,7 +2797,7 @@
 	},
 	{
 		"name": "高新区潍县路东方餐馆后院内",
-		"province": "山东",
+		"province": "山东省",
 		"city": "潍坊市",
 		"type": "HELICOPTER",
 		"location": {
@@ -2809,7 +2809,7 @@
 	},
 	{
 		"name": "李沧区天水路竹子庵公园内",
-		"province": "山东",
+		"province": "山东省",
 		"city": "青岛市",
 		"type": "HELICOPTER",
 		"location": {
@@ -2821,7 +2821,7 @@
 	},
 	{
 		"name": "黄岛区泊里德通起重机院内",
-		"province": "山东",
+		"province": "山东省",
 		"city": "青岛市",
 		"type": "HELICOPTER",
 		"location": {
@@ -2833,7 +2833,7 @@
 	},
 	{
 		"name": "黄岛区204省道藏南院内",
-		"province": "山东",
+		"province": "山东省",
 		"city": "青岛市",
 		"type": "HELICOPTER",
 		"location": {
@@ -2845,7 +2845,7 @@
 	},
 	{
 		"name": "黄岛区明富大道旁院内空草坪",
-		"province": "山东",
+		"province": "山东省",
 		"city": "青岛市",
 		"type": "HELICOPTER",
 		"location": {
@@ -2857,7 +2857,7 @@
 	},
 	{
 		"name": "会宁淀粉厂",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "会宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -2869,7 +2869,7 @@
 	},
 	{
 		"name": "会宁学校",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "会宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -2881,7 +2881,7 @@
 	},
 	{
 		"name": "欣叶集团院内",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "静宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -2893,7 +2893,7 @@
 	},
 	{
 		"name": "泾河封闭小区内",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "泾源",
 		"type": "HELICOPTER",
 		"location": {
@@ -2905,7 +2905,7 @@
 	},
 	{
 		"name": "青山宾馆后院",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "清水",
 		"type": "HELICOPTER",
 		"location": {
@@ -2917,7 +2917,7 @@
 	},
 	{
 		"name": "东星牧业场",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "崇信",
 		"type": "HELICOPTER",
 		"location": {
@@ -2929,7 +2929,7 @@
 	},
 	{
 		"name": "公路养护院",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "灵台",
 		"type": "HELICOPTER",
 		"location": {
@@ -2941,7 +2941,7 @@
 	},
 	{
 		"name": "黄浦敏制药厂",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "灵台",
 		"type": "HELICOPTER",
 		"location": {
@@ -2953,7 +2953,7 @@
 	},
 	{
 		"name": "正宁路政院内",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "正宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -2965,7 +2965,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "临泽",
 		"type": "HELICOPTER",
 		"location": {
@@ -2977,7 +2977,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "永靖",
 		"type": "HELICOPTER",
 		"location": {
@@ -2989,7 +2989,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "永靖",
 		"type": "HELICOPTER",
 		"location": {
@@ -3001,7 +3001,7 @@
 	},
 	{
 		"name": "大型停车场",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "嘉峪关",
 		"type": "HELICOPTER",
 		"location": {
@@ -3013,7 +3013,7 @@
 	},
 	{
 		"name": "运政管理所",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "天祝",
 		"type": "HELICOPTER",
 		"location": {
@@ -3025,7 +3025,7 @@
 	},
 	{
 		"name": "正阳集团",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "天祝",
 		"type": "HELICOPTER",
 		"location": {
@@ -3037,7 +3037,7 @@
 	},
 	{
 		"name": "平川高尔夫球场",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "平川",
 		"type": "HELICOPTER",
 		"location": {
@@ -3049,7 +3049,7 @@
 	},
 	{
 		"name": "榆中县金牛广场北侧200米",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "榆中",
 		"type": "HELICOPTER",
 		"location": {
@@ -3061,7 +3061,7 @@
 	},
 	{
 		"name": "G30高速柳园出口、高速管理处院内",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "柳园",
 		"type": "HELICOPTER",
 		"location": {
@@ -3073,7 +3073,7 @@
 	},
 	{
 		"name": "废弃工厂大院",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "金昌",
 		"type": "HELICOPTER",
 		"location": {
@@ -3085,7 +3085,7 @@
 	},
 	{
 		"name": "废弃工厂大院",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "临泽",
 		"type": "HELICOPTER",
 		"location": {
@@ -3097,7 +3097,7 @@
 	},
 	{
 		"name": "国风酒店",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "瓜州",
 		"type": "HELICOPTER",
 		"location": {
@@ -3109,7 +3109,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "礼县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3121,7 +3121,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "宕昌县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3133,7 +3133,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "成县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3145,7 +3145,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "天水市",
 		"type": "HELICOPTER",
 		"location": {
@@ -3157,7 +3157,7 @@
 	},
 	{
 		"name": "高速路修建单位大院",
-		"province": "甘肃",
+		"province": "甘肃省",
 		"city": "天水市",
 		"type": "HELICOPTER",
 		"location": {
@@ -3169,7 +3169,7 @@
 	},
 	{
 		"name": "翼城大众饲料公司 ",
-		"province": "山西",
+		"province": "山西省",
 		"city": "翼城",
 		"type": "HELICOPTER",
 		"location": {
@@ -3181,7 +3181,7 @@
 	},
 	{
 		"name": "戎子酒庄有限公司",
-		"province": "山西",
+		"province": "山西省",
 		"city": "乡宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -3193,7 +3193,7 @@
 	},
 	{
 		"name": "临猗康体食品厂 ",
-		"province": "山西",
+		"province": "山西省",
 		"city": "临猗",
 		"type": "HELICOPTER",
 		"location": {
@@ -3205,7 +3205,7 @@
 	},
 	{
 		"name": "临猗三中西门外 ",
-		"province": "山西",
+		"province": "山西省",
 		"city": "临猗",
 		"type": "HELICOPTER",
 		"location": {
@@ -3217,7 +3217,7 @@
 	},
 	{
 		"name": "内城永乐宫停车场",
-		"province": "山西",
+		"province": "山西省",
 		"city": "内城",
 		"type": "HELICOPTER",
 		"location": {
@@ -3229,7 +3229,7 @@
 	},
 	{
 		"name": "朔州消防训练基地",
-		"province": "山西",
+		"province": "山西省",
 		"city": "朔州",
 		"type": "HELICOPTER",
 		"location": {
@@ -3241,7 +3241,7 @@
 	},
 	{
 		"name": "偏关宾馆",
-		"province": "山西",
+		"province": "山西省",
 		"city": "偏关",
 		"type": "HELICOPTER",
 		"location": {
@@ -3253,7 +3253,7 @@
 	},
 	{
 		"name": "500KV开关站",
-		"province": "山西",
+		"province": "山西省",
 		"city": "忻州",
 		"type": "HELICOPTER",
 		"location": {
@@ -3265,7 +3265,7 @@
 	},
 	{
 		"name": "高平",
-		"province": "山西",
+		"province": "山西省",
 		"city": "高平",
 		"type": "HELICOPTER",
 		"location": {
@@ -3277,7 +3277,7 @@
 	},
 	{
 		"name": "离石民兵训练基地",
-		"province": "山西",
+		"province": "山西省",
 		"city": "离石",
 		"type": "HELICOPTER",
 		"location": {
@@ -3289,7 +3289,7 @@
 	},
 	{
 		"name": "祁县克代尔啤酒厂 ",
-		"province": "山西",
+		"province": "山西省",
 		"city": "祁县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3301,7 +3301,7 @@
 	},
 	{
 		"name": "上友村",
-		"province": "山西",
+		"province": "山西省",
 		"city": "隰县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3313,7 +3313,7 @@
 	},
 	{
 		"name": "霍州047部队营院",
-		"province": "山西",
+		"province": "山西省",
 		"city": "霍州",
 		"type": "HELICOPTER",
 		"location": {
@@ -3325,7 +3325,7 @@
 	},
 	{
 		"name": "阳光绿州生态园",
-		"province": "山西",
+		"province": "山西省",
 		"city": "霍州",
 		"type": "HELICOPTER",
 		"location": {
@@ -3337,7 +3337,7 @@
 	},
 	{
 		"name": "左权县职业技术中学",
-		"province": "山西",
+		"province": "山西省",
 		"city": "左权",
 		"type": "HELICOPTER",
 		"location": {
@@ -3349,7 +3349,7 @@
 	},
 	{
 		"name": "潞城宾馆",
-		"province": "山西",
+		"province": "山西省",
 		"city": "潞城",
 		"type": "HELICOPTER",
 		"location": {
@@ -3361,7 +3361,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "山西",
+		"province": "山西省",
 		"city": "宁武",
 		"type": "HELICOPTER",
 		"location": {
@@ -3373,7 +3373,7 @@
 	},
 	{
 		"name": "离石民兵训练基地",
-		"province": "山西",
+		"province": "山西省",
 		"city": "离石",
 		"type": "HELICOPTER",
 		"location": {
@@ -3385,7 +3385,7 @@
 	},
 	{
 		"name": "祁县克代尔啤酒厂 ",
-		"province": "山西",
+		"province": "山西省",
 		"city": "祁县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3397,7 +3397,7 @@
 	},
 	{
 		"name": "左权县职业技术中学",
-		"province": "山西",
+		"province": "山西省",
 		"city": "左权",
 		"type": "HELICOPTER",
 		"location": {
@@ -3409,7 +3409,7 @@
 	},
 	{
 		"name": "五台山起降点",
-		"province": "山西",
+		"province": "山西省",
 		"city": "忻州市五台县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3421,7 +3421,7 @@
 	},
 	{
 		"name": "祁县城赵镇水力加油站后面停车场",
-		"province": "山西",
+		"province": "山西省",
 		"city": "晋中市",
 		"type": "HELICOPTER",
 		"location": {
@@ -3433,7 +3433,7 @@
 	},
 	{
 		"name": "达日武装部",
-		"province": "青海",
+		"province": "青海省",
 		"city": "达日",
 		"type": "HELICOPTER",
 		"location": {
@@ -3445,7 +3445,7 @@
 	},
 	{
 		"name": "国家网球中心西北侧广场。",
-		"province": "青海",
+		"province": "青海省",
 		"city": "共和",
 		"type": "HELICOPTER",
 		"location": {
@@ -3457,7 +3457,7 @@
 	},
 	{
 		"name": "共和武警支队",
-		"province": "青海",
+		"province": "青海省",
 		"city": "共和",
 		"type": "HELICOPTER",
 		"location": {
@@ -3469,7 +3469,7 @@
 	},
 	{
 		"name": "南郊停车场",
-		"province": "青海",
+		"province": "青海省",
 		"city": "格尔木",
 		"type": "HELICOPTER",
 		"location": {
@@ -3481,7 +3481,7 @@
 	},
 	{
 		"name": "纳赤台兵站",
-		"province": "青海",
+		"province": "青海省",
 		"city": "纳赤台",
 		"type": "HELICOPTER",
 		"location": {
@@ -3493,7 +3493,7 @@
 	},
 	{
 		"name": "沱沱河兵站",
-		"province": "青海",
+		"province": "青海省",
 		"city": "沱沱河",
 		"type": "HELICOPTER",
 		"location": {
@@ -3505,7 +3505,7 @@
 	},
 	{
 		"name": "优云乡",
-		"province": "青海",
+		"province": "青海省",
 		"city": "达日",
 		"type": "HELICOPTER",
 		"location": {
@@ -3517,7 +3517,7 @@
 	},
 	{
 		"name": "刚察宾馆",
-		"province": "青海",
+		"province": "青海省",
 		"city": "刚察县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3529,7 +3529,7 @@
 	},
 	{
 		"name": "蓄集乡",
-		"province": "青海",
+		"province": "青海省",
 		"city": "天峻县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3541,7 +3541,7 @@
 	},
 	{
 		"name": "怀头他拉镇",
-		"province": "青海",
+		"province": "青海省",
 		"city": "德令哈市",
 		"type": "HELICOPTER",
 		"location": {
@@ -3553,7 +3553,7 @@
 	},
 	{
 		"name": "大通县鹞子沟国家森林公园景区内",
-		"province": "青海",
+		"province": "青海省",
 		"city": "西宁市大通县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3565,7 +3565,7 @@
 	},
 	{
 		"name": "牧草加工厂",
-		"province": "青海",
+		"province": "青海省",
 		"city": "玛多",
 		"type": "HELICOPTER",
 		"location": {
@@ -3577,7 +3577,7 @@
 	},
 	{
 		"name": "武警大院",
-		"province": "青海",
+		"province": "青海省",
 		"city": "玛多武警",
 		"type": "HELICOPTER",
 		"location": {
@@ -3589,7 +3589,7 @@
 	},
 	{
 		"name": "湟源陶然商务酒店",
-		"province": "青海",
+		"province": "青海省",
 		"city": "西宁湟源县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3601,7 +3601,7 @@
 	},
 	{
 		"name": "梨园林卡酒店",
-		"province": "青海",
+		"province": "青海省",
 		"city": "贵德县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3613,7 +3613,7 @@
 	},
 	{
 		"name": "环卫局停车场",
-		"province": "青海",
+		"province": "青海省",
 		"city": "刚察县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3625,7 +3625,7 @@
 	},
 	{
 		"name": "甘龙食品厂",
-		"province": "青海",
+		"province": "青海省",
 		"city": "天峻县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3637,7 +3637,7 @@
 	},
 	{
 		"name": "植物园",
-		"province": "青海",
+		"province": "青海省",
 		"city": "乌兰县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3649,7 +3649,7 @@
 	},
 	{
 		"name": "鹞子沟国家森林公园景区",
-		"province": "青海",
+		"province": "青海省",
 		"city": "大通县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3661,7 +3661,7 @@
 	},
 	{
 		"name": "安多武警二大队",
-		"province": "西藏",
+		"province": "西藏自治区",
 		"city": "安多",
 		"type": "HELICOPTER",
 		"location": {
@@ -3673,7 +3673,7 @@
 	},
 	{
 		"name": "那曲武警一大队",
-		"province": "西藏",
+		"province": "西藏自治区",
 		"city": "那曲",
 		"type": "HELICOPTER",
 		"location": {
@@ -3685,7 +3685,7 @@
 	},
 	{
 		"name": "当雄兵站",
-		"province": "西藏",
+		"province": "西藏自治区",
 		"city": "当雄",
 		"type": "HELICOPTER",
 		"location": {
@@ -3697,7 +3697,7 @@
 	},
 	{
 		"name": "武川县国土资源局",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "武川县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3709,7 +3709,7 @@
 	},
 	{
 		"name": "武川县武川宾馆停车场",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "武川县",
 		"type": "HELICOPTER",
 		"location": {
@@ -3721,7 +3721,7 @@
 	},
 	{
 		"name": "内蒙乌海金沙苑",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "内蒙乌海",
 		"type": "HELICOPTER",
 		"location": {
@@ -3733,7 +3733,7 @@
 	},
 	{
 		"name": "元宝山粮仓",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "赤峰",
 		"type": "HELICOPTER",
 		"location": {
@@ -3745,7 +3745,7 @@
 	},
 	{
 		"name": "翁牛特旗粮仓",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "丹东",
 		"type": "HELICOPTER",
 		"location": {
@@ -3757,7 +3757,7 @@
 	},
 	{
 		"name": "农家院",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴林右旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -3769,7 +3769,7 @@
 	},
 	{
 		"name": "白音乌拉小学",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "白音乌拉",
 		"type": "HELICOPTER",
 		"location": {
@@ -3781,7 +3781,7 @@
 	},
 	{
 		"name": "罕乌拉派出所",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "罕乌拉",
 		"type": "HELICOPTER",
 		"location": {
@@ -3793,7 +3793,7 @@
 	},
 	{
 		"name": "露天煤矿宾馆",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "霍林郭勒",
 		"type": "HELICOPTER",
 		"location": {
@@ -3805,7 +3805,7 @@
 	},
 	{
 		"name": "扎兰屯机场",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "扎兰屯",
 		"type": "HELICOPTER",
 		"location": {
@@ -3817,7 +3817,7 @@
 	},
 	{
 		"name": "巴林起降点",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴林",
 		"type": "HELICOPTER",
 		"location": {
@@ -3829,7 +3829,7 @@
 	},
 	{
 		"name": "博客图宾馆",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "博客图",
 		"type": "HELICOPTER",
 		"location": {
@@ -3841,7 +3841,7 @@
 	},
 	{
 		"name": "乌奴耳林场",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "乌奴耳",
 		"type": "HELICOPTER",
 		"location": {
@@ -3853,7 +3853,7 @@
 	},
 	{
 		"name": "互助物流",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "海拉尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -3865,7 +3865,7 @@
 	},
 	{
 		"name": "伊敏河污水处理厂",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "伊敏河",
 		"type": "HELICOPTER",
 		"location": {
@@ -3877,7 +3877,7 @@
 	},
 	{
 		"name": "巴镇中心学校",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴镇",
 		"type": "HELICOPTER",
 		"location": {
@@ -3889,7 +3889,7 @@
 	},
 	{
 		"name": "华府宾馆",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "扎鲁特旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -3901,7 +3901,7 @@
 	},
 	{
 		"name": "阳光宾馆",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "鲁北起降点",
 		"type": "HELICOPTER",
 		"location": {
@@ -3913,7 +3913,7 @@
 	},
 	{
 		"name": "乌斯太庆华公司",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "乌素图",
 		"type": "HELICOPTER",
 		"location": {
@@ -3925,7 +3925,7 @@
 	},
 	{
 		"name": "胡杨林景区",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "额济纳旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -3937,7 +3937,7 @@
 	},
 	{
 		"name": "黑鹰山起降场地",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "额济纳旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -3949,7 +3949,7 @@
 	},
 	{
 		"name": "1、阿拉善右旗跑马场",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "阿拉善右旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -3961,7 +3961,7 @@
 	},
 	{
 		"name": "阿拉善右旗矿区",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "阿拉善右旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -3973,7 +3973,7 @@
 	},
 	{
 		"name": "腾格里工业园",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "腾格里",
 		"type": "HELICOPTER",
 		"location": {
@@ -3985,7 +3985,7 @@
 	},
 	{
 		"name": "太阳山",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "阿拉善右旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -3997,7 +3997,7 @@
 	},
 	{
 		"name": "阿拉善左旗北寺",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "阿拉善左旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -4009,7 +4009,7 @@
 	},
 	{
 		"name": "阿拉善左旗北寺狩猎场",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "阿拉善左旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -4021,7 +4021,7 @@
 	},
 	{
 		"name": "288口岸",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "阿拉善左旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -4033,7 +4033,7 @@
 	},
 	{
 		"name": "满都拉口案宾馆",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "满都拉",
 		"type": "HELICOPTER",
 		"location": {
@@ -4045,7 +4045,7 @@
 	},
 	{
 		"name": "乌斯太",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "乌斯太",
 		"type": "HELICOPTER",
 		"location": {
@@ -4057,7 +4057,7 @@
 	},
 	{
 		"name": "乌力吉",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "乌力吉",
 		"type": "HELICOPTER",
 		"location": {
@@ -4069,7 +4069,7 @@
 	},
 	{
 		"name": "额济纳旗",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "额济纳旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -4081,7 +4081,7 @@
 	},
 	{
 		"name": "腾格里",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "额济纳旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -4093,7 +4093,7 @@
 	},
 	{
 		"name": "土默特右旗",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "包头",
 		"type": "HELICOPTER",
 		"location": {
@@ -4105,7 +4105,7 @@
 	},
 	{
 		"name": "土默特右旗",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "包头",
 		"type": "HELICOPTER",
 		"location": {
@@ -4117,7 +4117,7 @@
 	},
 	{
 		"name": "地质公园起降点",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴彦淖尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4129,7 +4129,7 @@
 	},
 	{
 		"name": "温根塔拉旅游中心",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴彦淖尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4141,7 +4141,7 @@
 	},
 	{
 		"name": "牧人之家起降点",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴彦淖尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4153,7 +4153,7 @@
 	},
 	{
 		"name": "甘其毛都口岸",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴彦淖尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4165,7 +4165,7 @@
 	},
 	{
 		"name": "乌梁素海",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴彦淖尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4177,7 +4177,7 @@
 	},
 	{
 		"name": "乌拉特部落",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴彦淖尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4189,7 +4189,7 @@
 	},
 	{
 		"name": "东物流起降点",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴彦淖尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4201,7 +4201,7 @@
 	},
 	{
 		"name": "湿地公园",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴彦淖尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4213,7 +4213,7 @@
 	},
 	{
 		"name": "匈奴城起降点",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴彦淖尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4225,7 +4225,7 @@
 	},
 	{
 		"name": "宝日汉图起降点",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴彦淖尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4237,7 +4237,7 @@
 	},
 	{
 		"name": "纳森图起降点",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴彦淖尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4249,7 +4249,7 @@
 	},
 	{
 		"name": "东升石业",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "海拉尔",
 		"type": "HELICOPTER",
 		"location": {
@@ -4261,7 +4261,7 @@
 	},
 	{
 		"name": "伊敏河镇污水处理厂",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "伊敏河镇",
 		"type": "HELICOPTER",
 		"location": {
@@ -4273,7 +4273,7 @@
 	},
 	{
 		"name": "红花尔基直升机场",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "红花尔基",
 		"type": "HELICOPTER",
 		"location": {
@@ -4285,7 +4285,7 @@
 	},
 	{
 		"name": "白狼林业局洮儿河林场",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "白狼镇",
 		"type": "HELICOPTER",
 		"location": {
@@ -4297,7 +4297,7 @@
 	},
 	{
 		"name": "阿力得尔公路管理处",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "阿力得尔苏木",
 		"type": "HELICOPTER",
 		"location": {
@@ -4309,7 +4309,7 @@
 	},
 	{
 		"name": "中天汽贸",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "科尔沁右翼中旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -4321,7 +4321,7 @@
 	},
 	{
 		"name": "瑞兴粮贸公司",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "舍伯吐镇",
 		"type": "HELICOPTER",
 		"location": {
@@ -4333,7 +4333,7 @@
 	},
 	{
 		"name": "中兴金典售楼处",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "科尔沁左翼后旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -4345,7 +4345,7 @@
 	},
 	{
 		"name": "跃奇太阳能有限公司",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "甘旗卡",
 		"type": "HELICOPTER",
 		"location": {
@@ -4357,7 +4357,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "阿力得尔苏木",
 		"type": "HELICOPTER",
 		"location": {
@@ -4369,7 +4369,7 @@
 	},
 	{
 		"name": "鼎力起重设备厂",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "扎赉特旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -4381,7 +4381,7 @@
 	},
 	{
 		"name": "个人大院",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "乌兰浩特",
 		"type": "HELICOPTER",
 		"location": {
@@ -4393,7 +4393,7 @@
 	},
 	{
 		"name": "秸秆转化加工厂",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "突泉县",
 		"type": "HELICOPTER",
 		"location": {
@@ -4405,7 +4405,7 @@
 	},
 	{
 		"name": "国家电网大院",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "扎鲁特旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -4417,7 +4417,7 @@
 	},
 	{
 		"name": "远大彩钢厂",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "霍林郭勒",
 		"type": "HELICOPTER",
 		"location": {
@@ -4429,7 +4429,7 @@
 	},
 	{
 		"name": "宏大彩钢板厂",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "哈日根台苏木",
 		"type": "HELICOPTER",
 		"location": {
@@ -4441,7 +4441,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴林右旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -4453,7 +4453,7 @@
 	},
 	{
 		"name": "个人设备库",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "乌丹",
 		"type": "HELICOPTER",
 		"location": {
@@ -4465,7 +4465,7 @@
 	},
 	{
 		"name": "北疆北山粮库",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "赤峰北",
 		"type": "HELICOPTER",
 		"location": {
@@ -4477,7 +4477,7 @@
 	},
 	{
 		"name": "个人大院",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "元宝山",
 		"type": "HELICOPTER",
 		"location": {
@@ -4489,7 +4489,7 @@
 	},
 	{
 		"name": "江西格林美报废汽车循环利用有限公司",
-		"province": "江西",
+		"province": "江西省",
 		"city": "丰城",
 		"type": "HELICOPTER",
 		"location": {
@@ -4501,7 +4501,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江西",
+		"province": "江西省",
 		"city": "丰城",
 		"type": "HELICOPTER",
 		"location": {
@@ -4513,7 +4513,7 @@
 	},
 	{
 		"name": "江西正宇饲料公司",
-		"province": "江西",
+		"province": "江西省",
 		"city": "上高",
 		"type": "HELICOPTER",
 		"location": {
@@ -4525,7 +4525,7 @@
 	},
 	{
 		"name": "江西嘉华林业公司",
-		"province": "江西",
+		"province": "江西省",
 		"city": "万载",
 		"type": "HELICOPTER",
 		"location": {
@@ -4537,7 +4537,7 @@
 	},
 	{
 		"name": "东乡县江西佳佳陶瓷公司",
-		"province": "江西",
+		"province": "江西省",
 		"city": "东乡",
 		"type": "HELICOPTER",
 		"location": {
@@ -4549,7 +4549,7 @@
 	},
 	{
 		"name": "江西横峰县供电局停车场",
-		"province": "江西",
+		"province": "江西省",
 		"city": "横峰",
 		"type": "HELICOPTER",
 		"location": {
@@ -4561,7 +4561,7 @@
 	},
 	{
 		"name": "美润环保有限公司",
-		"province": "江西",
+		"province": "江西省",
 		"city": "瑞金",
 		"type": "HELICOPTER",
 		"location": {
@@ -4573,7 +4573,7 @@
 	},
 	{
 		"name": "荷立鑫仓库院",
-		"province": "江西",
+		"province": "江西省",
 		"city": "瑞金",
 		"type": "HELICOPTER",
 		"location": {
@@ -4585,7 +4585,7 @@
 	},
 	{
 		"name": "停车场",
-		"province": "江西",
+		"province": "江西省",
 		"city": "乐平",
 		"type": "HELICOPTER",
 		"location": {
@@ -4597,7 +4597,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江西",
+		"province": "江西省",
 		"city": "余干",
 		"type": "HELICOPTER",
 		"location": {
@@ -4609,7 +4609,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江西",
+		"province": "江西省",
 		"city": "南昌",
 		"type": "HELICOPTER",
 		"location": {
@@ -4621,7 +4621,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江西",
+		"province": "江西省",
 		"city": "永修",
 		"type": "HELICOPTER",
 		"location": {
@@ -4633,7 +4633,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江西",
+		"province": "江西省",
 		"city": "共青城",
 		"type": "HELICOPTER",
 		"location": {
@@ -4645,7 +4645,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江西",
+		"province": "江西省",
 		"city": "武宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -4657,7 +4657,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江西",
+		"province": "江西省",
 		"city": "高安",
 		"type": "HELICOPTER",
 		"location": {
@@ -4669,7 +4669,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江西",
+		"province": "江西省",
 		"city": "新余",
 		"type": "HELICOPTER",
 		"location": {
@@ -4681,7 +4681,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江西",
+		"province": "江西省",
 		"city": "吉安",
 		"type": "HELICOPTER",
 		"location": {
@@ -4693,7 +4693,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江西",
+		"province": "江西省",
 		"city": "万安",
 		"type": "HELICOPTER",
 		"location": {
@@ -4705,7 +4705,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江西",
+		"province": "江西省",
 		"city": "赣县",
 		"type": "HELICOPTER",
 		"location": {
@@ -4717,7 +4717,7 @@
 	},
 	{
 		"name": "17供电所",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "武义",
 		"type": "HELICOPTER",
 		"location": {
@@ -4729,7 +4729,7 @@
 	},
 	{
 		"name": "华电乌溪电厂",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "黄坛口",
 		"type": "HELICOPTER",
 		"location": {
@@ -4741,7 +4741,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "奉化",
 		"type": "HELICOPTER",
 		"location": {
@@ -4753,7 +4753,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "新昌",
 		"type": "HELICOPTER",
 		"location": {
@@ -4765,7 +4765,7 @@
 	},
 	{
 		"name": "青田石溪村驾校",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "青田市",
 		"type": "HELICOPTER",
 		"location": {
@@ -4777,7 +4777,7 @@
 	},
 	{
 		"name": "仙居长安驾校",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "仙居市",
 		"type": "HELICOPTER",
 		"location": {
@@ -4789,7 +4789,7 @@
 	},
 	{
 		"name": "周浦镇周浦驾校",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "杭州市",
 		"type": "HELICOPTER",
 		"location": {
@@ -4801,7 +4801,7 @@
 	},
 	{
 		"name": "桐庐林场",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "桐庐镇",
 		"type": "HELICOPTER",
 		"location": {
@@ -4813,7 +4813,7 @@
 	},
 	{
 		"name": "浦江工贸公司",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "浦江市",
 		"type": "HELICOPTER",
 		"location": {
@@ -4825,7 +4825,7 @@
 	},
 	{
 		"name": "嵊州优尼特新能源公司",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "嵊州市",
 		"type": "HELICOPTER",
 		"location": {
@@ -4837,7 +4837,7 @@
 	},
 	{
 		"name": "余姚舜鸿驾校",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "余姚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -4849,7 +4849,7 @@
 	},
 	{
 		"name": "海宁中粮面粉厂",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "海宁市",
 		"type": "HELICOPTER",
 		"location": {
@@ -4861,7 +4861,7 @@
 	},
 	{
 		"name": "菱湖众悦驾校",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "菱湖镇",
 		"type": "HELICOPTER",
 		"location": {
@@ -4873,7 +4873,7 @@
 	},
 	{
 		"name": "菱湖众悦驾校",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "菱湖镇",
 		"type": "HELICOPTER",
 		"location": {
@@ -4885,7 +4885,7 @@
 	},
 	{
 		"name": "湖州伏牛板簧",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "湖州市",
 		"type": "HELICOPTER",
 		"location": {
@@ -4897,7 +4897,7 @@
 	},
 	{
 		"name": "海宁",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "海宁市",
 		"type": "HELICOPTER",
 		"location": {
@@ -4909,7 +4909,7 @@
 	},
 	{
 		"name": "奉化市溪口镇政府溪口风景区",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "宁波市",
 		"type": "HELICOPTER",
 		"location": {
@@ -4921,7 +4921,7 @@
 	},
 	{
 		"name": "奉化市溪口镇政府溪口风景区第二停机点",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "宁波市",
 		"type": "HELICOPTER",
 		"location": {
@@ -4933,7 +4933,7 @@
 	},
 	{
 		"name": "水富西部大峡谷 西南大峡谷停机坪",
-		"province": "云南",
+		"province": "云南省",
 		"city": "水富",
 		"type": "HELICOPTER",
 		"location": {
@@ -4945,7 +4945,7 @@
 	},
 	{
 		"name": "水富县教育培训中心",
-		"province": "云南",
+		"province": "云南省",
 		"city": "水富",
 		"type": "HELICOPTER",
 		"location": {
@@ -4957,7 +4957,7 @@
 	},
 	{
 		"name": "雷特酒厂",
-		"province": "云南",
+		"province": "云南省",
 		"city": "丽江市永胜县",
 		"type": "HELICOPTER",
 		"location": {
@@ -4969,7 +4969,7 @@
 	},
 	{
 		"name": "消防大队",
-		"province": "云南",
+		"province": "云南省",
 		"city": "丽江市永胜县",
 		"type": "HELICOPTER",
 		"location": {
@@ -4981,7 +4981,7 @@
 	},
 	{
 		"name": "公路管理段",
-		"province": "云南",
+		"province": "云南省",
 		"city": "楚雄州永仁县",
 		"type": "HELICOPTER",
 		"location": {
@@ -4993,7 +4993,7 @@
 	},
 	{
 		"name": "东南客运站",
-		"province": "云南",
+		"province": "云南省",
 		"city": "楚雄州大姚县",
 		"type": "HELICOPTER",
 		"location": {
@@ -5005,7 +5005,7 @@
 	},
 	{
 		"name": "北厂村四组",
-		"province": "云南",
+		"province": "云南省",
 		"city": "楚雄州禄丰县",
 		"type": "HELICOPTER",
 		"location": {
@@ -5017,7 +5017,7 @@
 	},
 	{
 		"name": "德雄化工厂（后大门）",
-		"province": "云南",
+		"province": "云南省",
 		"city": "楚雄州禄丰县",
 		"type": "HELICOPTER",
 		"location": {
@@ -5029,7 +5029,7 @@
 	},
 	{
 		"name": "私人工厂",
-		"province": "云南",
+		"province": "云南省",
 		"city": "昭通市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5041,7 +5041,7 @@
 	},
 	{
 		"name": "矿山救护队",
-		"province": "云南",
+		"province": "云南省",
 		"city": "镇雄县",
 		"type": "HELICOPTER",
 		"location": {
@@ -5053,7 +5053,7 @@
 	},
 	{
 		"name": "招兵站",
-		"province": "云南",
+		"province": "云南省",
 		"city": "宣威市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5065,7 +5065,7 @@
 	},
 	{
 		"name": "第二小学",
-		"province": "云南",
+		"province": "云南省",
 		"city": "宣威市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5077,7 +5077,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "云南",
+		"province": "云南省",
 		"city": "澄江",
 		"type": "HELICOPTER",
 		"location": {
@@ -5089,7 +5089,7 @@
 	},
 	{
 		"name": "砚山",
-		"province": "云南",
+		"province": "云南省",
 		"city": "文山",
 		"type": "HELICOPTER",
 		"location": {
@@ -5101,7 +5101,7 @@
 	},
 	{
 		"name": "开远市",
-		"province": "云南",
+		"province": "云南省",
 		"city": "红河",
 		"type": "HELICOPTER",
 		"location": {
@@ -5113,7 +5113,7 @@
 	},
 	{
 		"name": "个旧市",
-		"province": "云南",
+		"province": "云南省",
 		"city": "红河",
 		"type": "HELICOPTER",
 		"location": {
@@ -5125,7 +5125,7 @@
 	},
 	{
 		"name": "建水县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "红河",
 		"type": "HELICOPTER",
 		"location": {
@@ -5137,7 +5137,7 @@
 	},
 	{
 		"name": "建水县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "红河",
 		"type": "HELICOPTER",
 		"location": {
@@ -5149,7 +5149,7 @@
 	},
 	{
 		"name": "红河县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "红河",
 		"type": "HELICOPTER",
 		"location": {
@@ -5161,7 +5161,7 @@
 	},
 	{
 		"name": "元江县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "玉溪市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5173,7 +5173,7 @@
 	},
 	{
 		"name": "江川县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "玉溪市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5185,7 +5185,7 @@
 	},
 	{
 		"name": "墨江县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "普洱市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5197,7 +5197,7 @@
 	},
 	{
 		"name": "江城县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "普洱市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5209,7 +5209,7 @@
 	},
 	{
 		"name": "普洱市",
-		"province": "云南",
+		"province": "云南省",
 		"city": "普洱市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5221,7 +5221,7 @@
 	},
 	{
 		"name": "西双版纳",
-		"province": "云南",
+		"province": "云南省",
 		"city": "西双版纳",
 		"type": "HELICOPTER",
 		"location": {
@@ -5233,7 +5233,7 @@
 	},
 	{
 		"name": "叙永县体育中心运动场",
-		"province": "四川",
+		"province": "四川省",
 		"city": "叙永",
 		"type": "HELICOPTER",
 		"location": {
@@ -5245,7 +5245,7 @@
 	},
 	{
 		"name": "体育中心大院",
-		"province": "四川",
+		"province": "四川省",
 		"city": "叙永",
 		"type": "HELICOPTER",
 		"location": {
@@ -5257,7 +5257,7 @@
 	},
 	{
 		"name": "米易县职业技术学校",
-		"province": "四川",
+		"province": "四川省",
 		"city": "攀枝花",
 		"type": "HELICOPTER",
 		"location": {
@@ -5269,7 +5269,7 @@
 	},
 	{
 		"name": "德昌县金峰橡胶有限公司",
-		"province": "四川",
+		"province": "四川省",
 		"city": "凉山彝族自治州",
 		"type": "HELICOPTER",
 		"location": {
@@ -5281,7 +5281,7 @@
 	},
 	{
 		"name": "西昌新钢业有限公司",
-		"province": "四川",
+		"province": "四川省",
 		"city": "西昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5293,7 +5293,7 @@
 	},
 	{
 		"name": "冕宁县复兴镇中心村",
-		"province": "四川",
+		"province": "四川省",
 		"city": "凉山彝族自治州",
 		"type": "HELICOPTER",
 		"location": {
@@ -5305,7 +5305,7 @@
 	},
 	{
 		"name": "沿滩区卫平镇综合管理办公室",
-		"province": "四川",
+		"province": "四川省",
 		"city": "自贡",
 		"type": "HELICOPTER",
 		"location": {
@@ -5317,7 +5317,7 @@
 	},
 	{
 		"name": "昭觉县金鑫水泥有限责任公司",
-		"province": "四川",
+		"province": "四川省",
 		"city": "凉山彝族自治州",
 		"type": "HELICOPTER",
 		"location": {
@@ -5329,7 +5329,7 @@
 	},
 	{
 		"name": "沐川县吉泰龙食品有限公司",
-		"province": "四川",
+		"province": "四川省",
 		"city": "乐山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5341,7 +5341,7 @@
 	},
 	{
 		"name": "马边彝族自治县",
-		"province": "四川",
+		"province": "四川省",
 		"city": "乐山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5353,7 +5353,7 @@
 	},
 	{
 		"name": "金口河",
-		"province": "四川",
+		"province": "四川省",
 		"city": "乐山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5365,7 +5365,7 @@
 	},
 	{
 		"name": "巴浦镇阳光农家院",
-		"province": "四川",
+		"province": "四川省",
 		"city": "美姑县",
 		"type": "HELICOPTER",
 		"location": {
@@ -5377,7 +5377,7 @@
 	},
 	{
 		"name": "沐川县开源木业",
-		"province": "四川",
+		"province": "四川省",
 		"city": "乐山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5389,7 +5389,7 @@
 	},
 	{
 		"name": "峨边羊竹",
-		"province": "四川",
+		"province": "四川省",
 		"city": "乐山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5401,7 +5401,7 @@
 	},
 	{
 		"name": "桐梓县楚米镇工业园",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "桐梓",
 		"type": "HELICOPTER",
 		"location": {
@@ -5413,7 +5413,7 @@
 	},
 	{
 		"name": "楚米镇汽车客运站",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "桐梓",
 		"type": "HELICOPTER",
 		"location": {
@@ -5425,7 +5425,7 @@
 	},
 	{
 		"name": "松桃苗族县苗王城景区管委会",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "松桃",
 		"type": "HELICOPTER",
 		"location": {
@@ -5437,7 +5437,7 @@
 	},
 	{
 		"name": "印江小云工业园",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "印江",
 		"type": "HELICOPTER",
 		"location": {
@@ -5449,7 +5449,7 @@
 	},
 	{
 		"name": "时骏房地产开发有限公司园第一起降点",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "毕节",
 		"type": "HELICOPTER",
 		"location": {
@@ -5461,7 +5461,7 @@
 	},
 	{
 		"name": "时骏房地产开发有限公司园第二起降点",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "毕节",
 		"type": "HELICOPTER",
 		"location": {
@@ -5473,7 +5473,7 @@
 	},
 	{
 		"name": "赫章县人民武装部院内",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "赫章",
 		"type": "HELICOPTER",
 		"location": {
@@ -5485,7 +5485,7 @@
 	},
 	{
 		"name": "威宁县威宣路181号私人后院内（三一挖掘机服务中心后院）",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "威宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -5497,7 +5497,7 @@
 	},
 	{
 		"name": "六盘水市水城县钟山大道天盛汽车销售服务有限公司后院内",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "六盘水",
 		"type": "HELICOPTER",
 		"location": {
@@ -5509,7 +5509,7 @@
 	},
 	{
 		"name": "六盘水市盘县城关镇刘官高速公路收费站旁的黔运汽车贸易有限公司院内",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "六盘水",
 		"type": "HELICOPTER",
 		"location": {
@@ -5521,7 +5521,7 @@
 	},
 	{
 		"name": "贵州省黔运汽车贸易有限公司（刘官高速公路收费站旁）",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "城关镇",
 		"type": "HELICOPTER",
 		"location": {
@@ -5533,7 +5533,7 @@
 	},
 	{
 		"name": "晴隆古城景区前坪",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "晴隆",
 		"type": "HELICOPTER",
 		"location": {
@@ -5545,7 +5545,7 @@
 	},
 	{
 		"name": "陆关工业园区凤铃马大姐食品公司",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "兴仁",
 		"type": "HELICOPTER",
 		"location": {
@@ -5557,7 +5557,7 @@
 	},
 	{
 		"name": "黎平景区",
-		"province": "贵州",
+		"province": "贵州省",
 		"city": "黎平",
 		"type": "HELICOPTER",
 		"location": {
@@ -5569,7 +5569,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "江苏",
+		"province": "江苏省",
 		"city": "盱眙",
 		"type": "HELICOPTER",
 		"location": {
@@ -5581,7 +5581,7 @@
 	},
 	{
 		"name": "灌云县东王集乡",
-		"province": "江苏",
+		"province": "江苏省",
 		"city": "连云港市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5593,7 +5593,7 @@
 	},
 	{
 		"name": "灌云县图河乡官场村",
-		"province": "江苏",
+		"province": "江苏省",
 		"city": "连云港市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5605,7 +5605,7 @@
 	},
 	{
 		"name": "灌云县同兴镇圩伊乡",
-		"province": "江苏",
+		"province": "江苏省",
 		"city": "连云港市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5617,7 +5617,7 @@
 	},
 	{
 		"name": "灌云县陡沟二中附近",
-		"province": "江苏",
+		"province": "江苏省",
 		"city": "连云港市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5629,7 +5629,7 @@
 	},
 	{
 		"name": "灌云县下车镇仲集村",
-		"province": "江苏",
+		"province": "江苏省",
 		"city": "连云港市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5641,7 +5641,7 @@
 	},
 	{
 		"name": "沛县开发区汉铝铝材有限公司",
-		"province": "江苏",
+		"province": "江苏省",
 		"city": "徐州市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5653,7 +5653,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "安徽",
+		"province": "安徽省",
 		"city": "滁州",
 		"type": "HELICOPTER",
 		"location": {
@@ -5665,7 +5665,7 @@
 	},
 	{
 		"name": "金石滩景区内金蟾广场",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "大连",
 		"type": "HELICOPTER",
 		"location": {
@@ -5677,7 +5677,7 @@
 	},
 	{
 		"name": "地质公园",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "大连",
 		"type": "HELICOPTER",
 		"location": {
@@ -5689,7 +5689,7 @@
 	},
 	{
 		"name": "宽甸",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "丹东",
 		"type": "HELICOPTER",
 		"location": {
@@ -5701,7 +5701,7 @@
 	},
 	{
 		"name": "本溪",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "本溪",
 		"type": "HELICOPTER",
 		"location": {
@@ -5713,7 +5713,7 @@
 	},
 	{
 		"name": "黄旗堡",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "辽宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -5725,7 +5725,7 @@
 	},
 	{
 		"name": "八一镇",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "辽宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -5737,7 +5737,7 @@
 	},
 	{
 		"name": "辽中",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "辽宁",
 		"type": "HELICOPTER",
 		"location": {
@@ -5749,7 +5749,7 @@
 	},
 	{
 		"name": "红海滩景区",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "盘锦",
 		"type": "HELICOPTER",
 		"location": {
@@ -5761,7 +5761,7 @@
 	},
 	{
 		"name": "红海滩景区南部",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "盘锦",
 		"type": "HELICOPTER",
 		"location": {
@@ -5773,7 +5773,7 @@
 	},
 	{
 		"name": "市政府附近体育馆",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "盘锦",
 		"type": "HELICOPTER",
 		"location": {
@@ -5785,7 +5785,7 @@
 	},
 	{
 		"name": "兴隆区政府附近体育场",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "盘锦",
 		"type": "HELICOPTER",
 		"location": {
@@ -5797,7 +5797,7 @@
 	},
 	{
 		"name": "大洼县政府前坪",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "盘锦",
 		"type": "HELICOPTER",
 		"location": {
@@ -5809,7 +5809,7 @@
 	},
 	{
 		"name": "辽河口景区",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "盘锦",
 		"type": "HELICOPTER",
 		"location": {
@@ -5821,7 +5821,7 @@
 	},
 	{
 		"name": "感王镇",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "鞍山",
 		"type": "HELICOPTER",
 		"location": {
@@ -5833,7 +5833,7 @@
 	},
 	{
 		"name": "腾鳌补药点",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "鞍山",
 		"type": "HELICOPTER",
 		"location": {
@@ -5845,7 +5845,7 @@
 	},
 	{
 		"name": "望花区五老街盘南路8号通达驾校",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "抚顺市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5857,7 +5857,7 @@
 	},
 	{
 		"name": "望花区五老街盘南路8号通达驾校",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "抚顺市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5869,7 +5869,7 @@
 	},
 	{
 		"name": "黑山县健康米业",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "锦州市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5881,7 +5881,7 @@
 	},
 	{
 		"name": "金石滩",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "大连市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5893,7 +5893,7 @@
 	},
 	{
 		"name": "前所镇国家电网大院",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "葫芦岛市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5905,7 +5905,7 @@
 	},
 	{
 		"name": "个人粮库",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "葫芦岛市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5917,7 +5917,7 @@
 	},
 	{
 		"name": "朝阳重型机器制造有限公司",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "朝阳市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5929,7 +5929,7 @@
 	},
 	{
 		"name": "长鹏重型机器厂",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "沟帮子",
 		"type": "HELICOPTER",
 		"location": {
@@ -5941,7 +5941,7 @@
 	},
 	{
 		"name": "凤城开发区丹东生大食品有限公司",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "丹东市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5953,7 +5953,7 @@
 	},
 	{
 		"name": "环境卫生管理处",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "本溪",
 		"type": "HELICOPTER",
 		"location": {
@@ -5965,7 +5965,7 @@
 	},
 	{
 		"name": "候三家社区管委会",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "沈北新区",
 		"type": "HELICOPTER",
 		"location": {
@@ -5977,7 +5977,7 @@
 	},
 	{
 		"name": "调兵山北工业区搅拌站",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "调兵山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -5989,7 +5989,7 @@
 	},
 	{
 		"name": "四平宝宇粮食贸易有限公司",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "梨树县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6001,7 +6001,7 @@
 	},
 	{
 		"name": "方正",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "黑龙江",
 		"type": "HELICOPTER",
 		"location": {
@@ -6013,7 +6013,7 @@
 	},
 	{
 		"name": "新林镇",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "大兴安岭地区",
 		"type": "HELICOPTER",
 		"location": {
@@ -6025,7 +6025,7 @@
 	},
 	{
 		"name": "新林镇",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "大兴安岭地区",
 		"type": "HELICOPTER",
 		"location": {
@@ -6037,7 +6037,7 @@
 	},
 	{
 		"name": "孙吴县",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "黑河市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6049,7 +6049,7 @@
 	},
 	{
 		"name": "中达汽修",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "黑河市北安市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6061,7 +6061,7 @@
 	},
 	{
 		"name": "百成机械制造有限公司",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "绥化市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6073,7 +6073,7 @@
 	},
 	{
 		"name": "林口镇红升村村委会",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "林口县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6085,7 +6085,7 @@
 	},
 	{
 		"name": "鑫鹏肉业",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "宁安市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6097,7 +6097,7 @@
 	},
 	{
 		"name": "齐山种业",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "碾子山区",
 		"type": "HELICOPTER",
 		"location": {
@@ -6109,7 +6109,7 @@
 	},
 	{
 		"name": "南门停车场",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "海伦市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6121,7 +6121,7 @@
 	},
 	{
 		"name": "九河泉肥业",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "铁力市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6133,7 +6133,7 @@
 	},
 	{
 		"name": "永丰粮食贸易有限公司",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "汤原县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6145,7 +6145,7 @@
 	},
 	{
 		"name": "碾子山区",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "齐齐哈尔市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6157,7 +6157,7 @@
 	},
 	{
 		"name": "北安市",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "黑河市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6169,7 +6169,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "宁夏",
+		"province": "宁夏回族自治区",
 		"city": "泾源",
 		"type": "HELICOPTER",
 		"location": {
@@ -6180,9 +6180,9 @@
 		"description": ""
 	},
 	{
-		"name": "宁夏回族自治区-吴忠市-吴忠金属物流园",
-		"province": "宁夏",
-		"city": "宁夏回族自治区吴忠市",
+		"name": "吴忠金属物流园",
+		"province": "宁夏回族自治区",
+		"city": "吴忠市",
 		"type": "HELICOPTER",
 		"location": {
 			"longitude": 106.2083333,
@@ -6193,7 +6193,7 @@
 	},
 	{
 		"name": "宁夏盐池美雅滩羊裘皮有限公司",
-		"province": "宁夏",
+		"province": "宁夏回族自治区",
 		"city": "盐池",
 		"type": "HELICOPTER",
 		"location": {
@@ -6205,7 +6205,7 @@
 	},
 	{
 		"name": "宁夏昂立光伏科技有限公司（灵武）新",
-		"province": "宁夏",
+		"province": "宁夏回族自治区",
 		"city": "灵武",
 		"type": "HELICOPTER",
 		"location": {
@@ -6217,7 +6217,7 @@
 	},
 	{
 		"name": "美雅滩羊裘皮有限公司",
-		"province": "宁夏",
+		"province": "宁夏回族自治区",
 		"city": "吴忠市盐池县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6229,7 +6229,7 @@
 	},
 	{
 		"name": "水管制造厂",
-		"province": "宁夏",
+		"province": "宁夏回族自治区",
 		"city": "银川市灵武县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6241,7 +6241,7 @@
 	},
 	{
 		"name": "二道白河镇白河护林站",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "安图县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6253,7 +6253,7 @@
 	},
 	{
 		"name": "长白山北门",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "安图县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6265,8 +6265,8 @@
 	},
 	{
 		"name": "长白山万达度假村",
-		"province": "吉林",
-		"city": "白山市抚松县",
+		"province": "吉林省",
+		"city": "白山市",
 		"type": "HELICOPTER",
 		"location": {
 			"longitude": 127.5013889,
@@ -6277,7 +6277,7 @@
 	},
 	{
 		"name": "长春心脏病医院",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "长春市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6289,7 +6289,7 @@
 	},
 	{
 		"name": "龙井梨花酒店",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "龙井市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6301,7 +6301,7 @@
 	},
 	{
 		"name": "二道白河镇池北医院（第一起降点）",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "安图县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6313,7 +6313,7 @@
 	},
 	{
 		"name": "二道白河镇池北医院（第二起降点）",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "安图县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6325,7 +6325,7 @@
 	},
 	{
 		"name": "二道白河镇边防支队",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "安图县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6337,7 +6337,7 @@
 	},
 	{
 		"name": "二道白河镇消防支队",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "安图县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6349,7 +6349,7 @@
 	},
 	{
 		"name": "吉林双胜粮食有限公司院内",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "农安县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6361,7 +6361,7 @@
 	},
 	{
 		"name": "隆泰福利综合厂大院",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "松原市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6373,7 +6373,7 @@
 	},
 	{
 		"name": "锦江宾馆停车场",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "洮南市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6385,8 +6385,8 @@
 	},
 	{
 		"name": "池西政府",
-		"province": "吉林",
-		"city": "白山市抚松县",
+		"province": "吉林省",
+		"city": "白山市",
 		"type": "HELICOPTER",
 		"location": {
 			"longitude": 127.5047222,
@@ -6397,8 +6397,8 @@
 	},
 	{
 		"name": "池西职业学校操场",
-		"province": "吉林",
-		"city": "白山市抚松县",
+		"province": "吉林省",
+		"city": "白山市",
 		"type": "HELICOPTER",
 		"location": {
 			"longitude": 127.5008333,
@@ -6409,7 +6409,7 @@
 	},
 	{
 		"name": "那尔轰镇",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "靖宇县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6421,7 +6421,7 @@
 	},
 	{
 		"name": "蒙江乡",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "靖宇县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6433,7 +6433,7 @@
 	},
 	{
 		"name": "万良镇北山村北山小学",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "白山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6445,7 +6445,7 @@
 	},
 	{
 		"name": "红石镇中学",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "桦甸市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6457,7 +6457,7 @@
 	},
 	{
 		"name": "浑江区卫国路8号白山市力华矿业有限公司",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "白山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6469,7 +6469,7 @@
 	},
 	{
 		"name": "开发区第五号园区久兴汽车园",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "敦化市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6481,7 +6481,7 @@
 	},
 	{
 		"name": "开发区荣昌街宝信清真食品有限公司",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "桦甸市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6493,7 +6493,7 @@
 	},
 	{
 		"name": "昌邑区哈达湾街麻袋厂中交三公局项目部",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "吉林市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6505,7 +6505,7 @@
 	},
 	{
 		"name": "农安市",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "农安市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6517,7 +6517,7 @@
 	},
 	{
 		"name": "吉林睿康生物有限公司",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "东丰县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6529,7 +6529,7 @@
 	},
 	{
 		"name": "船营区越北镇",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "吉林市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6541,8 +6541,8 @@
 	},
 	{
 		"name": "龙脊景区",
-		"province": "广西",
-		"city": "桂林市龙胜县",
+		"province": "广西壮族自治区",
+		"city": "桂林市\n龙胜县",
 		"type": "HELICOPTER",
 		"location": {
 			"longitude": 110.6552778,
@@ -6553,7 +6553,7 @@
 	},
 	{
 		"name": "哈密城区东北3公里，技术质量监督局科技研发基地",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "哈密",
 		"type": "HELICOPTER",
 		"location": {
@@ -6565,7 +6565,7 @@
 	},
 	{
 		"name": "硕城区南侧1公里路西，金湖粮油购销有限公司",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "和硕",
 		"type": "HELICOPTER",
 		"location": {
@@ -6577,7 +6577,7 @@
 	},
 	{
 		"name": "尼勒克城区正东1.5公里，尼勒克消防中队",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "尼勒克",
 		"type": "HELICOPTER",
 		"location": {
@@ -6589,7 +6589,7 @@
 	},
 	{
 		"name": "精河城区正西疆农农业发展有限公司",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "博尔塔拉蒙古自治州精河",
 		"type": "HELICOPTER",
 		"location": {
@@ -6601,8 +6601,8 @@
 	},
 	{
 		"name": "奎屯南独山子城区西南侧石油运输公司车队停车场（废弃老油库对面）",
-		"province": "新疆",
-		"city": "伊犁哈萨克自治州",
+		"province": "新疆维吾尔自治区",
+		"city": "伊犁哈萨\n克自治州",
 		"type": "HELICOPTER",
 		"location": {
 			"longitude": 84.85722222,
@@ -6613,7 +6613,7 @@
 	},
 	{
 		"name": "奎屯南独山子城区西南侧石油运输公司车队停车场北150米。",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "",
 		"type": "HELICOPTER",
 		"location": {
@@ -6625,7 +6625,7 @@
 	},
 	{
 		"name": "国家电网乌鲁木齐电业局的下属公司新疆新特顺前峰水电工程有限公司",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "乌鲁木齐米东",
 		"type": "HELICOPTER",
 		"location": {
@@ -6637,7 +6637,7 @@
 	},
 	{
 		"name": "石河子通用机场",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "石河子",
 		"type": "HELICOPTER",
 		"location": {
@@ -6649,7 +6649,7 @@
 	},
 	{
 		"name": "吐鲁番城区西侧，未到G30收费站路南。（75KV高压线塔旁）",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "吐鲁番1",
 		"type": "HELICOPTER",
 		"location": {
@@ -6661,7 +6661,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "吐鲁番2",
 		"type": "HELICOPTER",
 		"location": {
@@ -6673,7 +6673,7 @@
 	},
 	{
 		"name": "星星峡服务区外，独院。",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "星星峡",
 		"type": "HELICOPTER",
 		"location": {
@@ -6685,7 +6685,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "精河",
 		"type": "HELICOPTER",
 		"location": {
@@ -6697,7 +6697,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "石河子",
 		"type": "HELICOPTER",
 		"location": {
@@ -6709,7 +6709,7 @@
 	},
 	{
 		"name": "中国建材中复连众（哈密复合材料有限公司）",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "哈密",
 		"type": "HELICOPTER",
 		"location": {
@@ -6721,7 +6721,7 @@
 	},
 	{
 		"name": "可可托海镇宝宝石街大院",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "可可托海",
 		"type": "HELICOPTER",
 		"location": {
@@ -6733,7 +6733,7 @@
 	},
 	{
 		"name": "青河隆濠发展有限公司大院",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "青河",
 		"type": "HELICOPTER",
 		"location": {
@@ -6745,7 +6745,7 @@
 	},
 	{
 		"name": "青河气象站起降点",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "青河",
 		"type": "HELICOPTER",
 		"location": {
@@ -6757,7 +6757,7 @@
 	},
 	{
 		"name": "富蕴县回民盆盆肉饭店后院",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "萨尔托海",
 		"type": "HELICOPTER",
 		"location": {
@@ -6769,7 +6769,7 @@
 	},
 	{
 		"name": "恰库尔图起降点",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "恰库尔图起降点",
 		"type": "HELICOPTER",
 		"location": {
@@ -6781,7 +6781,7 @@
 	},
 	{
 		"name": "青河蓝天驾校",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "青河",
 		"type": "HELICOPTER",
 		"location": {
@@ -6793,7 +6793,7 @@
 	},
 	{
 		"name": "拜城县老虎台",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "阿克苏",
 		"type": "HELICOPTER",
 		"location": {
@@ -6805,7 +6805,7 @@
 	},
 	{
 		"name": "拜城县",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "阿克苏",
 		"type": "HELICOPTER",
 		"location": {
@@ -6817,7 +6817,7 @@
 	},
 	{
 		"name": "龙岩市",
-		"province": "福建",
+		"province": "福建省",
 		"city": "龙岩市",
 		"type": "HELICOPTER",
 		"location": {
@@ -6829,7 +6829,7 @@
 	},
 	{
 		"name": "上海万达广场江桥店",
-		"province": "上海",
+		"province": "上海市",
 		"city": "上海嘉定区江桥镇",
 		"type": "HELICOPTER",
 		"location": {
@@ -6841,7 +6841,7 @@
 	},
 	{
 		"name": "上海万达广场松江店",
-		"province": "上海",
+		"province": "上海市",
 		"city": "上海市松江区",
 		"type": "HELICOPTER",
 		"location": {
@@ -6853,7 +6853,7 @@
 	},
 	{
 		"name": "海航旅游学院草坪",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -6865,7 +6865,7 @@
 	},
 	{
 		"name": "海航旅游学院教工宿舍旁边水泥地",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -6877,7 +6877,7 @@
 	},
 	{
 		"name": "海航旅游学院机坪",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -6889,7 +6889,7 @@
 	},
 	{
 		"name": "蜈支洲岛内冬季码头",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -6901,7 +6901,7 @@
 	},
 	{
 		"name": "蜈支洲岛内夏季码头",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -6913,7 +6913,7 @@
 	},
 	{
 		"name": "蜈支洲岛内篮球场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -6925,7 +6925,7 @@
 	},
 	{
 		"name": "康莱德酒店草地",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -6937,7 +6937,7 @@
 	},
 	{
 		"name": "保亭神玉景区",
-		"province": "海南",
+		"province": "海南省",
 		"city": "保亭黎族苗族自治县",
 		"type": "HELICOPTER",
 		"location": {
@@ -6949,7 +6949,7 @@
 	},
 	{
 		"name": "鸿洲时代海岸浮台",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -6961,7 +6961,7 @@
 	},
 	{
 		"name": "鸿洲时代海岸广场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -6973,7 +6973,7 @@
 	},
 	{
 		"name": "301海南分院",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -6985,7 +6985,7 @@
 	},
 	{
 		"name": "凤凰机场消防楼后",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -6997,7 +6997,7 @@
 	},
 	{
 		"name": "唐拉雅秀酒店",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -7009,7 +7009,7 @@
 	},
 	{
 		"name": "海航广场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7021,7 +7021,7 @@
 	},
 	{
 		"name": "新国宾馆",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7033,7 +7033,7 @@
 	},
 	{
 		"name": "鸿州海上浮台",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7045,7 +7045,7 @@
 	},
 	{
 		"name": "鸿州内广场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7057,7 +7057,7 @@
 	},
 	{
 		"name": "国兴城售楼处停车场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7069,7 +7069,7 @@
 	},
 	{
 		"name": "望海国际广场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7081,7 +7081,7 @@
 	},
 	{
 		"name": "美兰机场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7093,7 +7093,7 @@
 	},
 	{
 		"name": "西海岸会所停车场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7105,7 +7105,7 @@
 	},
 	{
 		"name": "西海岸会所草坪",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7117,7 +7117,7 @@
 	},
 	{
 		"name": "康乐园平台",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7129,7 +7129,7 @@
 	},
 	{
 		"name": "康乐园草坪",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7141,7 +7141,7 @@
 	},
 	{
 		"name": "博鳌机场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7153,7 +7153,7 @@
 	},
 	{
 		"name": "新国宾馆",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7165,7 +7165,7 @@
 	},
 	{
 		"name": "蜈支洲岛外停机点1",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7177,7 +7177,7 @@
 	},
 	{
 		"name": "蜈支洲岛外停机点2",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7189,7 +7189,7 @@
 	},
 	{
 		"name": "亚太会议中心内",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7201,7 +7201,7 @@
 	},
 	{
 		"name": "蜈支洲岛上篮球场备降场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7213,7 +7213,7 @@
 	},
 	{
 		"name": "荣昌板桥工业园五支路2号",
-		"province": "重庆",
+		"province": "重庆市",
 		"city": "荣昌区",
 		"type": "HELICOPTER",
 		"location": {
@@ -7225,7 +7225,7 @@
 	},
 	{
 		"name": "荣昌大道东段富吉集团",
-		"province": "重庆",
+		"province": "重庆市",
 		"city": "荣昌区",
 		"type": "HELICOPTER",
 		"location": {
@@ -7237,7 +7237,7 @@
 	},
 	{
 		"name": "板桥工业园灵方大道江特表面处理公司",
-		"province": "重庆",
+		"province": "重庆市",
 		"city": "荣昌区",
 		"type": "HELICOPTER",
 		"location": {
@@ -7249,7 +7249,7 @@
 	},
 	{
 		"name": "三峡游客中心停车场",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7261,7 +7261,7 @@
 	},
 	{
 		"name": "西陵区峡口风景区大湾空地",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7273,7 +7273,7 @@
 	},
 	{
 		"name": "远安县河口乡武陵峡景区",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7285,7 +7285,7 @@
 	},
 	{
 		"name": "远安县花林寺镇金家湾风景区",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7297,7 +7297,7 @@
 	},
 	{
 		"name": "枝江市安福寺镇东方年华农场",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7309,7 +7309,7 @@
 	},
 	{
 		"name": "秭归县九畹溪镇九畹溪漂流景区",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7321,7 +7321,7 @@
 	},
 	{
 		"name": "兴山县昭君故里景区",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7333,7 +7333,7 @@
 	},
 	{
 		"name": "兴山县朝天吼漂流景区停车场",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7345,7 +7345,7 @@
 	},
 	{
 		"name": "花林寺镇百里荒景区",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7357,7 +7357,7 @@
 	},
 	{
 		"name": "当阳市当阳关林",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7369,7 +7369,7 @@
 	},
 	{
 		"name": "当阳市玉泉寺",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7381,7 +7381,7 @@
 	},
 	{
 		"name": "夷陵区不老岭风景区",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7393,7 +7393,7 @@
 	},
 	{
 		"name": "长阳县清江画廊风景区",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7405,7 +7405,7 @@
 	},
 	{
 		"name": "柴阜溪国家森林公园",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7417,7 +7417,7 @@
 	},
 	{
 		"name": "宜都市天龙湾景区",
-		"province": "湖北",
+		"province": "湖北省",
 		"city": "宜昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7429,7 +7429,7 @@
 	},
 	{
 		"name": "博鳌机场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7441,7 +7441,7 @@
 	},
 	{
 		"name": "新国宾馆",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7453,7 +7453,7 @@
 	},
 	{
 		"name": "南门停车场",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "海伦市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7465,7 +7465,7 @@
 	},
 	{
 		"name": "九河泉肥业",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "铁力市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7477,7 +7477,7 @@
 	},
 	{
 		"name": "永丰粮食贸易有限公司",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "汤原县",
 		"type": "HELICOPTER",
 		"location": {
@@ -7489,7 +7489,7 @@
 	},
 	{
 		"name": "前所镇国家电网大院",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "葫芦岛市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7501,7 +7501,7 @@
 	},
 	{
 		"name": "个人粮库",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "葫芦岛市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7513,7 +7513,7 @@
 	},
 	{
 		"name": "朝阳重型机器制造有限公司",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "朝阳市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7525,7 +7525,7 @@
 	},
 	{
 		"name": "长鹏重型机器厂",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "沟帮子",
 		"type": "HELICOPTER",
 		"location": {
@@ -7537,7 +7537,7 @@
 	},
 	{
 		"name": "凤城开发区丹东生大食品有限公司",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "丹东市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7549,7 +7549,7 @@
 	},
 	{
 		"name": "环境卫生管理处",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "本溪",
 		"type": "HELICOPTER",
 		"location": {
@@ -7561,7 +7561,7 @@
 	},
 	{
 		"name": "候三家社区管委会",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "沈北新区",
 		"type": "HELICOPTER",
 		"location": {
@@ -7573,7 +7573,7 @@
 	},
 	{
 		"name": "调兵山北工业区搅拌站",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "调兵山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7585,7 +7585,7 @@
 	},
 	{
 		"name": "四平宝宇粮食贸易有限公司",
-		"province": "辽宁",
+		"province": "辽宁省",
 		"city": "梨树县",
 		"type": "HELICOPTER",
 		"location": {
@@ -7597,7 +7597,7 @@
 	},
 	{
 		"name": "吉林睿康生物有限公司",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "东丰县",
 		"type": "HELICOPTER",
 		"location": {
@@ -7609,7 +7609,7 @@
 	},
 	{
 		"name": "鼎力起重设备厂",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "扎赉特旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -7621,7 +7621,7 @@
 	},
 	{
 		"name": "个人大院",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "乌兰浩特",
 		"type": "HELICOPTER",
 		"location": {
@@ -7633,7 +7633,7 @@
 	},
 	{
 		"name": "秸秆转化加工厂",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "突泉县",
 		"type": "HELICOPTER",
 		"location": {
@@ -7645,7 +7645,7 @@
 	},
 	{
 		"name": "国家电网大院",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "扎鲁特旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -7657,7 +7657,7 @@
 	},
 	{
 		"name": "远大彩钢厂",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "霍林郭勒",
 		"type": "HELICOPTER",
 		"location": {
@@ -7669,7 +7669,7 @@
 	},
 	{
 		"name": "宏大彩钢板厂",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "哈日根台苏木",
 		"type": "HELICOPTER",
 		"location": {
@@ -7681,7 +7681,7 @@
 	},
 	{
 		"name": "直升机起降点",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "巴林右旗",
 		"type": "HELICOPTER",
 		"location": {
@@ -7693,7 +7693,7 @@
 	},
 	{
 		"name": "蜈支洲岛外停机点1",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7705,7 +7705,7 @@
 	},
 	{
 		"name": "蜈支洲岛外停机点2",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7717,7 +7717,7 @@
 	},
 	{
 		"name": "个人设备库",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "乌丹",
 		"type": "HELICOPTER",
 		"location": {
@@ -7729,7 +7729,7 @@
 	},
 	{
 		"name": "北疆北山粮库",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "赤峰北",
 		"type": "HELICOPTER",
 		"location": {
@@ -7741,7 +7741,7 @@
 	},
 	{
 		"name": "个人大院",
-		"province": "内蒙",
+		"province": "内蒙古自治区",
 		"city": "元宝山",
 		"type": "HELICOPTER",
 		"location": {
@@ -7753,7 +7753,7 @@
 	},
 	{
 		"name": "亚太会议中心内",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7765,7 +7765,7 @@
 	},
 	{
 		"name": "米易县职业技术学校",
-		"province": "四川",
+		"province": "四川省",
 		"city": "攀枝花",
 		"type": "HELICOPTER",
 		"location": {
@@ -7777,7 +7777,7 @@
 	},
 	{
 		"name": "德昌县金峰橡胶有限公司",
-		"province": "四川",
+		"province": "四川省",
 		"city": "凉山彝族自治州",
 		"type": "HELICOPTER",
 		"location": {
@@ -7789,7 +7789,7 @@
 	},
 	{
 		"name": "西昌新钢业有限公司",
-		"province": "四川",
+		"province": "四川省",
 		"city": "西昌市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7801,7 +7801,7 @@
 	},
 	{
 		"name": "荣昌板桥工业园五支路2号",
-		"province": "重庆",
+		"province": "重庆市",
 		"city": "荣昌区",
 		"type": "HELICOPTER",
 		"location": {
@@ -7813,7 +7813,7 @@
 	},
 	{
 		"name": "冕宁县复兴镇中心村",
-		"province": "四川",
+		"province": "四川省",
 		"city": "凉山彝族自治州",
 		"type": "HELICOPTER",
 		"location": {
@@ -7825,7 +7825,7 @@
 	},
 	{
 		"name": "沿滩区卫平镇综合管理办公室",
-		"province": "四川",
+		"province": "四川省",
 		"city": "自贡",
 		"type": "HELICOPTER",
 		"location": {
@@ -7837,7 +7837,7 @@
 	},
 	{
 		"name": "昭觉县金鑫水泥有限责任公司",
-		"province": "四川",
+		"province": "四川省",
 		"city": "凉山彝族自治州",
 		"type": "HELICOPTER",
 		"location": {
@@ -7849,7 +7849,7 @@
 	},
 	{
 		"name": "沐川县吉泰龙食品有限公司",
-		"province": "四川",
+		"province": "四川省",
 		"city": "乐山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7861,7 +7861,7 @@
 	},
 	{
 		"name": "马边彝族自治县",
-		"province": "四川",
+		"province": "四川省",
 		"city": "乐山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7873,7 +7873,7 @@
 	},
 	{
 		"name": "金口河",
-		"province": "四川",
+		"province": "四川省",
 		"city": "乐山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7885,7 +7885,7 @@
 	},
 	{
 		"name": "巴浦镇阳光农家院",
-		"province": "四川",
+		"province": "四川省",
 		"city": "美姑县",
 		"type": "HELICOPTER",
 		"location": {
@@ -7897,7 +7897,7 @@
 	},
 	{
 		"name": "沐川县开源木业",
-		"province": "四川",
+		"province": "四川省",
 		"city": "乐山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7909,7 +7909,7 @@
 	},
 	{
 		"name": "碾子山区",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "齐齐哈尔市",
 		"type": "HELICOPTER",
 		"location": {
@@ -7921,7 +7921,7 @@
 	},
 	{
 		"name": "砚山",
-		"province": "云南",
+		"province": "云南省",
 		"city": "文山",
 		"type": "HELICOPTER",
 		"location": {
@@ -7933,7 +7933,7 @@
 	},
 	{
 		"name": "开远市",
-		"province": "云南",
+		"province": "云南省",
 		"city": "红河",
 		"type": "HELICOPTER",
 		"location": {
@@ -7945,7 +7945,7 @@
 	},
 	{
 		"name": "个旧市",
-		"province": "云南",
+		"province": "云南省",
 		"city": "红河",
 		"type": "HELICOPTER",
 		"location": {
@@ -7957,7 +7957,7 @@
 	},
 	{
 		"name": "建水县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "红河",
 		"type": "HELICOPTER",
 		"location": {
@@ -7969,7 +7969,7 @@
 	},
 	{
 		"name": "建水县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "红河",
 		"type": "HELICOPTER",
 		"location": {
@@ -7981,7 +7981,7 @@
 	},
 	{
 		"name": "红河县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "红河",
 		"type": "HELICOPTER",
 		"location": {
@@ -7993,7 +7993,7 @@
 	},
 	{
 		"name": "元江县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "玉溪市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8005,7 +8005,7 @@
 	},
 	{
 		"name": "江川县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "玉溪市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8017,7 +8017,7 @@
 	},
 	{
 		"name": "墨江县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "普洱市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8029,7 +8029,7 @@
 	},
 	{
 		"name": "国家会议中心",
-		"province": "北京",
+		"province": "北京市",
 		"city": "朝阳区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8041,7 +8041,7 @@
 	},
 	{
 		"name": "蜈支洲岛上篮球场备降场",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8053,7 +8053,7 @@
 	},
 	{
 		"name": "江城县",
-		"province": "云南",
+		"province": "云南省",
 		"city": "普洱市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8065,7 +8065,7 @@
 	},
 	{
 		"name": "普洱市",
-		"province": "云南",
+		"province": "云南省",
 		"city": "普洱市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8077,7 +8077,7 @@
 	},
 	{
 		"name": "电子城国际电子总部6号院内",
-		"province": "北京",
+		"province": "北京市",
 		"city": "朝阳区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8089,7 +8089,7 @@
 	},
 	{
 		"name": "宏昌骏体育运动公园",
-		"province": "北京",
+		"province": "北京市",
 		"city": "朝阳区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8101,7 +8101,7 @@
 	},
 	{
 		"name": "长城脚下公社度假村",
-		"province": "北京",
+		"province": "北京市",
 		"city": "延庆区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8113,7 +8113,7 @@
 	},
 	{
 		"name": "康屯镇屯军营村",
-		"province": "北京",
+		"province": "北京市",
 		"city": "延庆区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8125,7 +8125,7 @@
 	},
 	{
 		"name": "西双版纳",
-		"province": "云南",
+		"province": "云南省",
 		"city": "西双版纳",
 		"type": "HELICOPTER",
 		"location": {
@@ -8137,7 +8137,7 @@
 	},
 	{
 		"name": "北安",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "黑河市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8149,7 +8149,7 @@
 	},
 	{
 		"name": "峨边羊竹",
-		"province": "四川",
+		"province": "四川省",
 		"city": "乐山市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8161,7 +8161,7 @@
 	},
 	{
 		"name": "船营区越北镇",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "吉林市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8173,7 +8173,7 @@
 	},
 	{
 		"name": "奉化市溪口镇政府溪口风景区",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "宁波市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8185,7 +8185,7 @@
 	},
 	{
 		"name": "奉化市溪口镇政府溪口风景区第二停机点",
-		"province": "浙江",
+		"province": "浙江省",
 		"city": "宁波市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8197,7 +8197,7 @@
 	},
 	{
 		"name": "荣昌大道东段富吉集团",
-		"province": "重庆",
+		"province": "重庆市",
 		"city": "荣昌区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8209,7 +8209,7 @@
 	},
 	{
 		"name": "板桥工业园灵方大道江特表面处理公司",
-		"province": "重庆",
+		"province": "重庆市",
 		"city": "荣昌区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8221,7 +8221,7 @@
 	},
 	{
 		"name": "板桥工业园欧恺电器",
-		"province": "重庆",
+		"province": "重庆市",
 		"city": "荣昌区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8233,7 +8233,7 @@
 	},
 	{
 		"name": "开远货车销售公司",
-		"province": "云南",
+		"province": "云南省",
 		"city": "开远",
 		"type": "HELICOPTER",
 		"location": {
@@ -8245,7 +8245,7 @@
 	},
 	{
 		"name": "蜈支洲岛外停机点",
-		"province": "海口",
+		"province": "海南省",
 		"city": "三亚",
 		"type": "HELICOPTER",
 		"location": {
@@ -8257,7 +8257,7 @@
 	},
 	{
 		"name": "和田市新电力公司",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "和田",
 		"type": "HELICOPTER",
 		"location": {
@@ -8269,7 +8269,7 @@
 	},
 	{
 		"name": "好想你枣业公司",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "阿克苏",
 		"type": "HELICOPTER",
 		"location": {
@@ -8281,7 +8281,7 @@
 	},
 	{
 		"name": "柯坪县艾力努尔农业发展有限公司",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "阿克苏",
 		"type": "HELICOPTER",
 		"location": {
@@ -8293,7 +8293,7 @@
 	},
 	{
 		"name": "巴楚县廉美佳果品加工厂",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "喀什",
 		"type": "HELICOPTER",
 		"location": {
@@ -8305,7 +8305,7 @@
 	},
 	{
 		"name": "英吉沙县圣丰种业有限责任公司",
-		"province": "新疆",
+		"province": "新疆维吾尔自治区",
 		"city": "喀什",
 		"type": "HELICOPTER",
 		"location": {
@@ -8317,7 +8317,7 @@
 	},
 	{
 		"name": "延庆医院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "延庆区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8329,7 +8329,7 @@
 	},
 	{
 		"name": "红廷别墅",
-		"province": "北京",
+		"province": "北京市",
 		"city": "延庆区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8341,7 +8341,7 @@
 	},
 	{
 		"name": "乌兰察布广场",
-		"province": "内蒙古",
+		"province": "内蒙古自治区古",
 		"city": "乌兰察布",
 		"type": "HELICOPTER",
 		"location": {
@@ -8353,7 +8353,7 @@
 	},
 	{
 		"name": "乌兰察布黄花沟",
-		"province": "内蒙古",
+		"province": "内蒙古自治区古",
 		"city": "乌兰察布",
 		"type": "HELICOPTER",
 		"location": {
@@ -8365,7 +8365,7 @@
 	},
 	{
 		"name": "北京大学医学部操场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "朝阳区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8377,7 +8377,7 @@
 	},
 	{
 		"name": "隆化县黑水村",
-		"province": "河北",
+		"province": "河北省",
 		"city": "隆化县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8389,7 +8389,7 @@
 	},
 	{
 		"name": "承德市锦江文冠宾馆",
-		"province": "河北",
+		"province": "河北省",
 		"city": "承德市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8401,7 +8401,7 @@
 	},
 	{
 		"name": "宽城县新兴街收费停车场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "宽城县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8413,7 +8413,7 @@
 	},
 	{
 		"name": "国家贮备粮库",
-		"province": "河北",
+		"province": "河北省",
 		"city": "兴隆县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8425,7 +8425,7 @@
 	},
 	{
 		"name": "遵化工业区唐山荣来成机械有限公司",
-		"province": "河北",
+		"province": "河北省",
 		"city": "遵化市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8437,7 +8437,7 @@
 	},
 	{
 		"name": "蓟县工业区九华路电管站",
-		"province": "天津",
+		"province": "天津市",
 		"city": "蓟县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8449,7 +8449,7 @@
 	},
 	{
 		"name": "平谷夏各庄镇金润牧丰生物营养科技有限公司",
-		"province": "北京",
+		"province": "北京市",
 		"city": "平谷",
 		"type": "HELICOPTER",
 		"location": {
@@ -8461,7 +8461,7 @@
 	},
 	{
 		"name": "信丰县信明电商产业园",
-		"province": "江西",
+		"province": "江西省",
 		"city": "信丰县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8473,7 +8473,7 @@
 	},
 	{
 		"name": "盛辉实业有限公司",
-		"province": "江西",
+		"province": "江西省",
 		"city": "峡江县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8485,7 +8485,7 @@
 	},
 	{
 		"name": "亚中纺织",
-		"province": "江西",
+		"province": "江西省",
 		"city": "高安市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8497,7 +8497,7 @@
 	},
 	{
 		"name": "余干县污水处理厂",
-		"province": "江西",
+		"province": "江西省",
 		"city": "余干县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8509,7 +8509,7 @@
 	},
 	{
 		"name": "靖安合力照明整灯区",
-		"province": "江西",
+		"province": "江西省",
 		"city": "靖安县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8521,7 +8521,7 @@
 	},
 	{
 		"name": "德安电力开发公司",
-		"province": "江西",
+		"province": "江西省",
 		"city": "德安县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8533,7 +8533,7 @@
 	},
 	{
 		"name": "武宁南市供电公司",
-		"province": "江西",
+		"province": "江西省",
 		"city": "武宁县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8545,7 +8545,7 @@
 	},
 	{
 		"name": "北京科技职业技术学院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "昌平",
 		"type": "HELICOPTER",
 		"location": {
@@ -8557,7 +8557,7 @@
 	},
 	{
 		"name": "临沧市蓝天路废纸场",
-		"province": "云南",
+		"province": "云南省",
 		"city": "临沧市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8569,7 +8569,7 @@
 	},
 	{
 		"name": "楚雄市同元门窗工程有限公司",
-		"province": "云南",
+		"province": "云南省",
 		"city": "楚雄彝族自治州",
 		"type": "HELICOPTER",
 		"location": {
@@ -8581,7 +8581,7 @@
 	},
 	{
 		"name": "祥云驼峰酒店有限公司",
-		"province": "云南",
+		"province": "云南省",
 		"city": "祥云县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8593,7 +8593,7 @@
 	},
 	{
 		"name": "永平县供销社农贸有限公司",
-		"province": "云南",
+		"province": "云南省",
 		"city": "永平县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8605,7 +8605,7 @@
 	},
 	{
 		"name": "中都草原会场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "张家口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8617,7 +8617,7 @@
 	},
 	{
 		"name": "中都草原停机点",
-		"province": "河北",
+		"province": "河北省",
 		"city": "张家口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8629,7 +8629,7 @@
 	},
 	{
 		"name": "宾川县国巨绿色有限公司",
-		"province": "云南",
+		"province": "云南省",
 		"city": "宾川县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8641,7 +8641,7 @@
 	},
 	{
 		"name": "丽江市玉龙白沙镇南方航空护林站直升机场",
-		"province": "云南",
+		"province": "云南省",
 		"city": "丽江市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8653,7 +8653,7 @@
 	},
 	{
 		"name": "中国重汽攀枝花公司",
-		"province": "四川",
+		"province": "四川省",
 		"city": "攀枝花市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8665,7 +8665,7 @@
 	},
 	{
 		"name": "武定华昌物流有限公司",
-		"province": "云南",
+		"province": "云南省",
 		"city": "武定县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8677,7 +8677,7 @@
 	},
 	{
 		"name": "宜良海大生物科技有限公司",
-		"province": "云南",
+		"province": "云南省",
 		"city": "宜良县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8689,7 +8689,7 @@
 	},
 	{
 		"name": "芒市大街德顺挖掘机公司",
-		"province": "云南",
+		"province": "云南省",
 		"city": "德宏市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8701,7 +8701,7 @@
 	},
 	{
 		"name": "芒市大街第一小学旁边停车场",
-		"province": "云南",
+		"province": "云南省",
 		"city": "德宏市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8713,7 +8713,7 @@
 	},
 	{
 		"name": "元谋县空军招待所后院",
-		"province": "云南",
+		"province": "云南省",
 		"city": "元谋",
 		"type": "HELICOPTER",
 		"location": {
@@ -8725,7 +8725,7 @@
 	},
 	{
 		"name": "元谋县晶菱食品厂",
-		"province": "云南",
+		"province": "云南省",
 		"city": "元谋",
 		"type": "HELICOPTER",
 		"location": {
@@ -8737,7 +8737,7 @@
 	},
 	{
 		"name": "云南瑞江木业有限公司",
-		"province": "云南",
+		"province": "云南省",
 		"city": "元江",
 		"type": "HELICOPTER",
 		"location": {
@@ -8749,7 +8749,7 @@
 	},
 	{
 		"name": "信丰县龙津实业有限公司",
-		"province": "江西",
+		"province": "江西省",
 		"city": "赣州信丰",
 		"type": "HELICOPTER",
 		"location": {
@@ -8761,7 +8761,7 @@
 	},
 	{
 		"name": "訾洲公园",
-		"province": "广西",
+		"province": "广西壮族自治区",
 		"city": "桂林市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8773,7 +8773,7 @@
 	},
 	{
 		"name": "飞虎公园",
-		"province": "广西",
+		"province": "广西壮族自治区",
 		"city": "桂林市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8785,7 +8785,7 @@
 	},
 	{
 		"name": "181医院",
-		"province": "广西",
+		"province": "广西壮族自治区",
 		"city": "桂林市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8797,7 +8797,7 @@
 	},
 	{
 		"name": "海棠湾红树林酒店",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8809,7 +8809,7 @@
 	},
 	{
 		"name": "半山半岛帆船港",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8821,7 +8821,7 @@
 	},
 	{
 		"name": "苍山高尔夫直升机停机坪",
-		"province": "云南",
+		"province": "云南省",
 		"city": "大理市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8833,7 +8833,7 @@
 	},
 	{
 		"name": "东升会起降点",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8845,7 +8845,7 @@
 	},
 	{
 		"name": "农场",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "铁力",
 		"type": "HELICOPTER",
 		"location": {
@@ -8857,7 +8857,7 @@
 	},
 	{
 		"name": "白鹿温泉度假村停车场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "温塘",
 		"type": "HELICOPTER",
 		"location": {
@@ -8869,7 +8869,7 @@
 	},
 	{
 		"name": "开发区北慧鑫铁制品有限公司",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "海伦市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8881,7 +8881,7 @@
 	},
 	{
 		"name": "金博士种业有限公司",
-		"province": "河北",
+		"province": "河北省",
 		"city": "藁城",
 		"type": "HELICOPTER",
 		"location": {
@@ -8893,7 +8893,7 @@
 	},
 	{
 		"name": "东单体育中心足球场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "东城区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8905,7 +8905,7 @@
 	},
 	{
 		"name": "国家会议中心前马路",
-		"province": "北京",
+		"province": "北京市",
 		"city": "朝阳区",
 		"type": "HELICOPTER",
 		"location": {
@@ -8917,7 +8917,7 @@
 	},
 	{
 		"name": "金丰工贸有限公司",
-		"province": "河北",
+		"province": "河北省",
 		"city": "任县",
 		"type": "HELICOPTER",
 		"location": {
@@ -8929,7 +8929,7 @@
 	},
 	{
 		"name": "生态工业聚集区",
-		"province": "广东",
+		"province": "广东省",
 		"city": "徐闻",
 		"type": "HELICOPTER",
 		"location": {
@@ -8941,7 +8941,7 @@
 	},
 	{
 		"name": "徐闻体育馆",
-		"province": "广东",
+		"province": "广东省",
 		"city": "徐闻",
 		"type": "HELICOPTER",
 		"location": {
@@ -8953,7 +8953,7 @@
 	},
 	{
 		"name": "船营区私人工厂",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "吉林市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8965,7 +8965,7 @@
 	},
 	{
 		"name": "张家口市一中",
-		"province": "河北",
+		"province": "河北省",
 		"city": "张家口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8977,7 +8977,7 @@
 	},
 	{
 		"name": "海棠湾红树林酒店",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -8989,7 +8989,7 @@
 	},
 	{
 		"name": "半山半岛帆船港",
-		"province": "海南",
+		"province": "海南省",
 		"city": "三亚市",
 		"type": "HELICOPTER",
 		"location": {
@@ -9001,7 +9001,7 @@
 	},
 	{
 		"name": "苍山高尔夫直升机停机坪",
-		"province": "云南",
+		"province": "云南省",
 		"city": "大理市",
 		"type": "HELICOPTER",
 		"location": {
@@ -9013,7 +9013,7 @@
 	},
 	{
 		"name": "东升会起降点",
-		"province": "北京",
+		"province": "北京市",
 		"city": "北京市",
 		"type": "HELICOPTER",
 		"location": {
@@ -9025,7 +9025,7 @@
 	},
 	{
 		"name": "迁安燕山医院",
-		"province": "河北",
+		"province": "河北省",
 		"city": "迁安市",
 		"type": "HELICOPTER",
 		"location": {
@@ -9037,7 +9037,7 @@
 	},
 	{
 		"name": "石家庄广场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "石家庄",
 		"type": "HELICOPTER",
 		"location": {
@@ -9049,7 +9049,7 @@
 	},
 	{
 		"name": "永乐店高速公路",
-		"province": "北京",
+		"province": "北京市",
 		"city": "通州",
 		"type": "HELICOPTER",
 		"location": {
@@ -9061,7 +9061,7 @@
 	},
 	{
 		"name": "章丘人民医院",
-		"province": "山东",
+		"province": "山东省",
 		"city": "章丘",
 		"type": "HELICOPTER",
 		"location": {
@@ -9073,7 +9073,7 @@
 	},
 	{
 		"name": "消防大队",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "方正县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9085,7 +9085,7 @@
 	},
 	{
 		"name": "富兴地毯有限公司",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "牡丹江市",
 		"type": "HELICOPTER",
 		"location": {
@@ -9097,7 +9097,7 @@
 	},
 	{
 		"name": "铕赫食品有限公司",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "穆棱市",
 		"type": "HELICOPTER",
 		"location": {
@@ -9109,7 +9109,7 @@
 	},
 	{
 		"name": "榆社县乾通物流装卸有限公司",
-		"province": "山西",
+		"province": "山西省",
 		"city": "太原市",
 		"type": "HELICOPTER",
 		"location": {
@@ -9121,7 +9121,7 @@
 	},
 	{
 		"name": "机械仓库",
-		"province": "河北",
+		"province": "河北省",
 		"city": "任县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9133,7 +9133,7 @@
 	},
 	{
 		"name": "雅诰图塑料制品有限公司",
-		"province": "河北",
+		"province": "河北省",
 		"city": "任县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9145,7 +9145,7 @@
 	},
 	{
 		"name": "温塘铁路温泉度假村",
-		"province": "河北",
+		"province": "河北省",
 		"city": "平山县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9157,7 +9157,7 @@
 	},
 	{
 		"name": "正洋汽车贸易公司后院停车场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "行唐县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9169,7 +9169,7 @@
 	},
 	{
 		"name": "藁城区永安快捷酒店后院",
-		"province": "河北",
+		"province": "河北省",
 		"city": "石家庄市",
 		"type": "HELICOPTER",
 		"location": {
@@ -9181,7 +9181,7 @@
 	},
 	{
 		"name": "原种场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "高邑县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9193,7 +9193,7 @@
 	},
 	{
 		"name": "高速公路养护管理处",
-		"province": "河北",
+		"province": "河北省",
 		"city": "定州",
 		"type": "HELICOPTER",
 		"location": {
@@ -9205,7 +9205,7 @@
 	},
 	{
 		"name": "美源国际游艇会",
-		"province": "海南",
+		"province": "海南省",
 		"city": "海口市",
 		"type": "HELICOPTER",
 		"location": {
@@ -9217,7 +9217,7 @@
 	},
 	{
 		"name": "杏磊湾温泉度假村",
-		"province": "广东",
+		"province": "广东省",
 		"city": "徐闻县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9229,7 +9229,7 @@
 	},
 	{
 		"name": "地坛医院分院",
-		"province": "北京",
+		"province": "北京市",
 		"city": "顺义区",
 		"type": "HELICOPTER",
 		"location": {
@@ -9241,7 +9241,7 @@
 	},
 	{
 		"name": "象山公园",
-		"province": "广西",
+		"province": "广西壮族自治区",
 		"city": "桂林市",
 		"type": "HELICOPTER",
 		"location": {
@@ -9253,7 +9253,7 @@
 	},
 	{
 		"name": "足球场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "唐山市玉田县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9265,7 +9265,7 @@
 	},
 	{
 		"name": "保定第一中心医院",
-		"province": "河北",
+		"province": "河北省",
 		"city": "保定市",
 		"type": "HELICOPTER",
 		"location": {
@@ -9277,7 +9277,7 @@
 	},
 	{
 		"name": "广场",
-		"province": "山西",
+		"province": "山西省",
 		"city": "吕梁市汾阳县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9289,7 +9289,7 @@
 	},
 	{
 		"name": "足球场",
-		"province": "山东",
+		"province": "山东省",
 		"city": "菏泽县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9301,7 +9301,7 @@
 	},
 	{
 		"name": "广场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "邢台清河县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9313,7 +9313,7 @@
 	},
 	{
 		"name": "农场",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "铁力",
 		"type": "HELICOPTER",
 		"location": {
@@ -9325,7 +9325,7 @@
 	},
 	{
 		"name": "白鹿温泉度假村停车场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "温塘",
 		"type": "HELICOPTER",
 		"location": {
@@ -9337,7 +9337,7 @@
 	},
 	{
 		"name": "太舞滑雪场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "崇礼县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9349,7 +9349,7 @@
 	},
 	{
 		"name": "县医院停车场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "怀来县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9361,7 +9361,7 @@
 	},
 	{
 		"name": "医学院操场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "张家口",
 		"type": "HELICOPTER",
 		"location": {
@@ -9373,7 +9373,7 @@
 	},
 	{
 		"name": "杏磊湾温泉度假村草坪",
-		"province": "广东",
+		"province": "广东省",
 		"city": "徐闻",
 		"type": "HELICOPTER",
 		"location": {
@@ -9385,7 +9385,7 @@
 	},
 	{
 		"name": "饶阳中学体育场",
-		"province": "河北",
+		"province": "河北省",
 		"city": "饶阳",
 		"type": "HELICOPTER",
 		"location": {
@@ -9397,7 +9397,7 @@
 	},
 	{
 		"name": "开发区北慧鑫铁制品有限公司",
-		"province": "黑龙江",
+		"province": "黑龙江省",
 		"city": "海伦",
 		"type": "HELICOPTER",
 		"location": {
@@ -9409,7 +9409,7 @@
 	},
 	{
 		"name": "金博士种业有限公司",
-		"province": "河北",
+		"province": "河北省",
 		"city": "藁城",
 		"type": "HELICOPTER",
 		"location": {
@@ -9421,7 +9421,7 @@
 	},
 	{
 		"name": "东单体育中心足球场",
-		"province": "北京",
+		"province": "北京市",
 		"city": "东城区",
 		"type": "HELICOPTER",
 		"location": {
@@ -9433,7 +9433,7 @@
 	},
 	{
 		"name": "国家会议中心前马路",
-		"province": "北京",
+		"province": "北京市",
 		"city": "朝阳区",
 		"type": "HELICOPTER",
 		"location": {
@@ -9445,7 +9445,7 @@
 	},
 	{
 		"name": "金丰工贸有限公司",
-		"province": "河北",
+		"province": "河北省",
 		"city": "任县",
 		"type": "HELICOPTER",
 		"location": {
@@ -9457,7 +9457,7 @@
 	},
 	{
 		"name": "生态工业聚集区",
-		"province": "广东",
+		"province": "广东省",
 		"city": "徐闻",
 		"type": "HELICOPTER",
 		"location": {
@@ -9469,7 +9469,7 @@
 	},
 	{
 		"name": "徐闻体育馆",
-		"province": "广东",
+		"province": "广东省",
 		"city": "徐闻",
 		"type": "HELICOPTER",
 		"location": {
@@ -9481,7 +9481,7 @@
 	},
 	{
 		"name": "船营区私人工厂",
-		"province": "吉林",
+		"province": "吉林省",
 		"city": "吉林市",
 		"type": "HELICOPTER",
 		"location": {

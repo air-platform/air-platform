@@ -63,6 +63,7 @@ import net.aircommunity.platform.repository.BaseOrderRepository;
 import net.aircommunity.platform.repository.OrderRefRepository;
 import net.aircommunity.platform.repository.PassengerRepository;
 import net.aircommunity.platform.repository.PaymentRepository;
+import net.aircommunity.platform.repository.RefundRepository;
 import net.aircommunity.platform.repository.SalesPackageRepository;
 import net.aircommunity.platform.service.MemberPointsService;
 import net.aircommunity.platform.service.internal.AbstractServiceSupport;
@@ -96,6 +97,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	@Resource
 	protected PaymentRepository paymentRepository;
+
+	@Resource
+	protected RefundRepository refundRepository;
 
 	@Resource
 	protected CommentService commentService;
@@ -538,13 +542,16 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		T order = doFindOrder(orderId);
 		order.setLastModifiedDate(new Date());
 		order.setTotalPrice(newTotalAmount);
-		// XXX NOTE: we need re-generate a requestNo for WECHAT in case of total amount changed
 		if (StandardOrder.class.isAssignableFrom(order.getClass())) {
 			StandardOrder standardOrder = StandardOrder.class.cast(order);
 			Payment payment = standardOrder.getPayment();
-			if (payment != null && payment.getMethod() == Trade.Method.WECHAT) {
-				String requestNo = Payments.generateTradeNo(order.getOrderNo());
-				payment.setRequestNo(requestNo);
+			if (payment != null) {
+				payment.setAmount(order.getOriginalTotalPrice());
+				// XXX NOTE: we need re-generate a requestNo for WECHAT in case of total amount changed
+				if (payment.getMethod() == Trade.Method.WECHAT) {
+					String requestNo = Payments.generateTradeNo(order.getOrderNo());
+					payment.setRequestNo(requestNo);
+				}
 			}
 		}
 		return safeExecute(() -> orderProcessor.saveOrder(order), "Update %s price: %s to %d failed",
@@ -595,12 +602,18 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				payment.setOwner(order.getOwner());
 				payment.setVendor(order.getProduct().getVendor());
 				payment.setNote(M.msg(M.PAYMENT_REQUESTED));
-				standardOrder.setPayment(payment);
-				order = orderProcessor.saveOrder(order);
-				LOG.info("IMPORTANT! Payment request {} is created for {}", payment, order);
-				// No good to update cache, just use raw cache API
-				updateOrderCache(order);
 			}
+			else {
+				// in case some payment info is updated
+				payment.setMethod(method);
+				payment.setTimestamp(new Date());
+			}
+			standardOrder.setPayment(payment);
+			// save order should cascade save payment as well
+			standardOrder = (StandardOrder) orderProcessor.saveOrder(order);
+			LOG.info("IMPORTANT! Payment request {} is created for {}", standardOrder.getPayment(), order);
+			// No good to update cache, just use raw cache API
+			updateOrderCache(standardOrder);
 			// NOTE: IMPORTANT!
 			// update orderRef with the payment method that can be used in PaymentSynchronizer to query payment later
 			orderRefRepository.updateOrderPaymentMethod(orderId, method);
@@ -637,10 +650,19 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				// check existence of the payment, payment request should be created before
 				// it SHOULD NOT be null here
 				if (orderPayment == null) {
-					orderPayment = payment;
-					LOG.warn(
-							"Accepting payment {}... payment request is not found for {}, just accept current payment as initial payment.",
-							payment, order);
+					// WHY null, but we can still find it in payment table, just try best to accept
+					Optional<Payment> existing = paymentRepository.findByOrderNoAndMethod(standardOrder.getOrderNo(),
+							payment.getMethod());
+					if (!existing.isPresent()) {
+						orderPayment = payment;
+						LOG.warn(
+								"Accepting payment {}... payment request is not found for {}, just accept current payment as initial payment.",
+								payment, order);
+					}
+					else {
+						orderPayment = (Payment) existing.get().updateFully(payment);
+						LOG.debug("Accepting payment {}... updateFully as {}", payment, orderPayment);
+					}
 				}
 				else {
 					orderPayment.update(payment);
@@ -649,6 +671,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				// apply the ORM relation in case it's missing
 				orderPayment.setOwner(order.getOwner());
 				orderPayment.setVendor(order.getProduct().getVendor());
+				standardOrder.setPayment(orderPayment);
 				orderPaid = doUpdateOrderStatus(order, Order.Status.PAID);
 			}
 
@@ -755,15 +778,25 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			// it may be not null
 			Refund existingRefund = standardOrder.getRefund();
 			if (existingRefund == null) {
-				existingRefund = refund;
-				LOG.debug("Accepting refund {} for {}", refund, order);
+				// WHY null, but we can still find it in refund table
+				Optional<Refund> existing = refundRepository.findByOrderNoAndMethod(standardOrder.getOrderNo(),
+						refund.getMethod());
+				if (!existing.isPresent()) {
+					existingRefund = refund;
+					LOG.warn(
+							"Accepting refund {}... refund request is not found for {}, just accept current refund as initial refund.",
+							refund, order);
+				}
+				else {
+					existingRefund = (Refund) existing.get().updateFully(refund);
+					LOG.debug("Accepting refund {}... updateFully as {}", refund, existingRefund);
+				}
 			}
 			else {
 				existingRefund.update(refund);
 				LOG.info("Attempted refund {} before, try to accept and merge with current refund  for {}",
 						existingRefund, refund, order);
 			}
-
 			// ensure ORM relation in case it's missing
 			existingRefund.setVendor(standardOrder.getProduct().getVendor());
 			existingRefund.setOwner(standardOrder.getOwner());

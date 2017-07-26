@@ -25,11 +25,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public abstract class SalesPackageProduct extends Product {
 	private static final long serialVersionUID = 1L;
 
+	// ClassCastException: cannot assign instance of org.hibernate.collection.internal.PersistentSet to field
+	// net.aircommunity.platform.model.domain.SalesPackageProduct.salesPackages of type java.util.SortedSet
 	@OrderBy("rank DESC")
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	protected SortedSet<SalesPackage> salesPackages = new TreeSet<>();
 
-	public Set<SalesPackage> getSalesPackages() {
+	public SortedSet<SalesPackage> getSalesPackages() {
 		return salesPackages;
 	}
 
