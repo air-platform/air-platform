@@ -194,18 +194,11 @@ public class AccountAuth extends Persistable {
 	public enum AuthType {
 		USERNAME, EMAIL, MOBILE, WECHAT, QQ, WEIBO;
 
-		private static EnumSet<AuthType> internalAuths;
+		public static EnumSet<AuthType> INTERNAL_AUTHS = EnumSet
+				.copyOf(Stream.of(AuthType.values()).filter(AuthType::isInternal).collect(Collectors.toSet()));
 
 		public boolean isInternal() {
 			return this == USERNAME || this == EMAIL || this == MOBILE;
-		}
-
-		public static EnumSet<AuthType> internalAuths() {
-			if (internalAuths == null) {
-				internalAuths = EnumSet
-						.copyOf(Stream.of(AuthType.values()).filter(AuthType::isInternal).collect(Collectors.toSet()));
-			}
-			return internalAuths;
 		}
 
 		public static AuthType fromString(String value) {

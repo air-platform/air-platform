@@ -30,21 +30,22 @@ public final class Codes {
 	public static final Code ACCOUNT_NOT_TENANT = Code.invalidArgument(11_001_0002);
 	public static final Code ACCOUNT_INVALID_VERIFICATION_CODE = Code.invalidArgument(11_001_0003);
 	public static final Code ACCOUNT_INVALID_USERNAME = Code.invalidArgument(11_001_0004);
-	public static final Code ACCOUNT_INVALID_IDCARD = Code.invalidArgument(11_001_0005);
-	public static final Code ACCOUNT_PASSWORD_MISMATCH = Code.invalidArgument(11_001_0006);
-	public static final Code ACCOUNT_NOT_FOUND = Code.notFound(11_001_0007);
-	public static final Code ACCOUNT_ALREADY_EXISTS = Code.alreadyExists(11_001_0008);
-	public static final Code ACCOUNT_TYPE_MISMATCH = Code.invalidArgument(11_001_0009);
-	public static final Code ACCOUNT_USERNAME_ALREADY_EXISTS = Code.alreadyExists(11_001_0010);
-	public static final Code ACCOUNT_MOBILE_ALREADY_EXISTS = Code.alreadyExists(11_001_0011);
-	public static final Code ACCOUNT_MOBILE_NOT_FOUND = Code.notFound(11_001_0012);
-	public static final Code ACCOUNT_EMAIL_ALREADY_EXISTS = Code.alreadyExists(11_001_0013);
-	public static final Code ACCOUNT_EMAIL_NOT_BIND = Code.illegalAccess(11_001_0014);
-	public static final Code ACCOUNT_EMAIL_ALREADY_VERIFIED = Code.illegalAccess(11_001_0015);
-	public static final Code ACCOUNT_ADDRESS_NOT_ALLOWED = Code.illegalAccess(11_001_0016);
-	public static final Code ACCOUNT_PASSENGER_NOT_ALLOWED = Code.illegalAccess(11_001_0017);
-	public static final Code ACCOUNT_PASSENGER_ALREADY_EXISTS = Code.alreadyExists(11_001_0018);
-	public static final Code ACCOUNT_ADD_PASSENGER_FAILURE = Code.invalidArgument(11_001_0019);
+	public static final Code ACCOUNT_INVALID_ROLE = Code.invalidArgument(11_001_0005);
+	public static final Code ACCOUNT_INVALID_IDCARD = Code.invalidArgument(11_001_0006);
+	public static final Code ACCOUNT_PASSWORD_MISMATCH = Code.invalidArgument(11_001_0007);
+	public static final Code ACCOUNT_NOT_FOUND = Code.notFound(11_001_0008);
+	public static final Code ACCOUNT_ALREADY_EXISTS = Code.alreadyExists(11_001_0009);
+	public static final Code ACCOUNT_TYPE_MISMATCH = Code.invalidArgument(11_001_0010);
+	public static final Code ACCOUNT_USERNAME_ALREADY_EXISTS = Code.alreadyExists(11_001_0011);
+	public static final Code ACCOUNT_MOBILE_ALREADY_EXISTS = Code.alreadyExists(11_001_0012);
+	public static final Code ACCOUNT_MOBILE_NOT_FOUND = Code.notFound(11_001_0013);
+	public static final Code ACCOUNT_EMAIL_ALREADY_EXISTS = Code.alreadyExists(11_001_0014);
+	public static final Code ACCOUNT_EMAIL_NOT_BIND = Code.illegalAccess(11_001_0015);
+	public static final Code ACCOUNT_EMAIL_ALREADY_VERIFIED = Code.illegalAccess(11_001_0016);
+	public static final Code ACCOUNT_ADDRESS_NOT_ALLOWED = Code.illegalAccess(11_001_0017);
+	public static final Code ACCOUNT_PASSENGER_NOT_ALLOWED = Code.illegalAccess(11_001_0018);
+	public static final Code ACCOUNT_PASSENGER_ALREADY_EXISTS = Code.alreadyExists(11_001_0019);
+	public static final Code ACCOUNT_ADD_PASSENGER_FAILURE = Code.invalidArgument(11_001_0020);
 
 	// apikey
 	public static final Code APIKEY_NOT_FOUND = Code.notFound(11_002_0001);

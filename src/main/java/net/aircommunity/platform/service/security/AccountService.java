@@ -109,6 +109,16 @@ public interface AccountService {
 	Account updateAccount(@Nonnull String accountId, @Nonnull Account newAccount);
 
 	/**
+	 * Update user account role (ONLY can update role for USER) by ADMIN.
+	 * 
+	 * @param accountId the accountId
+	 * @param newRole the newRole
+	 * @return updated account
+	 */
+	@Nonnull
+	Account updateUserRole(@Nonnull String accountId, @Nonnull Role newRole);
+
+	/**
 	 * Update account status.
 	 * 
 	 * @param accountId the accountId

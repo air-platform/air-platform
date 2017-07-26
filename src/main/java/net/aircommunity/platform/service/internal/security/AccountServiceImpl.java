@@ -154,7 +154,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	@Override
 	public Account authenticateAccount(String principal, String credential, AuthContext context) {
 		AccountAuth auth = null;
-		for (AuthType authType : AuthType.internalAuths()) {
+		for (AuthType authType : AuthType.INTERNAL_AUTHS) {
 			auth = accountAuthRepository.findByTypeAndPrincipal(authType, principal);
 			if (auth != null) {
 				auth = accountAccessed(auth, context);
@@ -465,6 +465,23 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 		return safeExecute(() -> accountRepository.save(account), "Update account %s to %s failed", accountId,
 				newAccount);
+	}
+
+	@Transactional
+	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
+	@Override
+	public Account updateUserRole(String accountId, Role newRole) {
+		if (newRole == null) {
+			throw new AirException(Codes.ACCOUNT_INVALID_ROLE, M.msg(M.ACCOUNT_INVALID_ROLE));
+		}
+		Account account = findAccount(accountId);
+		if (account.getRole() != Role.USER) {
+			LOG.warn("Only can update user account role, but account {} role is {}", accountId, account.getRole());
+			throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.ACCOUNT_UPDATE_ROLE_NOT_ALLOWED));
+		}
+		account.setRole(newRole);
+		return safeExecute(() -> accountRepository.save(account), "Update account %s role to %s failed", accountId,
+				newRole);
 	}
 
 	@Transactional

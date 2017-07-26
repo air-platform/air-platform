@@ -31,6 +31,7 @@ public abstract class BaseResourceSupport {
 	private static final String JSON_PROP_RANK = "rank";
 	private static final String JSON_PROP_AMOUNT = "amount";
 	private static final String JSON_PROP_STATUS = "status";
+	private static final String JSON_PROP_ROLE = "role";
 	private static final String JSON_PROP_FLEET_CANDIDATE = "candidate";
 
 	/**
@@ -51,6 +52,10 @@ public abstract class BaseResourceSupport {
 
 	protected JsonObject buildCountResponse(long count) {
 		return Json.createObjectBuilder().add(JSON_PROP_COUNT, count).build();
+	}
+
+	protected String getRole(JsonObject request) {
+		return getJsonString(request, JSON_PROP_ROLE);
 	}
 
 	protected String getStatus(JsonObject request) {

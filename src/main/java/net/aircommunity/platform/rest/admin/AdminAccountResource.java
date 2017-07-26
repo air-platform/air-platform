@@ -123,6 +123,16 @@ public class AdminAccountResource extends BaseResourceSupport {
 	}
 
 	/**
+	 * Update role for a account
+	 */
+	@POST
+	@Path("{accountId}/role")
+	public void updateUserAccountRole(@PathParam("accountId") String accountId, @NotNull JsonObject role) {
+		String newRole = getRole(role);
+		accountService.updateUserRole(accountId, Role.fromString(newRole));
+	}
+
+	/**
 	 * Reset password for a account
 	 */
 	@POST

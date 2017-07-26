@@ -133,6 +133,8 @@ public class LocalizedMessages extends NLSResource {
 	public static String ACCOUNT_PERMISSION_DENIED;
 	public static String ACCOUNT_NOT_TENANT;
 	public static String ACCOUNT_UPDATE_ADMIN_STATUS_NOT_ALLOWED;
+	public static String ACCOUNT_UPDATE_ROLE_NOT_ALLOWED;
+	public static String ACCOUNT_INVALID_ROLE;
 	public static String ACCOUNT_CREATION_FAILURE;
 	public static String ACCOUNT_CREATION_ADMIN_NOT_ALLOWED;
 	public static String ACCOUNT_CREATION_INVALID_VERIFICATION_CODE;

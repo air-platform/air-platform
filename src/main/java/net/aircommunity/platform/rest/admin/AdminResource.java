@@ -225,15 +225,6 @@ public class AdminResource extends BaseResourceSupport {
 		return airportResource;
 	}
 
-	// TODO REMOVE
-	// @Resource
-	// private AdminProductResource adminProductResource;
-	//
-	// @Path("")
-	// public AdminProductResource products() {
-	// return adminProductResource;
-	// }
-
 	// ***********************
 	// Product Management
 	// ***********************

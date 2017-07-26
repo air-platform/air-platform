@@ -24,7 +24,7 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 	Account findByApiKey(String apiKey);
 
 	/**
-	 * Find a account by apiKey
+	 * Find a account by role
 	 * 
 	 * @param role the role
 	 * @return an account of page
