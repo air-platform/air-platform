@@ -269,7 +269,8 @@ public class SalesPackage extends Persistable implements Comparable<SalesPackage
 		if (other == null) {
 			return 1;
 		}
-		return Integer.compare(rank, other.rank);
+		// DESC order
+		return Integer.compare(other.rank, rank);
 	}
 
 	@Override

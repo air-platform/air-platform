@@ -31,7 +31,7 @@ abstract class AbstractBaseProductService<T extends Product> extends AbstractPro
 	// Product
 	// *******
 	@Transactional(readOnly = true)
-	@Cacheable(cacheNames = CACHE_NAME)
+	@Cacheable(cacheNames = CACHE_NAME, key = "#productId")
 	@Override
 	public T findProduct(String productId) {
 		return doFindProduct(productId);
