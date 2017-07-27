@@ -165,14 +165,6 @@ public abstract class Trade extends Persistable {
 		this.vendor = vendor;
 	}
 
-	public Trade updateFully(Trade another) {
-		if (another != null) {
-			id = another.id;
-			update(another);
-		}
-		return this;
-	}
-
 	public Trade update(Trade another) {
 		if (another != null) {
 			tradeNo = another.tradeNo;

@@ -660,8 +660,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 								payment, order);
 					}
 					else {
-						orderPayment = (Payment) existing.get().updateFully(payment);
-						LOG.debug("Accepting payment {}... updateFully as {}", payment, orderPayment);
+						orderPayment = (Payment) existing.get().update(payment);
+						LOG.debug("Accepting payment {}... merged existing as {}", payment, orderPayment);
 					}
 				}
 				else {
@@ -788,8 +788,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 							refund, order);
 				}
 				else {
-					existingRefund = (Refund) existing.get().updateFully(refund);
-					LOG.debug("Accepting refund {}... updateFully as {}", refund, existingRefund);
+					existingRefund = (Refund) existing.get().update(refund);
+					LOG.debug("Accepting refund {}... merged existing as {}", refund, existingRefund);
 				}
 			}
 			else {
@@ -1097,7 +1097,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			// should be already paid (directly by TENANT) or refund requested (by USER)
 			// we still allow refund after TICKET_RELEASED
 			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.REFUND_REQUESTED,
-					Order.Status.PAID, Order.Status.TICKET_RELEASED));
+					Order.Status.PAID, Order.Status.REFUNDING, Order.Status.TICKET_RELEASED));
 			break;
 
 		case REFUNDED:
@@ -1195,6 +1195,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	}
 
 	private void expectOrderStatus(T order, Order.Status newStatus, EnumSet<Order.Status> expects) {
+		LOG.debug("Current order status: {}", order.getStatus());
+		LOG.debug("Expected order statuses: {}", expects);
 		if (!expects.contains(order.getStatus())) {
 			throw invalidOrderStatus(order, newStatus);
 		}

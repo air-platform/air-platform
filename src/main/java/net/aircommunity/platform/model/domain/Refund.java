@@ -3,6 +3,7 @@ package net.aircommunity.platform.model.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -31,8 +32,7 @@ public class Refund extends Trade {
 	private String refundReason;
 
 	// refund result note
-	@NotNull
-	@Size(max = DEFAULT_FIELD_LEN)
+	@Lob
 	@Column(name = "refund_result")
 	private String refundResult;
 
@@ -52,12 +52,13 @@ public class Refund extends Trade {
 		this.refundResult = refundResult;
 	}
 
-	public void update(Refund another) {
+	public Refund update(Refund another) {
 		if (another != null) {
 			super.update(another);
 			refundReason = another.refundReason;
 			refundResult = another.refundResult;
 		}
+		return this;
 	}
 
 	@Override

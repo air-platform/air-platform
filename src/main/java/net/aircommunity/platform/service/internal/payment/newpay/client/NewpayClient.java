@@ -100,6 +100,9 @@ public class NewpayClient {
 		if (model.isPartialRefund()) {
 			refundRequest.setRefundType(NewpayRefundType.PARTIAL);
 		}
+		else {
+			refundRequest.setRefundType(NewpayRefundType.FULL);
+		}
 		refundRequest.setSignature(signature);
 		// use defaults
 		// refundRequest.setDestType(destType);

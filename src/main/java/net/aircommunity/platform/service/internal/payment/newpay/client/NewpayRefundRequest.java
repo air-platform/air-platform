@@ -134,6 +134,7 @@ public class NewpayRefundRequest extends NewpayRequest {
 
 	private Map<String, String> buildParams() {
 		refundOrderId = UUIDs.shortTimebased();
+		requestId = newRequestId();
 		refundTime = new Date();
 		String signMsg = buildSignMsg();
 		sign = signRsaSignature(signMsg, NewpayCharset.fromString(charset));
