@@ -668,6 +668,22 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		return Pages.adapt(accountRepository.findByRole(role, createPageRequest(page, pageSize)));
 	}
 
+	@Override
+	public Page<User> listUserAccounts(Role role, int page, int pageSize) {
+		if (role == null) {
+			return Pages.adapt(userRepository.findAll(createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(userRepository.findByRole(role, createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public Page<Tenant> listTenantAccounts(Role role, int page, int pageSize) {
+		if (role == null) {
+			return Pages.adapt(tenantRepository.findAll(createPageRequest(page, pageSize)));
+		}
+		return Pages.adapt(tenantRepository.findByRole(role, createPageRequest(page, pageSize)));
+	}
+
 	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")
 	@Override
@@ -950,5 +966,4 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		metrics.setUserCountThisMonth(userCountThisMonth);
 		return metrics;
 	}
-
 }

@@ -18,7 +18,7 @@ import net.aircommunity.platform.model.domain.User;
 public interface UserRepository extends JpaRepository<User, String> {
 
 	/**
-	 * Find a account by apiKey
+	 * Find a account by role
 	 * 
 	 * @param role the role
 	 * @return an account of page

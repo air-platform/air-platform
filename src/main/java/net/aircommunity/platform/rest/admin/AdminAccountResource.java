@@ -35,7 +35,6 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.AccountRequest;
-import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Account;
@@ -82,9 +81,19 @@ public class AdminAccountResource extends BaseResourceSupport {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Page<Account> listAllAccounts(@QueryParam("role") Role role, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		return accountService.listAccounts(role, page, pageSize);
+	public Response listAllAccounts(@NotNull @QueryParam("type") Account.Type type, @QueryParam("role") Role role,
+			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+		switch (type) {
+		case USER:
+			return Response.ok(accountService.listUserAccounts(role, page, pageSize)).build();
+
+		case TENANT:
+			return Response.ok(accountService.listTenantAccounts(role, page, pageSize)).build();
+
+		default:
+		}
+		// all types
+		return Response.ok(accountService.listAccounts(role, page, pageSize)).build();
 	}
 
 	/**

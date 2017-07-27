@@ -179,6 +179,23 @@ public abstract class Account extends Persistable {
 	}
 
 	/**
+	 * An {@code Type} represents the various types an account may be in. One account type may have many roles, except
+	 * currently defined roles.
+	 */
+	public enum Type {
+		USER, TENANT, ADMIN;
+
+		public static Type fromString(String value) {
+			for (Type e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
+	}
+
+	/**
 	 * An {@code Status} represents the various states an account may be in.
 	 */
 	public enum Status {

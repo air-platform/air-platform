@@ -16,7 +16,9 @@ import net.aircommunity.platform.model.domain.AccountAuth;
 import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 import net.aircommunity.platform.model.domain.Address;
 import net.aircommunity.platform.model.domain.Passenger;
+import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.model.domain.Tenant.VerificationStatus;
+import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.model.metrics.AccountMetrics;
 
 /**
@@ -229,7 +231,7 @@ public interface AccountService {
 	Page<Account> listAccounts(int page, int pageSize);
 
 	/**
-	 * List All Accounts by pagination filter by role.
+	 * List all accounts by pagination filter by role.
 	 * 
 	 * @param role the account role
 	 * @param page the page number
@@ -238,6 +240,28 @@ public interface AccountService {
 	 */
 	@Nonnull
 	Page<Account> listAccounts(@Nullable Role role, int page, int pageSize);
+
+	/**
+	 * List all user accounts by pagination filter by role.
+	 * 
+	 * @param role the user role
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of accounts or empty
+	 */
+	@Nonnull
+	Page<User> listUserAccounts(@Nullable Role role, int page, int pageSize);
+
+	/**
+	 * List all tenant accounts by pagination filter by role.
+	 * 
+	 * @param role the tenant role
+	 * @param page the page number
+	 * @param pageSize the pageSize
+	 * @return a page of accounts or empty
+	 */
+	@Nonnull
+	Page<Tenant> listTenantAccounts(@Nullable Role role, int page, int pageSize);
 
 	/**
 	 * Change the username for a account.
