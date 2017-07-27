@@ -2,6 +2,7 @@ package net.aircommunity.platform.rest.admin;
 
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -38,6 +39,7 @@ import net.aircommunity.platform.model.AccountRequest;
 import net.aircommunity.platform.model.Role;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Account;
+import net.aircommunity.platform.model.domain.AccountAuth;
 import net.aircommunity.platform.model.domain.Tenant.VerificationStatus;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
@@ -103,7 +105,10 @@ public class AdminAccountResource extends BaseResourceSupport {
 	@Path("{accountId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Account findAccount(@PathParam("accountId") String accountId) {
-		return accountService.findAccount(accountId);
+		Account account = accountService.findAccount(accountId);
+		List<AccountAuth> auths = accountService.findAccountAuths(accountId);
+		account.setAuths(auths);
+		return account;
 	}
 
 	/**

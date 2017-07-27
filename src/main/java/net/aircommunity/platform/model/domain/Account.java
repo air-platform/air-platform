@@ -1,7 +1,14 @@
 package net.aircommunity.platform.model.domain;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Stream;
 
+import javax.json.Json;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +19,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -19,10 +27,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Role;
+import net.aircommunity.platform.model.domain.AccountAuth.AuthType;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
@@ -87,6 +97,13 @@ public abstract class Account extends Persistable {
 
 	// @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	// private List<AccountAuth> auths;
+
+	// @JsonUnwrapped doesn't work for maps, only for proper POJOs with getters and setters, used @JsonAnyGetter instead
+	// ref:
+	// https://stackoverflow.com/questions/18043587/why-im-not-able-to-unwrap-and-serialize-a-java-map-using-the-jackson-java-libra
+	@XmlTransient
+	@Transient
+	protected Map<String, Object> auths;
 
 	public Account() {
 	}
@@ -165,6 +182,30 @@ public abstract class Account extends Persistable {
 
 	public void setLastAccessedIp(String lastAccessedIp) {
 		this.lastAccessedIp = lastAccessedIp;
+	}
+
+	@JsonAnyGetter
+	public Map<String, Object> getAuths() {
+		if (auths == null) {
+			return Collections.emptyMap();
+		}
+		return auths;
+	}
+
+	public void setAuths(Map<String, Object> auths) {
+		this.auths = auths;
+	}
+
+	public void setAuths(List<AccountAuth> auths) {
+		if (this.auths == null) {
+			this.auths = new HashMap<>(auths.size());
+		}
+		for (AccountAuth auth : auths) {
+			this.auths.putAll(Json.createObjectBuilder()
+					.add(auth.getType().toString().toLowerCase(Locale.ENGLISH), auth.getPrincipal()).build());
+		}
+		Stream.of(AuthType.values())
+				.forEach(type -> this.auths.putIfAbsent(type.name().toLowerCase(Locale.ENGLISH), null));
 	}
 
 	@Override

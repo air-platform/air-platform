@@ -250,6 +250,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		// also update LastAccessedIp of account for quick lookup
 		Account account = auth.getAccount();
 		account.setLastAccessedIp(context.ipAddress());
+		account.setLastAccessedDate(new Date());
 		account = accountRepository.save(account);
 		auth.setAccount(account);
 		return accountAuthRepository.save(auth);
@@ -683,6 +684,17 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 		return Pages.adapt(tenantRepository.findByRole(role, createPageRequest(page, pageSize)));
 	}
+
+	// private <T extends Account> Page<T> transformAccounts(Page<T> data) {
+	// data.getContent().stream().forEach(this::decorateAccount);
+	// return data;
+	// }
+	//
+	// private Account decorateAccount(Account account) {
+	// List<AccountAuth> auths = findAccountAuths(account.getId());
+	// account.setAuths(auths);
+	// return account;
+	// }
 
 	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#accountId")

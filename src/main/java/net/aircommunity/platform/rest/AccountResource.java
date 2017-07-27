@@ -6,10 +6,8 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -42,7 +40,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
@@ -374,7 +371,7 @@ public class AccountResource {
 		if (!(selfAccountId.equals(accountId) || context.isUserInRole(Role.ADMIN.name()))) {
 			return Response.status(Status.FORBIDDEN).build();
 		}
-		return buildAccountResponse(accountId);
+		return Response.ok(buildAccountResponse(accountId)).build();
 	}
 
 	/**
@@ -388,31 +385,39 @@ public class AccountResource {
 	@ApiOperation(value = "profile", response = Account.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = ""), @ApiResponse(code = 401, message = ""),
 			@ApiResponse(code = 404, message = "") })
-	public Response getSelfAccount(@Context SecurityContext context) {
+	public Account getSelfAccount(@Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		return buildAccountResponse(accountId);
 	}
 
-	private Response buildAccountResponse(String accountId) {
+	private Account buildAccountResponse(String accountId) {
 		Account account = accountService.findAccount(accountId);
 		List<AccountAuth> auths = accountService.findAccountAuths(accountId);
-		try {
-			String json = objectMapper.writerWithView(JsonViews.User.class).writeValueAsString(account);
-			Map<String, Object> data = objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
-			});
-			for (AccountAuth auth : auths) {
-				data.putAll(Json.createObjectBuilder()
-						.add(auth.getType().toString().toLowerCase(Locale.ENGLISH), auth.getPrincipal()).build());
-			}
-			Stream.of(AuthType.values())
-					.forEach(type -> data.putIfAbsent(type.name().toLowerCase(Locale.ENGLISH), null));
-			return Response.ok(data).build();
-		}
-		catch (Exception e) {
-			LOG.error(String.format("Failed to get account: %s, cause: %s", accountId, e.getMessage()), e);
-			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
-		}
+		account.setAuths(auths);
+		return account;
 	}
+
+	// private Response buildAccountResponse(String accountId) {
+	// Account account = accountService.findAccount(accountId);
+	// List<AccountAuth> auths = accountService.findAccountAuths(accountId);
+	// try {
+	// String json = objectMapper.writerWithView(JsonViews.User.class).writeValueAsString(account);
+	// Map<String, Object> data = objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
+	// });
+	//
+	// for (AccountAuth auth : auths) {
+	// data.putAll(Json.createObjectBuilder()
+	// .add(auth.getType().toString().toLowerCase(Locale.ENGLISH), auth.getPrincipal()).build());
+	// }
+	// Stream.of(AuthType.values())
+	// .forEach(type -> data.putIfAbsent(type.name().toLowerCase(Locale.ENGLISH), null));
+	// return Response.ok(data).build();
+	// }
+	// catch (Exception e) {
+	// LOG.error(String.format("Failed to get account: %s, cause: %s", accountId, e.getMessage()), e);
+	// throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR));
+	// }
+	// }
 
 	/**
 	 * Get account auths of a profile

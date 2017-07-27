@@ -58,13 +58,15 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 	@PostConstruct
 	private void init() {
 		// @formatter:off
-		ORDER_FINISHED_POINTS = ImmutableMap.of(
-			Category.AIR_JET, 5, 		// 5% of order
-			Category.AIR_TRAINING, 5, 	// 5% of order
-			Category.AIR_TAXI, 10, 		// 10% of order
-			Category.AIR_TRANS, 10, 	// 10% of order
-			Category.AIR_TOUR, 10 		// 10% of order
-		);
+		ORDER_FINISHED_POINTS = ImmutableMap.<Category, Integer>builder()
+			.put(Category.AIR_JET, 5)		// 5% of order
+			.put(Category.AIR_TRAINING, 5)	// 5% of order
+			.put(Category.AIR_TAXI, 10)		// 10% of order
+			.put(Category.AIR_TRANS, 10)	// 10% of order
+			.put(Category.AIR_TOUR, 10)		// 10% of order
+			.put(Category.AIR_CALL, 10)		// 10% of order
+			.build();
+		
 		DAILY_SIGNIN_POINTS = ImmutableMap.of(
 			 1, 5, 		// consecutive signins -> 5 pt
 			 5, 10, 	// consecutive signins -> 10 pt
