@@ -62,6 +62,7 @@ Air Community Platform.
 * Config Redis Cache
     
     maxmemory in bytes, e.g. 3G=3221225472
+    
     maxmemory 3221225472
  
  * Run Platform
