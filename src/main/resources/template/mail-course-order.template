@@ -7,9 +7,18 @@
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{{enrollment.course.name}}&nbsp;&nbsp; 时间: (
-		{{enrollment.course.startDate | datetimeformat('%Y-%m-%d') }} -
-		{{enrollment.course.endDate | datetimeformat('%Y-%m-%d') }} )</td>
+		{{course.name}}
+	</td>
+</tr>
+<tr>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		<b>培训时间:</b>
+	</td>
+	<td align="left"
+		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
+		{{course.startDate | datetimeformat('%Y-%m-%d') }} - {{course.endDate | datetimeformat('%Y-%m-%d') }}
+	</td>
 </tr>
 <tr>
 	<td align="left"
@@ -18,7 +27,8 @@
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{{enrollment.airType}}</td>
+		{{aircraftType}}
+	</td>
 </tr>
 <tr>
 	<td align="left"
@@ -27,7 +37,8 @@
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{{enrollment.license}}</td>
+		{{license}}
+	</td>
 </tr>
 <tr>
 	<td align="left"
@@ -36,7 +47,8 @@
 	</td>
 	<td align="left"
 		style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-		{{enrollment.location}}</td>
+		{{location}}
+	</td>
 </tr>
 <tr>
 	<td align="left"

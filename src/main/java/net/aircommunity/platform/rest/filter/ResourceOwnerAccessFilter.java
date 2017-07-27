@@ -24,10 +24,13 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Joiner;
 
 import net.aircommunity.platform.model.Role;
+import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
 import net.aircommunity.platform.security.PrivilegedResource;
 import net.aircommunity.platform.service.security.AccessControlService;
+import net.aircommunity.platform.service.security.AccountService;
 
 /**
  * Access check for product, order and other related resources to ensure the ownership of the resource.
@@ -77,13 +80,21 @@ public class ResourceOwnerAccessFilter implements ContainerRequestFilter {
 	@Resource
 	private AccessControlService accessControlService;
 
+	@Resource
+	private AccountService accountService;
+
 	@Override
 	public void filter(ContainerRequestContext context) throws IOException {
 		SecurityContext securityContext = context.getSecurityContext();
 		// ADMIN
 		// allowed to access any resources if ADMIN
 		if (securityContext.isUserInRole(Role.ADMIN.name())) {
-			// skip check for ADMIN
+			// skip check for ADMIN, but still need to set path if the the USER role=ADMIN
+			String accountId = securityContext.getUserPrincipal().getName();
+			Account account = accountService.findAccount(accountId);
+			if (User.class.isAssignableFrom(account.getClass())) {
+				info.getPathParameters().add(USER_ID_PATH_PARAM, accountId);
+			}
 			return;
 		}
 

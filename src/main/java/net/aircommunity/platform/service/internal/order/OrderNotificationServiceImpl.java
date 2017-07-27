@@ -63,6 +63,8 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 	private static final String CTX_CONTACT = "contact";
 	private static final String CTX_COMPANY = "company";
 	private static final String CTX_AIRCRAFT_TYPE = "aircraftType";
+	private static final String CTX_LICENSE = "license";
+	private static final String CTX_LOCATION = "location";
 	private static final String CTX_DATE = "date";
 	private static final String CTX_TIMESLOT = "timeSlot";
 	private static final String CTX_FLIGHT_LEGS = "flightLegs";
@@ -91,6 +93,10 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 	@Resource
 	private PlatformService platformService;
 
+	public static void main(String arg[]) {
+		System.out.println(normalizeProductCategory(Category.AIR_JET));
+	}
+
 	@PostConstruct
 	private void init() {
 		orderOperationsMapping.put(Order.Status.CANCELLED, M.msg(M.ORDER_OPERATION_CANCEL));
@@ -116,7 +122,7 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 	}
 
 	private static String normalizeProductCategory(Category category) {
-		String[] parts = category.name().split("_");
+		String[] parts = category.name().toLowerCase(Locale.ENGLISH).split("_");
 		return new StringBuilder(Strings.capitalize(parts[0])).append(Strings.capitalize(parts[1])).toString();
 	}
 
@@ -307,7 +313,6 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 				AirTaxiOrder airTaxiOrder = AirTaxiOrder.class.cast(order);
 				context.put(CTX_AIRTAXI, airTaxiOrder.getProduct());
 				context.put(CTX_PASSENGERS, airTaxiOrder.getPassengers());
-				// XXX need aircraft info in salesPackageInfo, just add Aircraft name in getSalesPackageInfo()?
 				context.put(CTX_AIRCRAFT_TYPE, airTaxiOrder.getSalesPackage().getAircraft().getName());
 				context.put(CTX_DATE, airTaxiOrder.getDepartureDate());
 				context.put(CTX_TIMESLOT, airTaxiOrder.getTimeSlot());
@@ -333,7 +338,10 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 
 			case COURSE:
 				CourseOrder course = CourseOrder.class.cast(order);
-				context.put(CTX_COURSE, course);
+				context.put(CTX_COURSE, course.getProduct());
+				context.put(CTX_AIRCRAFT_TYPE, course.getAircraftType());
+				context.put(CTX_LICENSE, course.getLicense());
+				context.put(CTX_LOCATION, course.getLocation());
 				break;
 
 			default:
