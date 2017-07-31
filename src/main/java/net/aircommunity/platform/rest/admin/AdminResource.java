@@ -37,13 +37,13 @@ import net.aircommunity.platform.model.metrics.OrderMetrics;
 import net.aircommunity.platform.model.metrics.ProductMetrics;
 import net.aircommunity.platform.model.metrics.TradeMetrics;
 import net.aircommunity.platform.rest.AirClassResource;
-import net.aircommunity.platform.rest.AirJetResource;
 import net.aircommunity.platform.rest.AirportResource;
 import net.aircommunity.platform.rest.BannerResource;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.rest.CommentResource;
 import net.aircommunity.platform.rest.PromotionResource;
 import net.aircommunity.platform.rest.admin.order.AdminOrderResource;
+import net.aircommunity.platform.rest.admin.product.AdminAirJetResource;
 import net.aircommunity.platform.rest.admin.product.AdminAirTaxiResource;
 import net.aircommunity.platform.rest.admin.product.AdminAirTourResourse;
 import net.aircommunity.platform.rest.admin.product.AdminAirTransportResource;
@@ -202,11 +202,11 @@ public class AdminResource extends BaseResourceSupport {
 	// ***********************
 
 	@Resource
-	private AirJetResource airJetResource;
+	private AdminAirJetResource adminAirJetResource;
 
 	@Path("airjets")
-	public AirJetResource airjets() {
-		return airJetResource;
+	public AdminAirJetResource airjets() {
+		return adminAirJetResource;
 	}
 
 	@Resource
