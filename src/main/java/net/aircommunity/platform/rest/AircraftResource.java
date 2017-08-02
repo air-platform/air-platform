@@ -45,7 +45,6 @@ public class AircraftResource {
 	 * List
 	 */
 	@GET
-	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Page<Aircraft> listAll(@QueryParam("page") @DefaultValue("0") int page,
@@ -58,9 +57,9 @@ public class AircraftResource {
 	 * Find
 	 */
 	@GET
-	@PermitAll
 	@Path("{aircraftId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
 	public Aircraft find(@PathParam("aircraftId") String aircraftId) {
 		return aircraftService.findAircraft(aircraftId);
 	}
