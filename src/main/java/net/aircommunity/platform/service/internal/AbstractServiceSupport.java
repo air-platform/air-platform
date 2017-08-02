@@ -1,15 +1,20 @@
 package net.aircommunity.platform.service.internal;
 
 import java.io.Serializable;
+import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.metrics.GaugeService;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +31,9 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
+import net.aircommunity.platform.model.DomainEvent;
+import net.aircommunity.platform.model.DomainEvent.DomainType;
+import net.aircommunity.platform.model.DomainEvent.Operation;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.AirTaxi;
@@ -176,6 +184,60 @@ public abstract class AbstractServiceSupport {
 			LOG.error(String.format("Account type mismatch, expected %s, but was %s, cause:", type, account.getClass(),
 					e.getMessage()), e);
 			throw new AirException(Codes.ACCOUNT_TYPE_MISMATCH, M.msg(M.ACCOUNT_TYPE_MISMATCH));
+		}
+	}
+
+	private static final Predicate<DomainEvent> PREDICATE_ALWAYS = e -> true;
+
+	// TODO: improve cache on different product or order type, or per tenant basis if necessary ?
+	protected void registerCacheEvictOnDomainEvent(String cacheName, EnumSet<DomainType> interestedDomains) {
+		registerCacheEvictOnDomainEvent(cacheName, interestedDomains, PREDICATE_ALWAYS);
+	}
+
+	/**
+	 * Register domain event to evict cache on UPDATE and DELETION.
+	 * 
+	 * @param cacheName the name of the cache to be cleared
+	 * @param interestedDomains the interested domains
+	 */
+	protected void registerCacheEvictOnDomainEvent(String cacheName, EnumSet<DomainType> interestedDomains,
+			Predicate<DomainEvent> when) {
+		Objects.requireNonNull(cacheName, "cacheName cannot be null");
+		Objects.requireNonNull(interestedDomains, "interestedDomains cannot be null");
+		Objects.requireNonNull(when, "when cannot be null");
+		registerDomainEventHandler(event -> {
+			LOG.debug("Received domain event: {}", event);
+			boolean evictRequired = event.getOperation() == Operation.UPDATE
+					|| event.getOperation() == Operation.DELETION;
+			if (interestedDomains.contains(event.getType()) && evictRequired && when.test(event)) {
+				clearCache(cacheName);
+			}
+		});
+
+	}
+
+	/**
+	 * Register domain event handler
+	 * 
+	 * @param event the domain event consumer
+	 */
+	protected void registerDomainEventHandler(Consumer<DomainEvent> consumer) {
+		eventBus.register(new DomainEvent.Handler(consumer));
+	}
+
+	/**
+	 * Post domain event that other service may interested in
+	 * 
+	 * @param event the domain event
+	 */
+	protected void postDomainEvent(DomainEvent event) {
+		eventBus.post(event);
+	}
+
+	protected void clearCache(String cacheName) {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			cache.clear();
 		}
 	}
 

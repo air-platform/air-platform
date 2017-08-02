@@ -2,7 +2,9 @@ package net.aircommunity.platform.service.internal.product;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.EnumSet;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.micro.common.Maths;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.DomainEvent.DomainType;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.Aircraft;
@@ -40,6 +43,7 @@ public class AircraftCommentServiceImpl extends AbstractServiceSupport implement
 	private static final Logger LOG = LoggerFactory.getLogger(AircraftCommentServiceImpl.class);
 
 	private static final String CACHE_NAME = "cache.aircraft-comment";
+	private static final EnumSet<DomainType> INTERESTED_DOMAINS = EnumSet.of(DomainType.ACCOUNT, DomainType.AIRCRAFT);
 
 	@Resource
 	private AircraftService aircraftService;
@@ -49,6 +53,11 @@ public class AircraftCommentServiceImpl extends AbstractServiceSupport implement
 
 	@Resource
 	private QuickFlightOrderService quickFlightOrderService;
+
+	@PostConstruct
+	private void init() {
+		registerCacheEvictOnDomainEvent(CACHE_NAME, INTERESTED_DOMAINS);
+	}
 
 	@Override
 	public long getTotalCommentsCount() {

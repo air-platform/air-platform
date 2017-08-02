@@ -1,7 +1,9 @@
 package net.aircommunity.platform.service.internal.product;
 
 import java.util.Date;
+import java.util.EnumSet;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.DomainEvent.DomainType;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.ProductFamily;
@@ -35,6 +38,12 @@ public class ProductFamilyServiceImpl extends AbstractServiceSupport implements 
 
 	@Resource
 	private ProductFamilyRepository productFamilyRepository;
+
+	@PostConstruct
+	private void init() {
+		// clear cache on tenant updated
+		registerCacheEvictOnDomainEvent(CACHE_NAME, EnumSet.of(DomainType.TENANT));
+	}
 
 	@Transactional
 	@Override

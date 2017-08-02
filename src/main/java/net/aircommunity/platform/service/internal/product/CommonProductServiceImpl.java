@@ -1,8 +1,10 @@
 package net.aircommunity.platform.service.internal.product;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import com.google.common.collect.ImmutableMap;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.DomainEvent.DomainType;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
@@ -76,6 +79,14 @@ public class CommonProductServiceImpl extends AbstractBaseProductService<Product
 
 	@Resource
 	private BaseProductRepository<Product> baseProductRepository;
+
+	@PostConstruct
+	private void init() {
+		// NOTE: all products share one cache
+		// 1. clear product cache on tenant updated
+		// 2. clear product cache on aircraft updated, because SalesPackageProduct are referenced on to aircraft
+		registerCacheEvictOnDomainEvent(CACHE_NAME, EnumSet.of(DomainType.TENANT, DomainType.AIRCRAFT));
+	}
 
 	/**
 	 * Find product with the given type and id

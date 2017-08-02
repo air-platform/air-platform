@@ -35,6 +35,9 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.AuthContext;
+import net.aircommunity.platform.model.DomainEvent;
+import net.aircommunity.platform.model.DomainEvent.DomainType;
+import net.aircommunity.platform.model.DomainEvent.Operation;
 import net.aircommunity.platform.model.IdCardInfo;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PointRules;
@@ -86,6 +89,8 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	private static final String VERIFICATION_CODE_FORMAT = "%s" + VERIFICATION_CODE_SEPARATOR + "%s"; // code:timestamp
 	// private static final String EMAIL_BINDING_RESETPASSWORDLINK = "resetPasswordLink";
 	private static final int PASSWORD_LENGTH = 20;
+
+	private static final DomainEvent EVENT_DELETION = new DomainEvent(DomainType.ACCOUNT, Operation.DELETION);
 
 	@Resource
 	private AccountRepository accountRepository;
@@ -464,8 +469,14 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 		default: // noop
 		}
-		return safeExecute(() -> accountRepository.save(account), "Update account %s to %s failed", accountId,
-				newAccount);
+		Account updated = safeExecute(() -> accountRepository.save(account), "Update account %s to %s failed",
+				accountId, newAccount);
+		postDomainEvent(new DomainEvent(DomainType.ACCOUNT, Operation.UPDATE));
+		// some may only listen for tenant update event
+		if (account.getRole() == Role.TENANT) {
+			postDomainEvent(new DomainEvent(DomainType.TENANT, Operation.UPDATE));
+		}
+		return updated;
 	}
 
 	@Transactional
@@ -859,7 +870,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 		String rndPassword = Randoms.randomAlphanumeric(PASSWORD_LENGTH);
 		account.setPassword(passwordEncoder.encode(rndPassword));
-		Account accountUpdated = accountRepository.save(account);
+		Account updated = accountRepository.save(account);
 		Map<String, Object> bindings = new HashMap<>(4);
 		bindings.put(Constants.TEMPLATE_BINDING_USERNAME, account.getNickName());
 		bindings.put(Constants.TEMPLATE_BINDING_COMPANY, configuration.getCompany());
@@ -868,7 +879,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		// bindings.put(EMAIL_BINDING_RESETPASSWORDLINK, "xxx"); // XXX NOT USED FOR NOW
 		String mailBody = templateService.renderFile(Constants.TEMPLATE_MAIL_RESET_PASSOWRD, bindings);
 		mailService.sendMail(auth.getPrincipal(), configuration.getMailResetPasswordSubject(), mailBody);
-		return accountUpdated;
+		return updated;
 	}
 
 	@Transactional
@@ -924,12 +935,12 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		}
 		user.setDailySignin(dailySignin);
 		user.setPoints(user.getPoints() + dailySignin.getPointsEarned());
-		User updatedUser = safeExecute(() -> accountRepository.save(user), "Update user %s for signin", accountId);
+		User updated = safeExecute(() -> accountRepository.save(user), "Update user %s for signin", accountId);
 		// we need set success state, because it's NOT persisted
-		DailySignin updatedSignin = updatedUser.getDailySignin();
+		DailySignin updatedSignin = updated.getDailySignin();
 		updatedSignin.setSuccess(dailySignin.isSuccess());
 		updatedSignin.setPointsEarned(dailySignin.getPointsEarned());
-		return updatedUser;
+		return updated;
 	}
 
 	@Transactional
@@ -961,6 +972,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		accountAuthRepository.deleteByAccountId(account.getId());
 		accountRepository.delete(account);
 		LOG.info("Delete account: {}", account);
+		postDomainEvent(EVENT_DELETION);
 	}
 
 	@Override

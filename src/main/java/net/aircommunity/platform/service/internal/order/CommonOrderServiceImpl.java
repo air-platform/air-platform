@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service.internal.order;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Objects;
 
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableMap;
 
+import net.aircommunity.platform.model.DomainEvent.DomainType;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.domain.Payment;
@@ -46,6 +48,10 @@ public class CommonOrderServiceImpl extends AbstractBaseOrderService<Order>
 	protected void doInitialize() {
 		setOrderProcessor(new CommonOrderProcessor(true/* visibleOrderOnly */, configuration, orderRefRepository,
 				serviceRegistry));
+		// NOTE: all orders share one cache
+		// 1. clear cache on product updated
+		// 2. clear product cache on aircraft updated, because OrderSalesPackage are referenced on to aircraft
+		registerCacheEvictOnDomainEvent(CACHE_NAME, EnumSet.of(DomainType.PRODUCT, DomainType.AIRCRAFT));
 	}
 
 	@Override

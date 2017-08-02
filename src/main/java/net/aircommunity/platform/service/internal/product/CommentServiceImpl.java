@@ -2,7 +2,9 @@ package net.aircommunity.platform.service.internal.product;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.EnumSet;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.micro.common.Maths;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.DomainEvent.DomainType;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.Comment;
@@ -40,6 +43,7 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 	private static final Logger LOG = LoggerFactory.getLogger(CommentServiceImpl.class);
 
 	private static final String CACHE_NAME = "cache.comment";
+	private static final EnumSet<DomainType> INTERESTED_DOMAINS = EnumSet.of(DomainType.ACCOUNT);
 
 	@Resource
 	private CommentRepository commentRepository;
@@ -49,6 +53,11 @@ public class CommentServiceImpl extends AbstractServiceSupport implements Commen
 
 	@Resource(name = "commonOrderService")
 	private CommonOrderService commonOrderService;
+
+	@PostConstruct
+	private void init() {
+		registerCacheEvictOnDomainEvent(CACHE_NAME, INTERESTED_DOMAINS);
+	}
 
 	@Override
 	public long getTotalCommentsCount() {

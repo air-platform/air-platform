@@ -1,5 +1,8 @@
 package net.aircommunity.platform.service.internal.product;
 
+import java.util.EnumSet;
+
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -10,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.DomainEvent.DomainType;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.School;
 import net.aircommunity.platform.model.domain.Tenant;
@@ -31,6 +35,12 @@ public class SchoolServiceImpl extends AbstractServiceSupport implements SchoolS
 
 	@Resource
 	private SchoolRepository schoolRepository;
+
+	@PostConstruct
+	private void init() {
+		// clear cache on tenant updated
+		registerCacheEvictOnDomainEvent(CACHE_NAME, EnumSet.of(DomainType.TENANT));
+	}
 
 	@Transactional
 	@Override

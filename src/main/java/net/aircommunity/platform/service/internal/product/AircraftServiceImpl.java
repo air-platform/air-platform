@@ -1,7 +1,9 @@
 package net.aircommunity.platform.service.internal.product;
 
 import java.util.Date;
+import java.util.EnumSet;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -14,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.DomainEvent;
+import net.aircommunity.platform.model.DomainEvent.DomainType;
+import net.aircommunity.platform.model.DomainEvent.Operation;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Aircraft;
 import net.aircommunity.platform.model.domain.Tenant;
@@ -34,9 +39,17 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 	private static final Logger LOG = LoggerFactory.getLogger(AircraftServiceImpl.class);
 
 	private static final String CACHE_NAME = "cache.aircraft";
+	private static final DomainEvent EVENT_DELETION = new DomainEvent(DomainType.AIRCRAFT, Operation.DELETION);
+	private static final DomainEvent EVENT_UPDATE = new DomainEvent(DomainType.AIRCRAFT, Operation.UPDATE);
 
 	@Resource
 	private AircraftRepository aircraftRepository;
+
+	@PostConstruct
+	private void init() {
+		// clear cache on tenant updated
+		registerCacheEvictOnDomainEvent(CACHE_NAME, EnumSet.of(DomainType.TENANT));
+	}
 
 	@Transactional
 	@Override
@@ -76,8 +89,10 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 					M.msg(M.AIRCRAFT_ALREADY_EXISTS, aircraft.getFlightNo()));
 		}
 		copyProperties(newAircraft, aircraft);
-		return safeExecute(() -> aircraftRepository.save(aircraft), "Update aircraft %s to %s failed", aircraftId,
-				aircraft);
+		Aircraft updated = safeExecute(() -> aircraftRepository.save(aircraft), "Update aircraft %s to %s failed",
+				aircraftId, aircraft);
+		postDomainEvent(EVENT_UPDATE);
+		return updated;
 	}
 
 	@Transactional
@@ -86,11 +101,14 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 	public Aircraft updateAircraftScore(String aircraftId, double newScore) {
 		Aircraft aircraft = findAircraft(aircraftId);
 		if (newScore < 0) {
-			newScore = 0;
+			// skip update in this case
+			return aircraft;
 		}
 		aircraft.setScore(newScore);
-		return safeExecute(() -> aircraftRepository.save(aircraft), "Update aircraft %s to %s failed", aircraftId,
-				aircraft);
+		Aircraft updated = safeExecute(() -> aircraftRepository.save(aircraft), "Update aircraft %s to %s failed",
+				aircraftId, aircraft);
+		postDomainEvent(EVENT_UPDATE);
+		return updated;
 	}
 
 	private void copyProperties(Aircraft src, Aircraft tgt) {
@@ -120,6 +138,7 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 	public void deleteAircraft(String aircraftId) {
 		safeDeletion(aircraftRepository, aircraftId, Codes.AIRCRAFT_CANNOT_BE_DELETED,
 				M.msg(M.AIRCRAFT_CANNOT_BE_DELETED));
+		postDomainEvent(EVENT_DELETION);
 	}
 
 	@Transactional
@@ -128,6 +147,6 @@ public class AircraftServiceImpl extends AbstractServiceSupport implements Aircr
 	public void deleteAircrafts(String tenantId) {
 		safeDeletion(aircraftRepository, () -> aircraftRepository.deleteByVendorId(tenantId),
 				Codes.AIRCRAFT_CANNOT_BE_DELETED, M.msg(M.AIRCRAFTS_CANNOT_BE_DELETED));
+		postDomainEvent(EVENT_DELETION);
 	}
-
 }

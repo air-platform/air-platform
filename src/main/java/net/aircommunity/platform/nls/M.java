@@ -7,4 +7,8 @@ package net.aircommunity.platform.nls;
  */
 public final class M extends LocalizedMessages {
 
+	private M() {
+		throw new AssertionError();
+	}
+
 }

@@ -20,6 +20,9 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.CurrencyUnit;
+import net.aircommunity.platform.model.DomainEvent;
+import net.aircommunity.platform.model.DomainEvent.DomainType;
+import net.aircommunity.platform.model.DomainEvent.Operation;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.CharterableProduct;
 import net.aircommunity.platform.model.domain.Product;
@@ -49,6 +52,8 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 
 	protected static final String CACHE_NAME = "cache.product";
 	protected static final String CACHE_NAME_PRD_FAQ = "cache.product-faq";
+	private static final DomainEvent EVENT_UPDATE = new DomainEvent(DomainType.PRODUCT, Operation.UPDATE);
+	private static final DomainEvent EVENT_DELETION = new DomainEvent(DomainType.PRODUCT, Operation.DELETION);
 
 	// product type
 	protected Class<T> type;
@@ -223,6 +228,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			T updated = safeExecute(() -> getProductRepository().save(product), "Update %s: %s with %s failed",
 					type.getSimpleName(), productId, newProduct);
 			LOG.debug("Product updated: {}", updated);
+			postDomainEvent(EVENT_UPDATE);
 			return updated;
 		}
 		finally {
@@ -239,8 +245,10 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		T product = doFindProduct(productId);
 		int totalSales = product.getTotalSales() + deltaSales;
 		product.setTotalSales(totalSales);
-		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s with new total sales %d failed",
-				type.getSimpleName(), productId, totalSales);
+		T updated = safeExecute(() -> getProductRepository().save(product),
+				"Update %s: %s with new total sales %d failed", type.getSimpleName(), productId, totalSales);
+		postDomainEvent(EVENT_UPDATE);
+		return updated;
 	}
 
 	/**
@@ -250,8 +258,10 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		T product = doFindProduct(productId);
 		int newStock = product.getStock() + deltaStock;
 		product.setStock(newStock);
-		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s with new stock %d failed",
+		T updated = safeExecute(() -> getProductRepository().save(product), "Update %s: %s with new stock %d failed",
 				type.getSimpleName(), productId, newStock);
+		postDomainEvent(EVENT_UPDATE);
+		return updated;
 	}
 
 	/**
@@ -266,7 +276,9 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		}
 		try {
 			product.setPublished(published);
-			return getProductRepository().save(product);
+			T updated = getProductRepository().save(product);
+			postDomainEvent(EVENT_UPDATE);
+			return updated;
 		}
 		catch (Exception e) {
 			LOG.error(String.format("Update %s: %s with published: %b failed, cause: %s", type.getSimpleName(),
@@ -285,7 +297,9 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			if (reviewStatus != ReviewStatus.APPROVED) {
 				product.setRejectedReason(rejectedReason);
 			}
-			return getProductRepository().save(product);
+			T updated = getProductRepository().save(product);
+			postDomainEvent(EVENT_UPDATE);
+			return updated;
 		}
 		catch (Exception e) {
 			LOG.error(String.format("Update %s: %s with approved: %s failed, cause: %s", type.getSimpleName(),
@@ -303,8 +317,10 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			rank = Product.DEFAULT_RANK;
 		}
 		product.setRank(rank);
-		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s to rank: %d",
+		T updated = safeExecute(() -> getProductRepository().save(product), "Update %s: %s to rank: %d",
 				type.getSimpleName(), productId, rank);
+		postDomainEvent(EVENT_UPDATE);
+		return updated;
 	}
 
 	/**
@@ -317,8 +333,10 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			return product;
 		}
 		product.setScore(score);
-		return safeExecute(() -> getProductRepository().save(product), "Update %s: %s score to: %d",
+		T updated = safeExecute(() -> getProductRepository().save(product), "Update %s: %s score to: %d",
 				type.getSimpleName(), productId, score);
+		postDomainEvent(EVENT_UPDATE);
+		return updated;
 	}
 
 	protected void copyProperties(T src, T tgt) {
@@ -450,6 +468,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		doDeleteProductDependencies(productId);
 		safeDeletion(getProductRepository(), productId, Codes.PRODUCT_CANNOT_BE_DELETED,
 				M.msg(M.PRODUCT_CANNOT_BE_DELETED));
+		postDomainEvent(EVENT_DELETION);
 	}
 
 	/**
@@ -461,7 +480,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 		// delete standard products
 		doBatchDeleteProducts(() -> getProductRepository().findByVendorId(tenantId), Codes.PRODUCT_CANNOT_BE_DELETED,
 				M.msg(M.TENANT_PRODUCTS_CANNOT_BE_DELETED, tenantId));
-
+		postDomainEvent(EVENT_DELETION);
 		// doBatchDeleteProductDependencies(() -> getProductRepository().findByVendorId(tenantId));
 		// safeDeletion(getProductRepository(), () -> getProductRepository().deleteByVendorId(tenantId),
 		// Codes.PRODUCT_CANNOT_BE_DELETED, M.msg(M.TENANT_PRODUCTS_CANNOT_BE_DELETED, tenantId));
