@@ -146,6 +146,57 @@ public class Configuration {
 	@Value("${air.idcard.token}")
 	private String idcardToken;
 
+	@Value("${air.ueditor.image-url}")
+	private String ueditorImageUrl;
+
+	@Value("${air.ueditor.image-action-name}")
+	private String ueditorImageActionName;
+
+	@Value("${air.ueditor.image-url-prefix}")
+	private String ueditorImageUrlPrefix;
+
+	@Value("${air.ueditor.image-field-name}")
+	private String ueditorImageFieldName;
+
+	@Value("${air.ueditor.image-max-size}")
+	private int ueditorImageMaxSize;
+
+	@Value("${air.ueditor.image-allow-files}")
+	private String ueditorImageAllowFiles;
+
+	@Value("${air.ueditor.image-compress-enable}")
+	private boolean ueditorImageCompressEnable;
+
+	@Value("${air.ueditor.image-compress-border}")
+	private int ueditorImageCompressBorder;
+
+	@Value("${air.ueditor.image-insert-align}")
+	private String ueditorImageInsertAlign;
+
+	@Value("${air.ueditor.image-path-format}")
+	private String ueditorImagePathFormat;
+
+
+	@Value("${air.ueditor.scrawl-action-name}")
+	private String ueditorScrawlActionName;
+
+	@Value("${air.ueditor.scrawl-field-name}")
+	private String ueditorScrawlFieldName;
+
+	@Value("${air.ueditor.scrawl-path-format}")
+	private String ueditorScrawlPathFormat;
+
+	@Value("${air.ueditor.scrawl-max-size}")
+	private int ueditorScrawlMaxSize;
+
+	@Value("${air.ueditor.scrawl-url-prefix}")
+	private String ueditorScrawlUrlPrefix;
+
+	@Value("${air.ueditor.scrawl-insert-align}")
+	private String ueditorScrawlInsertAlign;
+
+
+
 	@PostConstruct
 	private void init() {
 		boolean useTls = isUseTls();
@@ -351,7 +402,71 @@ public class Configuration {
 		return idcardToken;
 	}
 
-	// private static final String AUTH_METHODS_SEP = ",";
+	public String getUeditorImageUrl() {
+		return ueditorImageUrl;
+	}
+
+	public String getUeditorImageActionName() {
+		return ueditorImageActionName;
+	}
+
+	public String getUeditorImageUrlPrefix() {
+		return ueditorImageUrlPrefix;
+	}
+
+	public String getUeditorImageFieldName() {
+		return ueditorImageFieldName;
+	}
+
+	public int getUeditorImageMaxSize() {
+		return ueditorImageMaxSize;
+	}
+
+	public String getUeditorImageAllowFiles() {
+		return ueditorImageAllowFiles;
+	}
+
+	public boolean isUeditorImageCompressEnable() {
+		return ueditorImageCompressEnable;
+	}
+
+	public int getUeditorImageCompressBorder() {
+		return ueditorImageCompressBorder;
+	}
+
+	public String getUeditorImageInsertAlign() {
+		return ueditorImageInsertAlign;
+	}
+
+	public String getUeditorImagePathFormat() {
+		return ueditorImagePathFormat;
+	}
+
+	public String getUeditorScrawlActionName() {
+		return ueditorScrawlActionName;
+	}
+
+	public String getUeditorScrawlFieldName() {
+		return ueditorScrawlFieldName;
+	}
+
+	public String getUeditorScrawlPathFormat() {
+		return ueditorScrawlPathFormat;
+	}
+
+	public int getUeditorScrawlMaxSize() {
+		return ueditorScrawlMaxSize;
+	}
+
+	public String getUeditorScrawlUrlPrefix() {
+		return ueditorScrawlUrlPrefix;
+	}
+
+	public String getUeditorScrawlInsertAlign() {
+		return ueditorScrawlInsertAlign;
+	}
+
+// private static final String AUTH_METHODS_SEP = ",";
 	// @Value("${air.security.auth-methods}")
 	// private String authMethods;
 	// public Set<String> getAuthMethods() {
