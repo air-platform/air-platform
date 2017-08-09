@@ -76,10 +76,15 @@ public abstract class Product extends Reviewable {
 	@Column(name = "category", length = PRODUCT_CATEGORY_LEN, nullable = false)
 	protected Category category;
 
-	// product image
+	// product image normal size
 	@Size(max = IMAGE_URL_LEN)
 	@Column(name = "image", length = IMAGE_URL_LEN)
 	protected String image;
+
+	// product image small size
+	@Size(max = IMAGE_URL_LEN)
+	@Column(name = "image_small", length = IMAGE_URL_LEN)
+	protected String imageSmall;
 
 	// product stock
 	@Min(UNLIMITED_STOCK)
@@ -170,6 +175,14 @@ public abstract class Product extends Reviewable {
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+
+	public String getImageSmall() {
+		return imageSmall;
+	}
+
+	public void setImageSmall(String imageSmall) {
+		this.imageSmall = imageSmall;
 	}
 
 	public double getScore() {

@@ -110,6 +110,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			}
 			newProduct.setName(product.getName());
 			newProduct.setImage(product.getImage());
+			newProduct.setImageSmall(product.getImageSmall());
 			newProduct.setClientManagers(product.getClientManagers());
 			newProduct.setDescription(product.getDescription());
 			newProduct.setRank(Product.DEFAULT_RANK);
@@ -204,6 +205,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			T product = doFindProduct(productId);
 			product.setName(newProduct.getName());
 			product.setImage(newProduct.getImage());
+			product.setImageSmall(newProduct.getImageSmall());
 			product.setClientManagers(newProduct.getClientManagers());
 			product.setDescription(newProduct.getDescription());
 			// standard
