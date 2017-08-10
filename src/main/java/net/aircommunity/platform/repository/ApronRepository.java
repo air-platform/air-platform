@@ -41,6 +41,8 @@ public interface ApronRepository extends JpaRepository<Apron, String> {
 
 	List<Apron> findByCityContainingIgnoreCaseAndPublishedTrue(String city);
 
+	List<Apron> findByPublishedTrue();
+
 	List<Apron> findByCityContainingIgnoreCaseAndTypeAndPublishedTrue(String city, Type type);
 
 	/**

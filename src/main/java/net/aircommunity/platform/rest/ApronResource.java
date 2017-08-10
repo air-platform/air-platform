@@ -1,5 +1,6 @@
 package net.aircommunity.platform.rest;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -105,6 +106,27 @@ public class ApronResource {
 			return Response.ok(apronService.listPublishedCityAprons(city, type)).build();
 		}
 		return Response.ok(Collections.emptyList()).build();
+	}
+
+	/**
+	 * List neareast aprons
+	 */
+	@GET
+	@PermitAll
+	@Path("listNear")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
+	public Response listNear(@QueryParam("province") String province, @QueryParam("type") Type type,
+							 @NotNull @QueryParam("latitude") double latitude, @NotNull @QueryParam("longitude") double longitude,
+							 @QueryParam("distance") @DefaultValue("5") int distance,
+							 @QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize,
+							 @Context SecurityContext context) {
+
+		LOG.info("List near aprons with province: {} latitude: {} longitude: {} type: {} distance {} page: {} pageSize: {}",
+				province, latitude, longitude, type, distance, page, pageSize);
+
+		// if province is present, returned aprons must be in this province
+		return Response.ok(apronService.listNearPublishedAprons(province, distance, latitude, longitude, type)).build();
 	}
 
 	/**
