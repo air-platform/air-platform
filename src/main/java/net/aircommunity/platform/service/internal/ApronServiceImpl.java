@@ -1,5 +1,6 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,9 +40,30 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 
 	private static final String CACHE_NAME = "cache.apron";
 	private static final String APRONS_INFO = "data/aprons.json";
-
+	// earth radius
+	private static final double EARTH_RADIUS = 6378.137;
 	@Resource
 	private ApronRepository apronRepository;
+
+
+	private static double rad(double d)
+	{
+		return d * Math.PI / 180.0;
+	}
+	public static double GetDistance(double lat1, double lng1, double lat2, double lng2)
+	{
+		double radLat1 = rad(lat1);
+		double radLat2 = rad(lat2);
+		double a = radLat1 - radLat2;
+		double b = rad(lng1) - rad(lng2);
+
+		double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +
+				Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+		s = s * EARTH_RADIUS;
+		s = Math.round(s * 10000) / 10000;
+		return s;
+	}
+
 
 	@PostConstruct
 	private void init() {
@@ -125,6 +147,31 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 	@Override
 	public List<Apron> listPublishedProvinceAprons(String province, Type type) {
 		return apronRepository.findPublishedByFuzzyProvince(province, type);
+	}
+
+
+	@Override
+	public List<Apron> listNearPublishedAprons(String province, int distance, double latitude, double longitude, Type type) {
+
+		List<Apron> la = null;
+		if (Strings.isNotBlank(province)) {
+			la = apronRepository.findPublishedByFuzzyProvince(province, type);
+		} else {
+			la = apronRepository.findByPublishedTrue();
+		}
+
+		Iterator<Apron> iter = la.iterator();
+		while (iter.hasNext()) {
+			Apron s = iter.next();
+			double curLat = s.getLocation().getLatitude().doubleValue();
+			double curLon = s.getLocation().getLongitude().doubleValue();
+			double dist = GetDistance(latitude, longitude, curLat, curLon);
+			LOG.debug("Get dist: {}, {}, {}, {}, {}", dist, latitude, longitude, curLat, curLon);
+			if (dist > distance) {
+				iter.remove();
+			}
+		}
+		return la;
 	}
 
 	@Override
