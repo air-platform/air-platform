@@ -195,6 +195,11 @@ public class Configuration {
 	@Value("${air.ueditor.scrawl-insert-align}")
 	private String ueditorScrawlInsertAlign;
 
+	@Value("${air.notification.master-secret}")
+	private String notificationMasterSecret;
+
+	@Value("${air.notification.app-key}")
+	private String notificationAppKey;
 
 
 	@PostConstruct
@@ -466,7 +471,15 @@ public class Configuration {
 		return ueditorScrawlInsertAlign;
 	}
 
-// private static final String AUTH_METHODS_SEP = ",";
+	public String getNotificationMasterSecret() {
+		return notificationMasterSecret;
+	}
+
+	public String getNotificationAppKey() {
+		return notificationAppKey;
+	}
+
+	// private static final String AUTH_METHODS_SEP = ",";
 	// @Value("${air.security.auth-methods}")
 	// private String authMethods;
 	// public Set<String> getAuthMethods() {
