@@ -104,6 +104,14 @@
 			<systemPath>${lib-path}/com/alidayu/${alidayu.version}/taobao-sdk-java-auto_1455552377940-20160607.jar</systemPath>
 		</dependency>
 
+		<!-- notification -->
+		<dependency>
+			<groupId>cn.jpush.api</groupId>
+			<artifactId>jpush-client</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
+
 		<!-- payment -->
 		<dependency>
 			<groupId>com.alipay</groupId>

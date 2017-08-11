@@ -154,6 +154,7 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 	public List<Apron> listNearPublishedAprons(String province, int distance, double latitude, double longitude, Type type) {
 
 		List<Apron> la = null;
+		double curLat, curLon;
 		if (Strings.isNotBlank(province)) {
 			la = apronRepository.findPublishedByFuzzyProvince(province, type);
 		} else {
@@ -163,10 +164,10 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 		Iterator<Apron> iter = la.iterator();
 		while (iter.hasNext()) {
 			Apron s = iter.next();
-			double curLat = s.getLocation().getLatitude().doubleValue();
-			double curLon = s.getLocation().getLongitude().doubleValue();
+			curLat = s.getLocation().getLatitude().doubleValue();
+			curLon = s.getLocation().getLongitude().doubleValue();
+			//TODO Use baidu map sdk to get accurate distance
 			double dist = GetDistance(latitude, longitude, curLat, curLon);
-			LOG.debug("Get dist: {}, {}, {}, {}, {}", dist, latitude, longitude, curLat, curLon);
 			if (dist > distance) {
 				iter.remove();
 			}
