@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -42,7 +43,7 @@ public class NotificationResource {
 	@POST
 	@Path("send")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll
+	@RolesAllowed({ Roles.ROLE_ADMIN})
 	public Response sendNotification(@NotNull @QueryParam("message") String message) {
 		LOG.debug("Get notification {}", message);
 		notificationService.sendNotification(message);
