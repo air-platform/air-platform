@@ -91,6 +91,8 @@ public final class Codes {
 	public static final Code AIRPORT_NOT_FOUND = Code.notFound(11_003_2010);
 	public static final Code AIRPORT_ALREADY_EXISTS = Code.notFound(11_003_2011);
 	public static final Code AIRPORT_INVALID_CODE = Code.invalidArgument(11_003_2012);
+	public static final Code CITYSITE_NOT_FOUND = Code.notFound(11_003_2013);
+
 
 	// fleet
 	public static final Code FLEET_NOT_FOUND = Code.notFound(11_004_0001);

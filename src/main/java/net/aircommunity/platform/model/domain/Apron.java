@@ -135,7 +135,7 @@ public class Apron extends Persistable {
 	 * apron type
 	 */
 	public enum Type {
-		HELICOPTER, AERODROME;
+		HELICOPTER, AERODROME, EMERGENCT, PRIVATE;
 
 		public static Type fromString(String value) {
 			for (Type e : values()) {

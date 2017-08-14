@@ -105,6 +105,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String AIRCRAFT_ALREADY_EXISTS;
 	public static String AIRCRAFT_NOT_FOUND;
 	public static String SALESPACKAGE_NOT_FOUND;
+	public static String CITYSITE_NOT_FOUND;
 
 	// comment
 	public static String COMMENT_NOT_ALLOWED;

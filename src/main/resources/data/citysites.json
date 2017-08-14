@@ -1,0 +1,362 @@
+[
+	{
+		"city": "天津",
+		"name": "天津塘沽机场",
+		"address": "测试数据",
+		"location": {
+			"longitude": 117.672417,
+			"latitude": 38.905167
+		}
+	},
+	{
+		"city": "北京",
+		"name": "奥体中心",
+		"address": "测试数据",
+		"location": {
+			"longitude": 116.402053,
+			"latitude": 39.982667
+		}
+	},
+	{
+		"city": "北京",
+		"name": "国家体育场",
+		"address": "测试数据",
+		"location": {
+			"longitude": 116.396225,
+			"latitude": 39.996267
+		}
+	},
+	{
+		"city": "北京",
+		"name": "健一公馆",
+		"address": "测试数据",
+		"location": {
+			"longitude": 116.4825,
+			"latitude": 39.925278
+		}
+	},
+	{
+		"city": "北京",
+		"name": "八达岭国际会议中心",
+		"address": "测试数据",
+		"location": {
+			"longitude": 115.975278,
+			"latitude": 40.471667
+		}
+	},
+	{
+		"city": "北京",
+		"name": "北京欢乐谷",
+		"address": "测试数据",
+		"location": {
+			"longitude": 116.492778,
+			"latitude": 39.865
+		}
+	},
+	{
+		"city": "北京",
+		"name": "北京航空航天大学操场",
+		"address": "测试数据",
+		"location": {
+			"longitude": 116.339444,
+			"latitude": 39.979444
+		}
+	},
+	{
+		"city": "北京",
+		"name": "奥林匹克森林公园",
+		"address": "测试数据",
+		"location": {
+			"longitude": 116.368889,
+			"latitude": 40.010833
+		}
+	},
+	{
+		"city": "北京",
+		"name": "酷车小镇",
+		"address": "测试数据",
+		"location": {
+			"longitude": 116.495278,
+			"latitude": 39.871389
+		}
+	},
+	{
+		"city": "北京",
+		"name": "798艺术区",
+		"address": "测试数据",
+		"location": {
+			"longitude": 116.4925,
+			"latitude": 39.981667
+		}
+	},
+	{
+		"city": "北京",
+		"name": "国家会议中心",
+		"address": "测试数据",
+		"location": {
+			"longitude": 116.379444,
+			"latitude": 39.999722
+		}
+	},
+	{
+		"city": "天津",
+		"name": "天津滨海新区天平镇",
+		"address": "测试数据",
+		"location": {
+			"longitude": 117.311667,
+			"latitude": 38.564167
+		}
+	},
+	{
+		"city": "天津",
+		"name": "天津空港中航工业园",
+		"address": "测试数据",
+		"location": {
+			"longitude": 117.436944,
+			"latitude": 39.106944
+		}
+	},
+	{
+		"city": "天津",
+		"name": "蓟县黄崖关",
+		"address": "测试数据",
+		"location": {
+			"longitude": 117.441944,
+			"latitude": 40.239722
+		}
+	},
+	{
+		"city": "天津",
+		"name": "蓟县桑园",
+		"address": "测试数据",
+		"location": {
+			"longitude": 117.371944,
+			"latitude": 40.1625
+		}
+	},
+	{
+		"city": "上海",
+		"name": "上海万达广场江桥店",
+		"address": "测试数据",
+		"location": {
+			"longitude": 121.3216667,
+			"latitude": 31.24138889
+		}
+	},
+	{
+		"city": "上海",
+		"name": "上海万达广场松江店",
+		"address": "测试数据",
+		"location": {
+			"longitude": 121.2377778,
+			"latitude": 31.05916667
+		}
+	},
+	{
+		"city": "三亚市",
+		"name": "海航旅游学院草坪",
+		"address": "测试数据",
+		"location": {
+			"longitude": 109.485,
+			"latitude": 18.29361111
+		}
+	},
+	{
+		"city": "三亚市",
+		"name": "海航旅游学院机坪",
+		"address": "测试数据",
+		"location": {
+			"longitude": 109.4902778,
+			"latitude": 18.29166667
+		}
+	},
+	{
+		"city": "三亚市",
+		"name": "蜈支洲岛内篮球场",
+		"address": "测试数据",
+		"location": {
+			"longitude": 109.7622222,
+			"latitude": 18.31305556
+		}
+	},
+	{
+		"city": "三亚市",
+		"name": "康莱德酒店草地",
+		"address": "测试数据",
+		"location": {
+			"longitude": 109.735,
+			"latitude": 18.33333333
+		}
+	},
+	{
+		"city": "三亚市",
+		"name": "301海南分院",
+		"address": "测试数据",
+		"location": {
+			"longitude": 109.71,
+			"latitude": 18.29361111
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "海航广场",
+		"address": "测试数据",
+		"location": {
+			"longitude": 110.3402778,
+			"latitude": 20.0175
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "新国宾馆",
+		"address": "测试数据",
+		"location": {
+			"longitude": 110.2144444,
+			"latitude": 20.0525
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "鸿州内广场",
+		"address": "测试数据",
+		"location": {
+			"longitude": 109.5069444,
+			"latitude": 18.23361111
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "国兴城售楼处停车场",
+		"address": "测试数据",
+		"location": {
+			"longitude": 110.3522222,
+			"latitude": 20.02027778
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "望海国际广场",
+		"address": "测试数据",
+		"location": {
+			"longitude": 110.3402778,
+			"latitude": 20.03333333
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "美兰机场",
+		"address": "测试数据",
+		"location": {
+			"longitude": 110.4511111,
+			"latitude": 19.93888889
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "康乐园草坪",
+		"address": "测试数据",
+		"location": {
+			"longitude": 110.2252778,
+			"latitude": 18.76055556
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "博鳌机场",
+		"address": "测试数据",
+		"location": {
+			"longitude": 110.4572222,
+			"latitude": 19.14111111
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "新国宾馆",
+		"address": "测试数据",
+		"location": {
+			"longitude": 110.2144444,
+			"latitude": 20.05194444
+		}
+	},
+	{
+		"city": "三亚市",
+		"name": "亚太会议中心内",
+		"address": "测试数据",
+		"location": {
+			"longitude": 109.3886111,
+			"latitude": 18.29166667
+		}
+	},
+	{
+		"city": "重庆",
+		"name": "荣昌板桥工业园五支路2号",
+		"address": "测试数据",
+		"location": {
+			"longitude": 105.6277778,
+			"latitude": 29.40972222
+		}
+	},
+	{
+		"city": "重庆",
+		"name": "荣昌大道东段富吉集团",
+		"address": "测试数据",
+		"location": {
+			"longitude": 105.6258333,
+			"latitude": 29.40638889
+		}
+	},
+	{
+		"city": "重庆",
+		"name": "板桥工业园灵方大道江特表面处理公司",
+		"address": "测试数据",
+		"location": {
+			"longitude": 105.6405556,
+			"latitude": 29.40638889
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "博鳌机场",
+		"address": "测试数据",
+		"location": {
+			"longitude": 110.4572222,
+			"latitude": 19.14111111
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "新国宾馆",
+		"address": "测试数据",
+		"location": {
+			"longitude": 110.2144444,
+			"latitude": 20.05194444
+		}
+	},
+	{
+		"city": "三亚市",
+		"name": "亚太会议中心内",
+		"address": "测试数据",
+		"location": {
+			"longitude": 109.3886111,
+			"latitude": 18.29166667
+		}
+	},
+	{
+		"city": "北京",
+		"name": "国家会议中心",
+		"address": "测试数据",
+		"location": {
+			"longitude": 116.3794444,
+			"latitude": 39.99972222
+		}
+	},
+	{
+		"city": "三亚市",
+		"name": "海棠湾红树林酒店",
+		"address": "测试数据",
+		"location": {
+			"longitude": 109.7341667,
+			"latitude": 18.34111111
+		}
+	}
+]
