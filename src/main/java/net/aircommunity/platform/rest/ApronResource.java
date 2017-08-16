@@ -94,6 +94,15 @@ public class ApronResource {
 		LOG.debug("List all aprons with page: {} pageSize: {}", page, pageSize);
 		// for ADMIN with pagination and without filtered by published
 		if (context.isUserInRole(Roles.ROLE_ADMIN)) {
+
+			if (Strings.isNotBlank(province)) {
+				return Response.ok(apronService.listPublishedProvinceAprons(province, type)).build();
+			}
+			// city
+			if (Strings.isNotBlank(city)) {
+				return Response.ok(apronService.listPublishedCityAprons(city, type)).build();
+			}
+
 			return Response.ok(apronService.listAprons(page, pageSize)).build();
 		}
 		// if province and city both present, city is ignored, both absent, empty is returned
