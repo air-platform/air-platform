@@ -142,4 +142,9 @@ interface DomainConstants {
 	int IMAGE_URL_LEN = URL_LEN;
 	// Link type (product | content)
 	int LINK_TYPE_LEN = 8;
+
+	// push notification type
+	int PUSH_NOTIFICATION_TYPE_LEN = 15;
+	// push notification status
+	int PUSH_NOTIFICATION_STATUS_LEN = 15;
 }

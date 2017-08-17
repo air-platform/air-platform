@@ -163,6 +163,10 @@ public class LocalizedMessages extends NLSResource {
 	// internal server error
 	public static String INTERNAL_SERVER_ERROR;
 
+	//push notification
+	public static String PUSHNOTIFICATION_NOT_FOUND;
+	public static String PUSHNOTIFICATION_CANNOT_BE_DELETED;
+
 	/**
 	 * Bind the messageId with bindings.
 	 * 

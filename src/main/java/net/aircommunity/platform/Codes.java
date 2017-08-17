@@ -136,6 +136,11 @@ public final class Codes {
 	// air class
 	public static final Code AIRCLASS_NOT_FOUND = Code.notFound(11_014_0001);
 
+
+	//push noitification
+	public static final Code PUSHNOTIFICATION_NOT_FOUND = Code.notFound(11_015_0001);
+	public static final Code PUSHNOTIFICATION_CANNOT_BE_DELETED = Code.illegalState(11_015_0002);
+
 	private Codes() {
 		throw new AssertionError();
 	}

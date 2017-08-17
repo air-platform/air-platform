@@ -19,6 +19,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import net.aircommunity.platform.rest.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +37,6 @@ import net.aircommunity.platform.model.metrics.AccountMetrics;
 import net.aircommunity.platform.model.metrics.OrderMetrics;
 import net.aircommunity.platform.model.metrics.ProductMetrics;
 import net.aircommunity.platform.model.metrics.TradeMetrics;
-import net.aircommunity.platform.rest.AirClassResource;
-import net.aircommunity.platform.rest.AirportResource;
-import net.aircommunity.platform.rest.BannerResource;
-import net.aircommunity.platform.rest.BaseResourceSupport;
-import net.aircommunity.platform.rest.CommentResource;
-import net.aircommunity.platform.rest.PromotionResource;
 import net.aircommunity.platform.rest.admin.order.AdminOrderResource;
 import net.aircommunity.platform.rest.admin.product.AdminAirJetResource;
 import net.aircommunity.platform.rest.admin.product.AdminAirTaxiResource;
@@ -102,6 +97,8 @@ public class AdminResource extends BaseResourceSupport {
 
 	@Resource
 	private AccountService accountService;
+
+
 
 	/**
 	 * Ping server to make sure server is still responsive, it is used for monitoring purpose.
@@ -667,4 +664,13 @@ public class AdminResource extends BaseResourceSupport {
 	public UserCourseOrderResource userCourseOrders(@PathParam("userId") String userId) {
 		return userCourseOrderResource;
 	}
+
+
+	@Resource
+	private PushNotificationResource pushNotificationResource;
+	@Path("pushnotifications")
+	public PushNotificationResource pushnotifications() {
+		return pushNotificationResource;
+	}
+
 }
