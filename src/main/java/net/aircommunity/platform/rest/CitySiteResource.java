@@ -63,18 +63,14 @@ public class CitySiteResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Response listAll(@QueryParam("city") String city,
-			@QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
+			@QueryParam("page") @DefaultValue("1") int page,
+			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
 		LOG.debug("List all city sites with page: {} pageSize: {}", page, pageSize);
-		// for ADMIN with pagination and without filtered by published
-		if (context.isUserInRole(Roles.ROLE_ADMIN)) {
-			return Response.ok(citySiteService.listCitySites(page, pageSize)).build();
-		}
 		// city
 		if (Strings.isNotBlank(city)) {
 			return Response.ok(citySiteService.listCitySitesByCity(city)).build();
 		}
-		return Response.ok(Collections.emptyList()).build();
+		return Response.ok(citySiteService.listCitySites(page, pageSize)).build();
 	}
 
 
