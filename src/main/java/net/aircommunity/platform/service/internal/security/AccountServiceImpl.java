@@ -1,16 +1,13 @@
 package net.aircommunity.platform.service.internal.security;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.SecurityContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +89,8 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	private static final DomainEvent EVENT_DELETION = new DomainEvent(DomainType.ACCOUNT, Operation.DELETION);
 
+
+
 	@Resource
 	private AccountRepository accountRepository;
 
@@ -151,6 +150,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		catch (Exception e) {
 			throw new AirException(Codes.INTERNAL_ERROR, M.msg(M.INTERNAL_SERVER_ERROR), e);
 		}
+		registerPushNotificationEvent(EnumSet.of(DomainType.POINT));
 		emailConfirmationLink = configuration.getApiBaseUrl() + EMAIL_CONFIRMATION_LINK_FORMAT;
 	}
 
@@ -713,6 +713,9 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	public Account updateUserPoints(String accountId, long deltaPoints) {
 		User user = findAccount(accountId, User.class);
 		user.setPoints(user.getPoints() + deltaPoints);
+		DomainEvent de = new DomainEvent(DomainType.POINT, Operation.PUSH_NOTIFICATION);
+		de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID, accountId);
+		postDomainEvent(de);
 		return safeExecute(() -> accountRepository.save(user), "Update user %s points with delta %s failed", accountId,
 				deltaPoints);
 	}

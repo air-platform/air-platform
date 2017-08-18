@@ -67,11 +67,8 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
 
 	}
 
-	@Override
-	public PushNotification sendNotification(String pushNotificationId) {
 
-        PushNotification pn = findPushNotification(pushNotificationId);
-
+    private void doPushNotification(PushNotification pn){
         String message;
         if(pn.getType() == PushNotification.Type.PLAIN_TEXT){
             message = pn.getMessage();
@@ -79,31 +76,49 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
             message = pn.getRichTextLink();
         }
 
-		PushPayload payload = PushPayload.alertAll(message);
+        PushPayload payload = PushPayload.alertAll(message);
 
-		try {
-			PushResult result = jpushClient.sendPush(payload);
-			if(result.isResultOK()){
+        try {
+            PushResult result = jpushClient.sendPush(payload);
+            if(result.isResultOK()){
                 pn.setStatus(PushNotification.Status.PUSH_SUCCESS);
                 pn.setLastSendDate(new Date());
             }else{
                 pn.setStatus(PushNotification.Status.PUSH_FAILED);
             }
 
-            PushNotification updated = safeExecute(() -> pushNotificationRepository.save(pn), "Update pushnotification %s to %s failed",
-                    pushNotificationId, pn);
 
+        } catch (APIConnectionException e) {
+            LOG.error("Push notification connection error, should retry later", e);
+        } catch (APIRequestException e) {
+            // Should review the error, and fix the request
+            LOG.error("Should review the error, and fix the request", e);
+            LOG.error("HTTP Status: " + e.getStatus());
+            LOG.error("Error Code: " + e.getErrorCode());
+            LOG.error("Error Message: " + e.getErrorMessage());
+        }
 
-		} catch (APIConnectionException e) {
-			LOG.error("Push notification connection error, should retry later", e);
-		} catch (APIRequestException e) {
-			// Should review the error, and fix the request
-			LOG.error("Should review the error, and fix the request", e);
-			LOG.error("HTTP Status: " + e.getStatus());
-			LOG.error("Error Code: " + e.getErrorCode());
-			LOG.error("Error Message: " + e.getErrorMessage());
-		}
+    }
 
+    @Override
+    public PushNotification sendInstantPushNotification(PushNotification pushNotification)
+    {
+
+        PushNotification newPushNotification = new PushNotification();
+        copyProperties(pushNotification, newPushNotification);
+        newPushNotification.setCreationDate(new Date());
+        newPushNotification.setStatus(PushNotification.Status.NONE_PUSH);
+        doPushNotification(newPushNotification);
+        return safeExecute(() -> pushNotificationRepository.save(newPushNotification), "Create PushNotification %s failed", newPushNotification);
+    }
+
+	@Override
+	public PushNotification sendNotification(String pushNotificationId) {
+
+        PushNotification pn = findPushNotification(pushNotificationId);
+        doPushNotification(pn);
+        PushNotification updated = safeExecute(() -> pushNotificationRepository.save(pn), "Update pushnotification %s to %s failed",
+                pushNotificationId, pn);
 		return pn;
 	}
 
@@ -115,7 +130,10 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
         newPushNotification.setCreationDate(new Date());
         newPushNotification.setStatus(PushNotification.Status.NONE_PUSH);
         return safeExecute(() -> pushNotificationRepository.save(newPushNotification), "Create PushNotification %s failed", pushNotification);
-    }
+
+
+
+	}
 
     @Cacheable(cacheNames = CACHE_NAME)
     @Override
@@ -160,6 +178,8 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
         tgt.setMessage(src.getMessage());
         tgt.setRichTextLink(src.getRichTextLink());
         tgt.setType(src.getType());
+        tgt.setAlias(src.getAlias());
+        tgt.setOwner(src.getOwner());
     }
 
 

@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model.domain;
 
 import io.micro.annotation.constraint.NotEmpty;
+import net.aircommunity.platform.model.jaxb.AccountAdapter;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 
@@ -49,6 +51,34 @@ public class PushNotification extends Persistable {
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "last_send_date")
 	private Date lastSendDate;
+
+	@Column(name = "alias", length = PUSH_NOTIFICATION_ALIAS_LEN)
+	private String alias;
+
+
+
+	@XmlElement
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	@XmlJavaTypeAdapter(AccountAdapter.class)
+	protected User owner;
+
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+
+	public User getOwner() {
+		return owner;
+	}
+
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
 
 	public Status getStatus() {
 		return status;

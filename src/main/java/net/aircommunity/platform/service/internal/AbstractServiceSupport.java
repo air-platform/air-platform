@@ -1,16 +1,17 @@
 package net.aircommunity.platform.service.internal;
 
 import java.io.Serializable;
-import java.util.EnumSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import javax.annotation.Resource;
 
+import net.aircommunity.platform.*;
+import net.aircommunity.platform.model.domain.*;
+import net.aircommunity.platform.repository.AccountAuthRepository;
+import net.aircommunity.platform.service.common.PushNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.metrics.GaugeService;
@@ -27,22 +28,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.eventbus.EventBus;
 
-import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.Code;
-import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.DomainEvent;
 import net.aircommunity.platform.model.DomainEvent.DomainType;
 import net.aircommunity.platform.model.DomainEvent.Operation;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.domain.Account;
-import net.aircommunity.platform.model.domain.AirTaxi;
-import net.aircommunity.platform.model.domain.AirTour;
-import net.aircommunity.platform.model.domain.AirTransport;
-import net.aircommunity.platform.model.domain.Course;
-import net.aircommunity.platform.model.domain.FerryFlight;
-import net.aircommunity.platform.model.domain.Fleet;
-import net.aircommunity.platform.model.domain.JetTravel;
 import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.SettingRepository;
@@ -137,6 +126,12 @@ public abstract class AbstractServiceSupport {
 	@Resource
 	protected CacheManager cacheManager;
 
+	@Resource
+	protected PushNotificationService pushNotificationService;
+
+	@Resource
+	private AccountAuthRepository accountAuthRepository;
+
 	protected Timer orderOperationTimer(Class<?> type, String action) {
 		Type t = typeMapping.get(type);
 		return metricRegistry.timer(orderMetricName(t, action));
@@ -194,6 +189,46 @@ public abstract class AbstractServiceSupport {
 		registerCacheEvictOnDomainEvent(cacheName, interestedDomains, PREDICATE_ALWAYS);
 	}
 
+
+
+	protected void registerPushNotificationEvent(EnumSet<DomainType> interestedDomains) {
+		registerPushNotificationOnDomainEvent(interestedDomains, PREDICATE_ALWAYS);
+	}
+	/**
+	 * Register domain event to evict cache on UPDATE and DELETION.
+	 *
+	 * @param interestedDomains the interested domains
+	 */
+	protected void registerPushNotificationOnDomainEvent(EnumSet<DomainType> interestedDomains,
+												   Predicate<DomainEvent> when) {
+		Objects.requireNonNull(interestedDomains, "interestedDomains cannot be null");
+		Objects.requireNonNull(when, "when cannot be null");
+		registerDomainEventHandler(event -> {
+			LOG.debug("Received domain event: {}", event);
+			boolean notificationRequired = event.getOperation() == Operation.PUSH_NOTIFICATION;
+			if (interestedDomains.contains(event.getType()) && notificationRequired && when.test(event)) {
+				PushNotification pf = new PushNotification();
+				String accountId = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID).toString();
+				User user = findAccount(accountId, User.class);
+				List<AccountAuth> auth = accountAuthRepository.findByAccountId(accountId);
+
+				pf.setType(PushNotification.Type.PLAIN_TEXT);
+				pf.setAlias(auth.get(0).getPrincipal());
+				pf.setOwner(user);
+
+				if(event.getType() == DomainType.ORDER){
+					pf.setMessage("this is an order notification.");
+				}else if(event.getType() == DomainType.POINT){
+					pf.setMessage("this is an point notification.");
+				}
+				pushNotificationService.sendInstantPushNotification(pf);
+			}
+		});
+
+	}
+
+
+
 	/**
 	 * Register domain event to evict cache on UPDATE and DELETION.
 	 * 
@@ -219,7 +254,7 @@ public abstract class AbstractServiceSupport {
 	/**
 	 * Register domain event handler
 	 * 
-	 * @param event the domain event consumer
+	 * @param consumer the domain event consumer
 	 */
 	protected void registerDomainEventHandler(Consumer<DomainEvent> consumer) {
 		eventBus.register(new DomainEvent.Handler(consumer));

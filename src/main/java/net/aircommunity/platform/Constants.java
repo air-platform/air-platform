@@ -66,6 +66,10 @@ public final class Constants {
 	public static final String TEMPLATE_BINDING_VERIFICATIONLINK = "verificationLink";
 	public static final String TEMPLATE_BINDING_RNDPASSWORD = "rndPassword";
 
+	//push notifications
+	public static final String TEMPLATE_PUSHNOTIFICATION_ALIAS = "alias";
+	public static final String TEMPLATE_PUSHNOTIFICATION_USERID = "userid";
+	public static final String TEMPLATE_PUSHNOTIFICATION_ACCOUNTID = "accountid";
 	// any constants put here
 
 	private Constants() {

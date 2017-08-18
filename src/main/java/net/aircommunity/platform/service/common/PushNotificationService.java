@@ -12,9 +12,11 @@ public interface PushNotificationService {
 
 	/**
 	 * Send push notification to an mobile
-	 * @param message the push notification to be sent
+	 * @param pushNotificationId the push notification to be sent
 	 */
-	PushNotification sendNotification(String message);
+	PushNotification sendNotification(String pushNotificationId);
+
+	PushNotification sendInstantPushNotification(PushNotification pushNotification);
 
 	PushNotification createPushNotification(PushNotification pushNotification);
 	PushNotification findPushNotification(String pushNotificationId);

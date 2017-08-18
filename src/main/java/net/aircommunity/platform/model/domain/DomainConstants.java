@@ -147,4 +147,7 @@ interface DomainConstants {
 	int PUSH_NOTIFICATION_TYPE_LEN = 15;
 	// push notification status
 	int PUSH_NOTIFICATION_STATUS_LEN = 15;
+
+	//make alias the same length as principal len;
+	int PUSH_NOTIFICATION_ALIAS_LEN = ACCOUNT_PRINCIPAL_LEN;
 }
