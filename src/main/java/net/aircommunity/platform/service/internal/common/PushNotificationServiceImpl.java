@@ -5,8 +5,15 @@ import cn.jiguang.common.resp.APIConnectionException;
 import cn.jiguang.common.resp.APIRequestException;
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.push.PushResult;
+import cn.jpush.api.push.model.Message;
+import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
+import cn.jpush.api.push.model.SMS;
+import cn.jpush.api.push.model.audience.Audience;
+import cn.jpush.api.push.model.audience.AudienceTarget;
+import cn.jpush.api.push.model.notification.Notification;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import com.sun.org.apache.bcel.internal.generic.PUSH;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
@@ -76,7 +83,28 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
             message = pn.getRichTextLink();
         }
 
-        PushPayload payload = PushPayload.alertAll(message);
+        PushPayload payload;
+        //SMS sms = SMS.content("Test SMS", 10);
+
+        //PushPayload payload = PushPayload.alertAll("test1", sms);
+        /*PushPayload payload = PushPayload.newBuilder()
+                .setPlatform(Platform.android_ios())
+                .setNotification(Notification.)
+                .build();*/
+
+        LOG.debug("push notification alias {}",pn.getAlias());
+        if(Strings.isNullOrEmpty(pn.getAlias())){
+            payload = PushPayload.alertAll(message);
+           // PushPayload.
+        }else {
+            payload = PushPayload.newBuilder()
+                    .setPlatform(Platform.all())
+                    .setAudience(Audience.newBuilder()
+                            .addAudienceTarget(AudienceTarget.alias(pn.getAlias()))
+                            .build())
+                    .setNotification(Notification.alert(message))
+                    .build();
+        }
 
         try {
             PushResult result = jpushClient.sendPush(payload);

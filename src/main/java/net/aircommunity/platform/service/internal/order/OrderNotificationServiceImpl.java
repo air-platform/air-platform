@@ -1,14 +1,12 @@
 package net.aircommunity.platform.service.internal.order;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import net.aircommunity.platform.model.DomainEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -119,6 +117,12 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 		orderTypeMapping.put(Product.Type.COURSE, airtraining);
 		orderTypeMapping.put(Product.Type.QUICKFLIGHT, airtcall);
 		eventBus.register(this);
+
+		//register push notification
+		registerPushNotificationEvent(EnumSet.of(DomainEvent.DomainType.ORDER));
+
+
+
 	}
 
 	private static String normalizeProductCategory(Category category) {
@@ -129,6 +133,13 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 	@Subscribe
 	private void onOrderEvent(OrderEvent event) {
 		LOG.debug("Received order event: {}", event);
+		User u = event.getOrder().getOwner();
+		DomainEvent de = new DomainEvent(DomainEvent.DomainType.ORDER, DomainEvent.Operation.PUSH_NOTIFICATION);
+		de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID, u.getId());
+
+		if(event.getType() != OrderEvent.EventType.CREATION){
+			postDomainEvent(de);
+		}
 		switch (event.getType()) {
 		case CREATION:
 		case CANCELLATION:

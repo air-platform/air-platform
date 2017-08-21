@@ -213,13 +213,15 @@ public abstract class AbstractServiceSupport {
 				List<AccountAuth> auth = accountAuthRepository.findByAccountId(accountId);
 
 				pf.setType(PushNotification.Type.PLAIN_TEXT);
-				pf.setAlias(auth.get(0).getPrincipal());
+				//pf.setAlias(auth.get(0).getPrincipal());	TOTO use meaningful alias?
+				pf.setAlias(accountId.replace("-", "_"));
+
 				pf.setOwner(user);
 
 				if(event.getType() == DomainType.ORDER){
-					pf.setMessage("this is an order notification.");
+					pf.setMessage(Constants.TEMPLATE_PUSHNOTIFICATION_ORDER_MESSAGE);
 				}else if(event.getType() == DomainType.POINT){
-					pf.setMessage("this is an point notification.");
+					pf.setMessage(Constants.TEMPLATE_PUSHNOTIFICATION_POINT_MESSAGE);
 				}
 				pushNotificationService.sendInstantPushNotification(pf);
 			}
