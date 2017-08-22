@@ -19,9 +19,12 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.PushNotification;
 import net.aircommunity.platform.model.domain.PushNotification;
+import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
+import net.aircommunity.platform.repository.AccountRepository;
 import net.aircommunity.platform.repository.PushNotificationRepository;
 import net.aircommunity.platform.service.common.PushNotificationService;
 import net.aircommunity.platform.service.internal.AbstractServiceSupport;
@@ -36,6 +39,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -46,17 +50,7 @@ import java.util.Date;
 @Service
 public class PushNotificationServiceImpl  extends AbstractServiceSupport implements PushNotificationService {
 	private static final Logger LOG = LoggerFactory.getLogger(PushNotificationServiceImpl.class);
-
-
-
-
-	private JPushClient jpushClient;
-
     private static final String CACHE_NAME = "cache.pushnotification";
-    //private static final DomainEvent EVENT_DELETION = new DomainEvent(DomainType.AIRCRAFT, Operation.DELETION);
-    //private static final DomainEvent EVENT_UPDATE = new DomainEvent(DomainType.AIRCRAFT, Operation.UPDATE);
-
-
     @Resource
 	private Configuration configuration;
 
@@ -65,6 +59,11 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
 
     @Resource
     private PushNotificationRepository pushNotificationRepository;
+
+    @Resource
+    private AccountRepository accountRepository;
+
+    private JPushClient jpushClient;
 
 	@PostConstruct
 	private void init() {
@@ -186,21 +185,6 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
         return updated;
     }
 
-    /*@Transactional
-    @CachePut(cacheNames = CACHE_NAME, key = "#pushNotificationId")
-    @Override
-    public PushNotification updatePushNotificationScore(String pushNotificationId, double newScore) {
-        PushNotification pushNotification = findPushNotification(pushNotificationId);
-        if (newScore < 0) {
-            // skip update in this case
-            return pushNotification;
-        }
-        pushNotification.setScore(newScore);
-        PushNotification updated = safeExecute(() -> pushNotificationRepository.save(pushNotification), "Update pushNotification %s to %s failed",
-                pushNotificationId, pushNotification);
-        postDomainEvent(EVENT_UPDATE);
-        return updated;
-    }*/
 
     private void copyProperties(PushNotification src, PushNotification tgt) {
         tgt.setMessage(src.getMessage());
@@ -235,8 +219,26 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
     }
 
 
+    @Cacheable(cacheNames = CACHE_NAME)
+    @Override
+    public Account findAccount(String accountId) {
+        Account account = accountRepository.findOne(accountId);
+        if (account == null) {
+            LOG.error("Failed to find account, account {} is not found", accountId);
+            throw new AirException(Codes.ACCOUNT_NOT_FOUND, M.msg(M.ACCOUNT_NOT_FOUND));
+        }
+        return account;
+    }
 
-
+    @Override
+    public Page<PushNotification> listUserPushNotifications(String accountId, int page, int pageSize) {
+        Account account = findAccount(accountId);
+        if (!User.class.isAssignableFrom(account.getClass())) {
+            return Page.emptyPage(page, pageSize);
+        }
+        User user = User.class.cast(account);
+        return Pages.adapt(pushNotificationRepository.findByOwnerOrOwnerIsNull(user, createPageRequest(page, pageSize)));
+    }
 
 
 

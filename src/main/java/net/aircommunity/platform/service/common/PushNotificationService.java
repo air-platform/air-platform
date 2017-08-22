@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service.common;
 
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.PushNotification;
 
 /**
@@ -24,5 +25,7 @@ public interface PushNotificationService {
 	Page<PushNotification> listPushNotifications(int page, int pageSize);
 	void deletePushNotification(String pushNotificationId);
 	void deletePushNotifications();
+	Page<PushNotification> listUserPushNotifications(String accountId, int page, int pageSize);
+	Account findAccount(String accountId);
 
 }

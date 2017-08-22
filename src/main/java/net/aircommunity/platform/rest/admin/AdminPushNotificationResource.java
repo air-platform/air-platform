@@ -1,13 +1,11 @@
-package net.aircommunity.platform.rest;
+package net.aircommunity.platform.rest.admin;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.RESTful;
-import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.model.domain.PushNotification;
 import net.aircommunity.platform.model.domain.PushNotification;
 import net.aircommunity.platform.service.common.PushNotificationService;
 import org.slf4j.Logger;
@@ -31,12 +29,10 @@ import java.net.URI;
  * @author Xiangwen.Kong
  */
 
-@Api
 @RESTful
-@PermitAll
-@Path("pushnotifications")
-public class PushNotificationResource {
-	private static final Logger LOG = LoggerFactory.getLogger(PushNotificationResource.class);
+@RolesAllowed({ Roles.ROLE_ADMIN })
+public class AdminPushNotificationResource {
+	private static final Logger LOG = LoggerFactory.getLogger(AdminPushNotificationResource.class);
 
 
 	@Resource
@@ -79,7 +75,6 @@ public class PushNotificationResource {
 	@GET
 	@Path("{pushNotificationId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
 	public PushNotification find(@PathParam("pushNotificationId") String pushNotificationId) {
 		return pushNotificationService.findPushNotification(pushNotificationId);
 	}
@@ -89,11 +84,8 @@ public class PushNotificationResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
-	public Page<PushNotification> list(@PathParam("userId") String userId,
-									   @QueryParam("page") @DefaultValue("0") int page,
+	public Page<PushNotification> list(@QueryParam("page") @DefaultValue("0") int page,
 			@QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-		LOG.info("......{}.", userId);
 		return pushNotificationService.listPushNotifications(page, pageSize);
 	}
 

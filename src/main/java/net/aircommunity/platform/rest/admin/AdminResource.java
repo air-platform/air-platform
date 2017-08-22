@@ -667,10 +667,10 @@ public class AdminResource extends BaseResourceSupport {
 
 
 	@Resource
-	private PushNotificationResource pushNotificationResource;
+	private AdminPushNotificationResource adminPushNotificationResource;
 	@Path("pushnotifications")
-	public PushNotificationResource pushnotifications() {
-		return pushNotificationResource;
+	public AdminPushNotificationResource pushnotifications() {
+		return adminPushNotificationResource;
 	}
 
 }

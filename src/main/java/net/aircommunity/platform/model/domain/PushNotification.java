@@ -1,6 +1,8 @@
 package net.aircommunity.platform.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.constraint.NotEmpty;
+import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
 
@@ -53,6 +55,7 @@ public class PushNotification extends Persistable {
 	private Date lastSendDate;
 
 	@Column(name = "alias", length = PUSH_NOTIFICATION_ALIAS_LEN)
+	@JsonView(JsonViews.Admin.class)
 	private String alias;
 
 
@@ -61,6 +64,7 @@ public class PushNotification extends Persistable {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	@XmlJavaTypeAdapter(AccountAdapter.class)
+	@JsonView(JsonViews.Admin.class)
 	protected User owner;
 
 
