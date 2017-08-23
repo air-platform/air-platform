@@ -18,12 +18,19 @@ import net.aircommunity.platform.model.domain.User;
 public interface UserRepository extends JpaRepository<User, String> {
 
 	/**
+	 * Find all Users
+	 * 
+	 * @return an account of page
+	 */
+	Page<User> findAllByOrderByCreationDateDesc(Pageable pageable);
+
+	/**
 	 * Find a account by role
 	 * 
 	 * @param role the role
 	 * @return an account of page
 	 */
-	Page<User> findByRole(Role role, Pageable pageable);
+	Page<User> findByRoleOrderByCreationDateDesc(Role role, Pageable pageable);
 
 	/**
 	 * Count new users for current month. (e.g. 2017-07-01 00:00:00 - 2017-07-01 23:59:59)
