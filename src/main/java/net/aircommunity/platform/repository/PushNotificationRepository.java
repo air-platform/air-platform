@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * Repository interface for {@link Aircraft} instances. Provides basic CRUD operations due to the extension of
  * {@link JpaRepository}.
- * 
+ *
  * @author Xiangwen.Kong
  */
 public interface PushNotificationRepository extends JpaRepository<PushNotification, String> {

@@ -5,22 +5,18 @@ import cn.jiguang.common.resp.APIConnectionException;
 import cn.jiguang.common.resp.APIRequestException;
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.push.PushResult;
-import cn.jpush.api.push.model.Message;
 import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
-import cn.jpush.api.push.model.SMS;
 import cn.jpush.api.push.model.audience.Audience;
 import cn.jpush.api.push.model.audience.AudienceTarget;
 import cn.jpush.api.push.model.notification.Notification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
-import com.sun.org.apache.bcel.internal.generic.PUSH;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Account;
-import net.aircommunity.platform.model.domain.PushNotification;
 import net.aircommunity.platform.model.domain.PushNotification;
 import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
@@ -39,23 +35,22 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.Date;
 
 /**
  * SMS service implementation
- * 
+ *
  * @author Xiangwen.Kong
  */
 @Service
-public class PushNotificationServiceImpl  extends AbstractServiceSupport implements PushNotificationService {
-	private static final Logger LOG = LoggerFactory.getLogger(PushNotificationServiceImpl.class);
+public class PushNotificationServiceImpl extends AbstractServiceSupport implements PushNotificationService {
+    private static final Logger LOG = LoggerFactory.getLogger(PushNotificationServiceImpl.class);
     private static final String CACHE_NAME = "cache.pushnotification";
     @Resource
-	private Configuration configuration;
+    private Configuration configuration;
 
-	@Resource
-	private ObjectMapper objectMapper;
+    @Resource
+    private ObjectMapper objectMapper;
 
     @Resource
     private PushNotificationRepository pushNotificationRepository;
@@ -65,20 +60,20 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
 
     private JPushClient jpushClient;
 
-	@PostConstruct
-	private void init() {
-         //registerCacheEvictOnDomainEvent(CACHE_NAME, EnumSet.of(DomainType.TENANT));
-		 jpushClient = new JPushClient(configuration.getNotificationMasterSecret(),
-				configuration.getNotificationAppKey(), null, ClientConfig.getInstance());
+    @PostConstruct
+    private void init() {
+        //registerCacheEvictOnDomainEvent(CACHE_NAME, EnumSet.of(DomainType.TENANT));
+        jpushClient = new JPushClient(configuration.getNotificationMasterSecret(),
+                configuration.getNotificationAppKey(), null, ClientConfig.getInstance());
 
-	}
+    }
 
 
-    private void doPushNotification(PushNotification pn){
+    private void doPushNotification(PushNotification pn) {
         String message;
-        if(pn.getType() == PushNotification.Type.PLAIN_TEXT){
+        if (pn.getType() == PushNotification.Type.PLAIN_TEXT) {
             message = pn.getMessage();
-        }else{
+        } else {
             message = pn.getRichTextLink();
         }
 
@@ -91,11 +86,11 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
                 .setNotification(Notification.)
                 .build();*/
 
-        LOG.debug("push notification alias {}",pn.getAlias());
-        if(Strings.isNullOrEmpty(pn.getAlias())){
+        LOG.debug("push notification alias {}", pn.getAlias());
+        if (Strings.isNullOrEmpty(pn.getAlias())) {
             payload = PushPayload.alertAll(message);
-           // PushPayload.
-        }else {
+            // PushPayload.
+        } else {
             payload = PushPayload.newBuilder()
                     .setPlatform(Platform.all())
                     .setAudience(Audience.newBuilder()
@@ -107,10 +102,10 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
 
         try {
             PushResult result = jpushClient.sendPush(payload);
-            if(result.isResultOK()){
+            if (result.isResultOK()) {
                 pn.setStatus(PushNotification.Status.PUSH_SUCCESS);
                 pn.setLastSendDate(new Date());
-            }else{
+            } else {
                 pn.setStatus(PushNotification.Status.PUSH_FAILED);
             }
 
@@ -128,8 +123,7 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
     }
 
     @Override
-    public PushNotification sendInstantPushNotification(PushNotification pushNotification)
-    {
+    public PushNotification sendInstantPushNotification(PushNotification pushNotification) {
 
         PushNotification newPushNotification = new PushNotification();
         copyProperties(pushNotification, newPushNotification);
@@ -139,15 +133,15 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
         return safeExecute(() -> pushNotificationRepository.save(newPushNotification), "Create PushNotification %s failed", newPushNotification);
     }
 
-	@Override
-	public PushNotification sendNotification(String pushNotificationId) {
+    @Override
+    public PushNotification sendNotification(String pushNotificationId) {
 
         PushNotification pn = findPushNotification(pushNotificationId);
         doPushNotification(pn);
         PushNotification updated = safeExecute(() -> pushNotificationRepository.save(pn), "Update pushnotification %s to %s failed",
                 pushNotificationId, pn);
-		return pn;
-	}
+        return pn;
+    }
 
     @Transactional
     @Override
@@ -159,8 +153,7 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
         return safeExecute(() -> pushNotificationRepository.save(newPushNotification), "Create PushNotification %s failed", pushNotification);
 
 
-
-	}
+    }
 
     @Cacheable(cacheNames = CACHE_NAME)
     @Override
@@ -239,7 +232,6 @@ public class PushNotificationServiceImpl  extends AbstractServiceSupport impleme
         User user = User.class.cast(account);
         return Pages.adapt(pushNotificationRepository.findByOwnerOrOwnerIsNull(user, createPageRequest(page, pageSize)));
     }
-
 
 
 }
