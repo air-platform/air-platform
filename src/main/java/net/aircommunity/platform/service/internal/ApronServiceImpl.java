@@ -1,22 +1,6 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.core.type.TypeReference;
-
 import io.micro.common.Strings;
 import io.micro.common.io.MoreFiles;
 import net.aircommunity.platform.AirException;
@@ -27,10 +11,23 @@ import net.aircommunity.platform.model.domain.Apron.Type;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.ApronRepository;
 import net.aircommunity.platform.service.ApronService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Apron service implementation.
- * 
+ *
  * @author Bin.Zhang
  */
 @Service
@@ -46,19 +43,18 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 	private ApronRepository apronRepository;
 
 
-	private static double rad(double d)
-	{
+	private static double rad(double d) {
 		return d * Math.PI / 180.0;
 	}
-	public static double GetDistance(double lat1, double lng1, double lat2, double lng2)
-	{
+
+	public static double GetDistance(double lat1, double lng1, double lat2, double lng2) {
 		double radLat1 = rad(lat1);
 		double radLat2 = rad(lat2);
 		double a = radLat1 - radLat2;
 		double b = rad(lng1) - rad(lng2);
 
-		double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +
-				Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+		double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+				Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
 		s = s * EARTH_RADIUS;
 		s = Math.round(s * 10000) / 10000;
 		return s;
@@ -140,6 +136,11 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 	}
 
 	@Override
+	public List<Apron> listApronsByDistinctCities() {
+		return apronRepository.listApronsByDistinctCities();
+	}
+
+	@Override
 	public List<Apron> listPublishedCityAprons(String city, Type type) {
 		return apronRepository.findPublishedByFuzzyCity(city, type);
 	}
@@ -157,7 +158,8 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 		double curLat, curLon;
 		if (Strings.isNotBlank(province)) {
 			la = apronRepository.findPublishedByFuzzyProvince(province, type);
-		} else {
+		}
+		else {
 			la = apronRepository.findByPublishedTrue();
 		}
 
