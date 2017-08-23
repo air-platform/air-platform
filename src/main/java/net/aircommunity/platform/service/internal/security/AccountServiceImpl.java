@@ -671,7 +671,7 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 
 	@Override
 	public Page<Account> listAccounts(int page, int pageSize) {
-		return Pages.adapt(accountRepository.findAll(createPageRequest(page, pageSize)));
+		return Pages.adapt(accountRepository.findAllByOrderByCreationDateDesc(createPageRequest(page, pageSize)));
 	}
 
 	@Override
@@ -679,23 +679,24 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		if (role == null) {
 			return listAccounts(page, pageSize);
 		}
-		return Pages.adapt(accountRepository.findByRole(role, createPageRequest(page, pageSize)));
+		return Pages
+				.adapt(accountRepository.findByRoleOrderByCreationDateDesc(role, createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<User> listUserAccounts(Role role, int page, int pageSize) {
 		if (role == null) {
-			return Pages.adapt(userRepository.findAll(createPageRequest(page, pageSize)));
+			return Pages.adapt(userRepository.findAllByOrderByCreationDateDesc(createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(userRepository.findByRole(role, createPageRequest(page, pageSize)));
+		return Pages.adapt(userRepository.findByRoleOrderByCreationDateDesc(role, createPageRequest(page, pageSize)));
 	}
 
 	@Override
 	public Page<Tenant> listTenantAccounts(Role role, int page, int pageSize) {
 		if (role == null) {
-			return Pages.adapt(tenantRepository.findAll(createPageRequest(page, pageSize)));
+			return Pages.adapt(tenantRepository.findAllByOrderByCreationDateDesc(createPageRequest(page, pageSize)));
 		}
-		return Pages.adapt(tenantRepository.findByRole(role, createPageRequest(page, pageSize)));
+		return Pages.adapt(tenantRepository.findByRoleOrderByCreationDateDesc(role, createPageRequest(page, pageSize)));
 	}
 
 	// private <T extends Account> Page<T> transformAccounts(Page<T> data) {

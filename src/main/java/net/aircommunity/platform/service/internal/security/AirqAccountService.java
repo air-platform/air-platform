@@ -15,7 +15,6 @@ import javax.ws.rs.core.HttpHeaders;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
@@ -32,7 +31,7 @@ import okhttp3.Response;
  * @author luocheng
  * @deprecated
  */
-@Service
+// @Service
 public class AirqAccountService {
 	private static final Logger LOG = LoggerFactory.getLogger(AirqAccountService.class);
 

@@ -16,10 +16,17 @@ import net.aircommunity.platform.model.domain.Tenant;
 public interface TenantRepository extends JpaRepository<Tenant, String> {
 
 	/**
+	 * Find all Tenants
+	 * 
+	 * @return an account of page
+	 */
+	Page<Tenant> findAllByOrderByCreationDateDesc(Pageable pageable);
+
+	/**
 	 * Find a account by role
 	 * 
 	 * @param role the role
 	 * @return an account of page
 	 */
-	Page<Tenant> findByRole(Role role, Pageable pageable);
+	Page<Tenant> findByRoleOrderByCreationDateDesc(Role role, Pageable pageable);
 }

@@ -26,10 +26,17 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 	/**
 	 * Find a account by role
 	 * 
+	 * @return an account of page
+	 */
+	Page<Account> findAllByOrderByCreationDateDesc(Pageable pageable);
+
+	/**
+	 * Find a account by role
+	 * 
 	 * @param role the role
 	 * @return an account of page
 	 */
-	Page<Account> findByRole(Role role, Pageable pageable);
+	Page<Account> findByRoleOrderByCreationDateDesc(Role role, Pageable pageable);
 
 	/**
 	 * Count by role.
