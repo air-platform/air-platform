@@ -23,9 +23,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import net.aircommunity.platform.model.domain.*;
-import net.aircommunity.platform.rest.PushNotificationResource;
-import net.aircommunity.platform.service.common.PushNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,11 +37,17 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Address;
+import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Passenger;
+import net.aircommunity.platform.model.domain.PushNotification;
+import net.aircommunity.platform.model.domain.Trade;
 import net.aircommunity.platform.model.metrics.UserOrderMetrics;
 import net.aircommunity.platform.model.payment.PaymentRequest;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
+import net.aircommunity.platform.service.common.PushNotificationService;
 import net.aircommunity.platform.service.order.CharterOrderService;
 import net.aircommunity.platform.service.security.AccountService;
 
@@ -381,7 +384,6 @@ public class UserResource extends BaseResourceSupport {
 		return userCourseOrderResource;
 	}
 
-
 	@Resource
 	private PushNotificationService pushNotificationService;
 
@@ -391,12 +393,10 @@ public class UserResource extends BaseResourceSupport {
 	@JsonView(JsonViews.Public.class)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<PushNotification> listPushNotifications(@QueryParam("page") @DefaultValue("0") int page,
-														@QueryParam("pageSize") @DefaultValue("0") int pageSize,
-														@Context SecurityContext context) {
+			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
 		String accountId = context.getUserPrincipal().getName();
 		return pushNotificationService.listUserPushNotifications(accountId, page, pageSize);
 	}
-
 
 	/**
 	 * Delete User passenger
@@ -409,8 +409,5 @@ public class UserResource extends BaseResourceSupport {
 	public PushNotification findPushNotification(@PathParam("pushnotificationId") String pushnotificationId) {
 		return pushNotificationService.findPushNotification(pushnotificationId);
 	}
-
-
-
 
 }

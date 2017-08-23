@@ -1,13 +1,17 @@
 package net.aircommunity.platform.service.internal.security;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.SecurityContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,8 +92,6 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 	private static final int PASSWORD_LENGTH = 20;
 
 	private static final DomainEvent EVENT_DELETION = new DomainEvent(DomainType.ACCOUNT, Operation.DELETION);
-
-
 
 	@Resource
 	private AccountRepository accountRepository;

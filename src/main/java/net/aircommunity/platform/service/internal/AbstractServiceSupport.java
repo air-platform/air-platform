@@ -1,17 +1,16 @@
 package net.aircommunity.platform.service.internal;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.EnumSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import javax.annotation.Resource;
 
-import net.aircommunity.platform.*;
-import net.aircommunity.platform.model.domain.*;
-import net.aircommunity.platform.repository.AccountAuthRepository;
-import net.aircommunity.platform.service.common.PushNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.metrics.GaugeService;
@@ -28,13 +27,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.eventbus.EventBus;
 
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
+import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.Configuration;
+import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.DomainEvent;
 import net.aircommunity.platform.model.DomainEvent.DomainType;
 import net.aircommunity.platform.model.DomainEvent.Operation;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.Account;
+import net.aircommunity.platform.model.domain.AirTaxi;
+import net.aircommunity.platform.model.domain.AirTour;
+import net.aircommunity.platform.model.domain.AirTransport;
+import net.aircommunity.platform.model.domain.Course;
+import net.aircommunity.platform.model.domain.FerryFlight;
+import net.aircommunity.platform.model.domain.Fleet;
+import net.aircommunity.platform.model.domain.JetTravel;
 import net.aircommunity.platform.model.domain.Product.Type;
+import net.aircommunity.platform.model.domain.PushNotification;
+import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
+import net.aircommunity.platform.repository.AccountAuthRepository;
 import net.aircommunity.platform.repository.SettingRepository;
+import net.aircommunity.platform.service.common.PushNotificationService;
 import net.aircommunity.platform.service.security.AccountService;
 
 /**
@@ -189,18 +205,17 @@ public abstract class AbstractServiceSupport {
 		registerCacheEvictOnDomainEvent(cacheName, interestedDomains, PREDICATE_ALWAYS);
 	}
 
-
-
 	protected void registerPushNotificationEvent(EnumSet<DomainType> interestedDomains) {
 		registerPushNotificationOnDomainEvent(interestedDomains, PREDICATE_ALWAYS);
 	}
+
 	/**
 	 * Register domain event to evict cache on UPDATE and DELETION.
 	 *
 	 * @param interestedDomains the interested domains
 	 */
 	protected void registerPushNotificationOnDomainEvent(EnumSet<DomainType> interestedDomains,
-												   Predicate<DomainEvent> when) {
+			Predicate<DomainEvent> when) {
 		Objects.requireNonNull(interestedDomains, "interestedDomains cannot be null");
 		Objects.requireNonNull(when, "when cannot be null");
 		registerDomainEventHandler(event -> {
@@ -210,17 +225,16 @@ public abstract class AbstractServiceSupport {
 				PushNotification pf = new PushNotification();
 				String accountId = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID).toString();
 				User user = findAccount(accountId, User.class);
-				List<AccountAuth> auth = accountAuthRepository.findByAccountId(accountId);
-
 				pf.setType(PushNotification.Type.PLAIN_TEXT);
-				//pf.setAlias(auth.get(0).getPrincipal());	TOTO use meaningful alias?
+				// pf.setAlias(auth.get(0).getPrincipal()); TODO use meaningful alias?
 				pf.setAlias(accountId.replace("-", "_"));
 
 				pf.setOwner(user);
 
-				if(event.getType() == DomainType.ORDER){
+				if (event.getType() == DomainType.ORDER) {
 					pf.setMessage(Constants.TEMPLATE_PUSHNOTIFICATION_ORDER_MESSAGE);
-				}else if(event.getType() == DomainType.POINT){
+				}
+				else if (event.getType() == DomainType.POINT) {
 					pf.setMessage(Constants.TEMPLATE_PUSHNOTIFICATION_POINT_MESSAGE);
 				}
 				pushNotificationService.sendInstantPushNotification(pf);
@@ -228,8 +242,6 @@ public abstract class AbstractServiceSupport {
 		});
 
 	}
-
-
 
 	/**
 	 * Register domain event to evict cache on UPDATE and DELETION.

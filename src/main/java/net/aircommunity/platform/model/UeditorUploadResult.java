@@ -1,9 +1,10 @@
 package net.aircommunity.platform.model;
 
+import java.io.Serializable;
+
 import javax.annotation.concurrent.Immutable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import java.io.Serializable;
 
 /**
  * FileUpload Result (not well modeled, just required by a Markdown editor)
@@ -14,7 +15,6 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class UeditorUploadResult implements Serializable {
 	private static final long serialVersionUID = 1L;
-
 
 	private String state;
 	private String url;
@@ -29,19 +29,18 @@ public class UeditorUploadResult implements Serializable {
 		return new UeditorUploadResult("FAILURE", title, "", original);
 	}
 
-
 	private UeditorUploadResult(String state, String title, String url, String original) {
 		this.state = state;
 		this.title = title;
 		this.url = url;
 		this.original = original;
 	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("FileUploadResult [success=").append(state).append(", title=").append(title)
-				.append(", url=").append(url).append("]");
+		builder.append("UeditorUploadResult [state=").append(state).append(", url=").append(url).append(", title=")
+				.append(title).append(", original=").append(original).append("]");
 		return builder.toString();
 	}
-
 }
