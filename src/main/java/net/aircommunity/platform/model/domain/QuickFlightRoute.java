@@ -83,7 +83,7 @@ public class QuickFlightRoute extends Persistable {
 	}
 
 	public enum RouteType {
-		CAR, TAXI, FLIGHT
+		CAR, FLIGHT
 	}
 
 }
