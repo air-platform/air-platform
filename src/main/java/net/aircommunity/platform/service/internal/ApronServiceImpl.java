@@ -42,28 +42,9 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 	private static final String APRONS_INFO = "data/aprons.json";
 	// earth radius
 	private static final double EARTH_RADIUS = 6378.137;
+
 	@Resource
 	private ApronRepository apronRepository;
-
-
-	private static double rad(double d)
-	{
-		return d * Math.PI / 180.0;
-	}
-	public static double GetDistance(double lat1, double lng1, double lat2, double lng2)
-	{
-		double radLat1 = rad(lat1);
-		double radLat2 = rad(lat2);
-		double a = radLat1 - radLat2;
-		double b = rad(lng1) - rad(lng2);
-
-		double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +
-				Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
-		s = s * EARTH_RADIUS;
-		s = Math.round(s * 10000) / 10000;
-		return s;
-	}
-
 
 	@PostConstruct
 	private void init() {
@@ -129,6 +110,7 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 		tgt.setName(src.getName());
 		tgt.setProvince(src.getProvince());
 		tgt.setCity(src.getCity());
+		tgt.setAddress(src.getAddress());
 		tgt.setLocation(src.getLocation());
 		tgt.setType(src.getType());
 		tgt.setDescription(src.getDescription());
@@ -149,15 +131,16 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 		return apronRepository.findPublishedByFuzzyProvince(province, type);
 	}
 
-
 	@Override
-	public List<Apron> listNearPublishedAprons(String province, int distance, double latitude, double longitude, Type type) {
+	public List<Apron> listNearPublishedAprons(String province, int distance, double latitude, double longitude,
+			Type type) {
 
 		List<Apron> la = null;
 		double curLat, curLon;
 		if (Strings.isNotBlank(province)) {
 			la = apronRepository.findPublishedByFuzzyProvince(province, type);
-		} else {
+		}
+		else {
 			la = apronRepository.findByPublishedTrue();
 		}
 
@@ -166,8 +149,8 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 			Apron s = iter.next();
 			curLat = s.getLocation().getLatitude().doubleValue();
 			curLon = s.getLocation().getLongitude().doubleValue();
-			//TODO Use baidu map sdk to get accurate distance
-			double dist = GetDistance(latitude, longitude, curLat, curLon);
+			// TODO Use baidu map sdk to get accurate distance
+			double dist = getDistance(latitude, longitude, curLat, curLon);
 			if (dist > distance) {
 				iter.remove();
 			}
@@ -199,6 +182,23 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 	@Override
 	public void deleteAprons() {
 		safeExecute(() -> apronRepository.deleteAll(), "Delete all aprons failed");
+	}
+
+	private static double rad(double d) {
+		return d * Math.PI / 180.0;
+	}
+
+	private static double getDistance(double lat1, double lng1, double lat2, double lng2) {
+		double radLat1 = rad(lat1);
+		double radLat2 = rad(lat2);
+		double a = radLat1 - radLat2;
+		double b = rad(lng1) - rad(lng2);
+
+		double s = 2 * Math.asin(Math.sqrt(
+				Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+		s = s * EARTH_RADIUS;
+		s = Math.round(s * 10000) / 10000;
+		return s;
 	}
 
 }
