@@ -39,6 +39,7 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 	private static final String APRONS_INFO = "data/aprons.json";
 	// earth radius
 	private static final double EARTH_RADIUS = 6378.137;
+	
 	@Resource
 	private ApronRepository apronRepository;
 
@@ -47,7 +48,7 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 		return d * Math.PI / 180.0;
 	}
 
-	public static double GetDistance(double lat1, double lng1, double lat2, double lng2) {
+	private static double getDistance(double lat1, double lng1, double lat2, double lng2) {
 		double radLat1 = rad(lat1);
 		double radLat2 = rad(lat2);
 		double a = radLat1 - radLat2;
@@ -125,6 +126,7 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 		tgt.setName(src.getName());
 		tgt.setProvince(src.getProvince());
 		tgt.setCity(src.getCity());
+		tgt.setAddress(src.getAddress());
 		tgt.setLocation(src.getLocation());
 		tgt.setType(src.getType());
 		tgt.setDescription(src.getDescription());
@@ -169,7 +171,7 @@ public class ApronServiceImpl extends AbstractServiceSupport implements ApronSer
 			curLat = s.getLocation().getLatitude().doubleValue();
 			curLon = s.getLocation().getLongitude().doubleValue();
 			//TODO Use baidu map sdk to get accurate distance
-			double dist = GetDistance(latitude, longitude, curLat, curLon);
+			double dist = getDistance(latitude, longitude, curLat, curLon);
 			if (dist > distance) {
 				iter.remove();
 			}
