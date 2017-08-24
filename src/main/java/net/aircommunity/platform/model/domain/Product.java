@@ -23,6 +23,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -254,6 +255,16 @@ public abstract class Product extends Reviewable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * Return true if this product has stock limit
+	 * 
+	 * @return true if this product has stock limit
+	 */
+	@XmlTransient
+	public boolean hasStockLimit() {
+		return stock != UNLIMITED_STOCK;
 	}
 
 	public Tenant getVendor() {

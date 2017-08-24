@@ -85,6 +85,26 @@ public interface ProductService<T extends Product> {
 	T updateProductScore(@Nonnull String productId, double score);
 
 	/**
+	 * Update product to the given stock. (ADMIN)
+	 * 
+	 * @param productId the productId
+	 * @param stock the stock
+	 * @return product update
+	 */
+	@Nonnull
+	T updateProductStock(@Nonnull String productId, int stock);
+
+	/**
+	 * Update product with delta stock(+-). (ADMIN)
+	 * 
+	 * @param productId the productId
+	 * @param deltaStock the delta stock (+- to indicate increase or decrease)
+	 * @return product update
+	 */
+	@Nonnull
+	T updateProductStockWithDelta(@Nonnull String productId, int deltaStock);
+
+	/**
 	 * Review a product to approve or not (ADMIN)
 	 * 
 	 * @param productId the productId

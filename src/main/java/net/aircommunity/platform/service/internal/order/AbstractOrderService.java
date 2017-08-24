@@ -1079,6 +1079,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			if (order.getStatus() != Order.Status.REFUND_REQUESTED) {
 				order.setPaymentDate(new Date());
 			}
+			// decrease stock by 1
+			if (order.getProduct().hasStockLimit()) {
+				commonProductService.updateProductStockWithDelta(order.getProduct().getId(), -1);
+			}
 			break;
 
 		case PAYMENT_FAILED:
@@ -1105,6 +1109,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			expectOrderStatus(order, newStatus, Order.Status.REFUNDING);
 			order.setRefundedDate(new Date());
 			returnBackPoints(order, newStatus);
+			// increase stock by 1
+			if (order.getProduct().hasStockLimit()) {
+				commonProductService.updateProductStockWithDelta(order.getProduct().getId(), 1);
+			}
 			break;
 
 		case REFUND_FAILED:
