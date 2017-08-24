@@ -1,35 +1,6 @@
 package net.aircommunity.platform.rest;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonView;
-
 import io.micro.annotation.RESTful;
 import io.micro.common.Strings;
 import io.swagger.annotations.Api;
@@ -38,10 +9,23 @@ import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Apron;
 import net.aircommunity.platform.model.domain.Apron.Type;
 import net.aircommunity.platform.service.ApronService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Apron RESTful API allows list/find/query for ANYONE.
- * 
+ *
  * @author Bin.Zhang
  */
 @Api
@@ -88,8 +72,8 @@ public class ApronResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Response listAll(@QueryParam("province") String province, @QueryParam("city") String city,
-			@QueryParam("type") Type type, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
+							@QueryParam("type") Type type, @QueryParam("page") @DefaultValue("0") int page,
+							@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
 		LOG.debug("List all aprons with page: {} pageSize: {}", page, pageSize);
 		// for ADMIN with pagination and without filtered by published
 		if (context.isUserInRole(Roles.ROLE_ADMIN)) {
@@ -125,9 +109,9 @@ public class ApronResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Response listNear(@QueryParam("province") String province, @QueryParam("type") Type type,
-			@NotNull @QueryParam("latitude") double latitude, @NotNull @QueryParam("longitude") double longitude,
-			@QueryParam("distance") @DefaultValue("5") int distance, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
+							 @NotNull @QueryParam("latitude") double latitude, @NotNull @QueryParam("longitude") double longitude,
+							 @QueryParam("distance") @DefaultValue("5") int distance, @QueryParam("page") @DefaultValue("0") int page,
+							 @QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
 
 		LOG.info(
 				"List near aprons with province: {} latitude: {} longitude: {} type: {} distance {} page: {} pageSize: {}",
@@ -136,6 +120,20 @@ public class ApronResource {
 		// if province is present, returned aprons must be in this province
 		return Response.ok(apronService.listNearPublishedAprons(province, distance, latitude, longitude, type)).build();
 	}
+
+
+	/**
+	 * List one apron for one city
+	 */
+	@GET
+	@Path("apronInDistinctCities")
+	@PermitAll
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView(JsonViews.Public.class)
+	public Response listApronsByDistinctCities(@Context SecurityContext context) {
+		return Response.ok(apronService.listApronsByDistinctCities()).build();
+	}
+
 
 	/**
 	 * Find

@@ -1,24 +1,23 @@
 package net.aircommunity.platform.service;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Apron;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+
 /**
  * Apron service (ADMIN ONLY)
- * 
+ *
  * @author Bin.Zhang
  */
 public interface ApronService {
 
 	/**
 	 * Create a apron.
-	 * 
+	 *
 	 * @param apron the apron to be created
 	 * @return apron created
 	 */
@@ -27,7 +26,7 @@ public interface ApronService {
 
 	/**
 	 * Retrieves the specified Apron.
-	 * 
+	 *
 	 * @param apronId the apronId
 	 * @return the Apron found
 	 * @throws AirException if not found
@@ -37,8 +36,8 @@ public interface ApronService {
 
 	/**
 	 * Update a Apron.
-	 * 
-	 * @param apronId the apronId
+	 *
+	 * @param apronId  the apronId
 	 * @param newApron the Apron to be updated
 	 * @return Apron created
 	 */
@@ -47,8 +46,8 @@ public interface ApronService {
 
 	/**
 	 * Publish Apron or not.
-	 * 
-	 * @param apronId the apronId
+	 *
+	 * @param apronId   the apronId
 	 * @param published make it visible for users if true, false otherwise
 	 * @return Apron update
 	 */
@@ -57,8 +56,8 @@ public interface ApronService {
 
 	/**
 	 * List all aprons by pagination.
-	 * 
-	 * @param page the page number
+	 *
+	 * @param page     the page number
 	 * @param pageSize the pageSize
 	 * @return a page of aprons or empty
 	 */
@@ -67,7 +66,7 @@ public interface ApronService {
 
 	/**
 	 * List all published aprons by pagination for a given city.
-	 * 
+	 *
 	 * @param city the city
 	 * @return a page of aprons or empty
 	 */
@@ -78,13 +77,15 @@ public interface ApronService {
 
 	List<Apron> listNearPublishedAprons(@Nonnull String province, @Nonnull int distance, @Nonnull double latitude, @Nonnull double longitude, @Nullable Apron.Type type);
 
+	List<Apron> listApronsByDistinctCities();
+
 	List<String> listCities();
-	
+
 	List<String> listProvinces();
 
 	/**
 	 * Delete a Apron.
-	 * 
+	 *
 	 * @param apronId the apronId
 	 */
 	void deleteApron(@Nonnull String apronId);
