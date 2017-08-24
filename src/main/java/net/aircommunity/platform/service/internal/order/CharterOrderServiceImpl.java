@@ -71,7 +71,17 @@ public class CharterOrderServiceImpl extends AbstractOrderCandidateService<Fleet
 		eventBus.post(new OrderEvent(OrderEvent.EventType.FLEET_OFFERED, order));
 	}
 
-	// XXX
+	@Override
+	protected Code orderNotFoundCode() {
+		return Codes.CHARTER_ORDER_NOT_FOUND;
+	}
+
+	@Override
+	protected CharterOrder doCloneOrder(FleetCandidate candidate) {
+		return candidate.getOrder().clone();
+	}
+
+	// XXX REMOVE
 	// @Override
 	// public Page<CharterOrder> listTenantOrders(String tenantId, Status status, int page, int pageSize) {
 	// if (Order.Status.DELETED == status) {
@@ -102,16 +112,6 @@ public class CharterOrderServiceImpl extends AbstractOrderCandidateService<Fleet
 	// LOG.debug("Final quick flight order: {}", result);
 	// return Pages.createPage(page, pageSize, data.getTotalRecords(), ImmutableList.copyOf(result.values()));
 	// }
-
-	@Override
-	protected Code orderNotFoundCode() {
-		return Codes.CHARTER_ORDER_NOT_FOUND;
-	}
-
-	@Override
-	protected CharterOrder doCloneOrder(FleetCandidate candidate) {
-		return candidate.getOrder().clone();
-	}
 
 	// TODO
 	// @Transactional

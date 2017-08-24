@@ -20,6 +20,7 @@ import net.aircommunity.platform.model.domain.Aircraft;
 import net.aircommunity.platform.model.domain.AircraftCandidate;
 import net.aircommunity.platform.model.domain.FleetCandidate;
 import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.PassengerItem;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.QuickFlightOrder;
 import net.aircommunity.platform.repository.AircraftCandidateRepository;
@@ -50,12 +51,19 @@ public class QuickFlightOrderServiceImpl extends AbstractOrderCandidateService<A
 
 	@Override
 	protected void copyProperties(QuickFlightOrder src, QuickFlightOrder tgt) {
-		tgt.setArrivalCity(src.getArrivalCity());
-		tgt.setArrivalLocation(src.getArrivalLocation());
+		tgt.setArrival(src.getArrival());
+		tgt.setArrivalApron(src.getArrivalApron());
+		tgt.setDeparture(src.getDeparture());
+		tgt.setDepartureApron(src.getDepartureApron());
 		tgt.setDepartureDate(src.getDepartureDate());
-		tgt.setDepartureCity(src.getDepartureCity());
-		tgt.setDepartureLocation(src.getDepartureLocation());
-		tgt.setPassengers(src.getPassengers());
+		tgt.setPassengerNum(src.getPassengerNum());
+		Set<PassengerItem> passengers = src.getPassengers();
+		if (passengers != null) {
+			tgt.setPassengers(applyPassengers(passengers));
+		}
+		tgt.setRoutes(src.getRoutes());
+		// NOTE: candidates is not set here
+		// tgt.setCandidates(candidates);
 	}
 
 	@Transactional
@@ -115,41 +123,6 @@ public class QuickFlightOrderServiceImpl extends AbstractOrderCandidateService<A
 		});
 		return Pages.createPage(data.getPage(), data.getPageSize(), data.getTotalRecords(), clonedData.build());
 	}
-
-	// @Override
-	// public Page<QuickFlightOrder> listTenantOrders(String tenantId, Status status, int page, int pageSize) {
-	// // TODO list all user orders for quickFlight
-	// // TODO add order status: PLATFORM_PROMPTED ? after prompt, tenant owner can only offer price, and invisible for
-	// // non-owner
-	// if (Order.Status.DELETED == status) {
-	// return Page.emptyPage(page, pageSize);
-	// }
-	// Page<AircraftCandidate> data = null;
-	// if (status == null) {
-	// data = Pages.adapt(candidateRepository.findDistinctOrderByVendorIdAndStatusNotOrderByOrderCreationDateDesc(
-	// tenantId, AircraftCandidate.Status.DELETED, Pages.createPageRequest(page, pageSize)));
-	// }
-	// else {
-	// data = Pages.adapt(
-	// candidateRepository.findDistinctOrderByVendorIdAndOrderStatusOrderByOrderCreationDateDesc(tenantId,
-	// status, Pages.createPageRequest(page, pageSize)));
-	// }
-	// LOG.debug("Before filtering {} candidate data: {}", tenantId, data);
-	// Map<String, QuickFlightOrder> result = new LinkedHashMap<>();
-	// data.getContent().stream().forEach(theCandidate -> {
-	// // make copy
-	// QuickFlightOrder order = doCloneOrder(theCandidate);
-	// // remove candidate whose owner is NOT current tenant
-	// // means tenant can only see his own candidate of this order
-	// Set<AircraftCandidate> candidates = order.getCandidates().stream()
-	// .filter(candidate -> candidate.isOwnedByTenant(tenantId)).collect(Collectors.toSet());
-	// order.setCandidates(candidates);
-	// result.putIfAbsent(order.getId(), order);
-	// });
-	// LOG.debug("Final quick flight order: {}", result);
-	// return Pages.createPage(data.getPage(), data.getPageSize(), data.getTotalRecords(),
-	// ImmutableList.copyOf(result.values()));
-	// }
 
 	@Override
 	protected Code orderNotFoundCode() {
