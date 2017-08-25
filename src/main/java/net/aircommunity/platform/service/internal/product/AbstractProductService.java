@@ -256,12 +256,28 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	/**
 	 * Update stock
 	 */
-	protected final T doUpdateProductStock(String productId, int deltaStock) {
+	protected final T doUpdateProductStock(String productId, int stock) {
 		T product = doFindProduct(productId);
+		return doUpdateProductStock0(product, stock);
+	}
+
+	/**
+	 * Update stock with delta
+	 */
+	protected final T doUpdateProductStockWithDelta(String productId, int deltaStock) {
+		T product = doFindProduct(productId);
+		// skip for unlimited stock
+		if (!product.hasStockLimit()) {
+			return product;
+		}
 		int newStock = product.getStock() + deltaStock;
-		product.setStock(newStock);
+		return doUpdateProductStock0(product, newStock);
+	}
+
+	private T doUpdateProductStock0(T product, int stock) {
+		product.setStock(stock);
 		T updated = safeExecute(() -> getProductRepository().save(product), "Update %s: %s with new stock %d failed",
-				type.getSimpleName(), productId, newStock);
+				type.getSimpleName(), product.getId(), stock);
 		postDomainEvent(EVENT_UPDATE);
 		return updated;
 	}

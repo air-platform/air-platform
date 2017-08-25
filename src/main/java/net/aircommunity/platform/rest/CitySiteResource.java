@@ -120,7 +120,7 @@ public class CitySiteResource {
      * Delete
      */
     @DELETE
-    @Path("{citySiteService}")
+    @Path("{citySiteId}")
     @RolesAllowed(Roles.ROLE_ADMIN)
     public void delete(@PathParam("citySiteId") String citySiteId) {
         citySiteService.deleteCitySite(citySiteId);

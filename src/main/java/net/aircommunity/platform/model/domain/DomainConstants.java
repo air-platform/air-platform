@@ -143,11 +143,13 @@ interface DomainConstants {
 	// Link type (product | content)
 	int LINK_TYPE_LEN = 8;
 
+	int FLIGHT_ROUTE_TYPE_LEN = 6;
+
 	// push notification type
 	int PUSH_NOTIFICATION_TYPE_LEN = 15;
 	// push notification status
 	int PUSH_NOTIFICATION_STATUS_LEN = 15;
 
-	//make alias the same length as principal len;
+	// make alias the same length as principal len;
 	int PUSH_NOTIFICATION_ALIAS_LEN = ACCOUNT_PRINCIPAL_LEN;
 }

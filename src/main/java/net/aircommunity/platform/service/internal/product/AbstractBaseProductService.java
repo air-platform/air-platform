@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.internal.product;
 
+import javax.annotation.Nonnull;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -78,6 +80,20 @@ abstract class AbstractBaseProductService<T extends Product> extends AbstractPro
 	@Override
 	public T updateProductScore(String productId, double score) {
 		return doUpdateProductScore(productId, score);
+	}
+
+	@Transactional
+	@CachePut(cacheNames = CACHE_NAME, key = "#productId")
+	@Override
+	public T updateProductStock(String productId, int stock) {
+		return doUpdateProductStock(productId, stock);
+	}
+
+	@Transactional
+	@CachePut(cacheNames = CACHE_NAME, key = "#productId")
+	@Override
+	public T updateProductStockWithDelta(@Nonnull String productId, int deltaStock) {
+		return doUpdateProductStockWithDelta(productId, deltaStock);
 	}
 
 	@Transactional

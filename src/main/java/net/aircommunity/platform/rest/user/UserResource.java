@@ -306,7 +306,7 @@ public class UserResource extends BaseResourceSupport {
 	// *************************************************
 
 	// ***********************
-	// Air Jet
+	// Quick Flight
 	// ***********************
 	@Resource
 	private QuickFlightOrderResource quickFlightOrderResource;
@@ -316,6 +316,9 @@ public class UserResource extends BaseResourceSupport {
 		return quickFlightOrderResource;
 	}
 
+	// ***********************
+	// Air Jet
+	// ***********************
 	@Resource
 	private CharterOrderResource charterOrderResource;
 

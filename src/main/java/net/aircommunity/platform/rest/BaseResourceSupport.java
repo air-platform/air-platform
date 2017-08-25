@@ -29,6 +29,7 @@ public abstract class BaseResourceSupport {
 	private static final String JSON_PROP_COUNT = "count";
 	private static final String JSON_PROP_REASON = "reason";
 	private static final String JSON_PROP_RANK = "rank";
+	private static final String JSON_PROP_STOCK = "stock";
 	private static final String JSON_PROP_AMOUNT = "amount";
 	private static final String JSON_PROP_STATUS = "status";
 	private static final String JSON_PROP_ROLE = "role";
@@ -108,6 +109,15 @@ public abstract class BaseResourceSupport {
 			// request.getInt(JSON_PROP_RANK, Product.DEFAULT_RANK);
 		}
 		return Product.DEFAULT_RANK;
+	}
+
+	// product stock
+	protected int getStock(JsonObject request) {
+		if (request != null) {
+			JsonNumber num = request.getJsonNumber(JSON_PROP_STOCK);
+			return num == null ? Product.UNLIMITED_STOCK : num.intValue();
+		}
+		return Product.UNLIMITED_STOCK;
 	}
 
 	private String getJsonString(JsonObject request, String name) {

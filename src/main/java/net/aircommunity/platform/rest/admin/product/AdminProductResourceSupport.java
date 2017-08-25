@@ -142,6 +142,19 @@ public abstract class AdminProductResourceSupport<T extends Product> extends Pro
 	}
 
 	/**
+	 * Update stock
+	 */
+	@POST
+	@Path("{productId}/stock")
+	@JsonView(JsonViews.Admin.class)
+	@RolesAllowed(Roles.ROLE_ADMIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Product updateStockProduct(@PathParam("productId") String productId, @NotNull JsonObject stock) {
+		int newStock = getStock(stock);
+		return getProductService().updateProductStock(productId, newStock);
+	}
+
+	/**
 	 * Unpublish off-sale
 	 */
 	@POST

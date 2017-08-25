@@ -1118,6 +1118,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				// handle all the status if any new status is added
 				LOG.warn("Unhandled order status: {}, SHOULD NOT HAPPEN!", newStatus);
 				throw new AirException(Codes.ORDER_ILLEGAL_STATUS, M.msg(M.ORDER_ILLEGAL_STATUS));
+
 		}
 		order.setStatus(newStatus);
 		order.setLastModifiedDate(new Date());

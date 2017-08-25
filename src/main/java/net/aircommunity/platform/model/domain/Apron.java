@@ -46,6 +46,11 @@ public class Apron extends Persistable {
 	@Column(name = "city", length = CITY_NAME_LEN, nullable = true)
 	private String city;
 
+	// detailed address
+	@Size(max = ADDRESS_LEN)
+	@Column(name = "address", length = ADDRESS_LEN, nullable = true)
+	private String address;
+
 	// apron type
 	@NotNull
 	@Enumerated(EnumType.STRING)
@@ -65,6 +70,13 @@ public class Apron extends Persistable {
 	@Lob
 	@Column(name = "description")
 	private String description;
+
+	public Apron() {
+	}
+
+	public Apron(String id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -88,6 +100,14 @@ public class Apron extends Persistable {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public Type getType() {
@@ -126,8 +146,9 @@ public class Apron extends Persistable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Apron [id=").append(id).append(", name=").append(name).append(", province=").append(province)
-				.append(", city=").append(city).append(", type=").append(type).append(", location=").append(location)
-				.append(", published=").append(published).append(", description=").append(description).append("]");
+				.append(", city=").append(city).append(", address=").append(address).append(", type=").append(type)
+				.append(", location=").append(location).append(", published=").append(published)
+				.append(", description=").append(description).append("]");
 		return builder.toString();
 	}
 

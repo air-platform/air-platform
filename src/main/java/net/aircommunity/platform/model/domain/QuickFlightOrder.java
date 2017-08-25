@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -7,19 +8,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.micro.annotation.constraint.NotEmpty;
@@ -30,7 +35,7 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
  * Quick flight order.
  * <p>
  * Order work flow: START -> USER place an order with basic information -> TENANT offer aircraft candidates (CANDIDATE)
- * -> ADMIN prompt some aircraft candidates (e.g. 3 out of 10) among all the candidates (OFFERED) -> USER select one
+ * -> ADMIN prompt some aircraft candidates (e.g. 3 out of 10) among all the candidates (OFFERED) -> USER select 1
  * candidate among the offered candidates (SELECTED) -> END
  * 
  * @author Bin.Zhang
@@ -42,11 +47,6 @@ import net.aircommunity.platform.model.jaxb.DateAdapter;
 public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implements Cloneable {
 	private static final long serialVersionUID = 1L;
 
-	// the number of passengers,
-	@Min(1)
-	@Column(name = "passengers")
-	private int passengers;
-
 	// departure date, e.g. 2017-5-1
 	@NotNull
 	@Temporal(value = TemporalType.DATE)
@@ -54,41 +54,58 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date departureDate;
 
-	// departure city
-	@NotEmpty
-	@Size(max = CITY_NAME_LEN)
-	@Column(name = "departure_city", length = CITY_NAME_LEN, nullable = false)
-	private String departureCity;
-
 	// departure location
-	@NotEmpty
-	@Size(max = CITY_NAME_LEN)
-	@Column(name = "departure_location", length = CITY_NAME_LEN, nullable = false)
-	private String departureLocation;
-
-	// arrival city
-	@NotEmpty
-	@Size(max = CITY_NAME_LEN)
-	@Column(name = "arrival_city", length = CITY_NAME_LEN, nullable = false)
-	private String arrivalCity;
+	@NotNull
+	@Embedded
+	@AttributeOverrides({ //
+			@AttributeOverride(name = "city", column = @Column(name = "departure_city", length = CITY_NAME_LEN, nullable = false)),
+			@AttributeOverride(name = "name", column = @Column(name = "departure_name", length = CITY_NAME_LEN, nullable = false)),
+			@AttributeOverride(name = "address", column = @Column(name = "departure_address", length = ADDRESS_LEN, nullable = false)),
+			@AttributeOverride(name = "latitude", column = @Column(name = "departure_lat", precision = 10, scale = 8)),
+			@AttributeOverride(name = "longitude", column = @Column(name = "departure_lon", precision = 11, scale = 8))//
+	})
+	private QuickFlightLocation departure;
 
 	// arrival location
+	@NotNull
+	@Embedded
+	@AttributeOverrides({ //
+			@AttributeOverride(name = "city", column = @Column(name = "arrival_city", length = CITY_NAME_LEN, nullable = false)),
+			@AttributeOverride(name = "name", column = @Column(name = "arrival_name", length = CITY_NAME_LEN, nullable = false)),
+			@AttributeOverride(name = "address", column = @Column(name = "arrival_address", length = ADDRESS_LEN, nullable = false)),
+			@AttributeOverride(name = "latitude", column = @Column(name = "arrival_lat", precision = 10, scale = 8)),
+			@AttributeOverride(name = "longitude", column = @Column(name = "arrival_lon", precision = 11, scale = 8))//
+	})
+	private QuickFlightLocation arrival;
+
+	// can be null
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "departure_apron_id")
+	private Apron departureApron;
+
+	// can be null
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "arrival_apron_id")
+	private Apron arrivalApron;
+
+	// route order matters (use list)
 	@NotEmpty
-	@Size(max = CITY_NAME_LEN)
-	@Column(name = "arrival_location", length = CITY_NAME_LEN, nullable = false)
-	private String arrivalLocation;
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private List<QuickFlightRoute> routes = new ArrayList<>();
+
+	// the number of passengers,
+	@Min(1)
+	@Column(name = "passengers")
+	private int passengerNum;
+
+	// passengers info
+	@NotEmpty
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private Set<PassengerItem> passengers = new HashSet<>();
 
 	// candidates
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<AircraftCandidate> aircraftCandidates = new HashSet<>();
-
-	public int getPassengers() {
-		return passengers;
-	}
-
-	public void setPassengers(int passengers) {
-		this.passengers = passengers;
-	}
 
 	public Date getDepartureDate() {
 		return departureDate;
@@ -98,36 +115,68 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 		this.departureDate = departureDate;
 	}
 
-	public String getDepartureCity() {
-		return departureCity;
+	public QuickFlightLocation getDeparture() {
+		return departure;
 	}
 
-	public void setDepartureCity(String departureCity) {
-		this.departureCity = departureCity;
+	public void setDeparture(QuickFlightLocation departure) {
+		this.departure = departure;
 	}
 
-	public String getDepartureLocation() {
-		return departureLocation;
+	public QuickFlightLocation getArrival() {
+		return arrival;
 	}
 
-	public void setDepartureLocation(String departureLocation) {
-		this.departureLocation = departureLocation;
+	public void setArrival(QuickFlightLocation arrival) {
+		this.arrival = arrival;
 	}
 
-	public String getArrivalCity() {
-		return arrivalCity;
+	public Apron getDepartureApron() {
+		return departureApron;
 	}
 
-	public void setArrivalCity(String arrivalCity) {
-		this.arrivalCity = arrivalCity;
+	public void setDepartureApron(Apron departureApron) {
+		this.departureApron = departureApron;
 	}
 
-	public String getArrivalLocation() {
-		return arrivalLocation;
+	public Apron getArrivalApron() {
+		return arrivalApron;
 	}
 
-	public void setArrivalLocation(String arrivalLocation) {
-		this.arrivalLocation = arrivalLocation;
+	public void setArrivalApron(Apron arrivalApron) {
+		this.arrivalApron = arrivalApron;
+	}
+
+	public List<QuickFlightRoute> getRoutes() {
+		return routes;
+	}
+
+	public void setRoutes(List<QuickFlightRoute> items) {
+		if (items != null) {
+			items.stream().forEach(item -> item.setOrder(this));
+			routes.clear();
+			routes.addAll(items);
+		}
+	}
+
+	public int getPassengerNum() {
+		return passengerNum;
+	}
+
+	public void setPassengerNum(int passengerNum) {
+		this.passengerNum = passengerNum;
+	}
+
+	public Set<PassengerItem> getPassengers() {
+		return passengers;
+	}
+
+	public void setPassengers(Set<PassengerItem> items) {
+		if (items != null) {
+			items.stream().forEach(item -> item.setOrder(this));
+			passengers.clear();
+			passengers.addAll(items);
+		}
 	}
 
 	@Override
@@ -195,11 +244,12 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("QuickFlightOrder [id=").append(id).append(", orderNo=").append(orderNo).append(", type=")
-				.append(type).append(", pointsUsed=").append(pointsUsed).append(", quantity=").append(quantity)
-				.append(", totalPrice=").append(totalPrice).append(", originalTotalPrice=").append(originalTotalPrice)
-				.append(", currencyUnit=").append(currencyUnit).append(", status=").append(status).append(", channel=")
-				.append(channel).append(", commented=").append(commented).append(", creationDate=").append(creationDate)
+		builder.append("QuickFlightOrder [payment=").append(payment).append(", refund=").append(refund)
+				.append(", orderNo=").append(orderNo).append(", type=").append(type).append(", pointsUsed=")
+				.append(pointsUsed).append(", quantity=").append(quantity).append(", totalPrice=").append(totalPrice)
+				.append(", originalTotalPrice=").append(originalTotalPrice).append(", currencyUnit=")
+				.append(currencyUnit).append(", status=").append(status).append(", channel=").append(channel)
+				.append(", commented=").append(commented).append(", creationDate=").append(creationDate)
 				.append(", lastModifiedDate=").append(lastModifiedDate).append(", paymentDate=").append(paymentDate)
 				.append(", refundedDate=").append(refundedDate).append(", finishedDate=").append(finishedDate)
 				.append(", closedDate=").append(closedDate).append(", cancelledDate=").append(cancelledDate)
@@ -207,10 +257,12 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 				.append(", refundReason=").append(refundReason).append(", refundFailureCause=")
 				.append(refundFailureCause).append(", paymentFailureCause=").append(paymentFailureCause)
 				.append(", cancelReason=").append(cancelReason).append(", closedReason=").append(closedReason)
-				.append(", note=").append(note).append(", passengers=").append(passengers).append(", departureDate=")
-				.append(departureDate).append(", departureCity=").append(departureCity).append(", departureLocation=")
-				.append(departureLocation).append(", arrivalCity=").append(arrivalCity).append(", arrivalLocation=")
-				.append(arrivalLocation).append("]");
+				.append(", note=").append(note).append(", owner=").append(owner).append(", id=").append(id)
+				.append(", departureDate=").append(departureDate).append(", departure=").append(departure)
+				.append(", arrival=").append(arrival).append(", departureApron=").append(departureApron)
+				.append(", arrivalApron=").append(arrivalApron).append(", routes=").append(routes)
+				.append(", passengerNum=").append(passengerNum).append(", passengers=").append(passengers)
+				.append(", aircraftCandidates=").append(aircraftCandidates).append("]");
 		return builder.toString();
 	}
 }
