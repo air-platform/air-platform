@@ -1,21 +1,5 @@
 package net.aircommunity.platform.service.internal.common;
 
-import java.util.Date;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Strings;
-
 import cn.jiguang.common.ClientConfig;
 import cn.jiguang.common.resp.APIConnectionException;
 import cn.jiguang.common.resp.APIRequestException;
@@ -26,6 +10,8 @@ import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
 import cn.jpush.api.push.model.audience.AudienceTarget;
 import cn.jpush.api.push.model.notification.Notification;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
@@ -39,6 +25,17 @@ import net.aircommunity.platform.repository.PushNotificationRepository;
 import net.aircommunity.platform.service.common.PushNotificationService;
 import net.aircommunity.platform.service.internal.AbstractServiceSupport;
 import net.aircommunity.platform.service.internal.Pages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.transaction.Transactional;
+import java.util.Date;
 
 /**
  * SMS service implementation
@@ -108,6 +105,7 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 			}
 			else {
 				pn.setStatus(PushNotification.Status.PUSH_FAILED);
+				pn.setLastSendDate(new Date());
 			}
 
 		}
@@ -136,12 +134,14 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 				"Create PushNotification %s failed", newPushNotification);
 	}
 
+	@Transactional
+	@CachePut(cacheNames = CACHE_NAME, key = "#pushNotificationId")
 	@Override
 	public PushNotification sendNotification(String pushNotificationId) {
 		PushNotification pn = findPushNotification(pushNotificationId);
 		doPushNotification(pn);
 		PushNotification updated = safeExecute(() -> pushNotificationRepository.save(pn),
-				"Update pushnotification %s to %s failed", pushNotificationId, pn);
+				"Update pushNotification %s to %s failed", pushNotificationId, pn);
 		return updated;
 	}
 
@@ -186,6 +186,9 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 		tgt.setType(src.getType());
 		tgt.setAlias(src.getAlias());
 		tgt.setOwner(src.getOwner());
+		tgt.setStatus(src.getStatus());
+		tgt.setCreationDate(src.getCreationDate());
+		tgt.setLastSendDate(src.getLastSendDate());
 	}
 
 	@Override

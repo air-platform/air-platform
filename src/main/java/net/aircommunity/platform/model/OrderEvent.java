@@ -1,15 +1,14 @@
 package net.aircommunity.platform.model;
 
+import net.aircommunity.platform.model.domain.Order;
+
+import javax.annotation.concurrent.Immutable;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.annotation.concurrent.Immutable;
-
-import net.aircommunity.platform.model.domain.Order;
-
 /**
  * Order CURD Event.
- * 
+ *
  * @author Bin.Zhang
  */
 @Immutable
@@ -94,7 +93,28 @@ public class OrderEvent implements Serializable {
 		/**
 		 * Order deletion
 		 */
-		DELETION;
+		DELETION,
+
+		/**
+		 * Order confirm
+		 */
+
+		CONFIRMED,
+
+		/**
+		 * Order sign
+		 */
+		CONTRACT_SIGNED,
+
+		/**
+		 * Order ticket release
+		 */
+		TICKET_RELEASED,
+
+		/**
+		 * Order finish
+		 */
+		FINISHED;
 	}
 
 }

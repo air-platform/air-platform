@@ -90,7 +90,6 @@ public class PushNotificationResource {
     public Page<PushNotification> list(@PathParam("userId") String userId,
                                        @QueryParam("page") @DefaultValue("0") int page,
                                        @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
-        LOG.info("......{}.", userId);
         return pushNotificationService.listPushNotifications(page, pageSize);
     }
 

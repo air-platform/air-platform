@@ -1,16 +1,22 @@
 package net.aircommunity.platform.service.internal;
 
-import java.io.Serializable;
-import java.util.EnumSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import javax.annotation.Resource;
-
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.eventbus.EventBus;
+import net.aircommunity.platform.*;
+import net.aircommunity.platform.model.DomainEvent;
+import net.aircommunity.platform.model.DomainEvent.DomainType;
+import net.aircommunity.platform.model.DomainEvent.Operation;
+import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.*;
+import net.aircommunity.platform.model.domain.Product.Type;
+import net.aircommunity.platform.nls.M;
+import net.aircommunity.platform.repository.AccountAuthRepository;
+import net.aircommunity.platform.repository.SettingRepository;
+import net.aircommunity.platform.service.common.PushNotificationService;
+import net.aircommunity.platform.service.security.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.metrics.GaugeService;
@@ -21,41 +27,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.retry.support.RetryTemplate;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Timer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.eventbus.EventBus;
-
-import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.Code;
-import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.Configuration;
-import net.aircommunity.platform.Constants;
-import net.aircommunity.platform.model.DomainEvent;
-import net.aircommunity.platform.model.DomainEvent.DomainType;
-import net.aircommunity.platform.model.DomainEvent.Operation;
-import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.domain.Account;
-import net.aircommunity.platform.model.domain.AirTaxi;
-import net.aircommunity.platform.model.domain.AirTour;
-import net.aircommunity.platform.model.domain.AirTransport;
-import net.aircommunity.platform.model.domain.Course;
-import net.aircommunity.platform.model.domain.FerryFlight;
-import net.aircommunity.platform.model.domain.Fleet;
-import net.aircommunity.platform.model.domain.JetTravel;
-import net.aircommunity.platform.model.domain.Product.Type;
-import net.aircommunity.platform.model.domain.PushNotification;
-import net.aircommunity.platform.model.domain.User;
-import net.aircommunity.platform.nls.M;
-import net.aircommunity.platform.repository.AccountAuthRepository;
-import net.aircommunity.platform.repository.SettingRepository;
-import net.aircommunity.platform.service.common.PushNotificationService;
-import net.aircommunity.platform.service.security.AccountService;
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.EnumSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Abstract service support.
- * 
+ *
  * @author Bin.Zhang
  */
 public abstract class AbstractServiceSupport {
@@ -175,7 +159,7 @@ public abstract class AbstractServiceSupport {
 	private static final String TYPE_COMMON_PRODUCT = "common";
 	private static final String TYPE_COMMON_ORDER = "common";
 	// @formatter:off
-	private static final Map<Class<?>, Type> typeMapping = ImmutableMap.<Class<?>, Type> builder()
+	private static final Map<Class<?>, Type> typeMapping = ImmutableMap.<Class<?>, Type>builder()
 			.put(AirTaxi.class, Type.AIRTAXI)
 			.put(AirTour.class, Type.AIRTOUR)
 			.put(AirTransport.class, Type.AIRTRANSPORT)
@@ -215,7 +199,7 @@ public abstract class AbstractServiceSupport {
 	 * @param interestedDomains the interested domains
 	 */
 	protected void registerPushNotificationOnDomainEvent(EnumSet<DomainType> interestedDomains,
-			Predicate<DomainEvent> when) {
+														 Predicate<DomainEvent> when) {
 		Objects.requireNonNull(interestedDomains, "interestedDomains cannot be null");
 		Objects.requireNonNull(when, "when cannot be null");
 		registerDomainEventHandler(event -> {
@@ -226,13 +210,16 @@ public abstract class AbstractServiceSupport {
 				String accountId = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID).toString();
 				User user = findAccount(accountId, User.class);
 				pf.setType(PushNotification.Type.PLAIN_TEXT);
-				// pf.setAlias(auth.get(0).getPrincipal()); TODO use meaningful alias?
+
+				//TODO use meaningful alias?
+				// jiguang sdk don't support string containing dash as alias, use underline instead
 				pf.setAlias(accountId.replace("-", "_"));
 
 				pf.setOwner(user);
 
 				if (event.getType() == DomainType.ORDER) {
-					pf.setMessage(Constants.TEMPLATE_PUSHNOTIFICATION_ORDER_MESSAGE);
+					String msg = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_MESSAGE).toString();
+					pf.setMessage(msg);
 				}
 				else if (event.getType() == DomainType.POINT) {
 					pf.setMessage(Constants.TEMPLATE_PUSHNOTIFICATION_POINT_MESSAGE);
@@ -245,12 +232,12 @@ public abstract class AbstractServiceSupport {
 
 	/**
 	 * Register domain event to evict cache on UPDATE and DELETION.
-	 * 
-	 * @param cacheName the name of the cache to be cleared
+	 *
+	 * @param cacheName         the name of the cache to be cleared
 	 * @param interestedDomains the interested domains
 	 */
 	protected void registerCacheEvictOnDomainEvent(String cacheName, EnumSet<DomainType> interestedDomains,
-			Predicate<DomainEvent> when) {
+												   Predicate<DomainEvent> when) {
 		Objects.requireNonNull(cacheName, "cacheName cannot be null");
 		Objects.requireNonNull(interestedDomains, "interestedDomains cannot be null");
 		Objects.requireNonNull(when, "when cannot be null");
@@ -267,7 +254,7 @@ public abstract class AbstractServiceSupport {
 
 	/**
 	 * Register domain event handler
-	 * 
+	 *
 	 * @param consumer the domain event consumer
 	 */
 	protected void registerDomainEventHandler(Consumer<DomainEvent> consumer) {
@@ -276,7 +263,7 @@ public abstract class AbstractServiceSupport {
 
 	/**
 	 * Post domain event that other service may interested in
-	 * 
+	 *
 	 * @param event the domain event
 	 */
 	protected void postDomainEvent(DomainEvent event) {
@@ -316,7 +303,7 @@ public abstract class AbstractServiceSupport {
 	 * Delete
 	 */
 	protected final <T> void safeDeletion(Runnable flusher, Runnable deleteAction, Code errorCode,
-			String errorMessage) {
+										  String errorMessage) {
 		try {
 			deleteAction.run();
 			// NOTE: important flush() here, otherwise we cannot catch DataIntegrityViolationException
@@ -336,7 +323,7 @@ public abstract class AbstractServiceSupport {
 	 * Delete
 	 */
 	protected final <T> void safeDeletion(JpaRepository<T, String> repository, String id, Code errorCode,
-			String errorMessage) {
+										  String errorMessage) {
 		try {
 			repository.delete(id);
 			// NOTE: important flush() here, otherwise we cannot catch DataIntegrityViolationException
@@ -356,7 +343,7 @@ public abstract class AbstractServiceSupport {
 	 * Delete
 	 */
 	protected final <T> void safeDeletion(JpaRepository<T, String> repository, Runnable deleteAction, Code errorCode,
-			String errorMessage) {
+										  String errorMessage) {
 		try {
 			deleteAction.run();
 			// NOTE: important flush() here, otherwise we cannot catch DataIntegrityViolationException

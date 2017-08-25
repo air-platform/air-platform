@@ -1,28 +1,6 @@
 package net.aircommunity.platform.service.internal.order;
 
-import java.lang.reflect.ParameterizedType;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.Cache;
-
 import com.codahale.metrics.Timer;
-
 import io.micro.common.DateFormats;
 import io.micro.common.Reflections;
 import io.micro.common.Strings;
@@ -31,40 +9,13 @@ import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.common.OrderPrices;
-import net.aircommunity.platform.model.OrderEvent;
-import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.PointRules;
-import net.aircommunity.platform.model.PointsExchange;
-import net.aircommunity.platform.model.PricePolicy;
-import net.aircommunity.platform.model.UnitProductPrice;
-import net.aircommunity.platform.model.domain.Account;
-import net.aircommunity.platform.model.domain.AircraftAwareOrder;
-import net.aircommunity.platform.model.domain.CharterableOrder;
-import net.aircommunity.platform.model.domain.Instalment;
-import net.aircommunity.platform.model.domain.InstalmentOrder;
-import net.aircommunity.platform.model.domain.Order;
-import net.aircommunity.platform.model.domain.OrderRef;
-import net.aircommunity.platform.model.domain.OrderSalesPackage;
-import net.aircommunity.platform.model.domain.Passenger;
-import net.aircommunity.platform.model.domain.PassengerItem;
-import net.aircommunity.platform.model.domain.Payment;
-import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.model.domain.Refund;
-import net.aircommunity.platform.model.domain.SalesPackage;
-import net.aircommunity.platform.model.domain.StandardOrder;
-import net.aircommunity.platform.model.domain.StandardProduct;
-import net.aircommunity.platform.model.domain.Trade;
-import net.aircommunity.platform.model.domain.User;
+import net.aircommunity.platform.model.*;
+import net.aircommunity.platform.model.domain.*;
 import net.aircommunity.platform.model.payment.PaymentRequest;
 import net.aircommunity.platform.model.payment.Payments;
 import net.aircommunity.platform.model.payment.RefundResponse;
 import net.aircommunity.platform.nls.M;
-import net.aircommunity.platform.repository.BaseOrderRepository;
-import net.aircommunity.platform.repository.OrderRefRepository;
-import net.aircommunity.platform.repository.PassengerRepository;
-import net.aircommunity.platform.repository.PaymentRepository;
-import net.aircommunity.platform.repository.RefundRepository;
-import net.aircommunity.platform.repository.SalesPackageRepository;
+import net.aircommunity.platform.repository.*;
 import net.aircommunity.platform.service.MemberPointsService;
 import net.aircommunity.platform.service.internal.AbstractServiceSupport;
 import net.aircommunity.platform.service.payment.PaymentService;
@@ -72,10 +23,25 @@ import net.aircommunity.platform.service.product.CommentService;
 import net.aircommunity.platform.service.product.CommonProductService;
 import net.aircommunity.platform.service.spi.OrderProcessor;
 import net.aircommunity.platform.service.spi.ProductPricingStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
+
+import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.lang.reflect.ParameterizedType;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 /**
  * Abstract Order service support.
- * 
+ *
  * @author Bin.Zhang
  */
 abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupport {
@@ -257,8 +223,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			LOG.info("[Created order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), orderSaved);
 			eventBus.post(new OrderEvent(OrderEvent.EventType.CREATION, orderSaved));
 			return orderSaved;
-		}
-		finally {
+		} finally {
 			if (isMetricsEnabled()) {
 				timerContext.stop();
 			}
@@ -392,7 +357,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	/**
 	 * To be overridden by subclass
-	 * 
+	 *
 	 * @param src source
 	 * @param tgt target
 	 */
@@ -426,7 +391,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 
 	/**
 	 * Lookup the passenger info
-	 * 
+	 *
 	 * @param passengers the input passengers
 	 * @return update passenger entities
 	 */
@@ -465,8 +430,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderId));
 			}
 			return order;
-		}
-		finally {
+		} finally {
 			if (isMetricsEnabled()) {
 				timerContext.stop();
 			}
@@ -516,8 +480,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			order.setLastModifiedDate(new Date());
 			return safeExecute(() -> orderProcessor.saveOrder(order), "Update %s: %s with %s failed",
 					type.getSimpleName(), orderId, newOrder);
-		}
-		finally {
+		} finally {
 			if (isMetricsEnabled()) {
 				timerContext.stop();
 			}
@@ -894,39 +857,39 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 						refundAmount);
 				int code = refundResponse.getCode();
 				switch (code) {
-				case RefundResponse.PENDING:
-					// just update refund status to pending
-					refund.setTimestamp(new Date());
-					refund.setStatus(Refund.Status.PENDING);
-					// refresh order when refund status updated
-					orderRefund = doUpdateOrderStatus(orderRefund, Order.Status.REFUNDING);
-					break;
+					case RefundResponse.PENDING:
+						// just update refund status to pending
+						refund.setTimestamp(new Date());
+						refund.setStatus(Refund.Status.PENDING);
+						// refresh order when refund status updated
+						orderRefund = doUpdateOrderStatus(orderRefund, Order.Status.REFUNDING);
+						break;
 
-				case RefundResponse.SUCCESS:
-					refund.update(refundResponse.getRefund());
-					String refundReason = standardOrder.getRefundReason();
-					if (Strings.isBlank(refundReason)) {
-						refundReason = M.msg(M.REFUND_REASON_MISSING);
-					}
-					refund.setRefundReason(refundReason);
-					standardOrder.setRefund(refund);
-					// clear previous failure
-					standardOrder.setRefundFailureCause(null);
-					orderRefund = doUpdateOrderStatus(orderRefund, Order.Status.REFUNDED);
-					eventBus.post(new OrderEvent(OrderEvent.EventType.REFUNDED, orderRefund));
-					break;
+					case RefundResponse.SUCCESS:
+						refund.update(refundResponse.getRefund());
+						String refundReason = standardOrder.getRefundReason();
+						if (Strings.isBlank(refundReason)) {
+							refundReason = M.msg(M.REFUND_REASON_MISSING);
+						}
+						refund.setRefundReason(refundReason);
+						standardOrder.setRefund(refund);
+						// clear previous failure
+						standardOrder.setRefundFailureCause(null);
+						orderRefund = doUpdateOrderStatus(orderRefund, Order.Status.REFUNDED);
+						eventBus.post(new OrderEvent(OrderEvent.EventType.REFUNDED, orderRefund));
+						break;
 
-				case RefundResponse.FAILURE:
-					refund.setTimestamp(new Date());
-					refund.setStatus(Refund.Status.FAILURE);
-					refund.setRefundResult(refundResponse.getFailureCause());
-					orderRefund.setRefundFailureCause(refundResponse.getFailureCause());
-					orderRefund = doUpdateOrderStatus(orderRefund, Order.Status.REFUND_FAILED);
-					eventBus.post(new OrderEvent(OrderEvent.EventType.REFUND_FAILED, orderRefund));
-					break;
+					case RefundResponse.FAILURE:
+						refund.setTimestamp(new Date());
+						refund.setStatus(Refund.Status.FAILURE);
+						refund.setRefundResult(refundResponse.getFailureCause());
+						orderRefund.setRefundFailureCause(refundResponse.getFailureCause());
+						orderRefund = doUpdateOrderStatus(orderRefund, Order.Status.REFUND_FAILED);
+						eventBus.post(new OrderEvent(OrderEvent.EventType.REFUND_FAILED, orderRefund));
+						break;
 
-				default:
-					// noops
+					default:
+						// noops
 				}
 			}
 			// TODO NOT IMPLED
@@ -1011,150 +974,150 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 */
 	protected T doUpdateOrderStatus(T order, Order.Status newStatus) {
 		switch (newStatus) {
-		case CREATED:
-			// order initial status
-			LOG.debug("It's order initial status, cannot update status to {}", newStatus);
-			throw invalidOrderStatus(order, newStatus);
+			case CREATED:
+				// order initial status
+				LOG.debug("It's order initial status, cannot update status to {}", newStatus);
+				throw invalidOrderStatus(order, newStatus);
 
-			// specific for fleet only ATM
-		case CUSTOMER_CONFIRMED:
-			LOG.debug("Expect order intial statuss & confirmationRequired");
-			expectOrderStatusCondition(order.isInitialStatus());
-			expectOrderStatusCondition(order.confirmationRequired());
-			// update order ref for fleet
-			OrderRef orderRef = orderRefRepository.findOne(order.getId());
-			if (orderRef != null) {
-				// NOTE: should not be null here, and if null we've got a problem with the orderRef
-				Product product = order.getProduct();
-				orderRef.setVendorId(product == null ? null : product.getVendor().getId());
-				orderRefRepository.save(orderRef);
-			}
-			break;
+				// specific for fleet only ATM
+			case CUSTOMER_CONFIRMED:
+				LOG.debug("Expect order intial statuss & confirmationRequired");
+				expectOrderStatusCondition(order.isInitialStatus());
+				expectOrderStatusCondition(order.confirmationRequired());
+				// update order ref for fleet
+				OrderRef orderRef = orderRefRepository.findOne(order.getId());
+				if (orderRef != null) {
+					// NOTE: should not be null here, and if null we've got a problem with the orderRef
+					Product product = order.getProduct();
+					orderRef.setVendorId(product == null ? null : product.getVendor().getId());
+					orderRefRepository.save(orderRef);
+				}
+				break;
 
-		case CONFIRMED:
-			LOG.debug("Expect order confirmationRequired");
-			expectOrderStatusCondition(order.confirmationRequired());
-			break;
+			case CONFIRMED:
+				LOG.debug("Expect order confirmationRequired");
+				expectOrderStatusCondition(order.confirmationRequired());
+				break;
 
-		case CONTRACT_SIGNED:
-			// should be already confirmed
-			LOG.debug("Expect order contractRequired");
-			expectOrderStatusCondition(order.contractRequired());
-			if (order.confirmationRequired()) {
-				expectOrderStatus(order, newStatus, Order.Status.CONFIRMED);
-			}
-			break;
+			case CONTRACT_SIGNED:
+				// should be already confirmed
+				LOG.debug("Expect order contractRequired");
+				expectOrderStatusCondition(order.contractRequired());
+				if (order.confirmationRequired()) {
+					expectOrderStatus(order, newStatus, Order.Status.CONFIRMED);
+				}
+				break;
 
-		// may called by client notification, ignored if already paid
-		case PAYMENT_IN_PROCESS:
-			if (order.isPaid()) {
-				LOG.warn("Ignored status update to: {}, because this order is already PAID", newStatus);
-				return order;
-			}
-			LOG.debug("Expect order isPayable");
-			expectOrderStatusCondition(order.isPayable());
-			break;
+			// may called by client notification, ignored if already paid
+			case PAYMENT_IN_PROCESS:
+				if (order.isPaid()) {
+					LOG.warn("Ignored status update to: {}, because this order is already PAID", newStatus);
+					return order;
+				}
+				LOG.debug("Expect order isPayable");
+				expectOrderStatusCondition(order.isPayable());
+				break;
 
-		case PARTIAL_PAID:
-			// TODO check once it's implemented
-			LOG.debug("Check {} is NOT implemented yet", newStatus);
-			break;
+			case PARTIAL_PAID:
+				// TODO check once it's implemented
+				LOG.debug("Check {} is NOT implemented yet", newStatus);
+				break;
 
-		case PAID:
-			// we allow refund request to move back to paid status in case tenant rejected the refund request
-			// should be already contract signed (if contract sign is required)
-			if (order.contractRequired()) {
-				LOG.debug("Order contractRequired, expect contract signed before payment");
-				expectOrderStatus(order, newStatus,
-						EnumSet.of(Order.Status.CONTRACT_SIGNED, Order.Status.PAYMENT_IN_PROCESS,
-								Order.Status.PARTIAL_PAID, Order.Status.PAYMENT_FAILED, Order.Status.REFUND_REQUESTED));
-			}
-			// otherwise, should be in CREATED (XXX require confirmation? or just paid and then confirm)
-			else {
-				// expectOrderStatusCondition(order.isInitialStatus());
-				expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.CREATED, Order.Status.PAYMENT_IN_PROCESS,
-						Order.Status.PARTIAL_PAID, Order.Status.PAYMENT_FAILED, Order.Status.REFUND_REQUESTED));
-			}
-			// already paid for REFUND_REQUESTED (cannot re-setPaymentDate)
-			if (order.getStatus() != Order.Status.REFUND_REQUESTED) {
-				order.setPaymentDate(new Date());
-			}
-			break;
+			case PAID:
+				// we allow refund request to move back to paid status in case tenant rejected the refund request
+				// should be already contract signed (if contract sign is required)
+				if (order.contractRequired()) {
+					LOG.debug("Order contractRequired, expect contract signed before payment");
+					expectOrderStatus(order, newStatus,
+							EnumSet.of(Order.Status.CONTRACT_SIGNED, Order.Status.PAYMENT_IN_PROCESS,
+									Order.Status.PARTIAL_PAID, Order.Status.PAYMENT_FAILED, Order.Status.REFUND_REQUESTED));
+				}
+				// otherwise, should be in CREATED (XXX require confirmation? or just paid and then confirm)
+				else {
+					// expectOrderStatusCondition(order.isInitialStatus());
+					expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.CREATED, Order.Status.PAYMENT_IN_PROCESS,
+							Order.Status.PARTIAL_PAID, Order.Status.PAYMENT_FAILED, Order.Status.REFUND_REQUESTED));
+				}
+				// already paid for REFUND_REQUESTED (cannot re-setPaymentDate)
+				if (order.getStatus() != Order.Status.REFUND_REQUESTED) {
+					order.setPaymentDate(new Date());
+				}
+				break;
 
-		case PAYMENT_FAILED:
-			// TODO: should handle PARTIAL_PAID once its implemented
-			LOG.debug("Expect order isPayable");
-			expectOrderStatusCondition(order.isPayable());
-			break;
+			case PAYMENT_FAILED:
+				// TODO: should handle PARTIAL_PAID once its implemented
+				LOG.debug("Expect order isPayable");
+				expectOrderStatusCondition(order.isPayable());
+				break;
 
-		case REFUND_REQUESTED:
-			// should be already paid
-			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.PARTIAL_PAID,
-					Order.Status.PAID, Order.Status.TICKET_RELEASED));
-			break;
+			case REFUND_REQUESTED:
+				// should be already paid
+				expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.PARTIAL_PAID,
+						Order.Status.PAID, Order.Status.TICKET_RELEASED));
+				break;
 
-		case REFUNDING:
-			// should be already paid (directly by TENANT) or refund requested (by USER)
-			// we still allow refund after TICKET_RELEASED
-			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.REFUND_REQUESTED,
-					Order.Status.PAID, Order.Status.REFUNDING, Order.Status.TICKET_RELEASED));
-			break;
+			case REFUNDING:
+				// should be already paid (directly by TENANT) or refund requested (by USER)
+				// we still allow refund after TICKET_RELEASED
+				expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.REFUND_FAILED, Order.Status.REFUND_REQUESTED,
+						Order.Status.PAID, Order.Status.REFUNDING, Order.Status.TICKET_RELEASED));
+				break;
 
-		case REFUNDED:
-			// should be already refunding in progress
-			expectOrderStatus(order, newStatus, Order.Status.REFUNDING);
-			order.setRefundedDate(new Date());
-			returnBackPoints(order, newStatus);
-			break;
+			case REFUNDED:
+				// should be already refunding in progress
+				expectOrderStatus(order, newStatus, Order.Status.REFUNDING);
+				order.setRefundedDate(new Date());
+				returnBackPoints(order, newStatus);
+				break;
 
-		case REFUND_FAILED:
-			expectOrderStatus(order, newStatus, Order.Status.REFUNDING);
-			break;
+			case REFUND_FAILED:
+				expectOrderStatus(order, newStatus, Order.Status.REFUNDING);
+				break;
 
-		case TICKET_RELEASED:
-			expectOrderStatus(order, newStatus, Order.Status.PAID);
-			break;
+			case TICKET_RELEASED:
+				expectOrderStatus(order, newStatus, Order.Status.PAID);
+				break;
 
-		case FINISHED:
-			// expect paid (TICKET_RELEASED also indicates already paid)
-			expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.PAID, Order.Status.TICKET_RELEASED));
-			order.setFinishedDate(new Date());
-			// update points earned
-			long pointsEarnedPercent = memberPointsService
-					.getPointsEarnedFromRule(PointRules.getOrderFinishedRule(order.getProduct().getCategory()));
-			long pointsEarned = Math.round(
-					order.getTotalPrice().multiply(BigDecimal.valueOf(pointsEarnedPercent / 100d)).doubleValue());
-			LOG.info("User earned points {}({}%)", pointsEarned, pointsEarnedPercent);
-			if (pointsEarned > 0) {
-				accountService.updateUserPoints(order.getOwner().getId(), pointsEarned);
-			}
-			commonProductService.increaseProductSales(order.getProduct().getId());
-			break;
+			case FINISHED:
+				// expect paid (TICKET_RELEASED also indicates already paid)
+				expectOrderStatus(order, newStatus, EnumSet.of(Order.Status.PAID, Order.Status.TICKET_RELEASED));
+				order.setFinishedDate(new Date());
+				// update points earned
+				long pointsEarnedPercent = memberPointsService
+						.getPointsEarnedFromRule(PointRules.getOrderFinishedRule(order.getProduct().getCategory()));
+				long pointsEarned = Math.round(
+						order.getTotalPrice().multiply(BigDecimal.valueOf(pointsEarnedPercent / 100d)).doubleValue());
+				LOG.info("User earned points {}({}%)", pointsEarned, pointsEarnedPercent);
+				if (pointsEarned > 0) {
+					accountService.updateUserPoints(order.getOwner().getId(), pointsEarned);
+				}
+				commonProductService.increaseProductSales(order.getProduct().getId());
+				break;
 
-		case CANCELLED:
-			LOG.debug("Expect order isCancellable");
-			expectOrderStatusCondition(order.isCancellable());
-			order.setCancelledDate(new Date());
-			returnBackPoints(order, newStatus);
-			break;
+			case CANCELLED:
+				LOG.debug("Expect order isCancellable");
+				expectOrderStatusCondition(order.isCancellable());
+				order.setCancelledDate(new Date());
+				returnBackPoints(order, newStatus);
+				break;
 
-		case CLOSED:
-			LOG.debug("Expect order isCloseable");
-			expectOrderStatusCondition(order.isCloseable());
-			order.setClosedDate(new Date());
-			returnBackPoints(order, newStatus);
-			break;
+			case CLOSED:
+				LOG.debug("Expect order isCloseable");
+				expectOrderStatusCondition(order.isCloseable());
+				order.setClosedDate(new Date());
+				returnBackPoints(order, newStatus);
+				break;
 
-		case DELETED:
-			LOG.debug("Expect order isCompleted");
-			expectOrderStatusCondition(order.isCompleted());
-			order.setDeletedDate(new Date());
-			break;
+			case DELETED:
+				LOG.debug("Expect order isCompleted");
+				expectOrderStatusCondition(order.isCompleted());
+				order.setDeletedDate(new Date());
+				break;
 
-		default:// noop
-			// handle all the status if any new status is added
-			LOG.warn("Unhandled order status: {}, SHOULD NOT HAPPEN!", newStatus);
-			throw new AirException(Codes.ORDER_ILLEGAL_STATUS, M.msg(M.ORDER_ILLEGAL_STATUS));
+			default:// noop
+				// handle all the status if any new status is added
+				LOG.warn("Unhandled order status: {}, SHOULD NOT HAPPEN!", newStatus);
+				throw new AirException(Codes.ORDER_ILLEGAL_STATUS, M.msg(M.ORDER_ILLEGAL_STATUS));
 		}
 		order.setStatus(newStatus);
 		order.setLastModifiedDate(new Date());
@@ -1163,6 +1126,22 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			if (orderUpdated.getStatus() == Order.Status.CANCELLED) {
 				eventBus.post(new OrderEvent(OrderEvent.EventType.CANCELLATION, orderUpdated));
 				LOG.info("Notify client managers on order cancellation: {}", orderUpdated);
+			}
+			if (orderUpdated.getStatus() == Order.Status.CONFIRMED) {
+				eventBus.post(new OrderEvent(OrderEvent.EventType.CONFIRMED, orderUpdated));
+				LOG.info("Notify customer on order confirmed: {}", orderUpdated);
+			}
+			if (orderUpdated.getStatus() == Order.Status.CONTRACT_SIGNED) {
+				eventBus.post(new OrderEvent(OrderEvent.EventType.CONTRACT_SIGNED, orderUpdated));
+				LOG.info("Notify customer on order contract signed: {}", orderUpdated);
+			}
+			if (orderUpdated.getStatus() == Order.Status.TICKET_RELEASED) {
+				eventBus.post(new OrderEvent(OrderEvent.EventType.TICKET_RELEASED, orderUpdated));
+				LOG.info("Notify customer on order ticket released: {}", orderUpdated);
+			}
+			if (orderUpdated.getStatus() == Order.Status.FINISHED) {
+				eventBus.post(new OrderEvent(OrderEvent.EventType.FINISHED, orderUpdated));
+				LOG.info("Notify customer on order finished: {}", orderUpdated);
 			}
 			return orderUpdated;
 		}, "Update %s: %s to status %s failed", type.getSimpleName(), order.getId(), newStatus);
@@ -1242,8 +1221,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		try {
 			return orderProcessor.listUserOrders(userId, statuses, page, pageSize);
-		}
-		finally {
+		} finally {
 			if (isMetricsEnabled()) {
 				timerContext.stop();
 			}
@@ -1261,8 +1239,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		try {
 			return orderProcessor.listUserOrdersOfRecentDays(userId, days, page, pageSize);
-		}
-		finally {
+		} finally {
 			if (isMetricsEnabled()) {
 				timerContext.stop();
 			}
@@ -1291,7 +1268,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * For ADMIN for a user (orders in any status and type), list all of a user
 	 */
 	protected Page<T> doListAllUserOrders(String userId, @Nullable Order.Status status, @Nullable Product.Type type,
-			int page, int pageSize) {
+										  int page, int pageSize) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = orderOperationTimer(this.type, ORDER_ACTION_ADMIN_LIST_USER);
@@ -1319,7 +1296,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * For ADMIN (orders in any status and type) (full table scan)
 	 */
 	protected Page<T> doListAllOrders(@Nullable Order.Status status, @Nullable Product.Type type, int page,
-			int pageSize) {
+									  int pageSize) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = orderOperationTimer(this.type, ORDER_ACTION_ADMIN_LIST);
@@ -1339,6 +1316,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	// ***************************
 	// Delete
 	// ***************************
+
 	/**
 	 * For ADMIN
 	 */
