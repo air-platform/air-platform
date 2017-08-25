@@ -152,4 +152,6 @@ interface DomainConstants {
 
 	// make alias the same length as principal len;
 	int PUSH_NOTIFICATION_ALIAS_LEN = ACCOUNT_PRINCIPAL_LEN;
+
+	int COLOR_LEN = 8;
 }

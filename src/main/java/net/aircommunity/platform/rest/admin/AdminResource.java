@@ -1,8 +1,11 @@
 package net.aircommunity.platform.rest.admin;
 
+import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
+import io.micro.core.security.AccessTokenService;
+import io.swagger.annotations.Api;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -18,15 +21,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import net.aircommunity.platform.rest.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import io.micro.annotation.RESTful;
-import io.micro.common.Strings;
-import io.micro.core.security.AccessTokenService;
-import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.ProductSummary;
 import net.aircommunity.platform.model.Roles;
@@ -37,6 +31,13 @@ import net.aircommunity.platform.model.metrics.AccountMetrics;
 import net.aircommunity.platform.model.metrics.OrderMetrics;
 import net.aircommunity.platform.model.metrics.ProductMetrics;
 import net.aircommunity.platform.model.metrics.TradeMetrics;
+import net.aircommunity.platform.rest.AirClassResource;
+import net.aircommunity.platform.rest.AirportResource;
+import net.aircommunity.platform.rest.BannerResource;
+import net.aircommunity.platform.rest.BaseResourceSupport;
+import net.aircommunity.platform.rest.CommentResource;
+import net.aircommunity.platform.rest.PromotionResource;
+import net.aircommunity.platform.rest.VenueTemplateResource;
 import net.aircommunity.platform.rest.admin.order.AdminOrderResource;
 import net.aircommunity.platform.rest.admin.product.AdminAirJetResource;
 import net.aircommunity.platform.rest.admin.product.AdminAirTaxiResource;
@@ -76,10 +77,12 @@ import net.aircommunity.platform.rest.user.JetTravelOrderResource;
 import net.aircommunity.platform.rest.user.UserCourseOrderResource;
 import net.aircommunity.platform.service.PlatformService;
 import net.aircommunity.platform.service.security.AccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ADMIN RESTful API.
- * 
+ *
  * @author Bin.Zhang
  */
 @Api
@@ -97,7 +100,6 @@ public class AdminResource extends BaseResourceSupport {
 
 	@Resource
 	private AccountService accountService;
-
 
 
 	/**
@@ -347,7 +349,7 @@ public class AdminResource extends BaseResourceSupport {
 	@Path("product/summaries")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response productSummaries(@QueryParam("category") Category category,
-			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
+									 @QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize) {
 		Page<Product> result = commonProductService.listAllApprovedProducts(category, page, pageSize);
 		List<ProductSummary> content = result.getContent().stream().map(ProductSummary::new)
 				.collect(Collectors.toList());
@@ -668,9 +670,18 @@ public class AdminResource extends BaseResourceSupport {
 
 	@Resource
 	private AdminPushNotificationResource adminPushNotificationResource;
+
 	@Path("pushnotifications")
 	public AdminPushNotificationResource pushnotifications() {
 		return adminPushNotificationResource;
+	}
+
+	@Resource
+	private VenueTemplateResource venueTemplateResource;
+
+	@Path("venuetemplate")
+	public VenueTemplateResource venueTemplates() {
+		return venueTemplateResource;
 	}
 
 }
