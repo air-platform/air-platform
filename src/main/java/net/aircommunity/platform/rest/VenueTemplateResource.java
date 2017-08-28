@@ -31,9 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Apron RESTful API allows list/find/query for ANYONE.
+ * Venue template RESTful API allows list/find/query for ANYONE.
  *
- * @author Bin.Zhang
+ * @author Xiangwen.Kong
  */
 @Api
 @RESTful

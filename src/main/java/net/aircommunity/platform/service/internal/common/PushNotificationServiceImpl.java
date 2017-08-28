@@ -9,6 +9,8 @@ import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
 import cn.jpush.api.push.model.audience.AudienceTarget;
+import cn.jpush.api.push.model.notification.AndroidNotification;
+import cn.jpush.api.push.model.notification.IosNotification;
 import cn.jpush.api.push.model.notification.Notification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
@@ -90,11 +92,33 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 		if (Strings.isNullOrEmpty(pn.getAlias())) {
 			payload = PushPayload.alertAll(message);
 			// PushPayload.
+
+
 		}
 		else {
 			payload = PushPayload.newBuilder().setPlatform(Platform.all())
 					.setAudience(Audience.newBuilder().addAudienceTarget(AudienceTarget.alias(pn.getAlias())).build())
 					.setNotification(Notification.alert(message)).build();
+
+
+
+			/*payload = PushPayload.newBuilder().setPlatform(Platform.all())
+					.setAudience(Audience.newBuilder().addAudienceTarget(AudienceTarget.alias(pn.getAlias())).build())
+					.setNotification(Notification.newBuilder()
+									.addPlatformNotification(IosNotification.newBuilder()
+										.setAlert(message)
+										.addExtra("orderNo", "123-456-789")
+										.addExtra("type", "quick|taxi")
+										.build())
+									.addPlatformNotification(AndroidNotification.newBuilder()
+										.setAlert(message)
+										.addExtra("orderNo", "123-456-789")
+										.addExtra("type", "quick|taxi")
+										.build())
+									.build())
+					.build();*/
+
+
 		}
 
 		try {

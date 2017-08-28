@@ -78,10 +78,10 @@ public final class Constants {
 	public static final String TEMPLATE_PUSHNOTIFICATION_OFFER = "报价已生成，请您确认机型与报价~";
 
 	public static final String TEMPLATE_PUSHNOTIFICATION_OFFER_CONFIRM = "我们已经收到您的确认信息，正在为您安排准备工作~";
-	public static final String TEMPLATE_PUSHNOTIFICATION_SIGN = "合同已经签署，为保证您的出行，请尽快完成支付~";
-	public static final String TEMPLATE_PUSHNOTIFICATION_PAY = "支付完成，准备起飞，祝您旅途愉快~";
+	public static final String TEMPLATE_PUSHNOTIFICATION_SIGN = "合同已经签署，请尽快完成订单支付~";
+	public static final String TEMPLATE_PUSHNOTIFICATION_PAY = "支付完成，你准备好开启空中之旅吗？";
 	public static final String TEMPLATE_PUSHNOTIFICATION_TICKET = "出票成功，准备起飞，祝您旅途愉快~";
-	public static final String TEMPLATE_PUSHNOTIFICATION_FINISH = "飞行完成，请您对本次飞行进行评价，欢迎您再次惠顾~";
+	public static final String TEMPLATE_PUSHNOTIFICATION_FINISH = "订单完成，请您对本订单进行评价，欢迎您再次惠顾~";
 
 
 	// any constants put here

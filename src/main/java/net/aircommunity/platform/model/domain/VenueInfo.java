@@ -18,21 +18,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class VenueInfo extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-	// venue template name
+	// venue name
 	@NotEmpty
 	@Size(max = PRODUCT_NAME_LEN)
 	@Column(name = "name", length = PRODUCT_NAME_LEN, nullable = false)
 	private String name;
 
 
-	// venue template address
-	@Column(name = "background_pic", length = IMAGE_URL_LEN)
-	private String backgroundPic;
+	// venue picture
+	@Column(name = "picture", length = IMAGE_URL_LEN)
+	private String picture;
 
-	@Column(name = "background_color", length = COLOR_LEN)
-	private String backgroundColor;
-
-	// venue template description
+	// venue description
 	@Lob
 	@Column(name = "description")
 	private String description;
@@ -46,20 +43,12 @@ public class VenueInfo extends Persistable {
 		this.name = name;
 	}
 
-	public String getBackgroundPic() {
-		return backgroundPic;
+	public String getPicture() {
+		return picture;
 	}
 
-	public void setBackgroundPic(String backgroundPic) {
-		this.backgroundPic = backgroundPic;
-	}
-
-	public String getBackgroundColor() {
-		return backgroundColor;
-	}
-
-	public void setBackgroundColor(String backgroundColor) {
-		this.backgroundColor = backgroundColor;
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 
 	public String getDescription() {
@@ -74,8 +63,7 @@ public class VenueInfo extends Persistable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("VenueTemplate [id=").append(id).append(", name=").append(name)
-				.append(", backgroundPic=").append(backgroundPic)
-				.append(", backgroundColor=").append(backgroundColor)
+				.append(", picture=").append(picture)
 				.append(", description=").append(description).append("]");
 		return builder.toString();
 	}
