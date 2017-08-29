@@ -1,7 +1,6 @@
 package net.aircommunity.platform;
 
 import com.google.common.collect.ImmutableSet;
-
 import java.util.Set;
 
 /**
@@ -70,6 +69,9 @@ public final class Constants {
 	public static final String TEMPLATE_PUSHNOTIFICATION_ACCOUNTID = "accountid";
 
 	public static final String TEMPLATE_PUSHNOTIFICATION_MESSAGE = "pushMessage";
+	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS = "pushMessage_extras";
+	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_ORDER_ID = "orderId";
+	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_TYPE = "type";
 	public static final String TEMPLATE_PUSHNOTIFICATION_ORDER_MESSAGE = "您的订单状态发生变化，请前往空中社区查看。";
 	public static final String TEMPLATE_PUSHNOTIFICATION_POINT_MESSAGE = "您的积分数量发生变化，请前往空中社区查看。";
 

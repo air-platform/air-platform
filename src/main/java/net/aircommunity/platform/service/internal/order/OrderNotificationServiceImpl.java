@@ -117,13 +117,20 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 	@Subscribe
 	private void onOrderEvent(OrderEvent event) {
 		LOG.debug("Received order event: {}", event);
-		User u = event.getOrder().getOwner();
+		Order o = event.getOrder();
+		User u = o.getOwner();
 		DomainEvent de = new DomainEvent(DomainEvent.DomainType.ORDER, DomainEvent.Operation.PUSH_NOTIFICATION);
 		de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID, u.getId());
+		String extras = new StringBuffer().append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_ORDER_ID).append(":").append(o.getId()).append(";")
+							.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_TYPE).append(":").append(o.getType().toString().toLowerCase()).toString();
+
+
+		de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS, extras);
 		String tips;
 		//if(event.getType() != OrderEvent.EventType.CREATION){
 
 		//}
+
 		switch (event.getType()) {
 			case CREATION:
 				doNotifyClientManager(getClientManagerContacts(event), event.getOrder());

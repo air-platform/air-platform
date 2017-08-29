@@ -1,16 +1,24 @@
 package net.aircommunity.platform.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
-
-import javax.persistence.*;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.Date;
+import net.aircommunity.platform.model.JsonViews;
+import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
  * Aircraft for (Taxi, Transportation, Tour) of an {@code Tenant}.
@@ -21,157 +29,169 @@ import java.util.Date;
 @Table(name = "air_platform_push_notification")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PushNotification extends Persistable {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Lob
-    @Column(name = "message")
-    private String message;
+	@Lob
+	@Column(name = "message")
+	private String message;
 
-    @Size(max = URL_LEN)
-    @Column(name = "rich_text_link", length = URL_LEN)
-    private String richTextLink;
-
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", length = PUSH_NOTIFICATION_TYPE_LEN, nullable = false)
-    private Type type;
+	@Size(max = URL_LEN)
+	@Column(name = "rich_text_link", length = URL_LEN)
+	private String richTextLink;
 
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = PUSH_NOTIFICATION_STATUS_LEN, nullable = false)
-    private Status status;
-
-    @Temporal(value = TemporalType.TIMESTAMP)
-    @Column(name = "creation_date", nullable = false)
-    private Date creationDate;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "type", length = PUSH_NOTIFICATION_TYPE_LEN, nullable = false)
+	private Type type;
 
 
-    @Temporal(value = TemporalType.TIMESTAMP)
-    @Column(name = "last_send_date")
-    private Date lastSendDate;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status", length = PUSH_NOTIFICATION_STATUS_LEN, nullable = false)
+	private Status status;
 
-    @Column(name = "alias", length = PUSH_NOTIFICATION_ALIAS_LEN)
-    @JsonView(JsonViews.Admin.class)
-    private String alias;
-
-
-    @XmlElement
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @XmlJavaTypeAdapter(AccountAdapter.class)
-    @JsonView(JsonViews.Admin.class)
-    protected User owner;
+	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "creation_date", nullable = false)
+	private Date creationDate;
 
 
-    public String getAlias() {
-        return alias;
-    }
+	@Temporal(value = TemporalType.TIMESTAMP)
+	@Column(name = "last_send_date")
+	private Date lastSendDate;
 
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Date getLastSendDate() {
-        return lastSendDate;
-    }
-
-    public void setLastSendDate(Date lastSendDate) {
-        this.lastSendDate = lastSendDate;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getRichTextLink() {
-        return richTextLink;
-    }
-
-    public void setRichTextLink(String richTextLink) {
-        this.richTextLink = richTextLink;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public PushNotification() {
-    }
-
-    public PushNotification(String id) {
-        this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("PushNotification [message=").append(message).append(", type=").append(type)
-                .append(", richTextLink=").append(richTextLink).append(", id=").append(id).append("]");
-        return builder.toString();
-    }
+	@Column(name = "alias", length = PUSH_NOTIFICATION_ALIAS_LEN)
+	@JsonView(JsonViews.Admin.class)
+	private String alias;
 
 
-    /**
-     * apron type
-     */
-    public enum Type {
-        PLAIN_TEXT, RICH_TEXT;
+	@Lob
+	@Column(name = "extra")
+	private String extra;
 
-        public static Type fromString(String value) {
-            for (Type e : values()) {
-                if (e.name().equalsIgnoreCase(value)) {
-                    return e;
-                }
-            }
-            return null;
-        }
-    }
+	public String getExtra() {
+		return extra;
+	}
 
-    /**
-     * apron type
-     */
-    public enum Status {
-        NONE_PUSH, PUSH_SUCCESS, PUSH_FAILED;
+	public void setExtra(String extra) {
+		this.extra = extra;
+	}
 
-        public static Status fromString(String value) {
-            for (Status e : values()) {
-                if (e.name().equalsIgnoreCase(value)) {
-                    return e;
-                }
-            }
-            return null;
-        }
-    }
+	@XmlElement
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	@XmlJavaTypeAdapter(AccountAdapter.class)
+	@JsonView(JsonViews.Admin.class)
+	protected User owner;
+
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+
+	public User getOwner() {
+		return owner;
+	}
+
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public Date getLastSendDate() {
+		return lastSendDate;
+	}
+
+	public void setLastSendDate(Date lastSendDate) {
+		this.lastSendDate = lastSendDate;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getRichTextLink() {
+		return richTextLink;
+	}
+
+	public void setRichTextLink(String richTextLink) {
+		this.richTextLink = richTextLink;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public PushNotification() {
+	}
+
+	public PushNotification(String id) {
+		this.id = id;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("PushNotification [message=").append(message).append(", type=").append(type)
+				.append(", richTextLink=").append(richTextLink).append(", id=").append(id).append("]");
+		return builder.toString();
+	}
+
+
+	/**
+	 * apron type
+	 */
+	public enum Type {
+		PLAIN_TEXT, RICH_TEXT;
+
+		public static Type fromString(String value) {
+			for (Type e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
+	}
+
+	/**
+	 * apron type
+	 */
+	public enum Status {
+		NONE_PUSH, PUSH_SUCCESS, PUSH_FAILED;
+
+		public static Status fromString(String value) {
+			for (Status e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
+	}
 }

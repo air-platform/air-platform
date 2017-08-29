@@ -12,8 +12,13 @@ import cn.jpush.api.push.model.audience.AudienceTarget;
 import cn.jpush.api.push.model.notification.AndroidNotification;
 import cn.jpush.api.push.model.notification.IosNotification;
 import cn.jpush.api.push.model.notification.Notification;
+import cn.jpush.api.push.model.notification.PlatformNotification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
+import java.util.Date;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
@@ -33,11 +38,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-import java.util.Date;
 
 /**
  * SMS service implementation
@@ -88,18 +88,55 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 		 * .setNotification(Notification.) .build();
 		 */
 
-		LOG.debug("push notification alias {}", pn.getAlias());
+		LOG.debug("push notification {} {}", pn.getAlias(), pn.getExtra());
+
+		IosNotification.Builder iosBuilder = IosNotification.newBuilder()
+				.setAlert(message);
+
+		AndroidNotification.Builder androidBuilder = AndroidNotification.newBuilder()
+				.setAlert(message);
+
+
+		if (!Strings.isNullOrEmpty(pn.getExtra())) {
+				/*PlatformNotification ios = IosNotification.newBuilder()
+						.setAlert(message)
+						.addExtra("orderId", "7f000101-5d7c-1912-815d-7d60aec70007")
+						.addExtra("type", "airtour")
+						.build();
+				PlatformNotification android = AndroidNotification.newBuilder()
+						.setAlert(message)
+						.addExtra("orderId", "7f000101-5d7c-1912-815d-7d60aec70007")
+						.addExtra("type", "airtour")
+						.build();*/
+			String allExtra = pn.getExtra();
+			String[] extras = allExtra.split(";");
+			for (String extra : extras) {
+				String[] kv = extra.split(":");
+				iosBuilder = iosBuilder.addExtra(kv[0], kv[1]);
+				androidBuilder = androidBuilder.addExtra(kv[0], kv[1]);
+
+			}
+		}
+
+		PlatformNotification ios = iosBuilder.build();
+		PlatformNotification android = androidBuilder.build();
+
+
 		if (Strings.isNullOrEmpty(pn.getAlias())) {
-			payload = PushPayload.alertAll(message);
-			// PushPayload.
-
-
+			//payload = PushPayload.alertAll(message);
+			payload = PushPayload.newBuilder().setPlatform(Platform.all())
+					.setAudience(Audience.all())
+					.setNotification(Notification.newBuilder()
+							.addPlatformNotification(ios)
+							.addPlatformNotification(android)
+							.build())
+					.build();
 		}
 		else {
-			payload = PushPayload.newBuilder().setPlatform(Platform.all())
+			/*payload = PushPayload.newBuilder().setPlatform(Platform.all())
 					.setAudience(Audience.newBuilder().addAudienceTarget(AudienceTarget.alias(pn.getAlias())).build())
 					.setNotification(Notification.alert(message)).build();
-
+			*/
 
 
 			/*payload = PushPayload.newBuilder().setPlatform(Platform.all())
@@ -117,6 +154,14 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 										.build())
 									.build())
 					.build();*/
+			payload = PushPayload.newBuilder().setPlatform(Platform.all())
+					.setAudience(Audience.newBuilder().addAudienceTarget(AudienceTarget.alias(pn.getAlias())).build())
+					.setAudience(Audience.all())
+					.setNotification(Notification.newBuilder()
+							.addPlatformNotification(ios)
+							.addPlatformNotification(android)
+							.build())
+					.build();
 
 
 		}
@@ -206,6 +251,7 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 
 	private void copyProperties(PushNotification src, PushNotification tgt) {
 		tgt.setMessage(src.getMessage());
+		tgt.setExtra(src.getExtra());
 		tgt.setRichTextLink(src.getRichTextLink());
 		tgt.setType(src.getType());
 		tgt.setAlias(src.getAlias());

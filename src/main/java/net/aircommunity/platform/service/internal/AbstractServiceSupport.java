@@ -5,13 +5,35 @@ import com.codahale.metrics.Timer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.eventbus.EventBus;
-import net.aircommunity.platform.*;
+import java.io.Serializable;
+import java.util.EnumSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import javax.annotation.Resource;
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Code;
+import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.Configuration;
+import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.DomainEvent;
 import net.aircommunity.platform.model.DomainEvent.DomainType;
 import net.aircommunity.platform.model.DomainEvent.Operation;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.domain.*;
+import net.aircommunity.platform.model.domain.Account;
+import net.aircommunity.platform.model.domain.AirTaxi;
+import net.aircommunity.platform.model.domain.AirTour;
+import net.aircommunity.platform.model.domain.AirTransport;
+import net.aircommunity.platform.model.domain.Course;
+import net.aircommunity.platform.model.domain.FerryFlight;
+import net.aircommunity.platform.model.domain.Fleet;
+import net.aircommunity.platform.model.domain.JetTravel;
 import net.aircommunity.platform.model.domain.Product.Type;
+import net.aircommunity.platform.model.domain.PushNotification;
+import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AccountAuthRepository;
 import net.aircommunity.platform.repository.SettingRepository;
@@ -26,16 +48,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.retry.support.RetryTemplate;
-
-import javax.annotation.Resource;
-import java.io.Serializable;
-import java.util.EnumSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * Abstract service support.
@@ -208,6 +220,8 @@ public abstract class AbstractServiceSupport {
 			if (interestedDomains.contains(event.getType()) && notificationRequired && when.test(event)) {
 				PushNotification pf = new PushNotification();
 				String accountId = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID).toString();
+
+
 				User user = findAccount(accountId, User.class);
 				pf.setType(PushNotification.Type.PLAIN_TEXT);
 
@@ -219,7 +233,9 @@ public abstract class AbstractServiceSupport {
 
 				if (event.getType() == DomainType.ORDER) {
 					String msg = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_MESSAGE).toString();
+					String extras = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS).toString();
 					pf.setMessage(msg);
+					pf.setExtra(extras);
 				}
 				else if (event.getType() == DomainType.POINT) {
 					pf.setMessage(Constants.TEMPLATE_PUSHNOTIFICATION_POINT_MESSAGE);
