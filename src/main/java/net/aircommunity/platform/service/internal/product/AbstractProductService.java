@@ -116,6 +116,8 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			newProduct.setRank(Product.DEFAULT_RANK);
 			newProduct.setTotalSales(0);
 			newProduct.setStock(product.getStock());
+			newProduct.setOriginalPrice(product.getOriginalPrice());
+			newProduct.setSpecialPrice(product.getSpecialPrice());
 			newProduct.setPublished(false);
 			newProduct.setReviewStatus(ReviewStatus.PENDING);
 			// standard
@@ -208,6 +210,9 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			product.setImageSmall(newProduct.getImageSmall());
 			product.setClientManagers(newProduct.getClientManagers());
 			product.setDescription(newProduct.getDescription());
+			product.setStock(newProduct.getStock());
+			product.setOriginalPrice(newProduct.getOriginalPrice());
+			product.setSpecialPrice(newProduct.getSpecialPrice());
 			// standard
 			if (StandardProduct.class.isAssignableFrom(product.getClass())) {
 				StandardProduct newStandardProduct = (StandardProduct) newProduct;

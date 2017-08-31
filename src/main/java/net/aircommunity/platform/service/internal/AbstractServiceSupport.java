@@ -238,7 +238,10 @@ public abstract class AbstractServiceSupport {
 					pf.setExtra(extras);
 				}
 				else if (event.getType() == DomainType.POINT) {
+					String extras = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS).toString();
+
 					pf.setMessage(Constants.TEMPLATE_PUSHNOTIFICATION_POINT_MESSAGE);
+					pf.setExtra(extras);
 				}
 				pushNotificationService.sendInstantPushNotification(pf);
 			}

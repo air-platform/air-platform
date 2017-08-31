@@ -156,7 +156,6 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 					.build();*/
 			payload = PushPayload.newBuilder().setPlatform(Platform.all())
 					.setAudience(Audience.newBuilder().addAudienceTarget(AudienceTarget.alias(pn.getAlias())).build())
-					.setAudience(Audience.all())
 					.setNotification(Notification.newBuilder()
 							.addPlatformNotification(ios)
 							.addPlatformNotification(android)

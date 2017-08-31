@@ -25,6 +25,7 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderNoGenerator;
 import net.aircommunity.platform.common.OrderPrices;
 import net.aircommunity.platform.model.OrderEvent;
+import net.aircommunity.platform.model.OrderEvent.EventType;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.PointRules;
 import net.aircommunity.platform.model.PointsExchange;
@@ -36,6 +37,7 @@ import net.aircommunity.platform.model.domain.CharterableOrder;
 import net.aircommunity.platform.model.domain.Instalment;
 import net.aircommunity.platform.model.domain.InstalmentOrder;
 import net.aircommunity.platform.model.domain.Order;
+import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.domain.OrderRef;
 import net.aircommunity.platform.model.domain.OrderSalesPackage;
 import net.aircommunity.platform.model.domain.Passenger;
@@ -1180,6 +1182,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			if (orderUpdated.getStatus() == Order.Status.FINISHED) {
 				eventBus.post(new OrderEvent(OrderEvent.EventType.FINISHED, orderUpdated));
 				LOG.info("Notify customer on order finished: {}", orderUpdated);
+			}
+			if (orderUpdated.getStatus() == Order.Status.PAID) {
+				eventBus.post(new OrderEvent(EventType.PAYMENT, orderUpdated));
+				LOG.info("Notify customer on order paid: {}", orderUpdated);
 			}
 			return orderUpdated;
 		}, "Update %s: %s to status %s failed", type.getSimpleName(), order.getId(), newStatus);

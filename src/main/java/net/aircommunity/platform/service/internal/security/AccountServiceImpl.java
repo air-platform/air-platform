@@ -13,6 +13,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import net.aircommunity.platform.model.domain.PushNotification.BusinessType;
+import net.aircommunity.platform.model.domain.PushNotification.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
@@ -718,6 +720,15 @@ public class AccountServiceImpl extends AbstractServiceSupport implements Accoun
 		user.setPoints(user.getPoints() + deltaPoints);
 		DomainEvent de = new DomainEvent(DomainType.POINT, Operation.PUSH_NOTIFICATION);
 		de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID, accountId);
+		String extras = new StringBuffer()
+				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_CONTENT_TYPE).append(":").append(Type.PLAIN_TEXT.toString().toLowerCase()).append(";")
+				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_BUSINESS_TYPE).append(":").append(BusinessType.POINT.toString().toLowerCase())
+				.toString();
+
+		de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS, extras);
+
+
+
 		postDomainEvent(de);
 		return safeExecute(() -> accountRepository.save(user), "Update user %s points with delta %s failed", accountId,
 				deltaPoints);

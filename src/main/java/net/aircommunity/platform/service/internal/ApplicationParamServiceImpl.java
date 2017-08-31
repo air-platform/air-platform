@@ -1,6 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
 import javax.annotation.PostConstruct;
+import net.aircommunity.platform.model.ApplicationParams;
 import net.aircommunity.platform.model.domain.Setting;
 import net.aircommunity.platform.service.ApplicationParamService;
 import org.slf4j.Logger;
@@ -26,9 +27,6 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 	private static final String QUICKFLIGHT_UNIT_TIME_PRICE = "quickflight.unit_time_price";
 	private static final String QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE = "quickflight.departure_time_in_advance";
 
-	public static final int DEFAULT_QUICKFLIGHT_SPEED = 3;
-	public static final int DEFAULT_QUICKFLIGHT_UNIT_TIME_PRICE = 200;
-	public static final int DEFAULT_QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE = 5;
 
 	private static final String APPLICATION_INITIALIZED = "application_initialized";
 
@@ -39,9 +37,9 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 			LOG.warn("Application params are already initialized, skipped initialization.");
 			return;
 		}
-		setQuickflightSpeed(DEFAULT_QUICKFLIGHT_SPEED);
-		setQuickflightUnitPrice(DEFAULT_QUICKFLIGHT_UNIT_TIME_PRICE);
-		setQuickflightDepartureTime(DEFAULT_QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE);
+		setQuickflightSpeed(ApplicationParams.DEFAULT_QUICKFLIGHT_SPEED);
+		setQuickflightUnitPrice(ApplicationParams.DEFAULT_QUICKFLIGHT_UNIT_TIME_PRICE);
+		setQuickflightDepartureTime(ApplicationParams.DEFAULT_QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE);
 
 		// mark as initialized
 		applicationParamInitialized();
@@ -94,7 +92,7 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 	public int getQuickflightSpeed() {
 		Setting settings = settingRepository.findByName(QUICKFLIGHT_SPEED);
 		if (settings == null) {
-			return DEFAULT_QUICKFLIGHT_SPEED;
+			return ApplicationParams.DEFAULT_QUICKFLIGHT_SPEED;
 		}
 		try {
 			return Integer.valueOf(settings.getValue().trim());
@@ -102,7 +100,7 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 		catch (Exception e) {
 			LOG.error(String.format("Failed to get setting %s, cause:", settings.getName(), e.getMessage()), e);
 		}
-		return DEFAULT_QUICKFLIGHT_SPEED;
+		return ApplicationParams.DEFAULT_QUICKFLIGHT_SPEED;
 	}
 
 
@@ -123,7 +121,7 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 	public int getQuickflightUnitPrice() {
 		Setting settings = settingRepository.findByName(QUICKFLIGHT_UNIT_TIME_PRICE);
 		if (settings == null) {
-			return DEFAULT_QUICKFLIGHT_UNIT_TIME_PRICE;
+			return ApplicationParams.DEFAULT_QUICKFLIGHT_UNIT_TIME_PRICE;
 		}
 		try {
 			return Integer.valueOf(settings.getValue().trim());
@@ -131,7 +129,7 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 		catch (Exception e) {
 			LOG.error(String.format("Failed to get setting %s, cause:", settings.getName(), e.getMessage()), e);
 		}
-		return DEFAULT_QUICKFLIGHT_UNIT_TIME_PRICE;
+		return ApplicationParams.DEFAULT_QUICKFLIGHT_UNIT_TIME_PRICE;
 	}
 
 
@@ -152,7 +150,7 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 	public int getQuickflightDepartureTime() {
 		Setting settings = settingRepository.findByName(QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE);
 		if (settings == null) {
-			return DEFAULT_QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE;
+			return ApplicationParams.DEFAULT_QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE;
 		}
 		try {
 			return Integer.valueOf(settings.getValue().trim());
@@ -160,7 +158,7 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 		catch (Exception e) {
 			LOG.error(String.format("Failed to get setting %s, cause:", settings.getName(), e.getMessage()), e);
 		}
-		return DEFAULT_QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE;
+		return ApplicationParams.DEFAULT_QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE;
 	}
 
 

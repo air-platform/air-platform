@@ -37,6 +37,12 @@ public class VenueTemplate extends Persistable {
 	@Column(name = "description")
 	private String description;
 
+	public VenueTemplate(String id) {
+		this.id = id;
+	}
+
+	public VenueTemplate() {
+	}
 
 	public String getName() {
 		return name;

@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
@@ -65,7 +66,10 @@ public class PushNotification extends Persistable {
 
 	@Lob
 	@Column(name = "extra")
-	private String extra;
+	private String extra = new StringBuffer()
+				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_CONTENT_TYPE).append(":").append(Type.PLAIN_TEXT.toString().toLowerCase()).append(";")
+				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_BUSINESS_TYPE).append(":").append(BusinessType.SYSTEM.toString().toLowerCase())
+			.toString();;
 
 	public String getExtra() {
 		return extra;
@@ -75,10 +79,10 @@ public class PushNotification extends Persistable {
 		this.extra = extra;
 	}
 
-	@XmlElement
+	//@XmlElement
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	@XmlJavaTypeAdapter(AccountAdapter.class)
+	//@XmlJavaTypeAdapter(AccountAdapter.class)
 	@JsonView(JsonViews.Admin.class)
 	protected User owner;
 
@@ -178,6 +182,22 @@ public class PushNotification extends Persistable {
 			return null;
 		}
 	}
+
+	public enum BusinessType {
+		ORDER, POINT, SYSTEM, OTHER;
+
+		public static BusinessType fromString(String value) {
+			for (BusinessType e : values()) {
+				if (e.name().equalsIgnoreCase(value)) {
+					return e;
+				}
+			}
+			return null;
+		}
+	}
+
+
+
 
 	/**
 	 * apron type

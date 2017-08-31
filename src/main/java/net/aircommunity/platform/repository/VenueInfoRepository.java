@@ -1,7 +1,7 @@
 package net.aircommunity.platform.repository;
 
 import net.aircommunity.platform.model.domain.CitySite;
-import net.aircommunity.platform.model.domain.VenueTemplate;
+import net.aircommunity.platform.model.domain.VenueInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author Xiangwen.Kong
  */
-public interface VenueTemplateRepository extends JpaRepository<VenueTemplate, String> {
+public interface VenueInfoRepository extends JpaRepository<VenueInfo, String> {
 
 
 }

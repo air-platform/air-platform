@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model.domain;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
@@ -91,6 +92,16 @@ public abstract class Product extends Reviewable {
 	@Min(UNLIMITED_STOCK)
 	@Column(name = "stock", nullable = false)
 	protected int stock = UNLIMITED_STOCK;
+
+
+	// product original price
+	@Column(name = "original_price")
+	protected BigDecimal originalPrice;
+
+	// product special price
+	@Column(name = "special_price")
+	protected BigDecimal specialPrice;
+
 
 	// product score
 	@Column(name = "score", nullable = false)
@@ -192,6 +203,23 @@ public abstract class Product extends Reviewable {
 
 	public void setScore(double score) {
 		this.score = score;
+	}
+
+
+	public BigDecimal getOriginalPrice() {
+		return originalPrice;
+	}
+
+	public void setOriginalPrice(BigDecimal originalPrice) {
+		this.originalPrice = originalPrice;
+	}
+
+	public BigDecimal getSpecialPrice() {
+		return specialPrice;
+	}
+
+	public void setSpecialPrice(BigDecimal specialPrice) {
+		this.specialPrice = specialPrice;
 	}
 
 	public int getStock() {
