@@ -15,11 +15,8 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
  * Aircraft for (Taxi, Transportation, Tour) of an {@code Tenant}.
@@ -67,9 +64,10 @@ public class PushNotification extends Persistable {
 	@Lob
 	@Column(name = "extra")
 	private String extra = new StringBuffer()
-				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_CONTENT_TYPE).append(":").append(Type.PLAIN_TEXT.toString().toLowerCase()).append(";")
-				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_BUSINESS_TYPE).append(":").append(BusinessType.SYSTEM.toString().toLowerCase())
-			.toString();;
+			.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_CONTENT_TYPE).append(":").append(Type.PLAIN_TEXT.toString().toLowerCase()).append(";")
+			.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_BUSINESS_TYPE).append(":").append(BusinessType.SYSTEM.toString().toLowerCase())
+			.toString();
+	;
 
 	public String getExtra() {
 		return extra;
@@ -195,8 +193,6 @@ public class PushNotification extends Persistable {
 			return null;
 		}
 	}
-
-
 
 
 	/**

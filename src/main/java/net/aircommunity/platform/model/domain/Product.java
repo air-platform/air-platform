@@ -336,7 +336,7 @@ public abstract class Product extends Reviewable {
 	 * Product Category
 	 */
 	public enum Category {
-		NONE, AIR_JET, AIR_TOUR, AIR_TAXI, AIR_TRANS, AIR_TRAINING, AIR_CALL;
+		NONE, AIR_JET, AIR_TOUR, AIR_TAXI, AIR_TRANS, AIR_TRAINING, AIR_CALL, AIR_VENUE;
 
 		/**
 		 * All categories except none which is meaning less

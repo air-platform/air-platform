@@ -52,7 +52,7 @@ public class VenueInfoServiceImpl extends AbstractServiceSupport implements Venu
 		VenueInfo venueInfo = venueInfoRepository.findOne(venueInfoId);
 		if (venueInfo == null) {
 			LOG.error("VenueInfo {} not found", venueInfoId);
-			throw new AirException(Codes.CITYSITE_NOT_FOUND, M.msg(M.CITYSITE_NOT_FOUND));
+			throw new AirException(Codes.VENUE_INFO_NOT_FOUND, M.msg(M.VENUE_INFO_NOT_FOUND));
 		}
 		return venueInfo;
 	}

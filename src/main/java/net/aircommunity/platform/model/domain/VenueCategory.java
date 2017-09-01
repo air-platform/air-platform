@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -19,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.aircommunity.platform.model.JsonViews;
+import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
@@ -56,6 +59,11 @@ public class VenueCategory extends Persistable {
 
 	@OneToMany(mappedBy = "venueCategory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<VenueCategoryProduct> venueCategoryProducts = new HashSet<>();
+
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "category", length = PRODUCT_CATEGORY_LEN)
+	protected Category category = Category.AIR_VENUE;
 
 
 	public VenueCategory(String id) {
@@ -118,7 +126,7 @@ public class VenueCategory extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("VenueTemplate [id=").append(id).append(", name=").append(name)
+		builder.append("VenueCategory [id=").append(id).append(", name=").append(name)
 				.append(", picture=").append(picture)
 				.append(", description=").append(description).append("]");
 		return builder.toString();

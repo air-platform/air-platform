@@ -45,7 +45,7 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 		VenueTemplate venueTemplate = venueTemplateRepository.findOne(venueTemplateId);
 		if (venueTemplate == null) {
 			LOG.error("VenueTemplate {} not found", venueTemplateId);
-			throw new AirException(Codes.CITYSITE_NOT_FOUND, M.msg(M.CITYSITE_NOT_FOUND));
+			throw new AirException(Codes.VENUE_TEMPLATE_NOT_FOUND, M.msg(M.VENUE_TEMPLATE_NOT_FOUND));
 		}
 		return venueTemplate;
 	}

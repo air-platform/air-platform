@@ -77,7 +77,7 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 		VenueCategory venueCategory = venueCategoryRepository.findOne(venueCategoryId);
 		if (venueCategory == null) {
 			LOG.error("VenueCategory {} not found", venueCategoryId);
-			throw new AirException(Codes.CITYSITE_NOT_FOUND, M.msg(M.CITYSITE_NOT_FOUND));
+			throw new AirException(Codes.VENUE_CATEGORY_NOT_FOUND, M.msg(M.VENUE_CATEGORY_NOT_FOUND));
 		}
 		return venueCategory;
 	}

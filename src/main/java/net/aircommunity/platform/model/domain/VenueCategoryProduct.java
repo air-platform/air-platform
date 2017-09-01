@@ -88,7 +88,7 @@ public class VenueCategoryProduct extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("VenueTemplate [id=").append(id).append("]");
+		builder.append("VenueCategoryProduct [id=").append(id).append("]");
 		return builder.toString();
 	}
 

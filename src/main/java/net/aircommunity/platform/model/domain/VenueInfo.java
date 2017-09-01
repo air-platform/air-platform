@@ -89,7 +89,7 @@ public class VenueInfo extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("VenueTemplate [id=").append(id).append(", name=").append(name)
+		builder.append("VenueInfo [id=").append(id).append(", name=").append(name)
 				.append(", picture=").append(picture)
 				.append(", description=").append(description).append("]");
 		return builder.toString();

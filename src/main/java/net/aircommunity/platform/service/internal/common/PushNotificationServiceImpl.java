@@ -22,9 +22,12 @@ import javax.transaction.Transactional;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
+import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.PushNotification;
+import net.aircommunity.platform.model.domain.PushNotification.BusinessType;
+import net.aircommunity.platform.model.domain.PushNotification.Type;
 import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AccountRepository;
@@ -216,6 +219,7 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 	@Transactional
 	@Override
 	public PushNotification createPushNotification(PushNotification pushNotification) {
+
 		PushNotification newPushNotification = new PushNotification();
 		copyProperties(pushNotification, newPushNotification);
 		newPushNotification.setCreationDate(new Date());
@@ -240,6 +244,10 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 	@CachePut(cacheNames = CACHE_NAME, key = "#pushNotificationId")
 	@Override
 	public PushNotification updatePushNotification(String pushNotificationId, PushNotification newPushNotification) {
+
+
+
+
 		PushNotification pushNotification = findPushNotification(pushNotificationId);
 		copyProperties(newPushNotification, pushNotification);
 		PushNotification updated = safeExecute(() -> pushNotificationRepository.save(pushNotification),
@@ -250,7 +258,6 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 
 	private void copyProperties(PushNotification src, PushNotification tgt) {
 		tgt.setMessage(src.getMessage());
-		tgt.setExtra(src.getExtra());
 		tgt.setRichTextLink(src.getRichTextLink());
 		tgt.setType(src.getType());
 		tgt.setAlias(src.getAlias());
@@ -258,6 +265,9 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 		tgt.setStatus(src.getStatus());
 		tgt.setCreationDate(src.getCreationDate());
 		tgt.setLastSendDate(src.getLastSendDate());
+		if(!Strings.isNullOrEmpty(src.getExtra())){
+			tgt.setExtra(src.getExtra());
+		}
 	}
 
 	@Override
