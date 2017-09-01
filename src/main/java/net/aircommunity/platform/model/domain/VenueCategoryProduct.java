@@ -51,10 +51,10 @@ public class VenueCategoryProduct extends Persistable {
 	@Column(name = "type", length = PRODUCT_TYPE_LEN)
 	private String type;
 
-	/*@PostLoad
+	@PostLoad
 	private void onLoad(){
 		productId= product.getId();
-	}*/
+	}
 
 	public VenueCategoryProduct() {
 	}

@@ -33,8 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VenueCategoryServiceImpl extends AbstractServiceSupport implements VenueCategoryService {
 	private static final Logger LOG = LoggerFactory.getLogger(VenueCategoryServiceImpl.class);
 
-	private static final String CACHE_NAME = "cache.citysite";
-	private static final String CITYSITES_INFO = "data/citysites.json";
+	private static final String CACHE_NAME = "cache.venuecategory";
 	@Resource
 	private VenueCategoryRepository venueCategoryRepository;
 
@@ -87,7 +86,14 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 	@CachePut(cacheNames = CACHE_NAME, key = "#venueCategoryId")
 	@Override
 	public VenueCategory updateVenueCategory(String venueCategoryId, VenueCategory newVenueCategory) {
+		LOG.info("get info:{}.", venueCategoryId);
 		VenueCategory venueCategory = findVenueCategory(venueCategoryId);
+
+		for(VenueCategoryProduct cp : newVenueCategory.getVenueCategoryProducts()){
+			Product p = commonProductService.findProduct(cp.getProductId());
+			cp.setProduct(p);
+		}
+
 		copyProperties(newVenueCategory, venueCategory);
 		return safeExecute(() -> venueCategoryRepository.save(venueCategory), "Update venueCategory %s to %s failed", venueCategoryId, venueCategory);
 	}

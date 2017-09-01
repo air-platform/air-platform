@@ -12,30 +12,27 @@ import net.aircommunity.platform.model.domain.VenueCategoryProduct;
  * 
  * @author Bin.Zhang
  */
-public class VenueCategoryAdapter extends XmlAdapter<Map<String, Object>, VenueCategory> {
+public class VenueCategoryAdapter extends XmlAdapter<String, VenueCategory> {
 
 	@Override
-	public Map<String, Object> marshal(VenueCategory pd) throws Exception {
-		//return pd.getId();
-
-		return new HashMap<String, Object>(4) {
-			private static final long serialVersionUID = 1L;
-			{
-				put("id", pd.getId());
-				put("name", pd.getName());
-				put("description", pd.getDescription());
-			}
-		};
-
-		/*{
-			put("id", tenant.getId());
-			put("name", tenant.getNickName());
-			put("avatar", tenant.getAvatar());
-		}*/
+	public String marshal(VenueCategory pd) throws Exception {
+		return pd.getId();
 	}
+		/*public Map<String, Object> marshal(VenueCategory pd) throws Exception {
+			//return pd.getId();
+
+			return new HashMap<String, Object>(4) {
+				private static final long serialVersionUID = 1L;
+				{
+					put("id", pd.getId());
+					put("name", pd.getName());
+					put("description", pd.getDescription());
+				}
+			};
+		}*/
 
 	@Override
-	public VenueCategory unmarshal(Map<String, Object> accountId) throws Exception {
+	public VenueCategory unmarshal(String id) throws Exception {
 		// we don't need unmarshal
 		return null;
 	}

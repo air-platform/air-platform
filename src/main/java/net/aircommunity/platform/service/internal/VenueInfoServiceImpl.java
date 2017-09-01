@@ -28,8 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VenueInfoServiceImpl extends AbstractServiceSupport implements VenueInfoService {
 	private static final Logger LOG = LoggerFactory.getLogger(VenueInfoServiceImpl.class);
 
-	private static final String CACHE_NAME = "cache.citysite";
-	private static final String CITYSITES_INFO = "data/citysites.json";
+	private static final String CACHE_NAME = "cache.venueinfo";
 	@Resource
 	private VenueInfoRepository venueInfoRepository;
 
