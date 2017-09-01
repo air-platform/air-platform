@@ -1,12 +1,9 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.annotation.Resource;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.domain.AirTour;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.VenueCategory;
 import net.aircommunity.platform.model.domain.VenueCategoryProduct;
@@ -47,7 +44,7 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 	@Override
 	public VenueCategory createVenueCategory(VenueCategory venueCategory) {
 
-		for(VenueCategoryProduct cp : venueCategory.getVenueCategoryProducts()){
+		for (VenueCategoryProduct cp : venueCategory.getVenueCategoryProducts()) {
 			Product p = commonProductService.findProduct(cp.getProductId());
 			cp.setProduct(p);
 		}
@@ -88,7 +85,7 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 	public VenueCategory updateVenueCategory(String venueCategoryId, VenueCategory newVenueCategory) {
 		VenueCategory venueCategory = findVenueCategory(venueCategoryId);
 
-		for(VenueCategoryProduct cp : newVenueCategory.getVenueCategoryProducts()){
+		for (VenueCategoryProduct cp : newVenueCategory.getVenueCategoryProducts()) {
 			Product p = commonProductService.findProduct(cp.getProductId());
 			cp.setProduct(p);
 		}

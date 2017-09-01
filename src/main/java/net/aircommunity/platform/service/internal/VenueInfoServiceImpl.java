@@ -5,7 +5,6 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.VenueInfo;
-import net.aircommunity.platform.model.domain.VenueTemplate;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.VenueInfoRepository;
 import net.aircommunity.platform.service.VenueInfoService;
