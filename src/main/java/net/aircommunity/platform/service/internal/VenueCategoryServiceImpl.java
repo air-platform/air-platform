@@ -86,7 +86,6 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 	@CachePut(cacheNames = CACHE_NAME, key = "#venueCategoryId")
 	@Override
 	public VenueCategory updateVenueCategory(String venueCategoryId, VenueCategory newVenueCategory) {
-		LOG.info("get info:{}.", venueCategoryId);
 		VenueCategory venueCategory = findVenueCategory(venueCategoryId);
 
 		for(VenueCategoryProduct cp : newVenueCategory.getVenueCategoryProducts()){
