@@ -260,9 +260,8 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 				.append(", note=").append(note).append(", owner=").append(owner).append(", id=").append(id)
 				.append(", departureDate=").append(departureDate).append(", departure=").append(departure)
 				.append(", arrival=").append(arrival).append(", departureApron=").append(departureApron)
-				.append(", arrivalApron=").append(arrivalApron).append(", routes=").append(routes)
-				.append(", passengerNum=").append(passengerNum).append(", passengers=").append(passengers)
-				.append(", aircraftCandidates=").append(aircraftCandidates).append("]");
+				.append(", arrivalApron=").append(arrivalApron).append(", passengerNum=").append(passengerNum)
+				.append("]");
 		return builder.toString();
 	}
 }
