@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 @Api
 @RESTful
 @PermitAll
-@Path("venueTemplates")
+@Path("venue-templates")
 public class VenueTemplateResource {
 	private static final Logger LOG = LoggerFactory.getLogger(VenueTemplateResource.class);
 
