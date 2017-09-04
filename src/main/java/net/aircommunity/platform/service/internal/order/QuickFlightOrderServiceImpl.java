@@ -25,6 +25,7 @@ import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.QuickFlightOrder;
 import net.aircommunity.platform.repository.AircraftCandidateRepository;
 import net.aircommunity.platform.repository.QuickFlightOrderRepository;
+import net.aircommunity.platform.service.ApronService;
 import net.aircommunity.platform.service.internal.Pages;
 import net.aircommunity.platform.service.order.QuickFlightOrderService;
 import net.aircommunity.platform.service.order.annotation.ManagedOrderService;
@@ -41,6 +42,9 @@ public class QuickFlightOrderServiceImpl extends AbstractOrderCandidateService<A
 		implements QuickFlightOrderService {
 
 	@Resource
+	private ApronService apronService;
+
+	@Resource
 	private AircraftService aircraftService;
 
 	@Inject
@@ -52,15 +56,16 @@ public class QuickFlightOrderServiceImpl extends AbstractOrderCandidateService<A
 	@Override
 	protected void copyProperties(QuickFlightOrder src, QuickFlightOrder tgt) {
 		tgt.setArrival(src.getArrival());
-		tgt.setArrivalApron(src.getArrivalApron());
+		tgt.setArrivalApron(apronService.findApron(src.getArrivalApron().getId()));
 		tgt.setDeparture(src.getDeparture());
-		tgt.setDepartureApron(src.getDepartureApron());
+		tgt.setDepartureApron(apronService.findApron(src.getDepartureApron().getId()));
 		tgt.setDepartureDate(src.getDepartureDate());
 		tgt.setPassengerNum(src.getPassengerNum());
 		Set<PassengerItem> passengers = src.getPassengers();
 		if (passengers != null) {
 			tgt.setPassengers(applyPassengers(passengers));
 		}
+		LOG.debug("passengers: {}", tgt.getPassengers());
 		tgt.setRoutes(src.getRoutes());
 		// NOTE: candidates is not set here
 		// tgt.setCandidates(candidates);
