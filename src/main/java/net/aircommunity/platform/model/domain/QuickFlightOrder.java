@@ -17,8 +17,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -60,9 +60,9 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	@AttributeOverrides({ //
 			@AttributeOverride(name = "city", column = @Column(name = "departure_city", length = CITY_NAME_LEN, nullable = false)),
 			@AttributeOverride(name = "name", column = @Column(name = "departure_name", length = CITY_NAME_LEN, nullable = false)),
-			@AttributeOverride(name = "address", column = @Column(name = "departure_address", length = ADDRESS_LEN, nullable = false)),
-			@AttributeOverride(name = "latitude", column = @Column(name = "departure_lat", precision = 10, scale = 8)),
-			@AttributeOverride(name = "longitude", column = @Column(name = "departure_lon", precision = 11, scale = 8))//
+			@AttributeOverride(name = "address", column = @Column(name = "departure_address", length = ADDRESS_LEN, nullable = true)),
+			@AttributeOverride(name = "latitude", column = @Column(name = "departure_lat", precision = 10, scale = 8, nullable = false)),
+			@AttributeOverride(name = "longitude", column = @Column(name = "departure_lon", precision = 11, scale = 8, nullable = false))//
 	})
 	private QuickFlightLocation departure;
 
@@ -72,19 +72,19 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	@AttributeOverrides({ //
 			@AttributeOverride(name = "city", column = @Column(name = "arrival_city", length = CITY_NAME_LEN, nullable = false)),
 			@AttributeOverride(name = "name", column = @Column(name = "arrival_name", length = CITY_NAME_LEN, nullable = false)),
-			@AttributeOverride(name = "address", column = @Column(name = "arrival_address", length = ADDRESS_LEN, nullable = false)),
-			@AttributeOverride(name = "latitude", column = @Column(name = "arrival_lat", precision = 10, scale = 8)),
-			@AttributeOverride(name = "longitude", column = @Column(name = "arrival_lon", precision = 11, scale = 8))//
+			@AttributeOverride(name = "address", column = @Column(name = "arrival_address", length = ADDRESS_LEN, nullable = true)),
+			@AttributeOverride(name = "latitude", column = @Column(name = "arrival_lat", precision = 10, scale = 8, nullable = false)),
+			@AttributeOverride(name = "longitude", column = @Column(name = "arrival_lon", precision = 11, scale = 8, nullable = false))//
 	})
 	private QuickFlightLocation arrival;
 
 	// can be null
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@ManyToOne
 	@JoinColumn(name = "departure_apron_id")
 	private Apron departureApron;
 
 	// can be null
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@ManyToOne
 	@JoinColumn(name = "arrival_apron_id")
 	private Apron arrivalApron;
 

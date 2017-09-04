@@ -1,9 +1,5 @@
 package net.aircommunity.platform.service.internal.order;
 
-import com.codahale.metrics.Timer;
-import io.micro.common.DateFormats;
-import io.micro.common.Reflections;
-import io.micro.common.Strings;
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,9 +12,20 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
+
+import com.codahale.metrics.Timer;
+
+import io.micro.common.DateFormats;
+import io.micro.common.Reflections;
+import io.micro.common.Strings;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
@@ -37,7 +44,6 @@ import net.aircommunity.platform.model.domain.CharterableOrder;
 import net.aircommunity.platform.model.domain.Instalment;
 import net.aircommunity.platform.model.domain.InstalmentOrder;
 import net.aircommunity.platform.model.domain.Order;
-import net.aircommunity.platform.model.domain.Order.Status;
 import net.aircommunity.platform.model.domain.OrderRef;
 import net.aircommunity.platform.model.domain.OrderSalesPackage;
 import net.aircommunity.platform.model.domain.Passenger;
@@ -67,9 +73,6 @@ import net.aircommunity.platform.service.product.CommentService;
 import net.aircommunity.platform.service.product.CommonProductService;
 import net.aircommunity.platform.service.spi.OrderProcessor;
 import net.aircommunity.platform.service.spi.ProductPricingStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.Cache;
 
 /**
  * Abstract Order service support.
@@ -227,7 +230,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			copyCommonProperties(order, newOrder);
 			copyProperties(order, newOrder);
 
-			LOG.info("[Creating order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), order);
+			LOG.info("[Creating order] User[{}][{}]: {}", owner.getId(), owner.getNickName(), newOrder);
 			// 5.1) check if first order price off for this user
 			doFirstOrderPriceOff(newOrder);
 
@@ -238,7 +241,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			// 6) perform save
 			final T orderToSave = newOrder; // make final when used in lambda
 			T orderSaved = safeExecute(() -> orderProcessor.saveOrder(orderToSave), "Create %s: %s for user %s failed",
-					type.getSimpleName(), order, userId);
+					type.getSimpleName(), newOrder, userId);
 
 			// 7) create orderRef for later fast query (all type of orders will be available as orderRef)
 			OrderRef orderRef = new OrderRef();
@@ -1314,7 +1317,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * For ADMIN for a user (orders in any status and type), list all of a user
 	 */
 	protected Page<T> doListAllUserOrders(String userId, @Nullable Order.Status status, @Nullable Product.Type type,
-										  int page, int pageSize) {
+			int page, int pageSize) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = orderOperationTimer(this.type, ORDER_ACTION_ADMIN_LIST_USER);
@@ -1342,7 +1345,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 	 * For ADMIN (orders in any status and type) (full table scan)
 	 */
 	protected Page<T> doListAllOrders(@Nullable Order.Status status, @Nullable Product.Type type, int page,
-									  int pageSize) {
+			int pageSize) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = orderOperationTimer(this.type, ORDER_ACTION_ADMIN_LIST);
