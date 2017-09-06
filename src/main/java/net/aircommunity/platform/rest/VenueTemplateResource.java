@@ -88,8 +88,8 @@ public class VenueTemplateResource {
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public Response create(@NotNull @Valid VenueTemplate VenueTemplate, @Context UriInfo uriInfo) {
-		VenueTemplate created = venueTemplateService.createVenueTemplate(VenueTemplate);
+	public Response create(@NotNull @Valid VenueTemplate venueTemplate, @Context UriInfo uriInfo) {
+		VenueTemplate created = venueTemplateService.createVenueTemplate(venueTemplate);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
@@ -112,7 +112,7 @@ public class VenueTemplateResource {
 	 * Delete
 	 */
 	@DELETE
-	@Path("{venueTemplateService}")
+	@Path("{venueTemplateId}")
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	public void delete(@PathParam("venueTemplateId") String venueTemplateId) {
 		venueTemplateService.deleteVenueTemplate(venueTemplateId);

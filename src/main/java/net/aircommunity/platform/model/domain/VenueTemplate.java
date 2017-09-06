@@ -1,9 +1,13 @@
 package net.aircommunity.platform.model.domain;
 
 import io.micro.annotation.constraint.NotEmpty;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,6 +35,10 @@ public class VenueTemplate extends Persistable {
 
 	@Column(name = "background_color", length = COLOR_LEN)
 	private String backgroundColor;
+
+
+	@OneToMany(mappedBy = "venueTemplate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	List<VenueInfo> venueInfos;
 
 	// venue template description
 	@Lob

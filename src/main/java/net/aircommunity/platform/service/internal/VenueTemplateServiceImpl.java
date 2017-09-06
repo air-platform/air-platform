@@ -61,6 +61,7 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 
 
 	private void copyProperties(VenueTemplate src, VenueTemplate tgt) {
+
 		tgt.setName(src.getName());
 		tgt.setBackgroundColor(src.getBackgroundColor());
 		tgt.setBackgroundPic(src.getBackgroundPic());

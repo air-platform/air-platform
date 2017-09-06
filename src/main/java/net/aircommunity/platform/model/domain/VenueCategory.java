@@ -1,6 +1,5 @@
 package net.aircommunity.platform.model.domain;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.constraint.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,10 +18,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.domain.Product.Category;
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
 
 /**
  * @author Xiangwen.Kong
@@ -56,7 +52,6 @@ public class VenueCategory extends Persistable {
 	protected VenueInfo venueInfo;
 
 
-
 	@OneToMany(mappedBy = "venueCategory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<VenueCategoryProduct> venueCategoryProducts = new HashSet<>();
 
@@ -74,13 +69,9 @@ public class VenueCategory extends Persistable {
 	}
 
 
-
 	public Set<VenueCategoryProduct> getVenueCategoryProducts() {
 		return venueCategoryProducts;
 	}
-
-
-
 
 
 	public void setVenueCategoryProducts(Set<VenueCategoryProduct> products) {

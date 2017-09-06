@@ -112,7 +112,7 @@ public class VenueCategoryResource {
 	 * Delete
 	 */
 	@DELETE
-	@Path("{venueCategoryService}")
+	@Path("{venueCategoryId}")
 	@RolesAllowed(Roles.ROLE_ADMIN)
 	public void delete(@PathParam("venueCategoryId") String venueCategoryId) {
 		venueCategoryService.deleteVenueCategory(venueCategoryId);

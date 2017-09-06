@@ -77,7 +77,7 @@ interface DomainConstants {
 	int ORDER_CHANNEL_LEN = 50;
 	// is it enough?
 	int SALES_PACKAGE_NAME_LEN = 20;
-	int SALES_PACKAGE_PRICES_LEN = 255;
+	int SALES_PACKAGE_PRICES_LEN = 511;
 	int PAYMENT_METHOD_LEN = 10;
 	int TRADE_STATUS_LEN = 10;
 

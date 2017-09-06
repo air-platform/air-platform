@@ -1,20 +1,21 @@
 package net.aircommunity.platform.model.domain;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.constraint.NotEmpty;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
+import org.hibernate.annotations.Cascade;
 
 /**
  * @author Xiangwen.Kong
@@ -42,10 +43,14 @@ public class VenueInfo extends Persistable {
 	private String description;
 
 
-	@XmlElement
+	//@XmlElement
 	@ManyToOne
 	@JoinColumn(name = "venue_template_id")
 	protected VenueTemplate venueTemplate;
+
+	//@OneToMany(mappedBy = "venueInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	//List<VenueCategory> venueCategories;
+
 
 	public VenueInfo(String id) {
 		this.id = id;
