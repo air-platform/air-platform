@@ -46,7 +46,7 @@ public class VenueCategory extends Persistable {
 	private String description;
 
 
-	@XmlElement
+	//@XmlElement
 	@ManyToOne
 	@JoinColumn(name = "venue_info_id")
 	protected VenueInfo venueInfo;

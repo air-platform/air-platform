@@ -78,7 +78,9 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#venueTemplateId")
 	@Override
 	public void deleteVenueTemplate(String venueTemplateId) {
-		safeExecute(() -> venueTemplateRepository.delete(venueTemplateId), "Delete citysite %s failed", venueTemplateId);
+		//safeExecute(() -> venueTemplateRepository.delete(venueTemplateId), "Delete venueTemplate %s failed", venueTemplateId);
+		safeDeletion(venueTemplateRepository, venueTemplateId, Codes.VENUE_TEMPLATE_CANNOT_BE_DELETED, M.msg(M.VENUE_TEMPLATE_CANNOT_BE_DELETED));
+
 	}
 
 	@Transactional

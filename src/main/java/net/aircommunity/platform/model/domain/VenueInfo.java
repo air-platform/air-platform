@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.constraint.NotEmpty;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -15,6 +16,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import net.aircommunity.platform.model.JsonViews;
 import org.hibernate.annotations.Cascade;
 
 /**
@@ -46,6 +48,7 @@ public class VenueInfo extends Persistable {
 	//@XmlElement
 	@ManyToOne
 	@JoinColumn(name = "venue_template_id")
+	@JsonView(JsonViews.Admin.class)
 	protected VenueTemplate venueTemplate;
 
 	//@OneToMany(mappedBy = "venueInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

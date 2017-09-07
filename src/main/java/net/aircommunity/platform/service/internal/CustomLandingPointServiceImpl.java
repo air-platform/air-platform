@@ -27,7 +27,7 @@ import javax.annotation.Resource;
 public class CustomLandingPointServiceImpl extends AbstractServiceSupport implements CustomLandingPointService {
 	private static final Logger LOG = LoggerFactory.getLogger(CustomLandingPointServiceImpl.class);
 
-	private static final String CACHE_NAME = "cache.citysite";
+	private static final String CACHE_NAME = "cache.customlandingpoint";
 	private static final String CITYSITES_INFO = "data/citysites.json";
 	@Resource
 	private CustomLandingPointRepository customLandingPointRepository;
@@ -80,7 +80,7 @@ public class CustomLandingPointServiceImpl extends AbstractServiceSupport implem
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#customLandingPointId")
 	@Override
 	public void deleteCustomLandingPoint(String customLandingPointId) {
-		safeExecute(() -> customLandingPointRepository.delete(customLandingPointId), "Delete citysite %s failed", customLandingPointId);
+		safeExecute(() -> customLandingPointRepository.delete(customLandingPointId), "Delete customLandingPoint %s failed", customLandingPointId);
 	}
 
 	@Transactional

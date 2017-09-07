@@ -144,6 +144,15 @@ public final class Codes {
 	public static final Code PUSHNOTIFICATION_NOT_FOUND = Code.notFound(11_015_0001);
 	public static final Code PUSHNOTIFICATION_CANNOT_BE_DELETED = Code.illegalState(11_015_0002);
 
+
+	//venue
+	public static final Code VENUE_TEMPLATE_CANNOT_BE_DELETED = Code.illegalState(11_016_0001);
+	public static final Code VENUE_INFO_CANNOT_BE_DELETED = Code.illegalState(11_016_0002);
+	public static final Code VENUE_CATEGORY_CANNOT_BE_DELETED = Code.illegalState(11_016_0003);
+
+
+
+
 	private Codes() {
 		throw new AssertionError();
 	}

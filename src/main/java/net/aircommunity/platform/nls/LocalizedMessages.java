@@ -170,6 +170,11 @@ public class LocalizedMessages extends NLSResource {
 	public static String PUSHNOTIFICATION_NOT_FOUND;
 	public static String PUSHNOTIFICATION_CANNOT_BE_DELETED;
 
+	//venue
+	public static String VENUE_TEMPLATE_CANNOT_BE_DELETED;
+	public static String VENUE_INFO_CANNOT_BE_DELETED;
+	public static String VENUE_CATEGORY_CANNOT_BE_DELETED;
+
 	/**
 	 * Bind the messageId with bindings.
 	 * 

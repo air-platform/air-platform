@@ -113,7 +113,7 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#venueCategoryId")
 	@Override
 	public void deleteVenueCategory(String venueCategoryId) {
-		safeExecute(() -> venueCategoryRepository.delete(venueCategoryId), "Delete citysite %s failed", venueCategoryId);
+		safeDeletion(venueCategoryRepository, venueCategoryId, Codes.VENUE_CATEGORY_CANNOT_BE_DELETED, M.msg(M.VENUE_CATEGORY_CANNOT_BE_DELETED));
 	}
 
 	@Transactional

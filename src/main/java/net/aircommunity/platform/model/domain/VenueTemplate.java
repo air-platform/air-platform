@@ -37,8 +37,8 @@ public class VenueTemplate extends Persistable {
 	private String backgroundColor;
 
 
-	@OneToMany(mappedBy = "venueTemplate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	List<VenueInfo> venueInfos;
+	//@OneToMany(mappedBy = "venueTemplate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	//List<VenueInfo> venueInfos;
 
 	// venue template description
 	@Lob

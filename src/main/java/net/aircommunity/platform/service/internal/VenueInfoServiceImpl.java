@@ -83,7 +83,10 @@ public class VenueInfoServiceImpl extends AbstractServiceSupport implements Venu
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#venueInfoId")
 	@Override
 	public void deleteVenueInfo(String venueInfoId) {
-		safeExecute(() -> venueInfoRepository.delete(venueInfoId), "Delete citysite %s failed", venueInfoId);
+		//safeExecute(() -> venueInfoRepository.delete(venueInfoId), "Delete venueInfo %s failed", venueInfoId);
+
+		safeDeletion(venueInfoRepository, venueInfoId, Codes.VENUE_INFO_CANNOT_BE_DELETED, M.msg(M.VENUE_INFO_CANNOT_BE_DELETED));
+
 	}
 
 	@Transactional
