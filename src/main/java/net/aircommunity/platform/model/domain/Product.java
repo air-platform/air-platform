@@ -93,7 +93,6 @@ public abstract class Product extends Reviewable {
 	@Column(name = "stock", nullable = false)
 	protected int stock = UNLIMITED_STOCK;
 
-
 	// product original price
 	@Column(name = "original_price")
 	protected BigDecimal originalPrice;
@@ -101,7 +100,6 @@ public abstract class Product extends Reviewable {
 	// product special price
 	@Column(name = "special_price")
 	protected BigDecimal specialPrice;
-
 
 	// product score
 	@Column(name = "score", nullable = false)
@@ -205,7 +203,6 @@ public abstract class Product extends Reviewable {
 		this.score = score;
 	}
 
-
 	public BigDecimal getOriginalPrice() {
 		return originalPrice;
 	}
@@ -293,6 +290,18 @@ public abstract class Product extends Reviewable {
 	@XmlTransient
 	public boolean hasStockLimit() {
 		return stock != UNLIMITED_STOCK;
+	}
+
+	/**
+	 * Return true if this product stock is available for quantity
+	 * 
+	 * @param quantity the number of requested product quantity to buy
+	 * @return true if this product stock available
+	 */
+	public boolean isStockAvailable(int quantity) {
+		// 1) no stock limit
+		// 2) quantity is less than or equal to current stock.
+		return !hasStockLimit() || (hasStockLimit() && stock >= quantity);
 	}
 
 	public Tenant getVendor() {

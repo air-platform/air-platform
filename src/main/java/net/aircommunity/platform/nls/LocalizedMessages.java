@@ -51,6 +51,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String PRODUCT_NOT_FOUND;
 	public static String PRODUCT_NOT_APPROVED;
 	public static String PRODUCT_NOT_PUBLISHED;
+	public static String PRODUCT_OUT_OF_STOCK;
 	public static String PRODUCT_ACCESS_DENIED;
 	public static String PRODUCT_FAQ_NOT_FOUND;
 	public static String PRODUCT_FAMILY_NOT_FOUND;
@@ -166,11 +167,11 @@ public class LocalizedMessages extends NLSResource {
 	// internal server error
 	public static String INTERNAL_SERVER_ERROR;
 
-	//push notification
+	// push notification
 	public static String PUSHNOTIFICATION_NOT_FOUND;
 	public static String PUSHNOTIFICATION_CANNOT_BE_DELETED;
 
-	//venue
+	// venue
 	public static String VENUE_TEMPLATE_CANNOT_BE_DELETED;
 	public static String VENUE_INFO_CANNOT_BE_DELETED;
 	public static String VENUE_CATEGORY_CANNOT_BE_DELETED;

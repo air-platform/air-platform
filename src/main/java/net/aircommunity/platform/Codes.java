@@ -53,15 +53,16 @@ public final class Codes {
 
 	// product
 	public static final Code PRODUCT_NOT_FOUND = Code.notFound(11_003_0001);
-	public static final Code PRODUCT_NOT_PUBLISHED = Code.illegalState(11_003_0002);
-	public static final Code PRODUCT_PROMOTION_NOT_FOUND = Code.notFound(11_003_0003);
-	public static final Code PRODUCT_FAQ_NOT_FOUND = Code.notFound(11_003_0004);
-	public static final Code PRODUCT_FAMILY_NOT_FOUND = Code.notFound(11_003_0005);
-	public static final Code PRODUCT_FAMILY_NOT_APPROVED = Code.notFound(11_003_0006);
-	public static final Code PRODUCT_INVALID_DEPARTURE_DATE = Code.notFound(11_003_0007);
-	public static final Code PRODUCT_CANNOT_BE_DELETED = Code.illegalState(11_003_0008);
-	public static final Code PRODUCT_CANNOT_BE_UPDATED = Code.illegalState(11_003_0009);
-	public static final Code PRODUCT_FAMILY_CANNOT_BE_DELETED = Code.illegalState(11_003_0010);
+	public static final Code PRODUCT_OUT_OF_STOCK = Code.illegalState(11_003_0002);
+	public static final Code PRODUCT_NOT_PUBLISHED = Code.illegalState(11_003_0003);
+	public static final Code PRODUCT_PROMOTION_NOT_FOUND = Code.notFound(11_003_0004);
+	public static final Code PRODUCT_FAQ_NOT_FOUND = Code.notFound(11_003_0005);
+	public static final Code PRODUCT_FAMILY_NOT_FOUND = Code.notFound(11_003_0006);
+	public static final Code PRODUCT_FAMILY_NOT_APPROVED = Code.notFound(11_003_0007);
+	public static final Code PRODUCT_INVALID_DEPARTURE_DATE = Code.notFound(11_003_0008);
+	public static final Code PRODUCT_CANNOT_BE_DELETED = Code.illegalState(11_003_0009);
+	public static final Code PRODUCT_CANNOT_BE_UPDATED = Code.illegalState(11_003_00010);
+	public static final Code PRODUCT_FAMILY_CANNOT_BE_DELETED = Code.illegalState(11_003_0011);
 
 	// order
 	public static final Code ORDER_ACCESS_DENIED = Code.notPerimitted(11_003_1001);
@@ -139,19 +140,14 @@ public final class Codes {
 	// air class
 	public static final Code AIRCLASS_NOT_FOUND = Code.notFound(11_014_0001);
 
-
-	//push noitification
+	// push noitification
 	public static final Code PUSHNOTIFICATION_NOT_FOUND = Code.notFound(11_015_0001);
 	public static final Code PUSHNOTIFICATION_CANNOT_BE_DELETED = Code.illegalState(11_015_0002);
 
-
-	//venue
+	// venue
 	public static final Code VENUE_TEMPLATE_CANNOT_BE_DELETED = Code.illegalState(11_016_0001);
 	public static final Code VENUE_INFO_CANNOT_BE_DELETED = Code.illegalState(11_016_0002);
 	public static final Code VENUE_CATEGORY_CANNOT_BE_DELETED = Code.illegalState(11_016_0003);
-
-
-
 
 	private Codes() {
 		throw new AssertionError();
