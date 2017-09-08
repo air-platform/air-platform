@@ -138,4 +138,8 @@ public class QuickFlightOrderServiceImpl extends AbstractOrderCandidateService<A
 	protected QuickFlightOrder doCloneOrder(AircraftCandidate candidate) {
 		return candidate.getOrder().clone();
 	}
+	@Override
+	protected String getOrderId(AircraftCandidate candidate) {
+		return candidate.getOrder().getId();
+	}
 }

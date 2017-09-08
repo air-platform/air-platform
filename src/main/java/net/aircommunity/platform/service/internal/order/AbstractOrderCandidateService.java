@@ -175,13 +175,14 @@ abstract class AbstractOrderCandidateService<C extends OrderItemCandidate, T ext
 					candidateRepository.findDistinctOrderByVendorIdAndOrderStatusOrderByOrderCreationDateDesc(tenantId,
 							status, Pages.createPageRequest(page, pageSize)));
 		}
-		LOG.debug("Before filtering {} candidate data: {}", tenantId, data);
+		LOG.debug("Before filtering {} candidate data: {}, status:{}", tenantId, data, status);
 		Map<String, T> result = new LinkedHashMap<>();
 		data.getContent().stream().forEach(theCandidate -> {
 			// make copy
-			T order = doCloneOrder(theCandidate);
-			// remove candidate whose owner is NOT current tenant
-			// means tenant can only see his own candidate of this order
+
+			String orderId = getOrderId(theCandidate);
+			T order = findOrder(orderId);
+			//LOG.debug("Filtered {} order data: {}", tenantId, order);
 			Set<C> candidates = order.getCandidates().stream().filter(candidate -> candidate.isOwnedByTenant(tenantId))
 					.collect(Collectors.toSet());
 			order.setCandidates(candidates);
@@ -193,5 +194,6 @@ abstract class AbstractOrderCandidateService<C extends OrderItemCandidate, T ext
 	}
 
 	protected abstract T doCloneOrder(C candidate);
+	protected abstract String getOrderId(C candidate);
 
 }
