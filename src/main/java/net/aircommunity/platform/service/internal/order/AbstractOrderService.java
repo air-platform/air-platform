@@ -196,6 +196,10 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				if (!product.isPublished()) {
 					throw new AirException(Codes.PRODUCT_NOT_PUBLISHED, M.msg(M.PRODUCT_NOT_PUBLISHED));
 				}
+				// test if stock available
+				if (!product.isStockAvailable(order.getQuantity())) {
+					throw new AirException(Codes.PRODUCT_OUT_OF_STOCK, M.msg(M.PRODUCT_OUT_OF_STOCK));
+				}
 				order.setProduct(product);
 				newOrder.setProduct(product);
 				if (StandardProduct.class.isAssignableFrom(product.getClass())) {
@@ -1077,9 +1081,13 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			if (order.getStatus() != Order.Status.REFUND_REQUESTED) {
 				order.setPaymentDate(new Date());
 			}
-			// decrease stock by 1
+			// decrease stock by quantity if it has limit
 			if (order.getProduct().hasStockLimit()) {
-				commonProductService.updateProductStockWithDelta(order.getProduct().getId(), -1);
+				// test if stock available and decrease stock by quantity
+				if (!order.getProduct().isStockAvailable(order.getQuantity())) {
+					throw new AirException(Codes.PRODUCT_OUT_OF_STOCK, M.msg(M.PRODUCT_OUT_OF_STOCK));
+				}
+				commonProductService.updateProductStockWithDelta(order.getProduct().getId(), -order.getQuantity());
 			}
 			break;
 
@@ -1107,9 +1115,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			expectOrderStatus(order, newStatus, Order.Status.REFUNDING);
 			order.setRefundedDate(new Date());
 			returnBackPoints(order, newStatus);
-			// increase stock by 1
+			// increase stock by quantity
 			if (order.getProduct().hasStockLimit()) {
-				commonProductService.updateProductStockWithDelta(order.getProduct().getId(), 1);
+				commonProductService.updateProductStockWithDelta(order.getProduct().getId(), order.getQuantity());
 			}
 			break;
 
