@@ -48,7 +48,6 @@ public class VenueInfo extends Persistable {
 	//@XmlElement
 	@ManyToOne
 	@JoinColumn(name = "venue_template_id")
-	@JsonView(JsonViews.Admin.class)
 	protected VenueTemplate venueTemplate;
 
 	//@OneToMany(mappedBy = "venueInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
