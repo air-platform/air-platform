@@ -1,5 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Resource;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
@@ -7,9 +9,13 @@ import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.VenueCategory;
 import net.aircommunity.platform.model.domain.VenueCategoryProduct;
+import net.aircommunity.platform.model.domain.VenueInfo;
+import net.aircommunity.platform.model.domain.VenueTemplate;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.VenueCategoryRepository;
 import net.aircommunity.platform.service.VenueCategoryService;
+import net.aircommunity.platform.service.VenueInfoService;
+import net.aircommunity.platform.service.VenueTemplateService;
 import net.aircommunity.platform.service.product.AirTourService;
 import net.aircommunity.platform.service.product.CommonProductService;
 import org.slf4j.Logger;
@@ -39,6 +45,12 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 
 	@Resource
 	private CommonProductService commonProductService;
+
+	@Resource
+	private VenueTemplateService venueTemplateService;
+
+	@Resource
+	private VenueInfoService venueInfoService;
 
 	@Transactional
 	@Override
@@ -108,6 +120,17 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 		return Pages.adapt(venueCategoryRepository.findAll(createPageRequest(page, pageSize)));
 	}
 
+	@Override
+	public List<VenueCategory> listVenueCategorysByVenueTemplate(String venueTemplateId) {
+		List<VenueInfo> vil = venueInfoService.listVenueInfosByVenueTemplate(venueTemplateId);
+
+		List<VenueCategory> vcl = new ArrayList<VenueCategory>();;
+		vil.stream().forEach(vi -> {
+			List<VenueCategory> vc = venueCategoryRepository.findByVenueInfo(vi);
+			vcl.addAll(vc);
+		});
+		return vcl;
+	}
 
 	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#venueCategoryId")

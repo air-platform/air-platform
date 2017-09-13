@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.constraint.NotEmpty;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import net.aircommunity.platform.model.JsonViews;
 
 /**
  * @author Xiangwen.Kong
@@ -44,6 +46,19 @@ public class VenueTemplate extends Persistable {
 	@Lob
 	@Column(name = "description")
 	private String description;
+
+
+	@Column(name = "published", nullable = false)
+	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	protected boolean published = false;
+
+	public boolean isPublished() {
+		return published;
+	}
+
+	public void setPublished(boolean published) {
+		this.published = published;
+	}
 
 	public VenueTemplate(String id) {
 		this.id = id;

@@ -50,6 +50,23 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 		return venueTemplate;
 	}
 
+
+	@Transactional
+	@CachePut(cacheNames = CACHE_NAME, key = "#venueTemplateId")
+	@Override
+	public VenueTemplate publish(String venueTemplateId, boolean isPublish)
+	{
+		VenueTemplate venueTemplate = venueTemplateRepository.findOne(venueTemplateId);
+		if (venueTemplate == null) {
+			LOG.error("VenueTemplate {} not found", venueTemplateId);
+			throw new AirException(Codes.VENUE_TEMPLATE_NOT_FOUND, M.msg(M.VENUE_TEMPLATE_NOT_FOUND));
+		}
+		venueTemplate.setPublished(isPublish);
+		return safeExecute(() -> venueTemplateRepository.save(venueTemplate), "Publish venueTemplate %s to %s failed", venueTemplateId, venueTemplate);
+
+	}
+
+
 	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#venueTemplateId")
 	@Override

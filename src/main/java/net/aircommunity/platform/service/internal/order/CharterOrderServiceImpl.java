@@ -80,6 +80,10 @@ public class CharterOrderServiceImpl extends AbstractOrderCandidateService<Fleet
 	protected CharterOrder doCloneOrder(FleetCandidate candidate) {
 		return candidate.getOrder().clone();
 	}
+	@Override
+	protected String getOrderId(FleetCandidate candidate) {
+		return candidate.getOrder().getId();
+	}
 
 	// XXX REMOVE
 	// @Override

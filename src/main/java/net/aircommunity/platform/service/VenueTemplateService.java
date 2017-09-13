@@ -31,6 +31,10 @@ public interface VenueTemplateService {
 	@Nonnull
 	VenueTemplate findVenueTemplate(@Nonnull String venueTemplateId);
 
+
+	@Nonnull
+	VenueTemplate publish(@Nonnull String venueTemplateId, boolean isPublish);
+
 	/**
 	 * Update a Apron.
 	 *

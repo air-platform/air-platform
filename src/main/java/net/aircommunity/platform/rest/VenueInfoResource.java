@@ -2,6 +2,7 @@ package net.aircommunity.platform.rest;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
 import io.swagger.annotations.Api;
 import java.net.URI;
 import javax.annotation.Resource;
@@ -56,8 +57,13 @@ public class VenueInfoResource {
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
-	public Response listAll(@QueryParam("page") @DefaultValue("1") int page,
+	public Response listAll(@QueryParam("venueTemplateId") String venueTemplateId,
+							@QueryParam("page") @DefaultValue("1") int page,
 							@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
+
+		if (Strings.isNotBlank(venueTemplateId)) {
+			return Response.ok(venueInfoService.listVenueInfosByVenueTemplate(venueTemplateId)).build();
+		}
 		return Response.ok(venueInfoService.listVenueInfos(page, pageSize)).build();
 	}
 

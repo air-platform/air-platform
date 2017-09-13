@@ -105,7 +105,7 @@ public class ApronResource {
 	 */
 	@GET
 	@PermitAll
-	@Path("listNear")
+	@Path("find")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Response listNear(@QueryParam("province") String province, @QueryParam("type") Type type,

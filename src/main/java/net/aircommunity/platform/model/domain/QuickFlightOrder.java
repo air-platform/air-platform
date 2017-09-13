@@ -89,9 +89,14 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	private Apron arrivalApron;
 
 	// route order matters (use list)
+	/*@NotEmpty
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private List<QuickFlightRoute> routes = new ArrayList<>();*/
+
 	@NotEmpty
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private List<QuickFlightRoute> routes = new ArrayList<>();
+	private Set<QuickFlightRoute> routes = new HashSet<>();
+
 
 	// the number of passengers,
 	@Min(1)
@@ -147,17 +152,20 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 		this.arrivalApron = arrivalApron;
 	}
 
-	public List<QuickFlightRoute> getRoutes() {
+	public Set<QuickFlightRoute> getRoutes() {
 		return routes;
 	}
 
-	public void setRoutes(List<QuickFlightRoute> items) {
-		if (items != null) {
-			items.stream().forEach(item -> item.setOrder(this));
-			routes.clear();
-			routes.addAll(items);
+	public void setRoutes(Set<QuickFlightRoute> routes) {
+		if (routes != null) {
+			routes.stream().forEach(product -> product.setOrder(this));
+			this.routes.clear();
+			this.routes.addAll(routes);
 		}
 	}
+
+
+
 
 	public int getPassengerNum() {
 		return passengerNum;
