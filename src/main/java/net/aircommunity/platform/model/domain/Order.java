@@ -454,7 +454,8 @@ public abstract class Order extends Persistable {
 	}
 
 	public boolean confirmationRequired() {
-		return getType() == Type.FLEET || getType() == Type.JETTRAVEL || getType() == Type.FERRYFLIGHT;
+		return getType() == Type.FLEET || getType() == Type.JETTRAVEL || getType() == Type.FERRYFLIGHT
+				|| getType() == Type.QUICKFLIGHT;
 	}
 
 	public boolean contractRequired() {
