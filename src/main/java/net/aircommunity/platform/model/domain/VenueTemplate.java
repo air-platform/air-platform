@@ -52,6 +52,31 @@ public class VenueTemplate extends Persistable {
 	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected boolean published = false;
 
+
+	@Column(name = "coupon_total_num", nullable = false)
+	private int couponTotalNum = 0;
+
+
+	@Column(name = "points_per_coupon", nullable = false)
+	private int pointsPerCoupon = 0;
+
+
+	public int getCouponTotalNum() {
+		return couponTotalNum;
+	}
+
+	public void setCouponTotalNum(int couponTotalNum) {
+		this.couponTotalNum = couponTotalNum;
+	}
+
+	public int getPointsPerCoupon() {
+		return pointsPerCoupon;
+	}
+
+	public void setPointsPerCoupon(int pointsPerCoupon) {
+		this.pointsPerCoupon = pointsPerCoupon;
+	}
+
 	public boolean isPublished() {
 		return published;
 	}
