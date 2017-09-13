@@ -49,7 +49,7 @@ public class VenueTemplate extends Persistable {
 
 
 	@Column(name = "published", nullable = false)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	//@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected boolean published = false;
 
 
