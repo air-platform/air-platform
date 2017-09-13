@@ -61,6 +61,31 @@ public class VenueTemplateResource {
 		return Response.ok(venueTemplateService.listVenueTemplates(page, pageSize)).build();
 	}
 
+	/**
+	 * Publish venue template
+	 */
+	@POST
+	@Path("{venueTemplateId}/publish")
+	@JsonView(JsonViews.Admin.class)
+	@RolesAllowed(Roles.ROLE_ADMIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public VenueTemplate publish(@PathParam("venueTemplateId") String venueTemplateId) {
+		return venueTemplateService.publish(venueTemplateId, true);
+	}
+
+
+
+	/**
+	 * Unpublish venue template
+	 */
+	@POST
+	@Path("{venueTemplateId}/unpublish")
+	@JsonView(JsonViews.Admin.class)
+	@RolesAllowed(Roles.ROLE_ADMIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public VenueTemplate unpublish(@PathParam("venueTemplateId") String venueTemplateId) {
+		return venueTemplateService.publish(venueTemplateId, false);
+	}
 
 	/**
 	 * Find

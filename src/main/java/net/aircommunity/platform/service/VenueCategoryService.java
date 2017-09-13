@@ -1,5 +1,6 @@
 package net.aircommunity.platform.service;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Page;
@@ -51,6 +52,8 @@ public interface VenueCategoryService {
 	@Nonnull
 	Page<VenueCategory> listVenueCategorys(int page, int pageSize);
 
+	@Nonnull
+	List<VenueCategory> listVenueCategorysByVenueTemplate(String venueTemplateId);
 
 	/**
 	 * Delete a VenueCategory.

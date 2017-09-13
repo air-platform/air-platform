@@ -1,7 +1,9 @@
 package net.aircommunity.platform.repository;
 
+import java.util.List;
 import net.aircommunity.platform.model.domain.CitySite;
 import net.aircommunity.platform.model.domain.VenueInfo;
+import net.aircommunity.platform.model.domain.VenueTemplate;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -12,5 +14,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface VenueInfoRepository extends JpaRepository<VenueInfo, String> {
 
-
+	List<VenueInfo>  findByVenueTemplate(VenueTemplate vt);
 }

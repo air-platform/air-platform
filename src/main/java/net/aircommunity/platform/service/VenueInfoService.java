@@ -1,5 +1,6 @@
 package net.aircommunity.platform.service;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Page;
@@ -13,7 +14,7 @@ import net.aircommunity.platform.model.domain.VenueInfo;
 public interface VenueInfoService {
 
 	/**
-	 * Create a apron.
+	 * Create a venue info.
 	 *
 	 * @param venueInfo the venueInfo to be created
 	 * @return venueInfo created
@@ -22,7 +23,7 @@ public interface VenueInfoService {
 	VenueInfo createVenueInfo(@Nonnull VenueInfo venueInfo);
 
 	/**
-	 * Retrieves the specified Apron.
+	 * Retrieves the specified venue info.
 	 *
 	 * @param venueInfoId the venueInfoId
 	 * @return the VenueInfo found
@@ -32,7 +33,7 @@ public interface VenueInfoService {
 	VenueInfo findVenueInfo(@Nonnull String venueInfoId);
 
 	/**
-	 * Update a Apron.
+	 * Update a venue info.
 	 *
 	 * @param venueInfoId  the venueInfoId
 	 * @param newVenueInfo the VenueInfo to be updated
@@ -42,7 +43,7 @@ public interface VenueInfoService {
 	VenueInfo updateVenueInfo(@Nonnull String venueInfoId, @Nonnull VenueInfo newVenueInfo);
 
 	/**
-	 * List all aprons by pagination.
+	 * List all venue info by pagination.
 	 *
 	 * @param page     the page number
 	 * @param pageSize the pageSize
@@ -50,6 +51,15 @@ public interface VenueInfoService {
 	 */
 	@Nonnull
 	Page<VenueInfo> listVenueInfos(int page, int pageSize);
+
+
+	/**
+	 * List all venue info of venueTemplateId by pagination.
+	 *
+	 * @return a page of VenueInfos or empty
+	 */
+	@Nonnull
+	List<VenueInfo> listVenueInfosByVenueTemplate(String venueTemplateId);
 
 
 	/**
