@@ -473,7 +473,7 @@ public abstract class Order extends Persistable {
 	 */
 	@XmlTransient
 	public boolean isPayable() {
-		return getProduct() != null && (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal()
+		return getProduct() != null && (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal() && contractRequired()
 				|| status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
 	}
 
