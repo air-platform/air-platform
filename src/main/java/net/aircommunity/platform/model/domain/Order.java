@@ -69,7 +69,7 @@ public abstract class Order extends Persistable {
 
 	// allow cancel
 	private static final EnumSet<Status> CANCELLABLE_STATUSES = EnumSet.of(Status.CREATED, Status.CONFIRMED,
-			Status.CONTRACT_SIGNED, Status.PAYMENT_FAILED);
+			Status.CUSTOMER_CONFIRMED, Status.CONTRACT_SIGNED, Status.PAYMENT_FAILED);
 
 	// finished, closed, cancelled, payment failed or refunded, FIXME: Status.PAYMENT_FAILED also termination??
 	private static final EnumSet<Status> TERMINATION_STATUSES = EnumSet.of(Status.FINISHED, Status.CANCELLED,
@@ -473,8 +473,13 @@ public abstract class Order extends Persistable {
 	 */
 	@XmlTransient
 	public boolean isPayable() {
-		return getProduct() != null && (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal() && contractRequired()
-				|| status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
+		//return getProduct() != null && (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal() && contractRequired()
+		//		|| status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
+
+
+		return (getProduct() != null || getType() == Type.QUICKFLIGHT)
+				&& (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal() || status == Status.PARTIAL_PAID
+				|| status == Status.PAYMENT_FAILED);
 	}
 
 	/**
@@ -485,7 +490,7 @@ public abstract class Order extends Persistable {
 	 */
 	@XmlTransient
 	public boolean canFinishPayment() {
-		return getProduct() != null && status.ordinal() < Status.PAID.ordinal();
+		return (getProduct() != null || getType() == Type.QUICKFLIGHT)  && status.ordinal() < Status.PAID.ordinal();
 		// return getProduct() != null && (status.ordinal() < Status.CONTRACT_SIGNED.ordinal()
 		// || status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
 	}

@@ -2,7 +2,9 @@ package net.aircommunity.platform.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.constraint.NotEmpty;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -57,9 +59,36 @@ public class VenueTemplate extends Persistable {
 	private int couponTotalNum = 0;
 
 
+	@Column(name = "coupon_remain_num", nullable = false)
+	private int couponRemainNum = 0;
+
 	@Column(name = "points_per_coupon", nullable = false)
 	private int pointsPerCoupon = 0;
 
+
+	@OneToMany(mappedBy = "venueTemplate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private Set<VenueTemplateCouponUser> venueTemplateCouponUsers = new HashSet<>();
+
+	public int getCouponRemainNum() {
+		return couponRemainNum;
+	}
+
+	public void setCouponRemainNum(int couponRemainNum) {
+		this.couponRemainNum = couponRemainNum;
+	}
+
+	public Set<VenueTemplateCouponUser> getVenueTemplateCouponUsers() {
+		return venueTemplateCouponUsers;
+	}
+
+
+	public void setVenueCategoryProducts(Set<VenueTemplateCouponUser> venueTemplateCouponUsers) {
+		if (venueTemplateCouponUsers != null) {
+			venueTemplateCouponUsers.stream().forEach(venueTemplateCouponUser -> venueTemplateCouponUser.setVenueTemplate(this));
+			this.venueTemplateCouponUsers.clear();
+			this.venueTemplateCouponUsers.addAll(venueTemplateCouponUsers);
+		}
+	}
 
 	public int getCouponTotalNum() {
 		return couponTotalNum;

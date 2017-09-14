@@ -149,6 +149,8 @@ public final class Codes {
 	public static final Code VENUE_INFO_CANNOT_BE_DELETED = Code.illegalState(11_016_0002);
 	public static final Code VENUE_CATEGORY_CANNOT_BE_DELETED = Code.illegalState(11_016_0003);
 
+	public static final Code VENUE_TEMPLATE_HAS_GRABBED_COUPON = Code.notFound(11_016_0004);
+	public static final Code VENUE_TEMPLATE_NO_COUPON = Code.notFound(11_016_0005);
 	private Codes() {
 		throw new AssertionError();
 	}
