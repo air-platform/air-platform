@@ -473,13 +473,10 @@ public abstract class Order extends Persistable {
 	 */
 	@XmlTransient
 	public boolean isPayable() {
-		//return getProduct() != null && (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal() && contractRequired()
-		//		|| status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
-
-
-		return (getProduct() != null || getType() == Type.QUICKFLIGHT)
-				&& (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal() || status == Status.PARTIAL_PAID
-				|| status == Status.PAYMENT_FAILED);
+		// return getProduct() != null && (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal() && contractRequired()
+		// || status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
+		return getProduct() != null && (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal()
+				|| status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
 	}
 
 	/**
@@ -490,7 +487,7 @@ public abstract class Order extends Persistable {
 	 */
 	@XmlTransient
 	public boolean canFinishPayment() {
-		return (getProduct() != null || getType() == Type.QUICKFLIGHT)  && status.ordinal() < Status.PAID.ordinal();
+		return (getProduct() != null || getType() == Type.QUICKFLIGHT) && status.ordinal() < Status.PAID.ordinal();
 		// return getProduct() != null && (status.ordinal() < Status.CONTRACT_SIGNED.ordinal()
 		// || status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
 	}
