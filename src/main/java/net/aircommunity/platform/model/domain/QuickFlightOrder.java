@@ -27,6 +27,10 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.google.common.collect.ImmutableSet;
+
+import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.jaxb.DateAdapter;
 
@@ -148,21 +152,17 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	}
 
 	public List<QuickFlightRoute> getRoutes() {
-		List<QuickFlightRoute> depdupe =
-				new ArrayList<>(new LinkedHashSet<>(routes));
-		return depdupe;
+
+		return routes;
 	}
 
-	public void setRoutes(List<QuickFlightRoute> items) {
-		if (items != null) {
-			items.stream().forEach(item -> item.setOrder(this));
-			routes.clear();
-			routes.addAll(items);
+	public void setRoutes(List<QuickFlightRoute> routes) {
+		if (routes != null) {
+			routes.stream().forEach(product -> product.setOrder(this));
+			this.routes.clear();
+			this.routes.addAll(ImmutableSet.copyOf(routes));
 		}
 	}
-
-
-
 
 	public int getPassengerNum() {
 		return passengerNum;
@@ -219,6 +219,12 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	public void promoteCandidate(Set<String> candidateIds) {
 		candidateIds.stream()
 				.forEach(candidateId -> OrderItemCandidateSupport.offerCandidate(getCandidates(), candidateId, null));
+	}
+
+	@Override
+	public boolean isPayable() {
+		return getSelectedCandidate().isPresent() && (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal()
+				|| status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
 	}
 
 	@Override
