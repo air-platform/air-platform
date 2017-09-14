@@ -1,5 +1,6 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.List;
 import javax.annotation.Resource;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
@@ -88,6 +89,11 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 	@Override
 	public Page<VenueTemplate> listVenueTemplates(int page, int pageSize) {
 		return Pages.adapt(venueTemplateRepository.findAll(createPageRequest(page, pageSize)));
+	}
+
+	@Override
+	public List<VenueTemplate> listPublicVenueTemplates() {
+		return venueTemplateRepository.findByPublishedTrue();
 	}
 
 

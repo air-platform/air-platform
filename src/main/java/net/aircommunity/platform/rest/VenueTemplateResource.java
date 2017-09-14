@@ -22,6 +22,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
@@ -57,8 +58,13 @@ public class VenueTemplateResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Response listAll(@QueryParam("page") @DefaultValue("1") int page,
-							@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		return Response.ok(venueTemplateService.listVenueTemplates(page, pageSize)).build();
+							@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
+
+		if (context.isUserInRole(Roles.ROLE_ADMIN) || context.isUserInRole(Roles.ROLE_TENANT)) {
+			return Response.ok(venueTemplateService.listVenueTemplates(page, pageSize)).build();
+		}else{
+			return Response.ok(venueTemplateService.listPublicVenueTemplates()).build();
+		}
 	}
 
 	/**

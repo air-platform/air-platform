@@ -1,5 +1,6 @@
 package net.aircommunity.platform.repository;
 
+import java.util.List;
 import net.aircommunity.platform.model.domain.CitySite;
 import net.aircommunity.platform.model.domain.VenueTemplate;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface VenueTemplateRepository extends JpaRepository<VenueTemplate, String> {
 
+	List<VenueTemplate> findByPublishedTrue();
 
 }
