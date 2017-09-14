@@ -1,6 +1,5 @@
 package net.aircommunity.platform.model.domain;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -89,14 +88,16 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	private Apron arrivalApron;
 
 	// route order matters (use list)
-	/*@NotEmpty
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private List<QuickFlightRoute> routes = new ArrayList<>();*/
+	/*
+	 * @NotEmpty
+	 * 
+	 * @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER) private
+	 * List<QuickFlightRoute> routes = new ArrayList<>();
+	 */
 
 	@NotEmpty
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<QuickFlightRoute> routes = new HashSet<>();
-
 
 	// the number of passengers,
 	@Min(1)
@@ -164,9 +165,6 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 		}
 	}
 
-
-
-
 	public int getPassengerNum() {
 		return passengerNum;
 	}
@@ -222,6 +220,12 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	public void promoteCandidate(Set<String> candidateIds) {
 		candidateIds.stream()
 				.forEach(candidateId -> OrderItemCandidateSupport.offerCandidate(getCandidates(), candidateId, null));
+	}
+
+	@Override
+	public boolean isPayable() {
+		return getSelectedCandidate().isPresent() && (status.ordinal() <= Status.CONTRACT_SIGNED.ordinal()
+				|| status == Status.PARTIAL_PAID || status == Status.PAYMENT_FAILED);
 	}
 
 	@Override

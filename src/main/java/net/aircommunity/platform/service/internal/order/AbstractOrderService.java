@@ -50,10 +50,12 @@ import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.PassengerItem;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.QuickFlightOrder;
 import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.model.domain.SalesPackage;
 import net.aircommunity.platform.model.domain.StandardOrder;
 import net.aircommunity.platform.model.domain.StandardProduct;
+import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.model.domain.Trade;
 import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.model.payment.PaymentRequest;
@@ -601,9 +603,18 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				payment.setRequestNo(requestNo);
 				payment.setStatus(Trade.Status.REQUESTED);
 				payment.setTimestamp(new Date());
-				payment.setOwner(order.getOwner());
-				payment.setVendor(order.getProduct().getVendor());
 				payment.setNote(M.msg(M.PAYMENT_REQUESTED));
+				payment.setOwner(order.getOwner());
+				//
+				Tenant vendor = null;
+				if (QuickFlightOrder.class.isAssignableFrom(order.getClass())) {
+					QuickFlightOrder quickFlightOrder = (QuickFlightOrder) order;
+					vendor = quickFlightOrder.getSelectedCandidate().get().getAircraft().getVendor();
+				}
+				else {
+					vendor = order.getProduct().getVendor();
+				}
+				payment.setVendor(vendor);
 			}
 			else {
 				// in case some payment info is updated
