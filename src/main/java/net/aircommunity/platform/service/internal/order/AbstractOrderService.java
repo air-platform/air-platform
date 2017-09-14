@@ -7,9 +7,12 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,6 +20,9 @@ import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import net.aircommunity.platform.model.domain.Product.Type;
+import net.aircommunity.platform.model.domain.QuickFlightOrder;
+import net.aircommunity.platform.model.domain.QuickFlightRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
@@ -462,10 +468,19 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 		}
 		try {
 			T order = orderProcessor.findByOrderId(orderId);
+
 			if (order == null) {
 				LOG.error("{}: {} is not found", type.getSimpleName(), orderId);
 				throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderId));
 			}
+			if(order.getType() == Type.QUICKFLIGHT){
+				QuickFlightOrder quickFlightOrder = QuickFlightOrder.class.cast(order);
+				List<QuickFlightRoute> depdupe =
+						new ArrayList<>(new LinkedHashSet<>(quickFlightOrder.getRoutes()));
+				quickFlightOrder.setRoutes(depdupe);
+
+			}
+
 			return order;
 		}
 		finally {
