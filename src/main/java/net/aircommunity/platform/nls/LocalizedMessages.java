@@ -152,6 +152,7 @@ public class LocalizedMessages extends NLSResource {
 	public static String ACCOUNT_USERNAME_ALREADY_EXISTS;
 	public static String ACCOUNT_ALREADY_EXISTS;
 	public static String ACCOUNT_NOT_FOUND;
+
 	public static String ACCOUNT_INVALID_VERIFICATION_CODE;
 	public static String ACCOUNT_EMAIL_ALREADY_VERIFIED;
 	public static String PASSENGER_NOT_FOUND;
@@ -176,6 +177,8 @@ public class LocalizedMessages extends NLSResource {
 	public static String VENUE_INFO_CANNOT_BE_DELETED;
 	public static String VENUE_CATEGORY_CANNOT_BE_DELETED;
 
+	public static String VENUE_TEMPLATE_HAS_GRABBED_COUPON;
+	public static String  VENUE_TEMPLATE_NO_COUPON;
 	/**
 	 * Bind the messageId with bindings.
 	 * 

@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.VenueTemplate;
+import net.aircommunity.platform.model.domain.VenueTemplateCouponUser;
 
 /**
  * VenueTemplate service (ADMIN ONLY)
@@ -32,7 +33,8 @@ public interface VenueTemplateService {
 	@Nonnull
 	VenueTemplate findVenueTemplate(@Nonnull String venueTemplateId);
 
-
+	@Nonnull
+	List<VenueTemplateCouponUser> grabCoupon(String venueTemplateId, String userName);
 	@Nonnull
 	VenueTemplate publish(@Nonnull String venueTemplateId, boolean isPublish);
 

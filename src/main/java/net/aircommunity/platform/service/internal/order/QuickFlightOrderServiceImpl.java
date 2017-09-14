@@ -56,9 +56,13 @@ public class QuickFlightOrderServiceImpl extends AbstractOrderCandidateService<A
 	@Override
 	protected void copyProperties(QuickFlightOrder src, QuickFlightOrder tgt) {
 		tgt.setArrival(src.getArrival());
-		tgt.setArrivalApron(apronService.findApron(src.getArrivalApron().getId()));
+		if(src.getArrivalApron() != null) {
+			tgt.setArrivalApron(apronService.findApron(src.getArrivalApron().getId()));
+		}
 		tgt.setDeparture(src.getDeparture());
-		tgt.setDepartureApron(apronService.findApron(src.getDepartureApron().getId()));
+		if(src.getDepartureApron() != null) {
+			tgt.setDepartureApron(apronService.findApron(src.getDepartureApron().getId()));
+		}
 		tgt.setDepartureDate(src.getDepartureDate());
 		tgt.setPassengerNum(src.getPassengerNum());
 		Set<PassengerItem> passengers = src.getPassengers();

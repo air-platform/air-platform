@@ -27,6 +27,7 @@ import javax.ws.rs.core.UriInfo;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.VenueTemplate;
+import net.aircommunity.platform.model.domain.VenueTemplateCouponUser;
 import net.aircommunity.platform.service.VenueTemplateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,7 @@ public class VenueTemplateResource {
 		}else{
 			return Response.ok(venueTemplateService.listPublicVenueTemplates()).build();
 		}
+
 	}
 
 	/**
@@ -92,6 +94,23 @@ public class VenueTemplateResource {
 	public VenueTemplate unpublish(@PathParam("venueTemplateId") String venueTemplateId) {
 		return venueTemplateService.publish(venueTemplateId, false);
 	}
+
+
+	/**
+	 * Get venue template
+	 */
+	@POST
+	@Path("{venueTemplateId}/grab-coupon")
+	@JsonView(JsonViews.User.class)
+	@RolesAllowed({Roles.ROLE_USER, Roles.ROLE_ADMIN})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response grabCoupon(@PathParam("venueTemplateId") String venueTemplateId, @Context SecurityContext context) {
+		String userName = context.getUserPrincipal().getName();
+		return Response.ok(venueTemplateService.grabCoupon(venueTemplateId, userName)).build();
+	}
+
+
+
 
 	/**
 	 * Find
