@@ -1,5 +1,6 @@
 package net.aircommunity.platform.model.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,8 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.google.common.collect.ImmutableSet;
 
 import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.domain.Product.Type;
@@ -97,7 +100,7 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 
 	@NotEmpty
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private Set<QuickFlightRoute> routes = new HashSet<>();
+	private List<QuickFlightRoute> routes = new ArrayList<>();
 
 	// the number of passengers,
 	@Min(1)
@@ -153,15 +156,15 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 		this.arrivalApron = arrivalApron;
 	}
 
-	public Set<QuickFlightRoute> getRoutes() {
+	public List<QuickFlightRoute> getRoutes() {
 		return routes;
 	}
 
-	public void setRoutes(Set<QuickFlightRoute> routes) {
+	public void setRoutes(List<QuickFlightRoute> routes) {
 		if (routes != null) {
 			routes.stream().forEach(product -> product.setOrder(this));
 			this.routes.clear();
-			this.routes.addAll(routes);
+			this.routes.addAll(ImmutableSet.copyOf(routes));
 		}
 	}
 
