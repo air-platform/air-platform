@@ -69,7 +69,7 @@ public abstract class Order extends Persistable {
 
 	// allow cancel
 	private static final EnumSet<Status> CANCELLABLE_STATUSES = EnumSet.of(Status.CREATED, Status.CONFIRMED,
-			Status.CONTRACT_SIGNED, Status.PAYMENT_FAILED);
+			Status.CUSTOMER_CONFIRMED, Status.CONTRACT_SIGNED, Status.PAYMENT_FAILED);
 
 	// finished, closed, cancelled, payment failed or refunded, FIXME: Status.PAYMENT_FAILED also termination??
 	private static final EnumSet<Status> TERMINATION_STATUSES = EnumSet.of(Status.FINISHED, Status.CANCELLED,
