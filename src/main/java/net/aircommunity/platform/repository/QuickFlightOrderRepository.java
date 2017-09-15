@@ -12,4 +12,6 @@ import net.aircommunity.platform.model.domain.QuickFlightOrder;
  */
 public interface QuickFlightOrderRepository extends BaseOrderRepository<QuickFlightOrder> {
 
+
+
 }

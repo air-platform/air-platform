@@ -1,14 +1,15 @@
 package net.aircommunity.platform.model.domain;
 
+import io.micro.annotation.constraint.NotEmpty;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -92,16 +93,10 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	private Apron arrivalApron;
 
 	// route order matters (use list)
-	/*
-	 * @NotEmpty
-	 * 
-	 * @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER) private
-	 * List<QuickFlightRoute> routes = new ArrayList<>();
-	 */
-
 	@NotEmpty
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<QuickFlightRoute> routes = new ArrayList<>();
+
 
 	// the number of passengers,
 	@Min(1)
@@ -158,6 +153,7 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	}
 
 	public List<QuickFlightRoute> getRoutes() {
+
 		return routes;
 	}
 
