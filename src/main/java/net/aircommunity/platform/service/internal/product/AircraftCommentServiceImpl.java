@@ -64,6 +64,7 @@ public class AircraftCommentServiceImpl extends AbstractServiceSupport implement
 		return aircraftCommentRepository.count();
 	}
 
+	@Transactional
 	@Override
 	public AircraftComment createComment(String accountId, String orderId, AircraftComment comment) {
 		Account owner = findAccount(accountId, Account.class);
