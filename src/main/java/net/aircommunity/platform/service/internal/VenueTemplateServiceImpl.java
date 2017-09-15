@@ -101,6 +101,9 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 			venueTemplate.setVenueCategoryProducts(sUser);
 			safeExecute(() -> venueTemplateRepository.save(venueTemplate), "Publish venueTemplate %s to %s failed",
 					venueTemplateId, venueTemplate);
+
+
+			accountService.updateUserPoints(userName, venueTemplate.getPointsPerCoupon());
 			tu = sUser.stream().filter(s -> s.getUserId().equals(userName)).collect(Collectors.toList());
 		}
 		else {
