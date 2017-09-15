@@ -1,362 +1,1325 @@
 [
 	{
-		"city": "天津",
-		"name": "天津塘沽机场",
-		"address": "测试数据",
+		"city": "北京市",
+		"name": "国家体育馆",
+		"address": "中国北京市北京市朝阳区北辰东路15号",
 		"location": {
-			"longitude": 117.672417,
-			"latitude": 38.905167
+			"longitude": 116.3967378,
+			"latitude": 40.00238672
 		}
 	},
 	{
-		"city": "北京",
-		"name": "奥体中心",
-		"address": "测试数据",
-		"location": {
-			"longitude": 116.402053,
-			"latitude": 39.982667
-		}
-	},
-	{
-		"city": "北京",
-		"name": "国家体育场",
-		"address": "测试数据",
-		"location": {
-			"longitude": 116.396225,
-			"latitude": 39.996267
-		}
-	},
-	{
-		"city": "北京",
-		"name": "健一公馆",
-		"address": "测试数据",
-		"location": {
-			"longitude": 116.4825,
-			"latitude": 39.925278
-		}
-	},
-	{
-		"city": "北京",
-		"name": "八达岭国际会议中心",
-		"address": "测试数据",
-		"location": {
-			"longitude": 115.975278,
-			"latitude": 40.471667
-		}
-	},
-	{
-		"city": "北京",
-		"name": "北京欢乐谷",
-		"address": "测试数据",
-		"location": {
-			"longitude": 116.492778,
-			"latitude": 39.865
-		}
-	},
-	{
-		"city": "北京",
-		"name": "北京航空航天大学操场",
-		"address": "测试数据",
-		"location": {
-			"longitude": 116.339444,
-			"latitude": 39.979444
-		}
-	},
-	{
-		"city": "北京",
-		"name": "奥林匹克森林公园",
-		"address": "测试数据",
-		"location": {
-			"longitude": 116.368889,
-			"latitude": 40.010833
-		}
-	},
-	{
-		"city": "北京",
-		"name": "酷车小镇",
-		"address": "测试数据",
-		"location": {
-			"longitude": 116.495278,
-			"latitude": 39.871389
-		}
-	},
-	{
-		"city": "北京",
+		"city": "北京市",
 		"name": "798艺术区",
-		"address": "测试数据",
+		"address": "中国北京市北京市朝阳区酒仙桥北路2号",
 		"location": {
-			"longitude": 116.4925,
-			"latitude": 39.981667
+			"longitude": 116.5010102,
+			"latitude": 39.99017451
 		}
 	},
 	{
-		"city": "北京",
-		"name": "国家会议中心",
-		"address": "测试数据",
+		"city": "北京市",
+		"name": "国贸万达",
+		"address": "中国北京市北京市朝阳区建国路93",
 		"location": {
-			"longitude": 116.379444,
-			"latitude": 39.999722
+			"longitude": 116.4791547,
+			"latitude": 39.9163565
 		}
 	},
 	{
-		"city": "天津",
-		"name": "天津滨海新区天平镇",
-		"address": "测试数据",
+		"city": "上海市",
+		"name": "外滩",
+		"address": "中国上海市上海市黄浦区中山东一路",
 		"location": {
-			"longitude": 117.311667,
-			"latitude": 38.564167
+			"longitude": 121.497663,
+			"latitude": 31.24253298
 		}
 	},
 	{
-		"city": "天津",
-		"name": "天津空港中航工业园",
-		"address": "测试数据",
+		"city": "上海市",
+		"name": "迪士尼乐园",
+		"address": "中国上海市上海市浦东新区",
 		"location": {
-			"longitude": 117.436944,
-			"latitude": 39.106944
+			"longitude": 121.6667819,
+			"latitude": 31.15044435
 		}
 	},
 	{
-		"city": "天津",
-		"name": "蓟县黄崖关",
-		"address": "测试数据",
+		"city": "上海市",
+		"name": "虹桥火车站",
+		"address": "中国上海市上海市闵行区",
 		"location": {
-			"longitude": 117.441944,
-			"latitude": 40.239722
+			"longitude": 121.3262526,
+			"latitude": 31.2000585
 		}
 	},
 	{
-		"city": "天津",
-		"name": "蓟县桑园",
-		"address": "测试数据",
+		"city": "广州市",
+		"name": "广州塔",
+		"address": "中国广东省广州市海珠区阅江西路222号",
 		"location": {
-			"longitude": 117.371944,
-			"latitude": 40.1625
+			"longitude": 113.3309751,
+			"latitude": 23.11238098
 		}
 	},
 	{
-		"city": "上海",
-		"name": "上海万达广场江桥店",
-		"address": "测试数据",
+		"city": "广州市",
+		"name": "广州火车站",
+		"address": "中国广东省广州市越秀区环市西路159号",
 		"location": {
-			"longitude": 121.3216667,
-			"latitude": 31.24138889
+			"longitude": 113.2642133,
+			"latitude": 23.15480042
 		}
 	},
 	{
-		"city": "上海",
-		"name": "上海万达广场松江店",
-		"address": "测试数据",
+		"city": "广州市",
+		"name": "广州白云机场",
+		"address": "中国广东省广州市花都区机场大道888号",
 		"location": {
-			"longitude": 121.2377778,
-			"latitude": 31.05916667
+			"longitude": 113.3093956,
+			"latitude": 23.39238413
+		}
+	},
+	{
+		"city": "深圳市",
+		"name": "深圳火车站",
+		"address": "中国广东省深圳市罗湖区建设路1号",
+		"location": {
+			"longitude": 114.1237796,
+			"latitude": 22.53838528
+		}
+	},
+	{
+		"city": "深圳市",
+		"name": "深圳罗湖口岸",
+		"address": "中国广东省深圳市罗湖区",
+		"location": {
+			"longitude": 114.1247896,
+			"latitude": 22.53496528
+		}
+	},
+	{
+		"city": "深圳市",
+		"name": "深圳宝安机场",
+		"address": "中国广东省深圳市宝安区",
+		"location": {
+			"longitude": 113.8185837,
+			"latitude": 22.63282744
+		}
+	},
+	{
+		"city": "成都市",
+		"name": "人民公园",
+		"address": "中国四川省成都市青羊区祠堂街9号",
+		"location": {
+			"longitude": 104.0637206,
+			"latitude": 30.66325533
+		}
+	},
+	{
+		"city": "成都市",
+		"name": "宽窄巷子",
+		"address": "中国四川省成都市青羊区",
+		"location": {
+			"longitude": 104.062662,
+			"latitude": 30.66895823
+		}
+	},
+	{
+		"city": "成都市",
+		"name": "成都大熊猫繁育研究基地",
+		"address": "中国四川省成都市成华区",
+		"location": {
+			"longitude": 104.150293,
+			"latitude": 30.74272976
+		}
+	},
+	{
+		"city": "杭州市",
+		"name": "杭州西湖",
+		"address": "中国浙江省杭州市西湖区",
+		"location": {
+			"longitude": 120.1478331,
+			"latitude": 30.25651004
+		}
+	},
+	{
+		"city": "杭州市",
+		"name": "钱塘江观潮城",
+		"address": "中国浙江省杭州市萧山区",
+		"location": {
+			"longitude": 120.4135482,
+			"latitude": 30.28393222
+		}
+	},
+	{
+		"city": "杭州市",
+		"name": "杭州萧山国际机场",
+		"address": "中国浙江省杭州市萧山区",
+		"location": {
+			"longitude": 120.4449898,
+			"latitude": 30.24225637
+		}
+	},
+	{
+		"city": "武汉市",
+		"name": "武汉大学",
+		"address": "中国湖北省武汉市武昌区八一路",
+		"location": {
+			"longitude": 114.370945,
+			"latitude": 30.54220134
+		}
+	},
+	{
+		"city": "武汉市",
+		"name": "武汉黄鹤楼",
+		"address": "中国湖北省武汉市武昌区民主路",
+		"location": {
+			"longitude": 114.3099114,
+			"latitude": 30.5500977
+		}
+	},
+	{
+		"city": "武汉市",
+		"name": "武汉天河国际机场",
+		"address": "湖北省武汉市黄陂区机场大道",
+		"location": {
+			"longitude": 114.2202667,
+			"latitude": 30.78087055
+		}
+	},
+	{
+		"city": "重庆市",
+		"name": "重庆大剧院",
+		"address": "重庆市江北区城文华街",
+		"location": {
+			"longitude": 106.5876903,
+			"latitude": 29.57601059
+		}
+	},
+	{
+		"city": "重庆市",
+		"name": "大都会广场",
+		"address": "中国重庆市重庆市渝中区邹容路68号",
+		"location": {
+			"longitude": 106.5854535,
+			"latitude": 29.56362031
+		}
+	},
+	{
+		"city": "重庆市",
+		"name": "奥林匹克运动中心",
+		"address": "重庆市九龙坡区奥体五支路",
+		"location": {
+			"longitude": 106.5125242,
+			"latitude": 29.53137054
+		}
+	},
+	{
+		"city": "南京市",
+		"name": "南京长江大桥",
+		"address": "中国江苏省南京市浦口区",
+		"location": {
+			"longitude": 118.7509252,
+			"latitude": 32.11891287
+		}
+	},
+	{
+		"city": "南京市",
+		"name": "总统府景区旧址",
+		"address": " 江苏省南京市玄武区长江路292号总统府内",
+		"location": {
+			"longitude": 118.8026388,
+			"latitude": 32.05055032
+		}
+	},
+	{
+		"city": "南京市",
+		"name": "紫峰大厦",
+		"address": "中国江苏省南京市鼓楼区中山北路2号",
+		"location": {
+			"longitude": 118.7897206,
+			"latitude": 32.06688107
+		}
+	},
+	{
+		"city": "天津市",
+		"name": "天津之眼摩天轮",
+		"address": "中国天津市天津市红桥区",
+		"location": {
+			"longitude": 117.1933018,
+			"latitude": 39.16003833
+		}
+	},
+	{
+		"city": "天津市",
+		"name": "天津火车站",
+		"address": "中国天津市天津市河东区",
+		"location": {
+			"longitude": 117.2165796,
+			"latitude": 39.14260507
+		}
+	},
+	{
+		"city": "天津市",
+		"name": "滨海国际机场",
+		"address": "中国天津市天津市东丽区",
+		"location": {
+			"longitude": 117.3654477,
+			"latitude": 39.1372323
+		}
+	},
+	{
+		"city": "西安市",
+		"name": "大唐芙蓉园",
+		"address": "陕西省西安市雁塔区芙蓉西路",
+		"location": {
+			"longitude": 108.9809041,
+			"latitude": 34.2190239
+		}
+	},
+	{
+		"city": "西安市",
+		"name": "西安钟楼",
+		"address": "中国陕西省西安市碑林区",
+		"location": {
+			"longitude": 108.953401,
+			"latitude": 34.26571277
+		}
+	},
+	{
+		"city": "西安市",
+		"name": "大雁塔",
+		"address": "陕西省西安市雁塔区雁塔路",
+		"location": {
+			"longitude": 108.9705817,
+			"latitude": 34.22455604
+		}
+	},
+	{
+		"city": "长沙市",
+		"name": "黄兴路步行街",
+		"address": "中国湖南省长沙市天心区黄兴南路537号",
+		"location": {
+			"longitude": 112.9829272,
+			"latitude": 28.19700885
+		}
+	},
+	{
+		"city": "长沙市",
+		"name": "岳麓书院",
+		"address": "中国湖南省长沙市岳麓区阜埠河路221号",
+		"location": {
+			"longitude": 112.947534,
+			"latitude": 28.18664471
+		}
+	},
+	{
+		"city": "长沙市",
+		"name": "靖港古镇景区",
+		"address": "湖南省长沙市望城区靖港古镇",
+		"location": {
+			"longitude": 112.7963513,
+			"latitude": 28.46359376
+		}
+	},
+	{
+		"city": "沈阳市",
+		"name": "中山广场",
+		"address": "辽宁省沈阳市和平区中山路552号",
+		"location": {
+			"longitude": 123.4174056,
+			"latitude": 41.80266668
+		}
+	},
+	{
+		"city": "沈阳市",
+		"name": "沈北新区中央大学城",
+		"address": "辽宁省沈阳市沈北新区蒲昌路30-6",
+		"location": {
+			"longitude": 123.4324297,
+			"latitude": 41.92267092
+		}
+	},
+	{
+		"city": "沈阳市",
+		"name": "辽宁广播电视塔",
+		"address": "中国辽宁省沈阳市沈河区彩塔街1号",
+		"location": {
+			"longitude": 123.4408106,
+			"latitude": 41.78850156
+		}
+	},
+	{
+		"city": "青岛市",
+		"name": "青岛直升机航空有限公司",
+		"address": "山东省青岛市崂山区深圳路230号檀香湾大厦",
+		"location": {
+			"longitude": 120.4756242,
+			"latitude": 36.10431668
+		}
+	},
+	{
+		"city": "青岛市",
+		"name": "青岛八大关景区",
+		"address": "山东省青岛市市南区香港西路青岛中山公园南",
+		"location": {
+			"longitude": 120.3576766,
+			"latitude": 36.06043758
+		}
+	},
+	{
+		"city": "青岛市",
+		"name": "青岛火车站",
+		"address": "山东省青岛市市南区泰安路2号",
+		"location": {
+			"longitude": 120.3192752,
+			"latitude": 36.07086068
+		}
+	},
+	{
+		"city": "郑州市",
+		"name": "郑州二七纪念塔",
+		"address": "河南省郑州市二七区解放路182号",
+		"location": {
+			"longitude": 113.673317,
+			"latitude": 34.758094
+		}
+	},
+	{
+		"city": "郑州市",
+		"name": "裕达国际贸易中心",
+		"address": "河南省郑州市中原区中原中路220号",
+		"location": {
+			"longitude": 113.629151,
+			"latitude": 34.752576
+		}
+	},
+	{
+		"city": "郑州市",
+		"name": "中原福塔",
+		"address": "河南省郑州市管城回族区航海东路1206号",
+		"location": {
+			"longitude": 113.735581,
+			"latitude": 34.72968
+		}
+	},
+	{
+		"city": "大连市",
+		"name": "大连金石滩国家旅游度假区",
+		"address": "辽宁省大连市金州区金石路",
+		"location": {
+			"longitude": 121.9724798,
+			"latitude": 39.08194627
+		}
+	},
+	{
+		"city": "大连市",
+		"name": "星海广场",
+		"address": "辽宁省大连市沙河口区中山路与会展路交汇处东南",
+		"location": {
+			"longitude": 121.5944169,
+			"latitude": 38.88791746
+		}
+	},
+	{
+		"city": "大连市",
+		"name": "滨海大道跨海大桥 ",
+		"address": "辽宁省大连市西岗区金沙滩附近",
+		"location": {
+			"longitude": 121.6142928,
+			"latitude": 38.87649546
 		}
 	},
 	{
 		"city": "三亚市",
-		"name": "海航旅游学院草坪",
-		"address": "测试数据",
+		"name": "三亚唐拉雅秀酒店",
+		"address": "海南省三亚市天涯区三亚湾旅游度假区三亚湾220号",
 		"location": {
-			"longitude": 109.485,
-			"latitude": 18.29361111
+			"longitude": 109.3940424,
+			"latitude": 18.29473605
 		}
 	},
 	{
 		"city": "三亚市",
-		"name": "海航旅游学院机坪",
-		"address": "测试数据",
+		"name": "亚龙湾国家旅游度假区",
+		"address": "海南省三亚市亚龙湾路亚龙湾国家旅游度假区",
 		"location": {
-			"longitude": 109.4902778,
-			"latitude": 18.29166667
+			"longitude": 109.654556,
+			"latitude": 18.236155
 		}
 	},
 	{
 		"city": "三亚市",
-		"name": "蜈支洲岛内篮球场",
-		"address": "测试数据",
+		"name": "三亚蜈支洲岛旅游度假区",
+		"address": "海南省三亚市林旺镇后海村蜈支洲岛",
 		"location": {
-			"longitude": 109.7622222,
-			"latitude": 18.31305556
+			"longitude": 109.734064,
+			"latitude": 18.279973
 		}
 	},
 	{
-		"city": "三亚市",
-		"name": "康莱德酒店草地",
-		"address": "测试数据",
+		"city": "桂林市",
+		"name": "訾洲花园",
+		"address": "广西桂林市七星区穿山路8号",
 		"location": {
-			"longitude": 109.735,
-			"latitude": 18.33333333
+			"longitude": 110.310884,
+			"latitude": 25.279614
 		}
 	},
 	{
-		"city": "三亚市",
-		"name": "301海南分院",
-		"address": "测试数据",
+		"city": "桂林市",
+		"name": "飞虎公园",
+		"address": "广西壮族自治区桂林市临桂县S306西城大道",
 		"location": {
-			"longitude": 109.71,
-			"latitude": 18.29361111
+			"longitude": 110.167604,
+			"latitude": 25.219186
+		}
+	},
+	{
+		"city": "桂林市",
+		"name": "象山公园 ",
+		"address": "广西壮族自治区桂林市象山区南环路22号象山景区",
+		"location": {
+			"longitude": 110.302706,
+			"latitude": 25.273518
+		}
+	},
+	{
+		"city": "宁波市",
+		"name": "溪口风景区",
+		"address": "宁波市奉化市三三省道旁",
+		"location": {
+			"longitude": 121.264596,
+			"latitude": 29.69157
+		}
+	},
+	{
+		"city": "宁波市",
+		"name": "城隍庙",
+		"address": "浙江省宁波市象山县爵溪玉泉社区瀛海路城隍庙",
+		"location": {
+			"longitude": 121.557435,
+			"latitude": 29.873039
+		}
+	},
+	{
+		"city": "宁波市",
+		"name": "跃龙山公园",
+		"address": "浙江省宁波市宁海县塔山路43",
+		"location": {
+			"longitude": 121.440636,
+			"latitude": 29.285849
+		}
+	},
+	{
+		"city": "厦门市",
+		"name": "鼓浪屿",
+		"address": "福建省厦门市鼓浪屿",
+		"location": {
+			"longitude": 118.071857,
+			"latitude": 24.451734
+		}
+	},
+	{
+		"city": "厦门市",
+		"name": "东渡国际邮轮码头",
+		"address": "福建省厦门市湖里区东港路2",
+		"location": {
+			"longitude": 118.081684,
+			"latitude": 24.488586
+		}
+	},
+	{
+		"city": "厦门市",
+		"name": "白鹭园高尔夫球会",
+		"address": "福建省厦门市思明区白鹭园高尔夫球会 ",
+		"location": {
+			"longitude": 118.114695,
+			"latitude": 24.453199
+		}
+	},
+	{
+		"city": "福州市",
+		"name": "鼓山风景区",
+		"address": "福建省福州市晋安区鼓山镇洋里村东方向",
+		"location": {
+			"longitude": 119.390538,
+			"latitude": 26.056665
+		}
+	},
+	{
+		"city": "福州市",
+		"name": "西湖公园",
+		"address": "福建省福州市鼓楼区鼓西街道西湖社区西北方向",
+		"location": {
+			"longitude": 119.296671,
+			"latitude": 26.099022
+		}
+	},
+	{
+		"city": "福州市",
+		"name": "海峡奥体中心",
+		"address": "福建省福州市仓山区建新镇横龙村北方向",
+		"location": {
+			"longitude": 119.291663,
+			"latitude": 26.024959
+		}
+	},
+	{
+		"city": "无锡市",
+		"name": "锡惠公园",
+		"address": "江苏省无锡市滨湖区惠山直街53号-1",
+		"location": {
+			"longitude": 120.297306,
+			"latitude": 31.591537
+		}
+	},
+	{
+		"city": "无锡市",
+		"name": "苏宁广场",
+		"address": "江苏省无锡市崇安区新生路217号",
+		"location": {
+			"longitude": 120.313224,
+			"latitude": 31.591537
+		}
+	},
+	{
+		"city": "无锡市",
+		"name": "世茂国际广场",
+		"address": "江苏省无锡市崇安区锡沪西路201",
+		"location": {
+			"longitude": 120.313239,
+			"latitude": 31.598055
+		}
+	},
+	{
+		"city": "合肥市",
+		"name": "滨湖国际会展中心",
+		"address": "安徽省合肥市肥西县丰乐镇河湾社区东南方向约0.94公里",
+		"location": {
+			"longitude": 117.304597,
+			"latitude": 31.759635
+		}
+	},
+	{
+		"city": "合肥市",
+		"name": "合肥大剧院",
+		"address": "安徽省合肥市蜀山区笔架山街道天鹅湖社区西北方向",
+		"location": {
+			"longitude": 117.23155,
+			"latitude": 31.822189
+		}
+	},
+	{
+		"city": "合肥市",
+		"name": "合肥骆岗机场",
+		"address": "安徽省合肥市包河区骆岗街道骆岗西南方向",
+		"location": {
+			"longitude": 117.313667,
+			"latitude": 31.785556
+		}
+	},
+	{
+		"city": "昆明市",
+		"name": "滇池国际会展中心",
+		"address": "云南省昆明市官渡区六甲街道小河咀社区西北方向",
+		"location": {
+			"longitude": 102.71385,
+			"latitude": 24.947467
+		}
+	},
+	{
+		"city": "昆明市",
+		"name": "西山万达",
+		"address": "云南省昆明市西山区永昌街道马洒营社区东南方向",
+		"location": {
+			"longitude": 102.718211,
+			"latitude": 25.01478
+		}
+	},
+	{
+		"city": "昆明市",
+		"name": "公园1903",
+		"address": "云南省昆明市西山区昆明滇池国家旅游度假区周家社区南方向约1.07公里",
+		"location": {
+			"longitude": 102.683088,
+			"latitude": 24.991764
+		}
+	},
+	{
+		"city": "哈尔滨市",
+		"name": "哈尔滨火车站",
+		"address": "黑龙江省哈尔滨市道里区经纬街道霁虹桥社区西南方向",
+		"location": {
+			"longitude": 126.654686,
+			"latitude": 45.773236
+		}
+	},
+	{
+		"city": "哈尔滨市",
+		"name": "中央大街",
+		"address": "黑龙江省哈尔滨市南岗区邮政街58号",
+		"location": {
+			"longitude": 126.657717,
+			"latitude": 45.773225
+		}
+	},
+	{
+		"city": "哈尔滨市",
+		"name": "圣·索菲亚教堂",
+		"address": "黑龙江省哈尔滨市道里区兆麟街67",
+		"location": {
+			"longitude": 126.633494,
+			"latitude": 45.775986
+		}
+	},
+	{
+		"city": "济南市",
+		"name": "济南大剧院",
+		"address": "山东省济南市槐荫区张庄路街道大饮马村西南方向",
+		"location": {
+			"longitude": 116.914623,
+			"latitude": 36.673888
+		}
+	},
+	{
+		"city": "济南市",
+		"name": "山东省美术馆",
+		"address": "山东省济南市历下区龙洞街道转山西路社区西北方向",
+		"location": {
+			"longitude": 117.120503,
+			"latitude": 36.669346
+		}
+	},
+	{
+		"city": "济南市",
+		"name": "济南奥体中心",
+		"address": "山东省济南市历下区龙洞街道石河岭村东南方向",
+		"location": {
+			"longitude": 117.130194,
+			"latitude": 36.664505
+		}
+	},
+	{
+		"city": "吉林市",
+		"name": "南湖公园",
+		"address": "吉林省延边朝鲜族自治州敦化市",
+		"location": {
+			"longitude": 128.234279,
+			"latitude": 43.360036
+		}
+	},
+	{
+		"city": "吉林市",
+		"name": "龙翔广场",
+		"address": "吉林省延边朝鲜族自治州延吉市参花街293号",
+		"location": {
+			"longitude": 129.508051,
+			"latitude": 42.937778
+		}
+	},
+	{
+		"city": "吉林市",
+		"name": "龙井梨花酒店",
+		"address": "吉林省延边朝鲜族自治州龙井市龙和路329号",
+		"location": {
+			"longitude": 129.4038889,
+			"latitude": 42.76527778
+		}
+	},
+	{
+		"city": "长春市",
+		"name": "文化广场",
+		"address": "吉林省长春市朝阳区永昌街道东朝阳北社区",
+		"location": {
+			"longitude": 125.314298,
+			"latitude": 43.885634
+		}
+	},
+	{
+		"city": "长春市",
+		"name": "长春站",
+		"address": "吉林省长春市宽城区站前街道丹东路社区东北方向",
+		"location": {
+			"longitude": 125.330802,
+			"latitude": 43.917542
+		}
+	},
+	{
+		"city": "长春市",
+		"name": "长春心脏病医院",
+		"address": "吉林省长春市南关区净月大街5558",
+		"location": {
+			"longitude": 125.4452778,
+			"latitude": 43.80416667
+		}
+	},
+	{
+		"city": "温州市",
+		"name": "温州万达广场",
+		"address": "浙江省温州市平阳县平阳金街",
+		"location": {
+			"longitude": 120.579708,
+			"latitude": 27.592807
+		}
+	},
+	{
+		"city": "温州市",
+		"name": "会展中心",
+		"address": "浙江省温州市鹿城区滨江街道杨府山涂村东北方向",
+		"location": {
+			"longitude": 120.725305,
+			"latitude": 28.022981
+		}
+	},
+	{
+		"city": "温州市",
+		"name": "江心屿",
+		"address": "浙江省温州市鹿城区松台街道郭公山西北方向",
+		"location": {
+			"longitude": 120.645422,
+			"latitude": 28.032889
+		}
+	},
+	{
+		"city": "石家庄市",
+		"name": "河北艺术中心",
+		"address": "河北省石家庄市桥西区裕华西路13号",
+		"location": {
+			"longitude": 114.50399,
+			"latitude": 38.048557
+		}
+	},
+	{
+		"city": "石家庄市",
+		"name": "北国商城",
+		"address": "河北省石家庄市桥东区中山东路186号",
+		"location": {
+			"longitude": 114.516689,
+			"latitude": 38.04853
+		}
+	},
+	{
+		"city": "石家庄市",
+		"name": "石家庄新客站",
+		"address": "河北省石家庄市桥西区南长街道中南社区东北方向",
+		"location": {
+			"longitude": 114.490825,
+			"latitude": 38.016821
+		}
+	},
+	{
+		"city": "南宁市",
+		"name": "新会书院",
+		"address": "广西壮族自治区南宁市兴宁区解放路42-1号",
+		"location": {
+			"longitude": 108.32262,
+			"latitude": 22.821426
+		}
+	},
+	{
+		"city": "南宁市",
+		"name": "广西体育中心",
+		"address": "广西自治区南宁市良庆区良庆镇那黄村东北方向约2.55公里",
+		"location": {
+			"longitude": 108.40018,
+			"latitude": 22.765773
+		}
+	},
+	{
+		"city": "南宁市",
+		"name": "南宁国际会展中心",
+		"address": "广西自治区南宁市青秀区津头街道金浦社区东南方向",
+		"location": {
+			"longitude": 108.385388,
+			"latitude": 22.814123
+		}
+	},
+	{
+		"city": "常州市",
+		"name": "西太湖影视基地",
+		"address": "江苏省常州市武进区武进经济开发区西湖家园东南方向",
+		"location": {
+			"longitude": 119.855527,
+			"latitude": 31.706279
+		}
+	},
+	{
+		"city": "常州市",
+		"name": "常州文化广场",
+		"address": "江苏省常州市天宁区红梅街道光明村",
+		"location": {
+			"longitude": 119.979814,
+			"latitude": 31.809195
+		}
+	},
+	{
+		"city": "常州市",
+		"name": "天宁广场",
+		"address": "江苏省常州市钟楼区五星街道新丰社区北方向",
+		"location": {
+			"longitude": 119.982955,
+			"latitude": 31.791588
+		}
+	},
+	{
+		"city": "泉州市",
+		"name": "领show天地",
+		"address": "福建省泉州市丰泽区丰泽街道东美社区西南方向",
+		"location": {
+			"longitude": 118.61308,
+			"latitude": 24.889447
+		}
+	},
+	{
+		"city": "泉州市",
+		"name": "洛阳桥",
+		"address": "福建省泉州市洛江区万安街道桥南社区东北方向",
+		"location": {
+			"longitude": 118.68516,
+			"latitude": 24.954948
+		}
+	},
+	{
+		"city": "泉州市",
+		"name": "清源山",
+		"address": "福建省泉州市丰泽区清源街道清源社区东北方向",
+		"location": {
+			"longitude": 118.608168,
+			"latitude": 24.949832
+		}
+	},
+	{
+		"city": "南昌市",
+		"name": "南昌之星摩天轮",
+		"address": "江西省南昌市新建县红角洲管理处绿湖豪城社区东南方向约1.25公里",
+		"location": {
+			"longitude": 115.857256,
+			"latitude": 28.661912
+		}
+	},
+	{
+		"city": "南昌市",
+		"name": "江苏艺术中心",
+		"address": "江西省南昌市青云谱区三家店街道南苑社区西北方向",
+		"location": {
+			"longitude": 115.965547,
+			"latitude": 28.685678
+		}
+	},
+	{
+		"city": "南昌市",
+		"name": "国体中心",
+		"address": "江西省南昌市新建县红角洲管理处黄佩村东南方向约1.24公里",
+		"location": {
+			"longitude": 115.825154,
+			"latitude": 28.625091
+		}
+	},
+	{
+		"city": "贵阳市",
+		"name": "贵阳民族文化宫",
+		"address": "贵州省贵阳市南明区新华社区服务中心箭道街西南方向",
+		"location": {
+			"longitude": 106.719165,
+			"latitude": 26.57416
+		}
+	},
+	{
+		"city": "贵阳市",
+		"name": "贵阳奥体中心",
+		"address": "贵州省贵阳市乌当区三江农场帝景西北方向约1.39公里",
+		"location": {
+			"longitude": 106.614788,
+			"latitude": 26.62306
+		}
+	},
+	{
+		"city": "贵阳市",
+		"name": "贵阳北站",
+		"address": "贵州省贵阳市乌当区三江农场大关村南方向约1.31公里",
+		"location": {
+			"longitude": 106.682134,
+			"latitude": 26.62631
+		}
+	},
+	{
+		"city": "太原市",
+		"name": "红灯笼体育馆",
+		"address": "山西省太原市晋源区金胜镇木厂头北方向约1.08公里",
+		"location": {
+			"longitude": 112.541907,
+			"latitude": 37.764716
+		}
+	},
+	{
+		"city": "太原市",
+		"name": "迎泽公园",
+		"address": "山西省太原市迎泽区迎泽大街218号",
+		"location": {
+			"longitude": 112.568503,
+			"latitude": 37.865747
+		}
+	},
+	{
+		"city": "太原市",
+		"name": "晋祠",
+		"address": "山西省太原市晋源区晋祠镇",
+		"location": {
+			"longitude": 112.455212,
+			"latitude": 37.713712
+		}
+	},
+	{
+		"city": "烟台市",
+		"name": "天马广场",
+		"address": "山东省烟台市牟平区养马岛街道",
+		"location": {
+			"longitude": 121.619392,
+			"latitude": 37.45967
+		}
+	},
+	{
+		"city": "烟台市",
+		"name": "烟台月亮湾",
+		"address": "山东省烟台市芝罘区奇山街道长生社区东北方向",
+		"location": {
+			"longitude": 121.44019,
+			"latitude": 37.541578
+		}
+	},
+	{
+		"city": "烟台市",
+		"name": "烟台天地广场",
+		"address": "山东省烟台市福山区福莱山街道胜利西村西北方向",
+		"location": {
+			"longitude": 121.259734,
+			"latitude": 37.565594
+		}
+	},
+	{
+		"city": "桂林市",
+		"name": "桂林靖江王府",
+		"address": "广西壮族自治区桂林市秀峰区西华里",
+		"location": {
+			"longitude": 110.299885,
+			"latitude": 25.286101
+		}
+	},
+	{
+		"city": "桂林市",
+		"name": "桂林香江饭点",
+		"address": "广西壮族自治区桂林市象山区翠竹路9号",
+		"location": {
+			"longitude": 110.299885,
+			"latitude": 25.272901
+		}
+	},
+	{
+		"city": "桂林市",
+		"name": "桂林国际会展中心",
+		"address": "广西壮族自治区桂林市七星区漓江路22号",
+		"location": {
+			"longitude": 110.315438,
+			"latitude": 25.269408
+		}
+	},
+	{
+		"city": "南通市",
+		"name": "金石国际大酒店",
+		"address": "江苏省南通市崇川区崇川路85号",
+		"location": {
+			"longitude": 120.904273,
+			"latitude": 31.97975
+		}
+	},
+	{
+		"city": "南通市",
+		"name": "金地国际中心",
+		"address": "江苏省南通市崇川区通甲路932号",
+		"location": {
+			"longitude": 120.945596,
+			"latitude": 32.013945
+		}
+	},
+	{
+		"city": "南通市",
+		"name": "南通中心",
+		"address": "江苏省南通市如皋市高明镇西南方向",
+		"location": {
+			"longitude": 120.394713,
+			"latitude": 32.261515
+		}
+	},
+	{
+		"city": "金华市",
+		"name": "金华市万达广场",
+		"address": "浙江省金华市金东区多湖街道横塘沿社区西南方向",
+		"location": {
+			"longitude": 119.68352,
+			"latitude": 29.096517
+		}
+	},
+	{
+		"city": "金华市",
+		"name": "金华市体育中心",
+		"address": "浙江省金华市婺城区苏孟乡清湖村",
+		"location": {
+			"longitude": 119.65066,
+			"latitude": 29.046984
+		}
+	},
+	{
+		"city": "金华市",
+		"name": "金华世贸双塔",
+		"address": "浙江省金华市婺城区新华街580号",
+		"location": {
+			"longitude": 119.660285,
+			"latitude": 29.117065
+		}
+	},
+	{
+		"city": "珠海市",
+		"name": "珠海大剧院",
+		"address": "广东省珠海市斗门区井岸镇朝阳社区东北方向约1.19公里",
+		"location": {
+			"longitude": 113.595625,
+			"latitude": 22.289807
+		}
+	},
+	{
+		"city": "珠海市",
+		"name": "银都酒店",
+		"address": "广东省珠海市香洲区粤海东路1150号",
+		"location": {
+			"longitude": 113.55974,
+			"latitude": 22.233378
+		}
+	},
+	{
+		"city": "珠海市",
+		"name": "九洲城",
+		"address": "广东省珠海市香洲区吉大街道办海天社区西南方向",
+		"location": {
+			"longitude": 113.596666,
+			"latitude": 22.273144
+		}
+	},
+	{
+		"city": "惠州市",
+		"name": "惠州塔",
+		"address": "广东省惠州市惠阳区大亚湾澳头东北方向",
+		"location": {
+			"longitude": 114.545282,
+			"latitude": 22.727843
+		}
+	},
+	{
+		"city": "惠州市",
+		"name": "富力丽港国际",
+		"address": "广东省惠州市惠城区桥西街道北门街社区东北方向",
+		"location": {
+			"longitude": 114.407728,
+			"latitude": 23.105261
+		}
+	},
+	{
+		"city": "惠州市",
+		"name": "惠州西湖",
+		"address": "广东省惠州市惠城区江南街道祝屋巷社区南方向",
+		"location": {
+			"longitude": 114.403032,
+			"latitude": 23.099273
+		}
+	},
+	{
+		"city": "徐州市",
+		"name": "苏宁广场",
+		"address": "江苏省徐州市鼓楼区彭城北路43号",
+		"location": {
+			"longitude": 117.194758,
+			"latitude": 34.270989
+		}
+	},
+	{
+		"city": "徐州市",
+		"name": "中国矿业大学",
+		"address": "江苏省徐州市泉山区金山街道西南方向约1.30公里",
+		"location": {
+			"longitude": 117.155881,
+			"latitude": 34.21938
+		}
+	},
+	{
+		"city": "徐州市",
+		"name": "戏马台",
+		"address": "江苏省徐州市云龙区彭城街道户部山社区东南方向",
+		"location": {
+			"longitude": 117.196518,
+			"latitude": 34.261112
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "望海国际广场",
+		"address": "海南省海口市美兰区桂林洋农场高山队东北方向",
+		"location": {
+			"longitude": 110.351343,
+			"latitude": 20.03333333
+		}
+	},
+	{
+		"city": "海口市",
+		"name": "新国宾馆",
+		"address": "海南省海口市秀英区长流镇镇海社区东南方向约2.03公里",
+		"location": {
+			"longitude": 110.2144444,
+			"latitude": 20.05243
 		}
 	},
 	{
 		"city": "海口市",
 		"name": "海航广场",
-		"address": "测试数据",
+		"address": "海南省海口市琼山区国兴街道办道客社区东北方向",
 		"location": {
 			"longitude": 110.3402778,
 			"latitude": 20.0175
 		}
 	},
 	{
-		"city": "海口市",
-		"name": "新国宾馆",
-		"address": "测试数据",
+		"city": "兰州市",
+		"name": "城关万达广场",
+		"address": "甘肃省兰州市城关区雁滩路",
 		"location": {
-			"longitude": 110.2144444,
-			"latitude": 20.0525
+			"longitude": 103.869554,
+			"latitude": 36.06838
 		}
 	},
 	{
-		"city": "海口市",
-		"name": "鸿州内广场",
-		"address": "测试数据",
+		"city": "兰州市",
+		"name": "兰州中心",
+		"address": "甘肃省兰州市七里河区西津西路16号205室",
 		"location": {
-			"longitude": 109.5069444,
-			"latitude": 18.23361111
+			"longitude": 103.782016,
+			"latitude": 36.074348
 		}
 	},
 	{
-		"city": "海口市",
-		"name": "国兴城售楼处停车场",
-		"address": "测试数据",
+		"city": "兰州市",
+		"name": "中山桥",
+		"address": "新疆维吾尔自治区乌鲁木齐市天山区新华南路街道河滩南路东社区",
 		"location": {
-			"longitude": 110.3522222,
-			"latitude": 20.02027778
+			"longitude": 87.618245,
+			"latitude": 43.799513
 		}
 	},
 	{
-		"city": "海口市",
-		"name": "望海国际广场",
-		"address": "测试数据",
+		"city": "乌鲁木齐市",
+		"name": "国家电网乌鲁木齐电业局的下属公司新疆新特顺前峰水电工程有限公司",
+		"address": "",
 		"location": {
-			"longitude": 110.3402778,
-			"latitude": 20.03333333
+			"longitude": 87.74583333,
+			"latitude": 43.99611111
 		}
 	},
 	{
-		"city": "海口市",
-		"name": "美兰机场",
-		"address": "测试数据",
+		"city": "乌鲁木齐市",
+		"name": "突玛丽斯大饭店",
+		"address": "新疆维吾尔自治区乌鲁木齐市天山区新华南路636号",
 		"location": {
-			"longitude": 110.4511111,
-			"latitude": 19.93888889
+			"longitude": 87.618245,
+			"latitude": 43.784936
 		}
 	},
 	{
-		"city": "海口市",
-		"name": "康乐园草坪",
-		"address": "测试数据",
+		"city": "乌鲁木齐市",
+		"name": "国际大巴扎",
+		"address": "新疆维吾尔自治区乌鲁木齐市天山区天池路268号",
 		"location": {
-			"longitude": 110.2252778,
-			"latitude": 18.76055556
+			"longitude": 87.62439,
+			"latitude": 43.786238
 		}
 	},
 	{
-		"city": "海口市",
-		"name": "博鳌机场",
-		"address": "测试数据",
+		"city": "绍兴市",
+		"name": "城市广场",
+		"address": "浙江省绍兴市绍兴县华舍街道解放",
 		"location": {
-			"longitude": 110.4572222,
-			"latitude": 19.14111111
+			"longitude": 120.58606,
+			"latitude": 30.009466
 		}
 	},
 	{
-		"city": "海口市",
-		"name": "新国宾馆",
-		"address": "测试数据",
+		"city": "绍兴市",
+		"name": "世茂天际中心",
+		"address": "浙江省绍兴市越城区迪荡街道沈家庄西北方向",
 		"location": {
-			"longitude": 110.2144444,
-			"latitude": 20.05194444
+			"longitude": 120.609514,
+			"latitude": 30.010588
 		}
 	},
 	{
-		"city": "三亚市",
-		"name": "亚太会议中心内",
-		"address": "测试数据",
+		"city": "绍兴市",
+		"name": "绍兴奥体中心",
+		"address": "浙江省绍兴市越城区灵芝镇永泰村东方向",
 		"location": {
-			"longitude": 109.3886111,
-			"latitude": 18.29166667
+			"longitude": 120.581417,
+			"latitude": 30.056176
 		}
 	},
 	{
-		"city": "重庆",
-		"name": "荣昌板桥工业园五支路2号",
-		"address": "测试数据",
+		"city": "中山市",
+		"name": "孙文公园",
+		"address": "广东省中山市中山市S268城桂公路",
 		"location": {
-			"longitude": 105.6277778,
-			"latitude": 29.40972222
+			"longitude": 113.397329,
+			"latitude": 22.506487
 		}
 	},
 	{
-		"city": "重庆",
-		"name": "荣昌大道东段富吉集团",
-		"address": "测试数据",
+		"city": "中山市",
+		"name": "岐江公园",
+		"address": "广东省中山市石岐区街道民权社区西北方向",
 		"location": {
-			"longitude": 105.6258333,
-			"latitude": 29.40638889
+			"longitude": 113.385708,
+			"latitude": 22.528396
 		}
 	},
 	{
-		"city": "重庆",
-		"name": "板桥工业园灵方大道江特表面处理公司",
-		"address": "测试数据",
+		"city": "中山市",
+		"name": "中山公园",
+		"address": "广东省中山市石岐区街道太平社区西北方向",
 		"location": {
-			"longitude": 105.6405556,
-			"latitude": 29.40638889
+			"longitude": 113.376545,
+			"latitude": 22.529565
 		}
 	},
 	{
-		"city": "海口市",
-		"name": "博鳌机场",
-		"address": "测试数据",
+		"city": "台州市",
+		"name": "中央公园",
+		"address": "浙江省台州市天台县百花路",
 		"location": {
-			"longitude": 110.4572222,
-			"latitude": 19.14111111
+			"longitude": 121.054752,
+			"latitude": 29.149659
 		}
 	},
 	{
-		"city": "海口市",
-		"name": "新国宾馆",
-		"address": "测试数据",
+		"city": "台州市",
+		"name": "临海古长城",
+		"address": "浙江省台州市临海市桃源路",
 		"location": {
-			"longitude": 110.2144444,
-			"latitude": 20.05194444
+			"longitude": 121.129219,
+			"latitude": 38.6518
 		}
 	},
 	{
-		"city": "三亚市",
-		"name": "亚太会议中心内",
-		"address": "测试数据",
+		"city": "台州市",
+		"name": "鼎大酒店",
+		"address": "浙江省台州市玉环县S76七六省道",
 		"location": {
-			"longitude": 109.3886111,
-			"latitude": 18.29166667
-		}
-	},
-	{
-		"city": "北京",
-		"name": "国家会议中心",
-		"address": "测试数据",
-		"location": {
-			"longitude": 116.3794444,
-			"latitude": 39.99972222
-		}
-	},
-	{
-		"city": "三亚市",
-		"name": "海棠湾红树林酒店",
-		"address": "测试数据",
-		"location": {
-			"longitude": 109.7341667,
-			"latitude": 18.34111111
+			"longitude": 121.28176,
+			"latitude": 28.254197
 		}
 	}
 ]
