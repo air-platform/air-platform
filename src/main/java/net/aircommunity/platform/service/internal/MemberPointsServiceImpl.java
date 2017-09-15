@@ -64,7 +64,7 @@ public class MemberPointsServiceImpl extends AbstractServiceSupport implements M
 			.put(Category.AIR_TAXI, 10)		// 10% of order
 			.put(Category.AIR_TRANS, 10)	// 10% of order
 			.put(Category.AIR_TOUR, 10)		// 10% of order
-			.put(Category.AIR_CALL, 10)		// 10% of order
+			.put(Category.AIR_QUICKFLIGHT, 10)		// 10% of order
 			.build();
 		
 		DAILY_SIGNIN_POINTS = ImmutableMap.of(

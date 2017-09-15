@@ -618,16 +618,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				payment.setTimestamp(new Date());
 				payment.setNote(M.msg(M.PAYMENT_REQUESTED));
 				payment.setOwner(order.getOwner());
-				//
-				Tenant vendor = null;
-				if (QuickFlightOrder.class.isAssignableFrom(order.getClass())) {
-					QuickFlightOrder quickFlightOrder = (QuickFlightOrder) order;
-					vendor = quickFlightOrder.getSelectedCandidate().get().getAircraft().getVendor();
-				}
-				else {
-					vendor = order.getProduct().getVendor();
-				}
-				payment.setVendor(vendor);
+				payment.setVendor(order.getVendor());
 			}
 			else {
 				// in case some payment info is updated
@@ -696,7 +687,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				}
 				// apply the ORM relation in case it's missing
 				orderPayment.setOwner(order.getOwner());
-				orderPayment.setVendor(order.getProduct().getVendor());
+				orderPayment.setVendor(order.getVendor());
 				standardOrder.setPayment(orderPayment);
 				orderPaid = doUpdateOrderStatus(order, Order.Status.PAID);
 			}
@@ -722,7 +713,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				newPayment.setTradeNo(payment.getTradeNo());
 				newPayment.setNote(payment.getNote());
 				newPayment.setOwner(order.getOwner());
-				newPayment.setVendor(order.getProduct().getVendor());
+				newPayment.setVendor(order.getVendor());
 				instalment.get().setPayment(newPayment);
 				if (instalmentOrder.isPaidFully()) {
 					orderPaid = doUpdateOrderStatus(order, Order.Status.PAID);
@@ -824,7 +815,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 						existingRefund, refund, order);
 			}
 			// ensure ORM relation in case it's missing
-			existingRefund.setVendor(standardOrder.getProduct().getVendor());
+			existingRefund.setVendor(standardOrder.getVendor());
 			existingRefund.setOwner(standardOrder.getOwner());
 			existingRefund.setStatus(Trade.Status.SUCCESS);
 			// ensure reason
@@ -907,7 +898,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 					refund.setRefundResult(M.msg(M.REFUND_REQUESTED));
 					refund.setNote(M.msg(M.REFUND_REQUESTED));
 					refund.setOwner(standardOrder.getOwner());
-					refund.setVendor(standardOrder.getProduct().getVendor());
+					refund.setVendor(standardOrder.getVendor());
 					refund.setTimestamp(new Date());// considered as requested time
 					refund.setStatus(Refund.Status.REQUESTED);
 					standardOrder.setRefund(refund);
@@ -1051,8 +1042,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			OrderRef orderRef = orderRefRepository.findOne(order.getId());
 			if (orderRef != null) {
 				// NOTE: should not be null here, and if null we've got a problem with the orderRef
-				Product product = order.getProduct();
-				orderRef.setVendorId(product == null ? null : product.getVendor().getId());
+				Tenant vendor = order.getVendor();
+				orderRef.setVendorId(vendor == null ? null : vendor.getId());
 				orderRefRepository.save(orderRef);
 			}
 			break;
@@ -1106,7 +1097,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				order.setPaymentDate(new Date());
 			}
 			// decrease stock by quantity if it has limit
-			if (order.getProduct().hasStockLimit()) {
+			if (order.getProduct() != null && order.getProduct().hasStockLimit()) {
 				// test if stock available and decrease stock by quantity
 				if (!order.getProduct().isStockAvailable(order.getQuantity())) {
 					throw new AirException(Codes.PRODUCT_OUT_OF_STOCK, M.msg(M.PRODUCT_OUT_OF_STOCK));
@@ -1140,7 +1131,7 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			order.setRefundedDate(new Date());
 			returnBackPoints(order, newStatus);
 			// increase stock by quantity
-			if (order.getProduct().hasStockLimit()) {
+			if (order.getProduct() != null && order.getProduct().hasStockLimit()) {
 				commonProductService.updateProductStockWithDelta(order.getProduct().getId(), order.getQuantity());
 			}
 			break;
@@ -1159,14 +1150,16 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 			order.setFinishedDate(new Date());
 			// update points earned
 			long pointsEarnedPercent = memberPointsService
-					.getPointsEarnedFromRule(PointRules.getOrderFinishedRule(order.getProduct().getCategory()));
+					.getPointsEarnedFromRule(PointRules.getOrderFinishedRule(order.getCategory()));
 			long pointsEarned = Math.round(
 					order.getTotalPrice().multiply(BigDecimal.valueOf(pointsEarnedPercent / 100d)).doubleValue());
 			LOG.info("User earned points {}({}%)", pointsEarned, pointsEarnedPercent);
 			if (pointsEarned > 0) {
 				accountService.updateUserPoints(order.getOwner().getId(), pointsEarned);
 			}
-			commonProductService.increaseProductSales(order.getProduct().getId());
+			if (order.getProduct() != null) {
+				commonProductService.increaseProductSales(order.getProduct().getId());
+			}
 			break;
 
 		case CANCELLED:

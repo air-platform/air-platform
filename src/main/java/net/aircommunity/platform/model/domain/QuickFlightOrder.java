@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.google.common.collect.ImmutableSet;
 
 import io.micro.annotation.constraint.NotEmpty;
+import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.jaxb.DateAdapter;
 
@@ -245,6 +246,20 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 		Optional<AircraftCandidate> candidate = getSelectedCandidate();
 		if (candidate.isPresent()) {
 			return candidate.get().getAircraft().getName();
+		}
+		return null;
+	}
+
+	@Override
+	public Category getCategory() {
+		return Category.AIR_QUICKFLIGHT;
+	}
+
+	@Override
+	public Tenant getVendor() {
+		Optional<AircraftCandidate> candidate = getSelectedCandidate();
+		if (candidate.isPresent()) {
+			return candidate.get().getAircraft().getVendor();
 		}
 		return null;
 	}

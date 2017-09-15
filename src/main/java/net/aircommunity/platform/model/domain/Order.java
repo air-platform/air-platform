@@ -34,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.UnitProductPrice;
+import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.jaxb.AccountAdapter;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
@@ -549,6 +550,26 @@ public abstract class Order extends Persistable {
 		Product product = getProduct();
 		if (product != null) {
 			return product.getName();
+		}
+		return null;
+	}
+
+	@XmlTransient
+	@Nullable
+	public Category getCategory() {
+		Product product = getProduct();
+		if (product != null) {
+			return product.getCategory();
+		}
+		return null;
+	}
+
+	@XmlTransient
+	@Nullable
+	public Tenant getVendor() {
+		Product product = getProduct();
+		if (product != null) {
+			return product.getVendor();
 		}
 		return null;
 	}

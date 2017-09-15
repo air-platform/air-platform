@@ -113,7 +113,7 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 		String airtrans = normalizeProductCategory(Category.AIR_TRANS);
 		String airtour = normalizeProductCategory(Category.AIR_TOUR);
 		String airtraining = normalizeProductCategory(Category.AIR_TRAINING);
-		String airtcall = normalizeProductCategory(Category.AIR_CALL);
+		String airtquick = normalizeProductCategory(Category.AIR_QUICKFLIGHT);
 		orderTypeMapping.put(Product.Type.FLEET, airjet);
 		orderTypeMapping.put(Product.Type.FERRYFLIGHT, airjet);
 		orderTypeMapping.put(Product.Type.JETTRAVEL, airjet);
@@ -121,7 +121,7 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 		orderTypeMapping.put(Product.Type.AIRTOUR, airtour);
 		orderTypeMapping.put(Product.Type.AIRTRANSPORT, airtrans);
 		orderTypeMapping.put(Product.Type.COURSE, airtraining);
-		orderTypeMapping.put(Product.Type.QUICKFLIGHT, airtcall);
+		orderTypeMapping.put(Product.Type.QUICKFLIGHT, airtquick);
 		eventBus.register(this);
 
 		// register push notification
