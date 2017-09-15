@@ -1,8 +1,8 @@
 package net.aircommunity.platform.model.domain;
 
-import io.micro.annotation.constraint.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +17,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+
+import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.domain.Product.Category;
 
 /**
@@ -35,7 +36,6 @@ public class VenueCategory extends Persistable {
 	@Column(name = "name", length = PRODUCT_NAME_LEN, nullable = false)
 	private String name;
 
-
 	// venue category picture
 	@Column(name = "picture", length = IMAGE_URL_LEN)
 	private String picture;
@@ -45,21 +45,17 @@ public class VenueCategory extends Persistable {
 	@Column(name = "description")
 	private String description;
 
-
-	//@XmlElement
+	// @XmlElement
 	@ManyToOne
 	@JoinColumn(name = "venue_info_id")
 	protected VenueInfo venueInfo;
 
-
 	@OneToMany(mappedBy = "venueCategory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<VenueCategoryProduct> venueCategoryProducts = new HashSet<>();
-
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "category", length = PRODUCT_CATEGORY_LEN)
 	protected Category category = Category.AIR_VENUE;
-
 
 	public VenueCategory(String id) {
 		this.id = id;
@@ -68,11 +64,9 @@ public class VenueCategory extends Persistable {
 	public VenueCategory() {
 	}
 
-
 	public Set<VenueCategoryProduct> getVenueCategoryProducts() {
 		return venueCategoryProducts;
 	}
-
 
 	public void setVenueCategoryProducts(Set<VenueCategoryProduct> products) {
 		if (products != null) {
@@ -117,11 +111,9 @@ public class VenueCategory extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("VenueCategory [id=").append(id).append(", name=").append(name)
-				.append(", picture=").append(picture)
-				.append(", description=").append(description).append("]");
+		builder.append("VenueCategory [id=").append(id).append(", name=").append(name).append(", picture=")
+				.append(picture).append(", description=").append(description).append("]");
 		return builder.toString();
 	}
-
 
 }

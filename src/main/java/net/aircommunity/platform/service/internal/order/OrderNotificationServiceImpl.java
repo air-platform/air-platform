@@ -1,16 +1,23 @@
 package net.aircommunity.platform.service.internal.order;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.eventbus.Subscribe;
-import io.micro.common.Strings;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.eventbus.Subscribe;
+
+import io.micro.common.Strings;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.DomainEvent;
 import net.aircommunity.platform.model.OrderEvent;
@@ -27,7 +34,6 @@ import net.aircommunity.platform.model.domain.JetTravelOrder;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Product.Category;
-import net.aircommunity.platform.model.domain.PushNotification;
 import net.aircommunity.platform.model.domain.PushNotification.BusinessType;
 import net.aircommunity.platform.model.domain.PushNotification.Type;
 import net.aircommunity.platform.model.domain.User;
@@ -39,9 +45,6 @@ import net.aircommunity.platform.service.common.TemplateService;
 import net.aircommunity.platform.service.internal.AbstractServiceSupport;
 import net.aircommunity.platform.service.order.OrderNotificationService;
 import net.aircommunity.platform.service.product.FleetService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 /**
  * Order notification service implementation.
@@ -121,9 +124,8 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 		orderTypeMapping.put(Product.Type.QUICKFLIGHT, airtcall);
 		eventBus.register(this);
 
-		//register push notification
+		// register push notification
 		registerPushNotificationEvent(EnumSet.of(DomainEvent.DomainType.ORDER));
-
 
 	}
 
@@ -139,18 +141,19 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 		User u = o.getOwner();
 		DomainEvent de = new DomainEvent(DomainEvent.DomainType.ORDER, DomainEvent.Operation.PUSH_NOTIFICATION);
 		de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID, u.getId());
-		String extras = new StringBuffer()
-				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_CONTENT_TYPE).append(":").append(Type.PLAIN_TEXT.toString().toLowerCase()).append(";")
-				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_BUSINESS_TYPE).append(":").append(BusinessType.ORDER.toString().toLowerCase()).append(";")
+		String extras = new StringBuffer().append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_CONTENT_TYPE).append(":")
+				.append(Type.PLAIN_TEXT.toString().toLowerCase()).append(";")
+				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_BUSINESS_TYPE).append(":")
+				.append(BusinessType.ORDER.toString().toLowerCase()).append(";")
 				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_ORDER_ID).append(":").append(o.getId()).append(";")
-				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_ORDER_TYPE).append(":").append(o.getType().toString().toLowerCase())
-				.toString();
+				.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_ORDER_TYPE).append(":")
+				.append(o.getType().toString().toLowerCase()).toString();
 
 		de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS, extras);
-		String tips;
-		//if(event.getType() != OrderEvent.EventType.CREATION){
+		// FIXME String tips;
+		// if(event.getType() != OrderEvent.EventType.CREATION){
 
-		//}
+		// }
 
 		switch (event.getType()) {
 		case CREATION:
@@ -182,7 +185,6 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 			postDomainEvent(de);
 
 			break;
-
 
 		case CONFIRMED:
 			// TODO SMS notification to customer
@@ -229,7 +231,6 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 			de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_MESSAGE, Constants.TEMPLATE_PUSHNOTIFICATION_FINISH);
 			postDomainEvent(de);
 			break;
-
 
 		default:// noop
 		}

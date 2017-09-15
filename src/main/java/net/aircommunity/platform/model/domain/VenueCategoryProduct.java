@@ -1,6 +1,5 @@
 package net.aircommunity.platform.model.domain;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -13,8 +12,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import net.aircommunity.platform.model.JsonViews;
-import net.aircommunity.platform.model.jaxb.AccountAdapter;
+
 import net.aircommunity.platform.model.jaxb.VenueCategoryAdapter;
 
 /**
@@ -26,21 +24,19 @@ import net.aircommunity.platform.model.jaxb.VenueCategoryAdapter;
 public class VenueCategoryProduct extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-
 	@ManyToOne
 	@JoinColumn(name = "venue_category_id")
 	@XmlJavaTypeAdapter(VenueCategoryAdapter.class)
 	protected VenueCategory venueCategory;
 
-	//CharterOrder charterOrder = CharterOrder.class.cast(order);
+	// CharterOrder charterOrder = CharterOrder.class.cast(order);
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	@XmlTransient
 	protected Product product;
 
-
 	@Transient
-	@XmlElement(name="product")
+	@XmlElement(name = "product")
 	private String productId;
 
 	public String getProductId() {
@@ -52,8 +48,8 @@ public class VenueCategoryProduct extends Persistable {
 	private String type;
 
 	@PostLoad
-	private void onLoad(){
-		productId= product.getId();
+	private void onLoad() {
+		productId = product.getId();
 	}
 
 	public VenueCategoryProduct() {
@@ -63,11 +59,10 @@ public class VenueCategoryProduct extends Persistable {
 		this.id = id;
 	}
 
-	/*public VenueCategoryProduct(String id1, String id2) {
-		this.venueCategory.id = id1;
-		this.product.id  = id2;
-		this.type = type;
-	}*/
+	/*
+	 * public VenueCategoryProduct(String id1, String id2) { this.venueCategory.id = id1; this.product.id = id2;
+	 * this.type = type; }
+	 */
 
 	public VenueCategory getVenueCategory() {
 		return venueCategory;
@@ -91,6 +86,5 @@ public class VenueCategoryProduct extends Persistable {
 		builder.append("VenueCategoryProduct [id=").append(id).append("]");
 		return builder.toString();
 	}
-
 
 }

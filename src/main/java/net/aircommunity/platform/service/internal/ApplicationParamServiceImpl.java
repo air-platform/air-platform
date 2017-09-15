@@ -1,14 +1,16 @@
 package net.aircommunity.platform.service.internal;
 
 import javax.annotation.PostConstruct;
-import net.aircommunity.platform.model.ApplicationParams;
-import net.aircommunity.platform.model.domain.Setting;
-import net.aircommunity.platform.service.ApplicationParamService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import net.aircommunity.platform.model.ApplicationParams;
+import net.aircommunity.platform.model.domain.Setting;
+import net.aircommunity.platform.service.ApplicationParamService;
 
 /**
  * Generic application param implementation.
@@ -20,13 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApplicationParamServiceImpl extends AbstractServiceSupport implements ApplicationParamService {
 	private static final Logger LOG = LoggerFactory.getLogger(ApplicationParamServiceImpl.class);
 
-	private static final String CACHE_NAME = "cache.applicationparam";
+	// private static final String CACHE_NAME = "cache.applicationparam";
 
 	private static final String APPLICATION_PARAM_CATEGORY = "application";
 	private static final String QUICKFLIGHT_SPEED = "quickflight.speed";
 	private static final String QUICKFLIGHT_UNIT_TIME_PRICE = "quickflight.unit_time_price";
 	private static final String QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE = "quickflight.departure_time_in_advance";
-
 
 	private static final String APPLICATION_INITIALIZED = "application_initialized";
 
@@ -60,7 +61,6 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 		settingRepository.save(setting);
 	}
 
-
 	@Override
 	public void clearCache(String cacheName) {
 		Cache cache = cacheManager.getCache(cacheName);
@@ -73,7 +73,6 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 	public void clearAllCaches() {
 		cacheManager.getCacheNames().parallelStream().forEach(name -> cacheManager.getCache(name).clear());
 	}
-
 
 	@Transactional
 	@Override
@@ -103,7 +102,6 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 		return ApplicationParams.DEFAULT_QUICKFLIGHT_SPEED;
 	}
 
-
 	@Transactional
 	@Override
 	public void setQuickflightUnitPrice(int price) {
@@ -132,7 +130,6 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 		return ApplicationParams.DEFAULT_QUICKFLIGHT_UNIT_TIME_PRICE;
 	}
 
-
 	@Transactional
 	@Override
 	public void setQuickflightDepartureTime(int time) {
@@ -160,6 +157,5 @@ public class ApplicationParamServiceImpl extends AbstractServiceSupport implemen
 		}
 		return ApplicationParams.DEFAULT_QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE;
 	}
-
 
 }

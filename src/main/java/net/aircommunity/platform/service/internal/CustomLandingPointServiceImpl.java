@@ -1,12 +1,7 @@
 package net.aircommunity.platform.service.internal;
 
-import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.domain.CustomLandingPoint;
-import net.aircommunity.platform.nls.M;
-import net.aircommunity.platform.repository.CustomLandingPointRepository;
-import net.aircommunity.platform.service.CustomLandingPointService;
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
@@ -15,7 +10,13 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.CustomLandingPoint;
+import net.aircommunity.platform.nls.M;
+import net.aircommunity.platform.repository.CustomLandingPointRepository;
+import net.aircommunity.platform.service.CustomLandingPointService;
 
 /**
  * CustomLandingPoint service implementation.
@@ -28,17 +29,18 @@ public class CustomLandingPointServiceImpl extends AbstractServiceSupport implem
 	private static final Logger LOG = LoggerFactory.getLogger(CustomLandingPointServiceImpl.class);
 
 	private static final String CACHE_NAME = "cache.customlandingpoint";
-	private static final String CITYSITES_INFO = "data/citysites.json";
+	// private static final String CITYSITES_INFO = "data/citysites.json";
+
 	@Resource
 	private CustomLandingPointRepository customLandingPointRepository;
-
 
 	@Transactional
 	@Override
 	public CustomLandingPoint createCustomLandingPoint(CustomLandingPoint customLandingPoint) {
 		CustomLandingPoint newCustomLandingPoint = new CustomLandingPoint();
 		copyProperties(customLandingPoint, newCustomLandingPoint);
-		return safeExecute(() -> customLandingPointRepository.save(newCustomLandingPoint), "Create CustomLandingPoint %s failed", customLandingPoint);
+		return safeExecute(() -> customLandingPointRepository.save(newCustomLandingPoint),
+				"Create CustomLandingPoint %s failed", customLandingPoint);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -55,12 +57,13 @@ public class CustomLandingPointServiceImpl extends AbstractServiceSupport implem
 	@Transactional
 	@CachePut(cacheNames = CACHE_NAME, key = "#customLandingPointId")
 	@Override
-	public CustomLandingPoint updateCustomLandingPoint(String customLandingPointId, CustomLandingPoint newCustomLandingPoint) {
+	public CustomLandingPoint updateCustomLandingPoint(String customLandingPointId,
+			CustomLandingPoint newCustomLandingPoint) {
 		CustomLandingPoint customLandingPoint = findCustomLandingPoint(customLandingPointId);
 		copyProperties(newCustomLandingPoint, customLandingPoint);
-		return safeExecute(() -> customLandingPointRepository.save(customLandingPoint), "Update customLandingPoint %s to %s failed", customLandingPointId, customLandingPoint);
+		return safeExecute(() -> customLandingPointRepository.save(customLandingPoint),
+				"Update customLandingPoint %s to %s failed", customLandingPointId, customLandingPoint);
 	}
-
 
 	private void copyProperties(CustomLandingPoint src, CustomLandingPoint tgt) {
 		tgt.setName(src.getName());
@@ -75,12 +78,12 @@ public class CustomLandingPointServiceImpl extends AbstractServiceSupport implem
 		return Pages.adapt(customLandingPointRepository.findAll(createPageRequest(page, pageSize)));
 	}
 
-
 	@Transactional
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#customLandingPointId")
 	@Override
 	public void deleteCustomLandingPoint(String customLandingPointId) {
-		safeExecute(() -> customLandingPointRepository.delete(customLandingPointId), "Delete customLandingPoint %s failed", customLandingPointId);
+		safeExecute(() -> customLandingPointRepository.delete(customLandingPointId),
+				"Delete customLandingPoint %s failed", customLandingPointId);
 	}
 
 	@Transactional

@@ -20,9 +20,6 @@ import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import net.aircommunity.platform.model.domain.Product.Type;
-import net.aircommunity.platform.model.domain.QuickFlightOrder;
-import net.aircommunity.platform.model.domain.QuickFlightRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
@@ -56,7 +53,9 @@ import net.aircommunity.platform.model.domain.Passenger;
 import net.aircommunity.platform.model.domain.PassengerItem;
 import net.aircommunity.platform.model.domain.Payment;
 import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.domain.QuickFlightOrder;
+import net.aircommunity.platform.model.domain.QuickFlightRoute;
 import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.model.domain.SalesPackage;
 import net.aircommunity.platform.model.domain.StandardOrder;
@@ -475,10 +474,9 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 				LOG.error("{}: {} is not found", type.getSimpleName(), orderId);
 				throw new AirException(orderNotFoundCode(), M.msg(M.ORDER_NOT_FOUND, orderId));
 			}
-			if(order.getType() == Type.QUICKFLIGHT){
+			if (order.getType() == Type.QUICKFLIGHT) {
 				QuickFlightOrder quickFlightOrder = QuickFlightOrder.class.cast(order);
-				List<QuickFlightRoute> depdupe =
-						new ArrayList<>(new LinkedHashSet<>(quickFlightOrder.getRoutes()));
+				List<QuickFlightRoute> depdupe = new ArrayList<>(new LinkedHashSet<>(quickFlightOrder.getRoutes()));
 				quickFlightOrder.setRoutes(depdupe);
 
 			}

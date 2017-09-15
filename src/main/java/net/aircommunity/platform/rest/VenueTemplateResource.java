@@ -1,9 +1,7 @@
 package net.aircommunity.platform.rest;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import io.micro.annotation.RESTful;
-import io.swagger.annotations.Api;
 import java.net.URI;
+
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -24,13 +22,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
+import io.micro.annotation.RESTful;
+import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.VenueTemplate;
-import net.aircommunity.platform.model.domain.VenueTemplateCouponUser;
 import net.aircommunity.platform.service.VenueTemplateService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Venue template RESTful API allows list/find/query for ANYONE.
@@ -59,11 +62,12 @@ public class VenueTemplateResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Response listAll(@QueryParam("page") @DefaultValue("1") int page,
-							@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
+			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
 
 		if (context.isUserInRole(Roles.ROLE_ADMIN) || context.isUserInRole(Roles.ROLE_TENANT)) {
 			return Response.ok(venueTemplateService.listVenueTemplates(page, pageSize)).build();
-		}else{
+		}
+		else {
 			return Response.ok(venueTemplateService.listPublicVenueTemplates()).build();
 		}
 
@@ -81,8 +85,6 @@ public class VenueTemplateResource {
 		return venueTemplateService.publish(venueTemplateId, true);
 	}
 
-
-
 	/**
 	 * Unpublish venue template
 	 */
@@ -95,22 +97,18 @@ public class VenueTemplateResource {
 		return venueTemplateService.publish(venueTemplateId, false);
 	}
 
-
 	/**
 	 * Get venue template
 	 */
 	@POST
 	@Path("{venueTemplateId}/grab-coupon")
 	@JsonView(JsonViews.User.class)
-	@RolesAllowed({Roles.ROLE_USER, Roles.ROLE_ADMIN})
+	@RolesAllowed({ Roles.ROLE_USER, Roles.ROLE_ADMIN })
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response grabCoupon(@PathParam("venueTemplateId") String venueTemplateId, @Context SecurityContext context) {
 		String userName = context.getUserPrincipal().getName();
 		return Response.ok(venueTemplateService.grabCoupon(venueTemplateId, userName)).build();
 	}
-
-
-
 
 	/**
 	 * Find
@@ -154,7 +152,8 @@ public class VenueTemplateResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
-	public VenueTemplate update(@PathParam("venueTemplateId") String venueTemplateId, @NotNull @Valid VenueTemplate VenueTemplate) {
+	public VenueTemplate update(@PathParam("venueTemplateId") String venueTemplateId,
+			@NotNull @Valid VenueTemplate VenueTemplate) {
 		return venueTemplateService.updateVenueTemplate(venueTemplateId, VenueTemplate);
 	}
 

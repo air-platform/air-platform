@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import net.aircommunity.platform.model.jaxb.VenueTemplateAdapter;
 
 /**
@@ -23,7 +24,6 @@ import net.aircommunity.platform.model.jaxb.VenueTemplateAdapter;
 public class VenueTemplateCouponUser extends Persistable {
 	private static final long serialVersionUID = 1L;
 
-
 	@ManyToOne
 	@JoinColumn(name = "venue_template_id")
 	@XmlJavaTypeAdapter(VenueTemplateAdapter.class)
@@ -33,7 +33,6 @@ public class VenueTemplateCouponUser extends Persistable {
 	@JoinColumn(name = "user_id")
 	@XmlTransient
 	protected Account user;
-
 
 	@Transient
 	@XmlElement(name = "user")
@@ -50,7 +49,6 @@ public class VenueTemplateCouponUser extends Persistable {
 	@Column(name = "coupon_num", nullable = false)
 	private int couponNum = 1;
 
-
 	@Column(name = "points_per_coupon", nullable = false)
 	private int pointsPerCoupon = 0;
 
@@ -65,7 +63,6 @@ public class VenueTemplateCouponUser extends Persistable {
 	public VenueTemplateCouponUser(String id) {
 		this.id = id;
 	}
-
 
 	public VenueTemplate getVenueTemplate() {
 		return venueTemplate;
@@ -105,6 +102,5 @@ public class VenueTemplateCouponUser extends Persistable {
 		builder.append("VenueTemplateCouponUser [id=").append(id).append("]");
 		return builder.toString();
 	}
-
 
 }

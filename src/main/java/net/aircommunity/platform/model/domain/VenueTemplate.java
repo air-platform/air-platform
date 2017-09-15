@@ -1,10 +1,8 @@
 package net.aircommunity.platform.model.domain;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import io.micro.annotation.constraint.NotEmpty;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +13,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import net.aircommunity.platform.model.JsonViews;
+
+import io.micro.annotation.constraint.NotEmpty;
 
 /**
  * @author Xiangwen.Kong
@@ -32,7 +31,6 @@ public class VenueTemplate extends Persistable {
 	@Column(name = "name", length = PRODUCT_NAME_LEN, nullable = false)
 	private String name;
 
-
 	// venue template address
 	@Column(name = "background_pic", length = IMAGE_URL_LEN)
 	private String backgroundPic;
@@ -40,31 +38,26 @@ public class VenueTemplate extends Persistable {
 	@Column(name = "background_color", length = COLOR_LEN)
 	private String backgroundColor;
 
-
-	//@OneToMany(mappedBy = "venueTemplate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	//List<VenueInfo> venueInfos;
+	// @OneToMany(mappedBy = "venueTemplate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	// List<VenueInfo> venueInfos;
 
 	// venue template description
 	@Lob
 	@Column(name = "description")
 	private String description;
 
-
 	@Column(name = "published", nullable = false)
-	//@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	// @JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
 	protected boolean published = false;
-
 
 	@Column(name = "coupon_total_num", nullable = false)
 	private int couponTotalNum = 0;
-
 
 	@Column(name = "coupon_remain_num", nullable = false)
 	private int couponRemainNum = 0;
 
 	@Column(name = "points_per_coupon", nullable = false)
 	private int pointsPerCoupon = 0;
-
 
 	@OneToMany(mappedBy = "venueTemplate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<VenueTemplateCouponUser> venueTemplateCouponUsers = new HashSet<>();
@@ -81,10 +74,10 @@ public class VenueTemplate extends Persistable {
 		return venueTemplateCouponUsers;
 	}
 
-
 	public void setVenueCategoryProducts(Set<VenueTemplateCouponUser> venueTemplateCouponUsers) {
 		if (venueTemplateCouponUsers != null) {
-			venueTemplateCouponUsers.stream().forEach(venueTemplateCouponUser -> venueTemplateCouponUser.setVenueTemplate(this));
+			venueTemplateCouponUsers.stream()
+					.forEach(venueTemplateCouponUser -> venueTemplateCouponUser.setVenueTemplate(this));
 			this.venueTemplateCouponUsers.clear();
 			this.venueTemplateCouponUsers.addAll(venueTemplateCouponUsers);
 		}
@@ -156,12 +149,10 @@ public class VenueTemplate extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("VenueTemplate [id=").append(id).append(", name=").append(name)
-				.append(", backgroundPic=").append(backgroundPic)
-				.append(", backgroundColor=").append(backgroundColor)
-				.append(", description=").append(description).append("]");
+		builder.append("VenueTemplate [id=").append(id).append(", name=").append(name).append(", backgroundPic=")
+				.append(backgroundPic).append(", backgroundColor=").append(backgroundColor).append(", description=")
+				.append(description).append("]");
 		return builder.toString();
 	}
-
 
 }

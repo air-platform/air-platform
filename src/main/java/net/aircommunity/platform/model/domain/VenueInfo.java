@@ -1,23 +1,16 @@
 package net.aircommunity.platform.model.domain;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import io.micro.annotation.constraint.NotEmpty;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import net.aircommunity.platform.model.JsonViews;
-import org.hibernate.annotations.Cascade;
+
+import io.micro.annotation.constraint.NotEmpty;
 
 /**
  * @author Xiangwen.Kong
@@ -34,7 +27,6 @@ public class VenueInfo extends Persistable {
 	@Column(name = "name", length = PRODUCT_NAME_LEN, nullable = false)
 	private String name;
 
-
 	// venue picture
 	@Column(name = "picture", length = IMAGE_URL_LEN)
 	private String picture;
@@ -44,15 +36,13 @@ public class VenueInfo extends Persistable {
 	@Column(name = "description")
 	private String description;
 
-
-	//@XmlElement
+	// @XmlElement
 	@ManyToOne
 	@JoinColumn(name = "venue_template_id")
 	protected VenueTemplate venueTemplate;
 
-	//@OneToMany(mappedBy = "venueInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	//List<VenueCategory> venueCategories;
-
+	// @OneToMany(mappedBy = "venueInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	// List<VenueCategory> venueCategories;
 
 	public VenueInfo(String id) {
 		this.id = id;
@@ -96,11 +86,9 @@ public class VenueInfo extends Persistable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("VenueInfo [id=").append(id).append(", name=").append(name)
-				.append(", picture=").append(picture)
+		builder.append("VenueInfo [id=").append(id).append(", name=").append(name).append(", picture=").append(picture)
 				.append(", description=").append(description).append("]");
 		return builder.toString();
 	}
-
 
 }

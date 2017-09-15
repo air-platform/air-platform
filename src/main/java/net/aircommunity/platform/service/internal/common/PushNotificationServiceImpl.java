@@ -1,5 +1,21 @@
 package net.aircommunity.platform.service.internal.common;
 
+import java.util.Date;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
+
 import cn.jiguang.common.ClientConfig;
 import cn.jiguang.common.resp.APIConnectionException;
 import cn.jiguang.common.resp.APIRequestException;
@@ -13,21 +29,12 @@ import cn.jpush.api.push.model.notification.AndroidNotification;
 import cn.jpush.api.push.model.notification.IosNotification;
 import cn.jpush.api.push.model.notification.Notification;
 import cn.jpush.api.push.model.notification.PlatformNotification;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Strings;
-import java.util.Date;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
-import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.PushNotification;
-import net.aircommunity.platform.model.domain.PushNotification.BusinessType;
-import net.aircommunity.platform.model.domain.PushNotification.Type;
 import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.AccountRepository;
@@ -35,12 +42,6 @@ import net.aircommunity.platform.repository.PushNotificationRepository;
 import net.aircommunity.platform.service.common.PushNotificationService;
 import net.aircommunity.platform.service.internal.AbstractServiceSupport;
 import net.aircommunity.platform.service.internal.Pages;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
 
 /**
  * SMS service implementation
@@ -93,24 +94,17 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 
 		LOG.debug("push notification {} {}", pn.getAlias(), pn.getExtra());
 
-		IosNotification.Builder iosBuilder = IosNotification.newBuilder()
-				.setAlert(message);
+		IosNotification.Builder iosBuilder = IosNotification.newBuilder().setAlert(message);
 
-		AndroidNotification.Builder androidBuilder = AndroidNotification.newBuilder()
-				.setAlert(message);
-
+		AndroidNotification.Builder androidBuilder = AndroidNotification.newBuilder().setAlert(message);
 
 		if (!Strings.isNullOrEmpty(pn.getExtra())) {
-				/*PlatformNotification ios = IosNotification.newBuilder()
-						.setAlert(message)
-						.addExtra("orderId", "7f000101-5d7c-1912-815d-7d60aec70007")
-						.addExtra("type", "airtour")
-						.build();
-				PlatformNotification android = AndroidNotification.newBuilder()
-						.setAlert(message)
-						.addExtra("orderId", "7f000101-5d7c-1912-815d-7d60aec70007")
-						.addExtra("type", "airtour")
-						.build();*/
+			/*
+			 * PlatformNotification ios = IosNotification.newBuilder() .setAlert(message) .addExtra("orderId",
+			 * "7f000101-5d7c-1912-815d-7d60aec70007") .addExtra("type", "airtour") .build(); PlatformNotification
+			 * android = AndroidNotification.newBuilder() .setAlert(message) .addExtra("orderId",
+			 * "7f000101-5d7c-1912-815d-7d60aec70007") .addExtra("type", "airtour") .build();
+			 */
 			String allExtra = pn.getExtra();
 			String[] extras = allExtra.split(";");
 			for (String extra : extras) {
@@ -124,47 +118,33 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 		PlatformNotification ios = iosBuilder.build();
 		PlatformNotification android = androidBuilder.build();
 
-
 		if (Strings.isNullOrEmpty(pn.getAlias())) {
-			//payload = PushPayload.alertAll(message);
-			payload = PushPayload.newBuilder().setPlatform(Platform.all())
-					.setAudience(Audience.all())
-					.setNotification(Notification.newBuilder()
-							.addPlatformNotification(ios)
-							.addPlatformNotification(android)
-							.build())
+			// payload = PushPayload.alertAll(message);
+			payload = PushPayload
+					.newBuilder().setPlatform(Platform.all()).setAudience(Audience.all()).setNotification(Notification
+							.newBuilder().addPlatformNotification(ios).addPlatformNotification(android).build())
 					.build();
 		}
 		else {
-			/*payload = PushPayload.newBuilder().setPlatform(Platform.all())
-					.setAudience(Audience.newBuilder().addAudienceTarget(AudienceTarget.alias(pn.getAlias())).build())
-					.setNotification(Notification.alert(message)).build();
-			*/
+			/*
+			 * payload = PushPayload.newBuilder().setPlatform(Platform.all())
+			 * .setAudience(Audience.newBuilder().addAudienceTarget(AudienceTarget.alias(pn.getAlias())).build())
+			 * .setNotification(Notification.alert(message)).build();
+			 */
 
-
-			/*payload = PushPayload.newBuilder().setPlatform(Platform.all())
-					.setAudience(Audience.newBuilder().addAudienceTarget(AudienceTarget.alias(pn.getAlias())).build())
-					.setNotification(Notification.newBuilder()
-									.addPlatformNotification(IosNotification.newBuilder()
-										.setAlert(message)
-										.addExtra("orderNo", "123-456-789")
-										.addExtra("type", "quick|taxi")
-										.build())
-									.addPlatformNotification(AndroidNotification.newBuilder()
-										.setAlert(message)
-										.addExtra("orderNo", "123-456-789")
-										.addExtra("type", "quick|taxi")
-										.build())
-									.build())
-					.build();*/
+			/*
+			 * payload = PushPayload.newBuilder().setPlatform(Platform.all())
+			 * .setAudience(Audience.newBuilder().addAudienceTarget(AudienceTarget.alias(pn.getAlias())).build())
+			 * .setNotification(Notification.newBuilder() .addPlatformNotification(IosNotification.newBuilder()
+			 * .setAlert(message) .addExtra("orderNo", "123-456-789") .addExtra("type", "quick|taxi") .build())
+			 * .addPlatformNotification(AndroidNotification.newBuilder() .setAlert(message) .addExtra("orderNo",
+			 * "123-456-789") .addExtra("type", "quick|taxi") .build()) .build()) .build();
+			 */
 			payload = PushPayload.newBuilder().setPlatform(Platform.all())
 					.setAudience(Audience.newBuilder().addAudienceTarget(AudienceTarget.alias(pn.getAlias())).build())
-					.setNotification(Notification.newBuilder()
-							.addPlatformNotification(ios)
-							.addPlatformNotification(android)
-							.build())
+					.setNotification(Notification.newBuilder().addPlatformNotification(ios)
+							.addPlatformNotification(android).build())
 					.build();
-
 
 		}
 
@@ -245,9 +225,6 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 	@Override
 	public PushNotification updatePushNotification(String pushNotificationId, PushNotification newPushNotification) {
 
-
-
-
 		PushNotification pushNotification = findPushNotification(pushNotificationId);
 		copyProperties(newPushNotification, pushNotification);
 		PushNotification updated = safeExecute(() -> pushNotificationRepository.save(pushNotification),
@@ -265,7 +242,7 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 		tgt.setStatus(src.getStatus());
 		tgt.setCreationDate(src.getCreationDate());
 		tgt.setLastSendDate(src.getLastSendDate());
-		if(!Strings.isNullOrEmpty(src.getExtra())){
+		if (!Strings.isNullOrEmpty(src.getExtra())) {
 			tgt.setExtra(src.getExtra());
 		}
 	}

@@ -2,22 +2,9 @@ package net.aircommunity.platform.service.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Resource;
-import net.aircommunity.platform.AirException;
-import net.aircommunity.platform.Codes;
-import net.aircommunity.platform.model.Page;
-import net.aircommunity.platform.model.domain.Product;
-import net.aircommunity.platform.model.domain.VenueCategory;
-import net.aircommunity.platform.model.domain.VenueCategoryProduct;
-import net.aircommunity.platform.model.domain.VenueInfo;
-import net.aircommunity.platform.model.domain.VenueTemplate;
-import net.aircommunity.platform.nls.M;
-import net.aircommunity.platform.repository.VenueCategoryRepository;
-import net.aircommunity.platform.service.VenueCategoryService;
-import net.aircommunity.platform.service.VenueInfoService;
-import net.aircommunity.platform.service.VenueTemplateService;
-import net.aircommunity.platform.service.product.AirTourService;
-import net.aircommunity.platform.service.product.CommonProductService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,6 +12,21 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import net.aircommunity.platform.AirException;
+import net.aircommunity.platform.Codes;
+import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.Product;
+import net.aircommunity.platform.model.domain.VenueCategory;
+import net.aircommunity.platform.model.domain.VenueCategoryProduct;
+import net.aircommunity.platform.model.domain.VenueInfo;
+import net.aircommunity.platform.nls.M;
+import net.aircommunity.platform.repository.VenueCategoryRepository;
+import net.aircommunity.platform.service.VenueCategoryService;
+import net.aircommunity.platform.service.VenueInfoService;
+import net.aircommunity.platform.service.VenueTemplateService;
+import net.aircommunity.platform.service.product.AirTourService;
+import net.aircommunity.platform.service.product.CommonProductService;
 
 /**
  * VenueCategory service implementation.
@@ -63,21 +65,21 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 
 		LOG.info("type:{}..", venueCategory.getVenueCategoryProducts().size());
 
-
 		VenueCategory newVenueCategory = new VenueCategory();
-		/*Set<VenueCategoryProduct> cpSet = new HashSet<VenueCategoryProduct>();
+		/*
+		 * Set<VenueCategoryProduct> cpSet = new HashSet<VenueCategoryProduct>();
+		 * 
+		 * AirTour at = airTourService.findAirTour("dcfa401a-5e32-1efd-815e-35e74a420001"); VenueCategoryProduct cp1 =
+		 * new VenueCategoryProduct(); cp1.setVenueCategory(venueCategory); cp1.setProduct(at);
+		 * 
+		 * cpSet.add(cp1);
+		 */
 
-		AirTour at = airTourService.findAirTour("dcfa401a-5e32-1efd-815e-35e74a420001");
-		VenueCategoryProduct cp1 = new VenueCategoryProduct();
-		cp1.setVenueCategory(venueCategory);
-		cp1.setProduct(at);
-
-		cpSet.add(cp1);*/
-
-		//venueCategory.setVenueCategoryProducts(cpSet);
+		// venueCategory.setVenueCategoryProducts(cpSet);
 
 		copyProperties(venueCategory, newVenueCategory);
-		return safeExecute(() -> venueCategoryRepository.save(newVenueCategory), "Create VenueCategory %s failed", venueCategory);
+		return safeExecute(() -> venueCategoryRepository.save(newVenueCategory), "Create VenueCategory %s failed",
+				venueCategory);
 	}
 
 	@Cacheable(cacheNames = CACHE_NAME)
@@ -103,9 +105,9 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 		}
 
 		copyProperties(newVenueCategory, venueCategory);
-		return safeExecute(() -> venueCategoryRepository.save(venueCategory), "Update venueCategory %s to %s failed", venueCategoryId, venueCategory);
+		return safeExecute(() -> venueCategoryRepository.save(venueCategory), "Update venueCategory %s to %s failed",
+				venueCategoryId, venueCategory);
 	}
-
 
 	private void copyProperties(VenueCategory src, VenueCategory tgt) {
 		tgt.setName(src.getName());
@@ -124,7 +126,8 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 	public List<VenueCategory> listVenueCategorysByVenueTemplate(String venueTemplateId) {
 		List<VenueInfo> vil = venueInfoService.listVenueInfosByVenueTemplate(venueTemplateId);
 
-		List<VenueCategory> vcl = new ArrayList<VenueCategory>();;
+		List<VenueCategory> vcl = new ArrayList<VenueCategory>();
+		;
 		vil.stream().forEach(vi -> {
 			List<VenueCategory> vc = venueCategoryRepository.findByVenueInfo(vi);
 			vcl.addAll(vc);
@@ -136,7 +139,8 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 	@CacheEvict(cacheNames = CACHE_NAME, key = "#venueCategoryId")
 	@Override
 	public void deleteVenueCategory(String venueCategoryId) {
-		safeDeletion(venueCategoryRepository, venueCategoryId, Codes.VENUE_CATEGORY_CANNOT_BE_DELETED, M.msg(M.VENUE_CATEGORY_CANNOT_BE_DELETED));
+		safeDeletion(venueCategoryRepository, venueCategoryId, Codes.VENUE_CATEGORY_CANNOT_BE_DELETED,
+				M.msg(M.VENUE_CATEGORY_CANNOT_BE_DELETED));
 	}
 
 	@Transactional
