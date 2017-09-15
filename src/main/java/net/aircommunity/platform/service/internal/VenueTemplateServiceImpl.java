@@ -4,17 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
@@ -25,6 +15,13 @@ import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.VenueTemplateRepository;
 import net.aircommunity.platform.service.VenueTemplateService;
 import net.aircommunity.platform.service.security.AccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * VenueTemplate service implementation.
@@ -101,6 +98,9 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 			venueTemplate.setVenueCategoryProducts(sUser);
 			safeExecute(() -> venueTemplateRepository.save(venueTemplate), "Publish venueTemplate %s to %s failed",
 					venueTemplateId, venueTemplate);
+
+
+			accountService.updateUserPoints(userName, venueTemplate.getPointsPerCoupon());
 			tu = sUser.stream().filter(s -> s.getUserId().equals(userName)).collect(Collectors.toList());
 		}
 		else {

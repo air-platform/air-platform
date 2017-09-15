@@ -92,6 +92,7 @@ public class AircraftCommentServiceImpl extends AbstractServiceSupport implement
 		newComment.setAircraft(aircraft);
 		// replyTo is already set from REST before creation
 		newComment.setReplyTo(comment.getReplyTo());
+		newComment.setRate(comment.getRate());
 		try {
 			AircraftComment savedComment = aircraftCommentRepository.save(newComment);
 			// calculate score if comment from order
