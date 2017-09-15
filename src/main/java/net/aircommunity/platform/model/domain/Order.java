@@ -544,6 +544,15 @@ public abstract class Order extends Persistable {
 		return false;
 	}
 
+	@Nullable
+	public String getDescription() {
+		Product product = getProduct();
+		if (product != null) {
+			return product.getName();
+		}
+		return null;
+	}
+
 	@XmlTransient
 	@Nullable
 	public abstract Product getProduct();

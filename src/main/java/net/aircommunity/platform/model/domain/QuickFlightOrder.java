@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -244,6 +245,15 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 	@PrePersist
 	private void prePersist() {
 		setType(Type.QUICKFLIGHT);
+	}
+
+	@Override
+	public String getDescription() {
+		Optional<AircraftCandidate> candidate = getSelectedCandidate();
+		if (candidate.isPresent()) {
+			return candidate.get().getAircraft().getName();
+		}
+		return null;
 	}
 
 	@Override

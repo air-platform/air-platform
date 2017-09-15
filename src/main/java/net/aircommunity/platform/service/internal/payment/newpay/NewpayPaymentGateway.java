@@ -17,7 +17,6 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderPrices;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
-import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.model.domain.StandardOrder;
 import net.aircommunity.platform.model.domain.Trade;
@@ -89,8 +88,7 @@ public class NewpayPaymentGateway extends AbstractPaymentGateway {
 		LOG.info("orderNo: {}", order.getOrderNo());
 		try {
 			NewpayPayModel model = new NewpayPayModel();
-			Product product = order.getProduct();
-			model.setBody(M.msg(M.PAYMENT_PRODUCT_DESCRIPTION, product.getName()));
+			model.setBody(M.msg(M.PAYMENT_PRODUCT_DESCRIPTION, order.getDescription()));
 			model.setOrderNo(order.getOrderNo());
 			// model.setParterName(order.getProduct().getVendor().getNickName());
 			model.setQuantity(order.getQuantity());

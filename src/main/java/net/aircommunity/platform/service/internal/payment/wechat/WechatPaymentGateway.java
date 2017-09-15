@@ -40,7 +40,6 @@ import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.common.OrderPrices;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
-import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.model.domain.StandardOrder;
 import net.aircommunity.platform.model.domain.Trade;
@@ -121,13 +120,12 @@ public class WechatPaymentGateway extends AbstractPaymentGateway {
 		try {
 			// 请求对象，注意一些参数如appid、mchid等不用设置，方法内会自动从配置对象中获取到（前提是对应配置中已经设置）
 			WxPayUnifiedOrderRequest request = new WxPayUnifiedOrderRequest();
-			Product product = order.getProduct();
 			// 商户订单号 (必填) (商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一)
 			// Generate OutTradeNo format: orderNo_timestamp, e.g. C32E53EE0C00000_1499185071647 (最简单的方法避免->商户订单号重复)
 			// 假如修改价钱，对于同一个orderNo, 就会出现 “商户订单号重复” 错误！
 			request.setOutTradeNo(payment.getRequestNo());
 			// 商品描述交易字段 (必填)
-			request.setBody(M.msg(M.PAYMENT_PRODUCT_DESCRIPTION, product.getName()));
+			request.setBody(M.msg(M.PAYMENT_PRODUCT_DESCRIPTION, order.getDescription()));
 			// 商品详细列表，使用JSON格式，传输签名前请务必使用CDATA标签将JSON文本串保护起来。
 			// request.setDetail(detail);
 			// 符合ISO 4217标准的三位字母代码，默认人民币：CNY

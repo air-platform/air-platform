@@ -37,7 +37,6 @@ import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.common.OrderPrices;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Payment;
-import net.aircommunity.platform.model.domain.Product;
 import net.aircommunity.platform.model.domain.Refund;
 import net.aircommunity.platform.model.domain.StandardOrder;
 import net.aircommunity.platform.model.domain.Trade;
@@ -115,12 +114,11 @@ public class AlipayPaymentGateway extends AbstractPaymentGateway {
 		AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
 		// SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
 		AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
-		Product product = order.getProduct();
 		// String body = Strings.isBlank(product.getDescription()) ? product.getName() : product.getDescription();
 		// 对一笔交易的具体描述信息。如果是多种商品，请将商品描述字符串累加传给body, e.g. iPhone6S 16G
-		model.setBody(M.msg(M.PAYMENT_PRODUCT_DESCRIPTION, product.getName()));
+		model.setBody(M.msg(M.PAYMENT_PRODUCT_DESCRIPTION, order.getDescription()));
 		// 商品的标题/交易标题/订单标题/订单关键字等
-		model.setSubject(product.getName());
+		model.setSubject(order.getDescription());
 		// 商户网站唯一订单号
 		model.setOutTradeNo(order.getOrderNo());
 		// 设置未付款支付宝交易的超时时间，一旦超时，该笔交易就会自动被关闭。
