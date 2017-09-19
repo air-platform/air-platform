@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import net.aircommunity.platform.model.domain.QuickFlightOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -157,9 +158,10 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 
 		switch (event.getType()) {
 		case CREATION:
-			doNotifyClientManager(getClientManagerContacts(event), event.getOrder());
 			de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_MESSAGE, Constants.TEMPLATE_PUSHNOTIFICATION_CREATION);
 			postDomainEvent(de);
+			doNotifyClientManager(getClientManagerContacts(event), event.getOrder());
+
 
 			break;
 		case CANCELLATION:
@@ -366,6 +368,9 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 				context.put(CTX_AIRCRAFT_TYPE, aircraftType);
 				context.put(CTX_FLIGHT_LEGS, charterOrder.getFlightLegs());
 				break;
+			case QUICKFLIGHT:
+				//todo
+				return;
 
 			case FERRYFLIGHT:
 				FerryFlightOrder ferryFlightOrder = FerryFlightOrder.class.cast(order);
