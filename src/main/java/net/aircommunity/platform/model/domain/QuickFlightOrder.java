@@ -1,5 +1,7 @@
 package net.aircommunity.platform.model.domain;
 
+import com.google.common.collect.ImmutableSet;
+import io.micro.annotation.constraint.NotEmpty;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -8,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -27,21 +28,16 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import com.google.common.collect.ImmutableSet;
-
-import io.micro.annotation.constraint.NotEmpty;
 import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.Product.Type;
 import net.aircommunity.platform.model.jaxb.DateAdapter;
 
 /**
  * Quick flight order.
- * <p>
  * Order work flow: START -> USER place an order with basic information -> TENANT offer aircraft candidates (CANDIDATE)
  * -> ADMIN prompt some aircraft candidates (e.g. 3 out of 10) among all the candidates (OFFERED) -> USER select 1
  * candidate among the offered candidates (SELECTED) -> END
- * 
+ *
  * @author Bin.Zhang
  */
 @Entity
@@ -157,7 +153,10 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 
 	public void setRoutes(List<QuickFlightRoute> routes) {
 		if (routes != null) {
-			routes.stream().forEach(product -> product.setOrder(this));
+			for (int i = 0; i < routes.size(); i++) {
+				routes.get(i).setOrder(this);
+				routes.get(i).setOrdinalNo(i);
+			}
 			this.routes.clear();
 			this.routes.addAll(ImmutableSet.copyOf(routes));
 		}
@@ -212,7 +211,7 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 
 	/**
 	 * promote a set of candidateIds to status OFFERED (called by ADMIN)
-	 * 
+	 *
 	 * @param candidateIds the candidateIds
 	 */
 	public void promoteCandidate(Set<String> candidateIds) {

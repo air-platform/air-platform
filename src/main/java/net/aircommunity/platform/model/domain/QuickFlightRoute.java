@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Quick Flight Route.
- * 
+ *
  * @author Bin.Zhang
  */
 @Entity
@@ -36,11 +36,25 @@ public class QuickFlightRoute extends Persistable {
 	@Column(name = "duration")
 	private int duration;
 
+	@Min(0)
+	//@Column(name = "ordinal_no", nullable = false, columnDefinition = "int default 0")
+	@XmlTransient
+	@Column(name = "ordinal_no")
+	private Integer ordinalNo = 0;
+
 	@XmlTransient
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "order_id")
 	private Order order;
+
+	public Integer getOrdinalNo() {
+		return ordinalNo;
+	}
+
+	public void setOrdinalNo(Integer ordinalNo) {
+		this.ordinalNo = ordinalNo;
+	}
 
 	public RouteType getType() {
 		return type;
@@ -80,6 +94,9 @@ public class QuickFlightRoute extends Persistable {
 		int result = 1;
 		result = prime * result + distance;
 		result = prime * result + duration;
+		if (ordinalNo != null) {
+			result = prime * result + ordinalNo.intValue();
+		}
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -98,6 +115,8 @@ public class QuickFlightRoute extends Persistable {
 		if (duration != other.duration)
 			return false;
 		if (type != other.type)
+			return false;
+		if (ordinalNo != other.ordinalNo)
 			return false;
 		return true;
 	}
