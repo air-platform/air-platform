@@ -34,7 +34,7 @@ public interface VenueTemplateService {
 	VenueTemplate findVenueTemplate(@Nonnull String venueTemplateId);
 
 	@Nonnull
-	List<VenueTemplateCouponUser> grabCoupon(String venueTemplateId, String userName);
+	VenueTemplateCouponUser grabCoupon(String venueTemplateId, String userName);
 	@Nonnull
 	VenueTemplate publish(@Nonnull String venueTemplateId, boolean isPublish);
 

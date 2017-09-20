@@ -46,16 +46,18 @@ public class VenueTemplateCouponUser extends Persistable {
 		this.userId = userId;
 	}
 
+	@PostLoad
+	private void onLoad() {
+		userId = user.getId();
+	}
+
+
 	@Column(name = "coupon_num", nullable = false)
 	private int couponNum = 1;
 
 	@Column(name = "points_per_coupon", nullable = false)
 	private int pointsPerCoupon = 0;
 
-	@PostLoad
-	private void onLoad() {
-		userId = user.getId();
-	}
 
 	public VenueTemplateCouponUser() {
 	}

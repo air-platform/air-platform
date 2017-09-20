@@ -56,6 +56,7 @@ public class ApplicationParamResource {
 		return Json.createObjectBuilder().add(JSON_PROP_QUICKFLIGHT_SPEED, applicationParamService.getQuickflightSpeed())
 				.add(JSON_PROP_QUICKFLIGHT_UNIT_TIME_PRICE, applicationParamService.getQuickflightUnitPrice())
 				.add(JSON_PROP_QUICKFLIGHT_DEPARTURE_TIME_IN_ADVANCE, applicationParamService.getQuickflightDepartureTime()).build();
+
 	}
 
 	@PUT

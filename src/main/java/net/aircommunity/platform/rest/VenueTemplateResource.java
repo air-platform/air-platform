@@ -1,7 +1,12 @@
 package net.aircommunity.platform.rest;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import io.micro.annotation.RESTful;
+import io.swagger.annotations.Api;
 import java.net.URI;
-
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -22,18 +27,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.annotation.JsonView;
-
-import io.micro.annotation.RESTful;
-import io.swagger.annotations.Api;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.VenueTemplate;
+import net.aircommunity.platform.model.domain.VenueTemplateCouponUser;
 import net.aircommunity.platform.service.VenueTemplateService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Venue template RESTful API allows list/find/query for ANYONE.
@@ -45,6 +45,9 @@ import net.aircommunity.platform.service.VenueTemplateService;
 @PermitAll
 @Path("venue-templates")
 public class VenueTemplateResource {
+
+	private static final String JSON_PROP_COUPON_NUM = "couponNum";
+
 	private static final Logger LOG = LoggerFactory.getLogger(VenueTemplateResource.class);
 
 	@Resource
@@ -62,7 +65,7 @@ public class VenueTemplateResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Response listAll(@QueryParam("page") @DefaultValue("1") int page,
-			@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
+							@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
 
 		if (context.isUserInRole(Roles.ROLE_ADMIN) || context.isUserInRole(Roles.ROLE_TENANT)) {
 			return Response.ok(venueTemplateService.listVenueTemplates(page, pageSize)).build();
@@ -73,7 +76,40 @@ public class VenueTemplateResource {
 
 	}
 
+	/**
+	 * coupon num
+	 */
+	@GET
+	@Path("{venueTemplateId}/coupon")
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(Roles.ROLE_USER)
+	public Response userCoupon(@PathParam("venueTemplateId") String venueTemplateId, @Context SecurityContext context) {
+		String userId = context.getUserPrincipal().getName();
+		List<VenueTemplateCouponUser> sel = null;
+		Set<VenueTemplateCouponUser> all = null;
 
+
+		VenueTemplate vt = venueTemplateService.findVenueTemplate(venueTemplateId);
+		all = vt.getVenueTemplateCouponUsers();
+		if (all != null && !all.isEmpty())
+			sel = all.stream().filter(cu -> cu.getUser().getId().equals(userId)).collect(Collectors.toList());
+		if (sel != null && !sel.isEmpty()) {
+			return Response.ok(sel.get(0)).build();
+		}
+		else {
+			return Response.ok().build();
+		}
+	}
+	/*public JsonObject couponNum(@PathParam("venueTemplateId") String venueTemplateId, @Context SecurityContext context) {
+
+
+		String userId = context.getUserPrincipal().getName();
+		VenueTemplate vt = venueTemplateService.findVenueTemplate(venueTemplateId);
+		long num = vt.getVenueTemplateCouponUsers().stream().filter(cu -> cu.getUserId().equals(userId)).count();
+		return Json.createObjectBuilder().add(JSON_PROP_COUPON_NUM, num).build();
+
+
+	}*/
 
 	/**
 	 * Publish venue template
@@ -105,7 +141,7 @@ public class VenueTemplateResource {
 	@POST
 	@Path("{venueTemplateId}/grab-coupon")
 	@JsonView(JsonViews.User.class)
-	@RolesAllowed({ Roles.ROLE_USER, Roles.ROLE_ADMIN })
+	@RolesAllowed(Roles.ROLE_USER)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response grabCoupon(@PathParam("venueTemplateId") String venueTemplateId, @Context SecurityContext context) {
 		String userName = context.getUserPrincipal().getName();
@@ -123,7 +159,6 @@ public class VenueTemplateResource {
 	public VenueTemplate find(@PathParam("venueTemplateId") String venueTemplateId) {
 		return venueTemplateService.findVenueTemplate(venueTemplateId);
 	}
-
 
 
 	// *************
@@ -157,7 +192,7 @@ public class VenueTemplateResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Admin.class)
 	public VenueTemplate update(@PathParam("venueTemplateId") String venueTemplateId,
-			@NotNull @Valid VenueTemplate VenueTemplate) {
+								@NotNull @Valid VenueTemplate VenueTemplate) {
 		return venueTemplateService.updateVenueTemplate(venueTemplateId, VenueTemplate);
 	}
 

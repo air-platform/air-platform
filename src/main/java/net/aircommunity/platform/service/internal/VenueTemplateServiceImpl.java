@@ -61,22 +61,25 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 	}
 
 	@Transactional
-	@CachePut(cacheNames = CACHE_NAME, key = "#venueTemplateId")
 	@Override
-	public List<VenueTemplateCouponUser> grabCoupon(String venueTemplateId, String userName) {
+	@CacheEvict(cacheNames = CACHE_NAME, key = "#venueTemplateId")
+	public VenueTemplateCouponUser grabCoupon(String venueTemplateId, String userName) {
 		VenueTemplate venueTemplate = venueTemplateRepository.findOne(venueTemplateId);
-
+		Set<VenueTemplateCouponUser> all = null;
+		List<VenueTemplateCouponUser> tu = null;
 		if (venueTemplate == null) {
 			LOG.error("VenueTemplate {} not found", venueTemplateId);
 			throw new AirException(Codes.VENUE_TEMPLATE_NOT_FOUND, M.msg(M.VENUE_TEMPLATE_NOT_FOUND));
 		}
 		// accountService.findAccount().
 
-		Set<VenueTemplateCouponUser> su = venueTemplate.getVenueTemplateCouponUsers();
-		List<VenueTemplateCouponUser> tu = su.stream().filter(s -> s.getUserId().equals(userName))
-				.collect(Collectors.toList());
+		all = venueTemplate.getVenueTemplateCouponUsers();
+		if(all != null && !all.isEmpty()) {
+			tu = all.stream().filter(s -> s.getUser().getId().equals(userName))
+					.collect(Collectors.toList());
+		}
 
-		if (tu != null && tu.size() > 0) {
+		if (tu != null && !tu.isEmpty()) {
 			throw new AirException(Codes.VENUE_TEMPLATE_HAS_GRABBED_COUPON, M.msg(M.VENUE_TEMPLATE_HAS_GRABBED_COUPON));
 		}
 		int remain = venueTemplate.getCouponRemainNum();
@@ -96,18 +99,31 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 			sUser.addAll(venueTemplate.getVenueTemplateCouponUsers());
 			sUser.add(cuser);
 			venueTemplate.setVenueCategoryProducts(sUser);
-			safeExecute(() -> venueTemplateRepository.save(venueTemplate), "Publish venueTemplate %s to %s failed",
-					venueTemplateId, venueTemplate);
+			//safeExecute(() -> venueTemplateRepository.save(venueTemplate), "Publish venueTemplate %s to %s failed",
+			//		venueTemplateId, venueTemplate);
 
+			updateVenueTemplate(venueTemplateId, venueTemplate);
 
-			accountService.updateUserPoints(userName, venueTemplate.getPointsPerCoupon());
-			tu = sUser.stream().filter(s -> s.getUserId().equals(userName)).collect(Collectors.toList());
+			VenueTemplate vt = findVenueTemplate(venueTemplateId);
+
+			all = vt.getVenueTemplateCouponUsers();
+			if(all != null && !all.isEmpty()){
+				tu = all.stream()
+						.filter(cu -> cu.getUser().getId().equals(userName))
+						.collect(Collectors.toList());
+				tu.stream().forEach(cu -> cu.setUserId(cu.getUser().getId()));
+			}
 		}
 		else {
 			throw new AirException(Codes.VENUE_TEMPLATE_NO_COUPON, M.msg(M.VENUE_TEMPLATE_NO_COUPON));
 
 		}
-		return tu;
+
+		if(tu != null && !tu.isEmpty()){
+			return tu.get(0);
+		}else {
+			return null;
+		}
 	}
 
 	@Transactional
