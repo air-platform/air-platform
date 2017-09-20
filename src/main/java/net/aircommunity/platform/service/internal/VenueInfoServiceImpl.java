@@ -73,6 +73,7 @@ public class VenueInfoServiceImpl extends AbstractServiceSupport implements Venu
 		tgt.setName(src.getName());
 		tgt.setPicture(src.getPicture());
 		tgt.setDescription(src.getDescription());
+		tgt.setBackgroundColor(src.getBackgroundColor());
 	}
 
 	@Override

@@ -60,6 +60,7 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 
 		for (VenueCategoryProduct cp : venueCategory.getVenueCategoryProducts()) {
 			Product p = commonProductService.findProduct(cp.getProductId());
+			//Product p = commonProductService.findProduct(cp.getProduct().getId());
 			cp.setProduct(p);
 		}
 
@@ -100,7 +101,7 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 		VenueCategory venueCategory = findVenueCategory(venueCategoryId);
 
 		for (VenueCategoryProduct cp : newVenueCategory.getVenueCategoryProducts()) {
-			Product p = commonProductService.findProduct(cp.getProductId());
+			Product p = commonProductService.findProduct(cp.getProduct().getId());
 			cp.setProduct(p);
 		}
 

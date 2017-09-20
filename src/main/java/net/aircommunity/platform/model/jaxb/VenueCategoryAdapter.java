@@ -19,7 +19,7 @@ public class VenueCategoryAdapter extends XmlAdapter<String, VenueCategory> {
 	@Override
 	public VenueCategory unmarshal(String id) throws Exception {
 		// we don't need unmarshal
-		return null;
+		return new VenueCategory(id);
 	}
 
 }

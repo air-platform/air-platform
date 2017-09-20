@@ -1,6 +1,7 @@
 package net.aircommunity.platform.model.domain;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,6 +16,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import io.micro.annotation.constraint.NotEmpty;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @author Xiangwen.Kong
@@ -38,8 +40,16 @@ public class VenueTemplate extends Persistable {
 	@Column(name = "background_color", length = COLOR_LEN)
 	private String backgroundColor;
 
-	// @OneToMany(mappedBy = "venueTemplate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	// List<VenueInfo> venueInfos;
+	 @OneToMany(mappedBy = "venueTemplate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	 List<VenueInfo> venueInfos;
+
+	public List<VenueInfo> getVenueInfos() {
+		return venueInfos;
+	}
+
+	public void setVenueInfos(List<VenueInfo> venueInfos) {
+		this.venueInfos = venueInfos;
+	}
 
 	// venue template description
 	@Lob
@@ -60,6 +70,7 @@ public class VenueTemplate extends Persistable {
 	private int pointsPerCoupon = 0;
 
 	@OneToMany(mappedBy = "venueTemplate", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@XmlTransient
 	private Set<VenueTemplateCouponUser> venueTemplateCouponUsers = new HashSet<>();
 
 	public int getCouponRemainNum() {

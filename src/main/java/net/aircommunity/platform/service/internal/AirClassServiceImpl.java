@@ -68,6 +68,7 @@ public class AirClassServiceImpl extends AbstractServiceSupport implements AirCl
 	private void copyProperties(AirClass src, AirClass tgt) {
 		tgt.setTitle(src.getTitle());
 		tgt.setContent(src.getContent());
+		tgt.setHtmlContent(src.getHtmlContent());
 	}
 
 	@Transactional

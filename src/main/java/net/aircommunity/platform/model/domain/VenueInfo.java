@@ -1,16 +1,21 @@
 package net.aircommunity.platform.model.domain;
 
+import io.micro.annotation.constraint.NotEmpty;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-
-import io.micro.annotation.constraint.NotEmpty;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import net.aircommunity.platform.model.jaxb.VenueTemplateAdapter;
 
 /**
  * @author Xiangwen.Kong
@@ -31,6 +36,9 @@ public class VenueInfo extends Persistable {
 	@Column(name = "picture", length = IMAGE_URL_LEN)
 	private String picture;
 
+	@Column(name = "background_color", length = COLOR_LEN)
+	private String backgroundColor;
+
 	// venue description
 	@Lob
 	@Column(name = "description")
@@ -39,10 +47,19 @@ public class VenueInfo extends Persistable {
 	// @XmlElement
 	@ManyToOne
 	@JoinColumn(name = "venue_template_id")
+	@XmlJavaTypeAdapter(VenueTemplateAdapter.class)
 	protected VenueTemplate venueTemplate;
 
-	// @OneToMany(mappedBy = "venueInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	// List<VenueCategory> venueCategories;
+	@OneToMany(mappedBy = "venueInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	List<VenueCategory> venueCategories;
+
+	public List<VenueCategory> getVenueCategories() {
+		return venueCategories;
+	}
+
+	public void setVenueCategories(List<VenueCategory> venueCategories) {
+		this.venueCategories = venueCategories;
+	}
 
 	public VenueInfo(String id) {
 		this.id = id;
@@ -81,6 +98,14 @@ public class VenueInfo extends Persistable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getBackgroundColor() {
+		return backgroundColor;
+	}
+
+	public void setBackgroundColor(String backgroundColor) {
+		this.backgroundColor = backgroundColor;
 	}
 
 	@Override

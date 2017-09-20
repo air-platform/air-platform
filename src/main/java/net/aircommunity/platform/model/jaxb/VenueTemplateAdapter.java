@@ -19,7 +19,7 @@ public class VenueTemplateAdapter extends XmlAdapter<String, VenueTemplate> {
 	@Override
 	public VenueTemplate unmarshal(String id) throws Exception {
 		// we don't need unmarshal
-		return null;
+		return new VenueTemplate(id);
 	}
 
 }

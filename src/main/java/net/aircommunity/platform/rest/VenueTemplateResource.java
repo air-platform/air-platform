@@ -73,6 +73,8 @@ public class VenueTemplateResource {
 
 	}
 
+
+
 	/**
 	 * Publish venue template
 	 */
@@ -121,6 +123,8 @@ public class VenueTemplateResource {
 	public VenueTemplate find(@PathParam("venueTemplateId") String venueTemplateId) {
 		return venueTemplateService.findVenueTemplate(venueTemplateId);
 	}
+
+
 
 	// *************
 	// USER ONLY

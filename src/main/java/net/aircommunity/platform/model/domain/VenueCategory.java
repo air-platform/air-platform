@@ -19,7 +19,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import io.micro.annotation.constraint.NotEmpty;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.aircommunity.platform.model.domain.Product.Category;
+import net.aircommunity.platform.model.jaxb.VenueInfoAdapter;
 
 /**
  * @author Xiangwen.Kong
@@ -48,6 +50,7 @@ public class VenueCategory extends Persistable {
 	// @XmlElement
 	@ManyToOne
 	@JoinColumn(name = "venue_info_id")
+	@XmlJavaTypeAdapter(VenueInfoAdapter.class)
 	protected VenueInfo venueInfo;
 
 	@OneToMany(mappedBy = "venueCategory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

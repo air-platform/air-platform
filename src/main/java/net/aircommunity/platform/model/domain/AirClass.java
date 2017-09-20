@@ -36,6 +36,10 @@ public class AirClass extends Persistable {
 	@Column(name = "content")
 	private String content;
 
+	@Lob
+	@Column(name = "html_content")
+	private String htmlContent;
+
 	// the number of views
 	@Column(name = "views", nullable = false)
 	private int views = 0;
@@ -44,6 +48,14 @@ public class AirClass extends Persistable {
 	@Column(name = "creation_date", nullable = false)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private Date creationDate;
+
+	public String getHtmlContent() {
+		return htmlContent;
+	}
+
+	public void setHtmlContent(String htmlContent) {
+		this.htmlContent = htmlContent;
+	}
 
 	public String getTitle() {
 		return title;

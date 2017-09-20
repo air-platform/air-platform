@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import net.aircommunity.platform.model.jaxb.VenueCategoryAdapter;
+import net.aircommunity.platform.model.jaxb.VenueProductAdapter;
 
 /**
  * @author Xiangwen.Kong
@@ -32,7 +33,9 @@ public class VenueCategoryProduct extends Persistable {
 	// CharterOrder charterOrder = CharterOrder.class.cast(order);
 	@ManyToOne
 	@JoinColumn(name = "product_id")
-	@XmlTransient
+	//@XmlTransient
+	@XmlJavaTypeAdapter(VenueProductAdapter.class)
+	@XmlElement(name = "productInfo")
 	protected Product product;
 
 	@Transient
@@ -42,15 +45,15 @@ public class VenueCategoryProduct extends Persistable {
 	public String getProductId() {
 		return productId;
 	}
+	@PostLoad
+	private void onLoad() {
+		productId = product.getId();
+	}
 
 	// venue category picture
 	@Column(name = "type", length = PRODUCT_TYPE_LEN)
 	private String type;
 
-	@PostLoad
-	private void onLoad() {
-		productId = product.getId();
-	}
 
 	public VenueCategoryProduct() {
 	}
