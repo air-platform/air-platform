@@ -2,7 +2,6 @@ package net.aircommunity.platform.model.domain;
 
 import io.micro.annotation.constraint.NotEmpty;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -50,7 +49,7 @@ public class VenueInfo extends Persistable {
 	@XmlJavaTypeAdapter(VenueTemplateAdapter.class)
 	protected VenueTemplate venueTemplate;
 
-	@OneToMany(mappedBy = "venueInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "venueInfo", fetch = FetchType.EAGER)
 	List<VenueCategory> venueCategories;
 
 	public List<VenueCategory> getVenueCategories() {

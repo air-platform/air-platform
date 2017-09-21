@@ -2,17 +2,7 @@ package net.aircommunity.platform.service.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
@@ -27,6 +17,13 @@ import net.aircommunity.platform.service.VenueInfoService;
 import net.aircommunity.platform.service.VenueTemplateService;
 import net.aircommunity.platform.service.product.AirTourService;
 import net.aircommunity.platform.service.product.CommonProductService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * VenueCategory service implementation.
@@ -101,7 +98,7 @@ public class VenueCategoryServiceImpl extends AbstractServiceSupport implements 
 		VenueCategory venueCategory = findVenueCategory(venueCategoryId);
 
 		for (VenueCategoryProduct cp : newVenueCategory.getVenueCategoryProducts()) {
-			Product p = commonProductService.findProduct(cp.getProduct().getId());
+			Product p = commonProductService.findProduct(cp.getProductId());
 			cp.setProduct(p);
 		}
 

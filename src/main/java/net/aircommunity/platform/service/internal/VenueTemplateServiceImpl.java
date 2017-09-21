@@ -1,5 +1,6 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -74,7 +75,7 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 		// accountService.findAccount().
 
 		all = venueTemplate.getVenueTemplateCouponUsers();
-		if(all != null && !all.isEmpty()) {
+		if (all != null && !all.isEmpty()) {
 			tu = all.stream().filter(s -> s.getUser().getId().equals(userName))
 					.collect(Collectors.toList());
 		}
@@ -82,6 +83,12 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 		if (tu != null && !tu.isEmpty()) {
 			throw new AirException(Codes.VENUE_TEMPLATE_HAS_GRABBED_COUPON, M.msg(M.VENUE_TEMPLATE_HAS_GRABBED_COUPON));
 		}
+
+		if (venueTemplate.getCouponExpiredDate() != null && venueTemplate.getCouponExpiredDate().before(new Date())) {
+			throw new AirException(Codes.VENUE_TEMPLATE_COUPON_EXPIRED, M.msg(M.VENUE_TEMPLATE_COUPON_EXPIRED));
+		}
+
+
 		int remain = venueTemplate.getCouponRemainNum();
 		if (remain > 0) {
 			accountService.findAccount(userName);
@@ -107,7 +114,7 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 			VenueTemplate vt = findVenueTemplate(venueTemplateId);
 
 			all = vt.getVenueTemplateCouponUsers();
-			if(all != null && !all.isEmpty()){
+			if (all != null && !all.isEmpty()) {
 				tu = all.stream()
 						.filter(cu -> cu.getUser().getId().equals(userName))
 						.collect(Collectors.toList());
@@ -119,9 +126,10 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 
 		}
 
-		if(tu != null && !tu.isEmpty()){
+		if (tu != null && !tu.isEmpty()) {
 			return tu.get(0);
-		}else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -161,6 +169,7 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 		tgt.setCouponTotalNum(src.getCouponTotalNum());
 		tgt.setCouponRemainNum(src.getCouponRemainNum());
 		tgt.setPointsPerCoupon(src.getPointsPerCoupon());
+		tgt.setCouponExpiredDate(src.getCouponExpiredDate());
 
 	}
 

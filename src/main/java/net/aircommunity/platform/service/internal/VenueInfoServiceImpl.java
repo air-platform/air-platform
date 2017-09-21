@@ -69,18 +69,19 @@ public class VenueInfoServiceImpl extends AbstractServiceSupport implements Venu
 
 
 	private void copyProperties(VenueInfo src, VenueInfo tgt) {
+
 		tgt.setVenueTemplate(src.getVenueTemplate());
 		tgt.setName(src.getName());
 		tgt.setPicture(src.getPicture());
 		tgt.setDescription(src.getDescription());
 		tgt.setBackgroundColor(src.getBackgroundColor());
+		tgt.setVenueCategories(src.getVenueCategories());
 	}
 
 	@Override
 	public Page<VenueInfo> listVenueInfos(int page, int pageSize) {
 		return Pages.adapt(venueInfoRepository.findAll(createPageRequest(page, pageSize)));
 	}
-
 
 
 	@Override

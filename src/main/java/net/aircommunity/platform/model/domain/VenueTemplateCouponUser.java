@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import net.aircommunity.platform.model.jaxb.VenueTemplateAdapter;
 
 /**
@@ -33,6 +32,7 @@ public class VenueTemplateCouponUser extends Persistable {
 	@JoinColumn(name = "user_id")
 	@XmlTransient
 	protected Account user;
+
 
 	@Transient
 	@XmlElement(name = "user")

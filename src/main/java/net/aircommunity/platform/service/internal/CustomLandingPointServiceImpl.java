@@ -109,9 +109,9 @@ public class CustomLandingPointServiceImpl extends AbstractServiceSupport implem
 		tgt.setAddress(src.getAddress());
 		tgt.setDescription(src.getDescription());
 		tgt.setImages(src.getImages());
-		tgt.setRejectedReason(src.getRejectedReason());
-		tgt.setReviewStatus(src.getReviewStatus());
-		tgt.setUser(src.getUser());
+		//tgt.setRejectedReason(src.getRejectedReason());
+		//tgt.setReviewStatus(src.getReviewStatus());
+		//tgt.setUser(src.getUser());
 
 	}
 

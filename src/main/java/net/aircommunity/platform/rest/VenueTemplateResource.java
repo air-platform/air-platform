@@ -63,7 +63,6 @@ public class VenueTemplateResource {
 	@GET
 	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
 	public Response listAll(@QueryParam("page") @DefaultValue("1") int page,
 							@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
 
