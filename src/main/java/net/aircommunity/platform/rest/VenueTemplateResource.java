@@ -154,7 +154,6 @@ public class VenueTemplateResource {
 	@PermitAll
 	@Path("{venueTemplateId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
 	public VenueTemplate find(@PathParam("venueTemplateId") String venueTemplateId) {
 		return venueTemplateService.findVenueTemplate(venueTemplateId);
 	}
