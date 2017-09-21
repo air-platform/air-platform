@@ -3,9 +3,13 @@ package net.aircommunity.platform.rest;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.ws.rs.core.SecurityContext;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.CustomLandingPoint;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.service.CustomLandingPointService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +34,27 @@ import java.net.URI;
 @Api
 @RESTful
 @PermitAll
-@Path("customLandingPoints")
+@Path("custom-landing-points")
 public class CustomLandingPointResource {
 	private static final Logger LOG = LoggerFactory.getLogger(CustomLandingPointResource.class);
+
+	/**
+	 * Reject reason, cancel, refund reason etc.
+	 */
+	private static final String JSON_PROP_REASON = "reason";
+	private String getJsonString(javax.json.JsonObject request, String name) {
+		if (request == null) {
+			return null;
+		}
+		JsonString str = request.getJsonString(name);
+		if (str == null) {
+			return null;
+		}
+		return str.getString();
+	}
+	protected String getReason(javax.json.JsonObject request) { // TODO how to valid JsonObject using bval
+		return getJsonString(request, JSON_PROP_REASON);
+	}
 
 	@Resource
 	private CustomLandingPointService customLandingPointService;
@@ -49,8 +71,15 @@ public class CustomLandingPointResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.Public.class)
 	public Response listAll(@QueryParam("page") @DefaultValue("1") int page,
-							@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-		return Response.ok(customLandingPointService.listCustomLandingPoints(page, pageSize)).build();
+							@QueryParam("pageSize") @DefaultValue("10") int pageSize,  @Context SecurityContext context) {
+
+		if (context.isUserInRole(Roles.ROLE_ADMIN) || context.isUserInRole(Roles.ROLE_TENANT)) {
+			return Response.ok(customLandingPointService.listCustomLandingPoints(page, pageSize)).build();
+		}
+		else {
+			String userName = context.getUserPrincipal().getName();
+			return Response.ok(customLandingPointService.listUserCustomLandingPoints(userName)).build();
+		}
 	}
 
 
@@ -80,11 +109,34 @@ public class CustomLandingPointResource {
 	@RolesAllowed(Roles.ROLE_USER)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
-	public Response create(@NotNull @Valid CustomLandingPoint CustomLandingPoint, @Context UriInfo uriInfo) {
-		CustomLandingPoint created = customLandingPointService.createCustomLandingPoint(CustomLandingPoint);
+	public Response create(@NotNull @Valid CustomLandingPoint CustomLandingPoint, @Context SecurityContext context, @Context UriInfo uriInfo) {
+		String userName = context.getUserPrincipal().getName();
+		CustomLandingPoint created = customLandingPointService.createCustomLandingPoint(CustomLandingPoint, userName);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();
+	}
+
+	/**
+	 * Approve a langding point
+	 */
+	@POST
+	@Path("{customLandingPointId}/approve")
+	@RolesAllowed(Roles.ROLE_ADMIN)
+	public void approveProduct(@PathParam("customLandingPointId") String customLandingPointId) {
+		customLandingPointService.approve(customLandingPointId, ReviewStatus.APPROVED);
+	}
+
+
+	/**
+	 * Disapprove a landing point
+	 */
+	@POST
+	@Path("{customLandingPointId}/disapprove")
+	@RolesAllowed(Roles.ROLE_ADMIN)
+	public void disapproveProduct(@PathParam("customLandingPointId") String customLandingPointId, @NotNull JsonObject rejectedReason) {
+		String reason = getReason(rejectedReason);
+		customLandingPointService.disapprove(customLandingPointId, ReviewStatus.REJECTED, reason);
 	}
 
 	/**

@@ -1,10 +1,11 @@
 package net.aircommunity.platform.service;
 
+import java.util.List;
+import javax.annotation.Nonnull;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.CustomLandingPoint;
-
-import javax.annotation.Nonnull;
+import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 
 /**
  * CustomLandingPoint service (ADMIN ONLY)
@@ -20,7 +21,7 @@ public interface CustomLandingPointService {
 	 * @return customLandingPoint created
 	 */
 	@Nonnull
-	CustomLandingPoint createCustomLandingPoint(@Nonnull CustomLandingPoint customLandingPoint);
+	CustomLandingPoint createCustomLandingPoint(@Nonnull CustomLandingPoint customLandingPoint, String userName);
 
 	/**
 	 * Retrieves the specified Apron.
@@ -52,7 +53,8 @@ public interface CustomLandingPointService {
 	@Nonnull
 	Page<CustomLandingPoint> listCustomLandingPoints(int page, int pageSize);
 
-
+	@Nonnull
+	List<CustomLandingPoint> listUserCustomLandingPoints(String userName);
 	/**
 	 * Delete a CustomLandingPoint.
 	 *
@@ -64,4 +66,9 @@ public interface CustomLandingPointService {
 	 * Delete All CustomLandingPoints.
 	 */
 	void deleteCustomLandingPoints();
+
+
+	CustomLandingPoint approve(String customLandingPointId, ReviewStatus reviewStatus);
+
+	CustomLandingPoint disapprove(String customLandingPointId, ReviewStatus reviewStatus, String reason);
 }
