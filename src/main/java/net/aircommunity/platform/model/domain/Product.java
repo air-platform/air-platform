@@ -168,10 +168,7 @@ public abstract class Product extends Reviewable {
 	}
 
 	public void setCurrencyUnit(CurrencyUnit currencyUnit) {
-		{
-			this.currencyUnit = CurrencyUnit.RMB;
-		}
-
+		this.currencyUnit = currencyUnit;
 	}
 
 	@ManyToOne
