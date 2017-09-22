@@ -1,5 +1,8 @@
 package net.aircommunity.platform.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import io.micro.annotation.constraint.NotEmpty;
+import io.micro.common.Strings;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
@@ -7,7 +10,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -26,19 +28,16 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import com.fasterxml.jackson.annotation.JsonView;
-
-import io.micro.annotation.constraint.NotEmpty;
-import io.micro.common.Strings;
+import net.aircommunity.platform.model.CurrencyUnit;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.constraint.ContactList;
 import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
+import org.hibernate.annotations.ColumnDefault;
 
 /**
  * Product of an {@code Tenant} (AKA. vendor).
- * 
+ *
  * @author Bin.Zhang
  */
 @Entity
@@ -111,20 +110,20 @@ public abstract class Product extends Reviewable {
 
 	// total sales count
 	@Column(name = "total_sales")
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView({JsonViews.Admin.class, JsonViews.Tenant.class})
 	protected int totalSales = 0;
 
 	// product rank (high rank will considered as hot, sort by rank DESC, 0 will be the lowest rank)
 	@Min(LOWEST_RANK)
 	@Column(name = "rank")
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView({JsonViews.Admin.class, JsonViews.Tenant.class})
 	protected int rank = DEFAULT_RANK;
 
 	// whether it can be published or not
 	// e.g. product put on sale/pull off shelves
 	// XXX NOTE: a product is published, it means it's already reviewed with APPROVED
 	@Column(name = "published", nullable = false)
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView({JsonViews.Admin.class, JsonViews.Tenant.class})
 	protected boolean published = false;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
@@ -137,13 +136,43 @@ public abstract class Product extends Reviewable {
 	@ContactList
 	@Lob
 	@Column(name = "client_managers")
-	@JsonView({ JsonViews.Admin.class, JsonViews.Tenant.class })
+	@JsonView({JsonViews.Admin.class, JsonViews.Tenant.class})
 	protected String clientManagers;
 
 	// product description
 	@Lob
 	@Column(name = "description")
 	protected String description;
+
+	// product price
+	@Column(name = "price", nullable = false)
+	protected BigDecimal price = BigDecimal.ZERO;
+
+	// product price CurrencyUnit
+	@Enumerated(EnumType.STRING)
+	@ColumnDefault("'RMB'")
+	@Column(name = "currency_unit", nullable = false, length = CURRENCY_UNIT_LEN)
+	//@Column(name = "currency_unit", nullable = false, length = CURRENCY_UNIT_LEN, columnDefinition = "varchar(16) default 'RMB'")
+	protected CurrencyUnit currencyUnit = CurrencyUnit.RMB;
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public CurrencyUnit getCurrencyUnit() {
+		return currencyUnit;
+	}
+
+	public void setCurrencyUnit(CurrencyUnit currencyUnit) {
+		{
+			this.currencyUnit = CurrencyUnit.RMB;
+		}
+
+	}
 
 	@ManyToOne
 	@JoinColumn(name = "tenant_id", nullable = false)
@@ -284,7 +313,7 @@ public abstract class Product extends Reviewable {
 
 	/**
 	 * Return true if this product has stock limit
-	 * 
+	 *
 	 * @return true if this product has stock limit
 	 */
 	@XmlTransient
@@ -294,7 +323,7 @@ public abstract class Product extends Reviewable {
 
 	/**
 	 * Return true if this product stock is available for quantity
-	 * 
+	 *
 	 * @param quantity the number of requested product quantity to buy
 	 * @return true if this product stock available
 	 */

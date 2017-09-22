@@ -1,21 +1,14 @@
 package net.aircommunity.platform.service.internal.product;
 
+import com.codahale.metrics.Timer;
 import java.lang.reflect.ParameterizedType;
 import java.util.Date;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
-
-import com.codahale.metrics.Timer;
-
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Code;
 import net.aircommunity.platform.Codes;
@@ -40,10 +33,13 @@ import net.aircommunity.platform.service.product.AircraftService;
 import net.aircommunity.platform.service.product.CommentService;
 import net.aircommunity.platform.service.product.ProductFamilyService;
 import net.aircommunity.platform.service.product.SchoolService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 
 /**
  * Abstract Product service support.
- * 
+ *
  * @author Bin.Zhang
  */
 @SuppressWarnings("unchecked")
@@ -116,10 +112,13 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			newProduct.setRank(Product.DEFAULT_RANK);
 			newProduct.setTotalSales(0);
 			newProduct.setStock(product.getStock());
+			newProduct.setPrice(product.getPrice());
+			newProduct.setCurrencyUnit(product.getCurrencyUnit());
 			newProduct.setOriginalPrice(product.getOriginalPrice());
 			newProduct.setSpecialPrice(product.getSpecialPrice());
 			newProduct.setPublished(false);
 			newProduct.setReviewStatus(ReviewStatus.PENDING);
+
 			// standard
 			if (StandardProduct.class.isAssignableFrom(product.getClass())) {
 				StandardProduct newStandardProduct = (StandardProduct) newProduct;
@@ -211,6 +210,8 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 			product.setClientManagers(newProduct.getClientManagers());
 			product.setDescription(newProduct.getDescription());
 			product.setStock(newProduct.getStock());
+			product.setPrice(newProduct.getPrice());
+			product.setCurrencyUnit(newProduct.getCurrencyUnit());
 			product.setOriginalPrice(newProduct.getOriginalPrice());
 			product.setSpecialPrice(newProduct.getSpecialPrice());
 			// standard
@@ -398,7 +399,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 */
 	@Nonnull
 	protected final Page<T> doListTenantProducts(@Nonnull String tenantId, @Nullable ReviewStatus reviewStatus,
-			int page, int pageSize) {
+												 int page, int pageSize) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = productOperationTimer(type, PRODUCT_ACTION_TENANT_LIST);
@@ -441,7 +442,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	}
 
 	protected final Page<T> doListAllProducts(@Nullable ReviewStatus reviewStatus, @Nullable Category category,
-			int page, int pageSize) {
+											  int page, int pageSize) {
 		Timer.Context timerContext = null;
 		if (isMetricsEnabled()) {
 			Timer timer = productOperationTimer(type, PRODUCT_ACTION_AMDIN_LIST);
@@ -514,7 +515,7 @@ abstract class AbstractProductService<T extends Product> extends AbstractService
 	 */
 	// FIXME: stream requires @Transactional(readOnly = true)
 	protected final void doBatchDeleteProducts(Supplier<Stream<T>> productProvider, Code errorCode,
-			String errorMessage) {
+											   String errorMessage) {
 		safeDeletion(getProductRepository(), () -> {
 			try (Stream<T> stream = productProvider.get()) {
 				stream.forEach(product -> {
