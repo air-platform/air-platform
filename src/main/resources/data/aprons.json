@@ -9622,19 +9622,6 @@
 	{
 		"province": "北京市",
 		"city": "北京市",
-		"name": "东单体育中心足球场",
-		"address": "北京市东城区崇文门内大街甲106号",
-		"location": {
-			"latitude": 39.912619411087,
-			"longitude": 116.4237720447
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
 		"name": "国家会议中心前马路",
 		"address": "北京市朝阳区大屯路",
 		"location": {
@@ -10286,7 +10273,7 @@
 		"province": "陕西",
 		"city": "西安市",
 		"name": "陕西省体育训练中心",
-		"address": "西安市陕西自然博物馆",
+		"address": "陕西省体育训练中心",
 		"location": {
 			"latitude": 34.207917,
 			"longitude": 108.89149
@@ -10299,7 +10286,7 @@
 		"province": "陕西",
 		"city": "西安市",
 		"name": "品味高尔夫会所",
-		"address": "西安市陕西自然博物馆",
+		"address": "西安市品味高尔夫会所",
 		"location": {
 			"latitude": 34.386852,
 			"longitude": 108.880854
@@ -10312,7 +10299,7 @@
 		"province": "陕西",
 		"city": "西安市",
 		"name": "马赛克藏馆",
-		"address": "西安市陕西自然博物馆",
+		"address": "西安市马赛克藏馆",
 		"location": {
 			"latitude": 34.377557,
 			"longitude": 108.978877
@@ -10325,7 +10312,7 @@
 		"province": "陕西",
 		"city": "西安市",
 		"name": "西安城市运动公园",
-		"address": "西安市陕西自然博物馆",
+		"address": "西安市城市运动公园",
 		"location": {
 			"latitude": 34.350619,
 			"longitude": 108.949269
@@ -10338,7 +10325,7 @@
 		"province": "陕西",
 		"city": "西安市",
 		"name": "西安电子科技大学",
-		"address": "西安市陕西自然博物馆",
+		"address": "西安电子科技大学",
 		"location": {
 			"latitude": 34.129303,
 			"longitude": 108.840035
@@ -10351,7 +10338,7 @@
 		"province": "陕西",
 		"city": "西安市",
 		"name": "西安咸阳国际机场",
-		"address": "西安市陕西自然博物馆",
+		"address": "西安咸阳国际机场",
 		"location": {
 			"latitude": 34.441887,
 			"longitude": 108.767021
@@ -10364,7 +10351,7 @@
 		"province": "陕西",
 		"city": "西安市",
 		"name": "西北工业大学",
-		"address": "西安市陕西自然博物馆",
+		"address": "西北工业大学",
 		"location": {
 			"latitude": 34.250539,
 			"longitude": 108.921673
