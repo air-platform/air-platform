@@ -2,7 +2,6 @@ package net.aircommunity.platform.service.internal;
 
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import net.aircommunity.platform.AirException;
@@ -17,7 +16,6 @@ import net.aircommunity.platform.model.domain.PushNotification.BusinessType;
 import net.aircommunity.platform.model.domain.PushNotification.Type;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
 import net.aircommunity.platform.model.domain.Tenant;
-import net.aircommunity.platform.model.domain.User;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.repository.ActivityMessageRepository;
 import net.aircommunity.platform.service.ActivityMessageService;
@@ -97,7 +95,7 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 		activityMessage.setPublished(isPublish);
 
 
-		if(isPublish && activityMessage.getReviewStatus() == ReviewStatus.APPROVED){
+		if (isPublish && activityMessage.getReviewStatus() == ReviewStatus.APPROVED) {
 			DomainEvent de = new DomainEvent(DomainType.ACTIVITY_MSG, Operation.PUSH_NOTIFICATION);
 			de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID, "");
 			String extras = new StringBuffer()
@@ -166,11 +164,14 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 	}
 
 	@Override
-	public List<ActivityMessage> listUserActivityMessages(String userName) {
-		accountService.findAccount(userName);
-		User user = findAccount(userName, User.class);
+	public Page<ActivityMessage> listTenantActivityMessages(String tenantId, int page, int pageSize) {
+		Tenant tenant = findAccount(tenantId, Tenant.class);
+		return Pages.adapt(activityMessageRepository.findByVendor(tenant, createPageRequest(page, pageSize)));
+	}
 
-		return null;
+	@Override
+	public Page<ActivityMessage> listPublicActivityMessages(int page, int pageSize) {
+		return Pages.adapt(activityMessageRepository.findByPublishedTrue(createPageRequest(page, pageSize)));
 	}
 
 	@Transactional

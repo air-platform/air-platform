@@ -28,10 +28,8 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
-import net.aircommunity.platform.model.domain.Account;
 import net.aircommunity.platform.model.domain.ActivityMessage;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
-import net.aircommunity.platform.model.domain.Tenant;
 import net.aircommunity.platform.service.ActivityMessageService;
 import net.aircommunity.platform.service.security.AccountService;
 import org.slf4j.Logger;
@@ -89,13 +87,16 @@ public class ActivityMessageResource {
 	public Response listAll(@QueryParam("page") @DefaultValue("1") int page,
 							@QueryParam("pageSize") @DefaultValue("10") int pageSize, @Context SecurityContext context) {
 
-		if (context.isUserInRole(Roles.ROLE_ADMIN) || context.isUserInRole(Roles.ROLE_TENANT)) {
+		if (context.isUserInRole(Roles.ROLE_ADMIN)) {
 			return Response.ok(activityMessageService.listActivityMessages(page, pageSize)).build();
 		}
-		else {
-			String userName = context.getUserPrincipal().getName();
-			return Response.ok(activityMessageService.listUserActivityMessages(userName)).build();
+		else if (context.isUserInRole(Roles.ROLE_TENANT)) {
+			String tenantId = context.getUserPrincipal().getName();
+			return Response.ok(activityMessageService.listTenantActivityMessages(tenantId, page, pageSize)).build();
 		}
+
+		return Response.ok(activityMessageService.listPublicActivityMessages(page, pageSize)).build();
+
 	}
 
 
@@ -130,7 +131,8 @@ public class ActivityMessageResource {
 		if (context.isUserInRole(Roles.ROLE_TENANT)) {
 			String userName = context.getUserPrincipal().getName();
 			created = activityMessageService.createActivityMessage(activityMessage, userName);
-		}else{
+		}
+		else {
 			created = activityMessageService.createActivityMessage(activityMessage, activityMessage.getVendor().getId());
 		}
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();

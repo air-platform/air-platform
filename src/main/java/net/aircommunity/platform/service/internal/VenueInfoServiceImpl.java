@@ -1,10 +1,13 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import javax.annotation.Resource;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
+import net.aircommunity.platform.model.domain.VenueCategory;
 import net.aircommunity.platform.model.domain.VenueInfo;
 import net.aircommunity.platform.model.domain.VenueTemplate;
 import net.aircommunity.platform.nls.M;
@@ -55,6 +58,9 @@ public class VenueInfoServiceImpl extends AbstractServiceSupport implements Venu
 			LOG.error("VenueInfo {} not found", venueInfoId);
 			throw new AirException(Codes.VENUE_INFO_NOT_FOUND, M.msg(M.VENUE_INFO_NOT_FOUND));
 		}
+
+		List<VenueCategory> depdupe = new ArrayList<>(new LinkedHashSet<>(venueInfo.getVenueCategories()));
+		venueInfo.setVenueCategories(depdupe);
 		return venueInfo;
 	}
 

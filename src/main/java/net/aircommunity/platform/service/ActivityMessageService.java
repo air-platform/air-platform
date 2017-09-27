@@ -54,8 +54,10 @@ public interface ActivityMessageService {
 	Page<ActivityMessage> listActivityMessages(int page, int pageSize);
 
 	@Nonnull
-	List<ActivityMessage> listUserActivityMessages(String userName);
+	Page<ActivityMessage> listTenantActivityMessages(String tenantId, int page, int pageSize);
 
+	@Nonnull
+	Page<ActivityMessage> listPublicActivityMessages(int page, int pageSize);
 	/**
 	 * Delete a ActivityMessage.
 	 *

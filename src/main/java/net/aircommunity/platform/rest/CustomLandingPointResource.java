@@ -144,7 +144,7 @@ public class CustomLandingPointResource {
 	 */
 	@PUT
 	@Path("{customLandingPointId}")
-	@RolesAllowed(Roles.ROLE_USER)
+	@RolesAllowed({Roles.ROLE_ADMIN,Roles.ROLE_USER})
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
@@ -157,7 +157,7 @@ public class CustomLandingPointResource {
 	 */
 	@DELETE
 	@Path("{customLandingPointService}")
-	@RolesAllowed(Roles.ROLE_USER)
+	@RolesAllowed({Roles.ROLE_ADMIN,Roles.ROLE_USER})
 	public void delete(@PathParam("customLandingPointId") String customLandingPointId) {
 		customLandingPointService.deleteCustomLandingPoint(customLandingPointId);
 	}

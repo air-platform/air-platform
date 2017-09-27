@@ -1,7 +1,9 @@
 package net.aircommunity.platform.service.internal;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,6 +12,8 @@ import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.domain.User;
+import net.aircommunity.platform.model.domain.VenueCategory;
+import net.aircommunity.platform.model.domain.VenueInfo;
 import net.aircommunity.platform.model.domain.VenueTemplate;
 import net.aircommunity.platform.model.domain.VenueTemplateCouponUser;
 import net.aircommunity.platform.nls.M;
@@ -58,6 +62,16 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 			LOG.error("VenueTemplate {} not found", venueTemplateId);
 			throw new AirException(Codes.VENUE_TEMPLATE_NOT_FOUND, M.msg(M.VENUE_TEMPLATE_NOT_FOUND));
 		}
+
+		List<VenueInfo> depdupe = new ArrayList<>(new LinkedHashSet<>(venueTemplate.getVenueInfos()));
+		venueTemplate.setVenueInfos(depdupe);
+
+		venueTemplate.getVenueInfos().stream().forEach(info -> {
+			List<VenueCategory> dep = new ArrayList<>(new LinkedHashSet<>(info.getVenueCategories()));
+			info.setVenueCategories(dep);
+		});
+
+
 		return venueTemplate;
 	}
 
