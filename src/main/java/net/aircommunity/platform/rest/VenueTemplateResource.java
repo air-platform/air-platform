@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.RESTful;
 import io.swagger.annotations.Api;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,9 +31,13 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Roles;
+import net.aircommunity.platform.model.domain.Account;
+import net.aircommunity.platform.model.domain.User;
+import net.aircommunity.platform.model.domain.VenueInfo;
 import net.aircommunity.platform.model.domain.VenueTemplate;
 import net.aircommunity.platform.model.domain.VenueTemplateCouponUser;
 import net.aircommunity.platform.service.VenueTemplateService;
+import net.aircommunity.platform.service.security.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +58,9 @@ public class VenueTemplateResource {
 
 	@Resource
 	private VenueTemplateService venueTemplateService;
+
+	@Resource
+	private AccountService accountService;
 
 	// ***********************
 	// ANYONE
@@ -90,14 +99,23 @@ public class VenueTemplateResource {
 
 		VenueTemplate vt = venueTemplateService.findVenueTemplate(venueTemplateId);
 		all = vt.getVenueTemplateCouponUsers();
-		if (all != null && !all.isEmpty())
+		if (all != null && !all.isEmpty()) {
 			sel = all.stream().filter(cu -> cu.getUser().getId().equals(userId)).collect(Collectors.toList());
-		if (sel != null && !sel.isEmpty()) {
-			return Response.ok(sel.get(0)).build();
+			if (sel != null && !sel.isEmpty()) {
+				return Response.ok(sel.get(0)).build();
+			}
 		}
-		else {
-			return Response.ok().build();
-		}
+
+		Account ac = accountService.findAccount(userId);
+		User user = User.class.cast(ac);
+		VenueTemplateCouponUser cuser = new VenueTemplateCouponUser();
+		cuser.setUser(user);
+		cuser.setUserId(userId);
+		cuser.setVenueTemplate(vt);
+		cuser.setCouponNum(0);
+		cuser.setPointsPerCoupon(vt.getPointsPerCoupon());
+		return Response.ok(cuser).build();
+
 	}
 	/*public JsonObject couponNum(@PathParam("venueTemplateId") String venueTemplateId, @Context SecurityContext context) {
 
@@ -155,7 +173,10 @@ public class VenueTemplateResource {
 	@Path("{venueTemplateId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public VenueTemplate find(@PathParam("venueTemplateId") String venueTemplateId) {
-		return venueTemplateService.findVenueTemplate(venueTemplateId);
+		VenueTemplate vt = venueTemplateService.findVenueTemplate(venueTemplateId);
+		List<VenueInfo> depdupe = new ArrayList<>(new LinkedHashSet<>(vt.getVenueInfos()));
+		vt.setVenueInfos(depdupe);
+		return vt;
 	}
 
 

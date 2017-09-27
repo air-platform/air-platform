@@ -29,7 +29,7 @@ import java.net.URI;
 /**
  * Apron RESTful API allows list/find/query for ANYONE.
  *
- * @author Bin.Zhang
+ * @author Xiangwen.Kong
  */
 @Api
 @RESTful
@@ -78,7 +78,7 @@ public class CustomLandingPointResource {
 		}
 		else {
 			String userName = context.getUserPrincipal().getName();
-			return Response.ok(customLandingPointService.listUserCustomLandingPoints(userName)).build();
+			return Response.ok(customLandingPointService.listUserCustomLandingPoints(userName, page, pageSize)).build();
 		}
 	}
 

@@ -182,7 +182,7 @@ public class PushNotification extends Persistable {
 	}
 
 	public enum BusinessType {
-		ORDER, POINT, SYSTEM, OTHER;
+		ORDER, POINT, SYSTEM, ACTIVITY_MSG, OTHER;
 
 		public static BusinessType fromString(String value) {
 			for (BusinessType e : values()) {

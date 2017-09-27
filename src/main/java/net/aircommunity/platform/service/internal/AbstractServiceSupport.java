@@ -219,30 +219,33 @@ public abstract class AbstractServiceSupport {
 			boolean notificationRequired = event.getOperation() == Operation.PUSH_NOTIFICATION;
 			if (interestedDomains.contains(event.getType()) && notificationRequired && when.test(event)) {
 				PushNotification pf = new PushNotification();
-				String accountId = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID).toString();
-
-
-				User user = findAccount(accountId, User.class);
 				pf.setType(PushNotification.Type.PLAIN_TEXT);
-
-				//TODO use meaningful alias?
-				// jiguang sdk don't support string containing dash as alias, use underline instead
-				pf.setAlias(accountId.replace("-", "_"));
-
-				pf.setOwner(user);
+				String extras = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS).toString();
+				pf.setExtra(extras);
+				if (event.getType() != DomainType.ACTIVITY_MSG) {
+					String accountId = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_ACCOUNTID).toString();
+					User user = findAccount(accountId, User.class);
+					//TODO use meaningful alias?
+					// jiguang sdk don't support string containing dash as alias, use underline instead
+					pf.setAlias(accountId.replace("-", "_"));
+					pf.setOwner(user);
+				}
 
 				if (event.getType() == DomainType.ORDER) {
 					String msg = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_MESSAGE).toString();
-					String extras = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS).toString();
 					pf.setMessage(msg);
-					pf.setExtra(extras);
 				}
 				else if (event.getType() == DomainType.POINT) {
-					String extras = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS).toString();
-
 					pf.setMessage(Constants.TEMPLATE_PUSHNOTIFICATION_POINT_MESSAGE);
-					pf.setExtra(extras);
+
 				}
+				else if (event.getType() == DomainType.ACTIVITY_MSG) {
+					//pf.setMessage(Constants.TEMPLATE_PUSHNOTIFICATION_ACTIVITY_MSG_MESSAGE);
+					String msg = event.getParam(Constants.TEMPLATE_PUSHNOTIFICATION_MESSAGE).toString();
+					pf.setMessage(msg);
+				}
+
+
 				pushNotificationService.sendInstantPushNotification(pf);
 			}
 		});

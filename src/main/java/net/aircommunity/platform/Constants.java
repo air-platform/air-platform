@@ -71,11 +71,12 @@ public final class Constants {
 	public static final String TEMPLATE_PUSHNOTIFICATION_MESSAGE = "pushMessage";
 	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS = "pushMessage_extras";
 	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_ORDER_ID = "order_id";
+	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_ACTIVITY_MSG_ID = "activity_msg_id";
 	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_ORDER_TYPE = "order_type";
 	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_CONTENT_TYPE = "content_type";
 	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_BUSINESS_TYPE = "business_type";
 	public static final String TEMPLATE_PUSHNOTIFICATION_POINT_MESSAGE = "您的积分数量发生变化，请前往空中社区查看。";
-
+	public static final String TEMPLATE_PUSHNOTIFICATION_ACTIVITY_MSG_MESSAGE = "您有新活动通知，请前往空中社区查看。";
 
 	public static final String TEMPLATE_PUSHNOTIFICATION_CREATION = "您的订单已经提交，我们正在为您确认运力与价格~";
 	public static final String TEMPLATE_PUSHNOTIFICATION_OFFER = "报价已生成，请您确认机型与报价~";

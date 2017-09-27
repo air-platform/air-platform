@@ -152,6 +152,10 @@ public final class Codes {
 	public static final Code VENUE_TEMPLATE_HAS_GRABBED_COUPON = Code.notFound(11_016_0004);
 	public static final Code VENUE_TEMPLATE_NO_COUPON = Code.notFound(11_016_0005);
 	public static final Code VENUE_TEMPLATE_COUPON_EXPIRED = Code.notFound(11_016_0006);
+
+
+	public static final Code ACTIVITY_MESSAGE_NOT_FOUND = Code.notFound(11_017_0001);
+
 	private Codes() {
 		throw new AssertionError();
 	}

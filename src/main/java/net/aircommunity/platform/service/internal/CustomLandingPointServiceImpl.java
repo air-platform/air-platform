@@ -1,6 +1,5 @@
 package net.aircommunity.platform.service.internal;
 
-import java.util.List;
 import javax.annotation.Resource;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
@@ -121,11 +120,12 @@ public class CustomLandingPointServiceImpl extends AbstractServiceSupport implem
 	}
 
 	@Override
-	public List<CustomLandingPoint> listUserCustomLandingPoints(String userName) {
+	public Page<CustomLandingPoint> listUserCustomLandingPoints(String userName, int page, int pageSize) {
 		accountService.findAccount(userName);
 		User user = findAccount(userName, User.class);
 
-		return customLandingPointRepository.findByUser(user);
+
+		return Pages.adapt(customLandingPointRepository.findByUser(user, Pages.createPageRequest(page, pageSize)));
 	}
 
 	@Transactional
