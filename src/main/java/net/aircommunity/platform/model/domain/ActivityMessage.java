@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.domain.Reviewable.ReviewStatus;
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 import net.aircommunity.platform.model.jaxb.TenantAdapter;
-import net.aircommunity.platform.model.jaxb.UserAdapter;
 
 /**
  * At an airport, the apron is the area of hard ground where aircraft are parked.
@@ -44,15 +44,16 @@ public class ActivityMessage extends Persistable {
 
 
 	@Temporal(value = TemporalType.TIMESTAMP)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	@Column(name = "date", nullable = false)
 	private Date date;
 
 	@Lob
 	@Column(name = "description")
+	@JsonView(JsonViews.PublicDetail.class)
 	private String description;
 
 	@Column(name = "published", nullable = false)
-	@JsonView({JsonViews.Admin.class, JsonViews.Tenant.class})
 	protected boolean published = false;
 
 	@Enumerated(EnumType.STRING)
@@ -126,7 +127,6 @@ public class ActivityMessage extends Persistable {
 	public void setReviewStatus(ReviewStatus reviewStatus) {
 		this.reviewStatus = reviewStatus;
 	}
-
 
 
 	public String getDescription() {

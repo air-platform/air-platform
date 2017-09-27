@@ -107,7 +107,7 @@ public class ActivityMessageResource {
 	@PermitAll
 	@Path("{activityMessageId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.Public.class)
+	@JsonView(JsonViews.PublicDetail.class)
 	public ActivityMessage find(@PathParam("activityMessageId") String activityMessageId) {
 		return activityMessageService.findActivityMessage(activityMessageId);
 	}

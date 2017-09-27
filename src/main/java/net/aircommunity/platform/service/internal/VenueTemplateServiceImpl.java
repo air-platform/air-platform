@@ -107,7 +107,9 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 			/*
 			 * 1. add user-coupon field
 			 * 2. remaining coupon num subtracts 1
+			 * 3. add user points
 			 * 3. return one user-coupon required by app
+			 *
 			 */
 			User user = findAccount(userName, User.class);
 			Set<VenueTemplateCouponUser> allCouponUser = new HashSet<VenueTemplateCouponUser>();
@@ -126,6 +128,7 @@ public class VenueTemplateServiceImpl extends AbstractServiceSupport implements 
 			VenueTemplate vt = safeExecute(() -> venueTemplateRepository.save(venueTemplate), "Publish venueTemplate %s to %s failed",
 					venueTemplateId, venueTemplate);
 
+			accountService.updateUserPoints(userName, venueTemplate.getPointsPerCoupon());
 			//updateVenueTemplate(venueTemplateId, venueTemplate);
 			//VenueTemplate vt = findVenueTemplate(venueTemplateId);
 
