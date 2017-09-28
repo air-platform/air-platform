@@ -29,7 +29,7 @@ import java.net.URI;
 /**
  * Apron RESTful API allows list/find/query for ANYONE.
  *
- * @author Bin.Zhang
+ * @author Xiangwen.Kong
  */
 @Api
 @RESTful
@@ -78,7 +78,7 @@ public class CustomLandingPointResource {
 		}
 		else {
 			String userName = context.getUserPrincipal().getName();
-			return Response.ok(customLandingPointService.listUserCustomLandingPoints(userName)).build();
+			return Response.ok(customLandingPointService.listUserCustomLandingPoints(userName, page, pageSize)).build();
 		}
 	}
 
@@ -144,7 +144,7 @@ public class CustomLandingPointResource {
 	 */
 	@PUT
 	@Path("{customLandingPointId}")
-	@RolesAllowed(Roles.ROLE_USER)
+	@RolesAllowed({Roles.ROLE_ADMIN,Roles.ROLE_USER})
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
@@ -157,7 +157,7 @@ public class CustomLandingPointResource {
 	 */
 	@DELETE
 	@Path("{customLandingPointService}")
-	@RolesAllowed(Roles.ROLE_USER)
+	@RolesAllowed({Roles.ROLE_ADMIN,Roles.ROLE_USER})
 	public void delete(@PathParam("customLandingPointId") String customLandingPointId) {
 		customLandingPointService.deleteCustomLandingPoint(customLandingPointId);
 	}

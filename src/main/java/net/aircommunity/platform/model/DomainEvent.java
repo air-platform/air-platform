@@ -67,7 +67,7 @@ public class DomainEvent implements Serializable {
 	}
 
 	public enum DomainType {
-		ACCOUNT, USER, TENANT, AIRCRAFT, PRODUCT, ORDER, POINT
+		ACCOUNT, USER, TENANT, AIRCRAFT, PRODUCT, ORDER, POINT, ACTIVITY_MSG
 	}
 
 	/**

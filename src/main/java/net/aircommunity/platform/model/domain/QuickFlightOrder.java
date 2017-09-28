@@ -30,7 +30,8 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.aircommunity.platform.model.domain.Product.Category;
 import net.aircommunity.platform.model.domain.Product.Type;
-import net.aircommunity.platform.model.jaxb.DateAdapter;
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
+import net.aircommunity.platform.model.jaxb.DateTimeShortAdapter;
 
 /**
  * Quick flight order.
@@ -49,9 +50,9 @@ public class QuickFlightOrder extends CandidateOrder<AircraftCandidate> implemen
 
 	// departure date, e.g. 2017-5-1
 	@NotNull
-	@Temporal(value = TemporalType.DATE)
+	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "departure_date", nullable = false)
-	@XmlJavaTypeAdapter(DateAdapter.class)
+	@XmlJavaTypeAdapter(DateTimeShortAdapter.class)
 	private Date departureDate;
 
 	// departure location

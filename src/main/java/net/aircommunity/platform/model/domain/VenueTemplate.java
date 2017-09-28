@@ -111,7 +111,7 @@ public class VenueTemplate extends Persistable {
 		return venueTemplateCouponUsers;
 	}
 
-	public void setVenueCategoryProducts(Set<VenueTemplateCouponUser> venueTemplateCouponUsers) {
+	public void setVenueTemplateCouponUsers(Set<VenueTemplateCouponUser> venueTemplateCouponUsers) {
 		if (venueTemplateCouponUsers != null) {
 			venueTemplateCouponUsers.stream()
 					.forEach(venueTemplateCouponUser -> venueTemplateCouponUser.setVenueTemplate(this));

@@ -180,6 +180,9 @@ public class LocalizedMessages extends NLSResource {
 	public static String VENUE_TEMPLATE_HAS_GRABBED_COUPON;
 	public static String  VENUE_TEMPLATE_NO_COUPON;
 	public static String VENUE_TEMPLATE_COUPON_EXPIRED;
+
+	//activity message
+	public static String  ACTIVITY_MESSAGE_NOT_FOUND;
 	/**
 	 * Bind the messageId with bindings.
 	 * 

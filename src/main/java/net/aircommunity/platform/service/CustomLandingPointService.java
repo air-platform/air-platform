@@ -54,7 +54,7 @@ public interface CustomLandingPointService {
 	Page<CustomLandingPoint> listCustomLandingPoints(int page, int pageSize);
 
 	@Nonnull
-	List<CustomLandingPoint> listUserCustomLandingPoints(String userName);
+	Page<CustomLandingPoint>  listUserCustomLandingPoints(String userName, int page, int pageSize);
 	/**
 	 * Delete a CustomLandingPoint.
 	 *

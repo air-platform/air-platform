@@ -722,7 +722,8 @@ abstract class AbstractOrderService<T extends Order> extends AbstractServiceSupp
 					orderPaid = doUpdateOrderStatus(order, Order.Status.PARTIAL_PAID);
 				}
 			}
-			eventBus.post(new OrderEvent(OrderEvent.EventType.PAYMENT, orderPaid));
+			//Not to push duplicate notification
+			//eventBus.post(new OrderEvent(OrderEvent.EventType.PAYMENT, orderPaid));
 			return orderPaid;
 		}
 		// metrics
