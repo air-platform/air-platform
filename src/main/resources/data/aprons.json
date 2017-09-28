@@ -561,32 +561,6 @@
 	{
 		"province": "北京市",
 		"city": "北京市",
-		"name": "奥体中心",
-		"address": "北京市朝阳区安定路辅路",
-		"location": {
-			"latitude": 39.990398614147,
-			"longitude": 116.41472576863
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "国家体育场",
-		"address": "北京市朝阳区慧忠北路",
-		"location": {
-			"latitude": 40.004027471692,
-			"longitude": 116.40888513761
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
 		"name": "国家体育中心网球场-钻石网球中心",
 		"address": "北京市朝阳区林萃路",
 		"location": {
@@ -717,19 +691,6 @@
 	{
 		"province": "北京市",
 		"city": "北京市",
-		"name": "健一公馆",
-		"address": "北京市朝阳区东四环中路辅路",
-		"location": {
-			"latitude": 39.932520640728,
-			"longitude": 116.49506885337
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
 		"name": "亦庄同仁医院",
 		"address": "北京市大兴区西环南路2号",
 		"location": {
@@ -783,36 +744,10 @@
 		"province": "北京市",
 		"city": "北京市",
 		"name": "北京天坛公园",
-		"address": "北京市东城区天坛路",
-		"location": {
-			"latitude": 39.893215784089,
-			"longitude": 116.42155701667
-		},
-		"published": true,
-		"type": "TREATMENT",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "北京天坛公园",
 		"address": "北京市东城区天坛路甲1号",
 		"location": {
 			"latitude": 39.894357731939,
 			"longitude": 116.41904791817
-		},
-		"published": true,
-		"type": "TREATMENT",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "北京天坛公园",
-		"address": "北京市东城区天坛路甲1号",
-		"location": {
-			"latitude": 39.894078128843,
-			"longitude": 116.41904841477
 		},
 		"published": true,
 		"type": "TREATMENT",
@@ -829,19 +764,6 @@
 		},
 		"published": true,
 		"type": "TREATMENT",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "北京市香山公园",
-		"address": "北京市海淀区香山路",
-		"location": {
-			"latitude": 40.001110897364,
-			"longitude": 116.21912247942
-		},
-		"published": true,
-		"type": "HELICOPTER",
 		"description": ""
 	},
 	{
@@ -1121,19 +1043,6 @@
 		"province": "北京市",
 		"city": "北京市",
 		"name": "朝阳公园2处",
-		"address": "北京市朝阳区姚家园北路",
-		"location": {
-			"latitude": 39.952897190141,
-			"longitude": 116.50140489565
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "朝阳公园2处",
 		"address": "北京市朝阳区东四环北路辅路",
 		"location": {
 			"latitude": 39.943355697786,
@@ -1281,19 +1190,6 @@
 		"location": {
 			"latitude": 39.990398090378,
 			"longitude": 116.41472332059
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "石景山体育场",
-		"address": "北京市石景山区体育场北路",
-		"location": {
-			"latitude": 39.911974000405,
-			"longitude": 116.2143647259
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -1653,19 +1549,6 @@
 	{
 		"province": "北京市",
 		"city": "北京市",
-		"name": "密云机场",
-		"address": "北京市昌平区",
-		"location": {
-			"latitude": 40.195607075371,
-			"longitude": 116.34083982856
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
 		"name": "白庙检查站",
 		"address": "北京市通州区G102(通燕高速)",
 		"location": {
@@ -1718,19 +1601,6 @@
 	{
 		"province": "北京市",
 		"city": "北京市",
-		"name": "国家体育场",
-		"address": "北京市朝阳区林萃路",
-		"location": {
-			"latitude": 40.027205711203,
-			"longitude": 116.38159050103
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
 		"name": "北京市红十字会养老中心",
 		"address": "北京市怀柔区",
 		"location": {
@@ -1749,19 +1619,6 @@
 		"location": {
 			"latitude": 40.350524031509,
 			"longitude": 116.56970116136
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "健一公馆",
-		"address": "北京市朝阳区东四环中路辅路",
-		"location": {
-			"latitude": 39.932526460743,
-			"longitude": 116.49507559163
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -2134,19 +1991,6 @@
 	{
 		"province": "北京市",
 		"city": "北京市",
-		"name": "国家会议中心",
-		"address": "北京市朝阳区大屯路",
-		"location": {
-			"latitude": 40.007381490623,
-			"longitude": 116.39212424851
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
 		"name": "电子城国际电子总部6号院内",
 		"address": "北京市朝阳区酒仙桥路",
 		"location": {
@@ -2225,19 +2069,6 @@
 	{
 		"province": "天津市",
 		"city": "天津市",
-		"name": "泊湖林奇郡项目",
-		"address": "天津市静海县G205(山深线)",
-		"location": {
-			"latitude": 38.889243645842,
-			"longitude": 117.15510063226
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "天津市",
-		"city": "天津市",
 		"name": "武清区政府",
 		"address": "天津市武清区雍阳西道118号",
 		"location": {
@@ -2282,19 +2113,6 @@
 		"location": {
 			"latitude": 39.107928294448,
 			"longitude": 117.15762166228
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "天津市",
-		"city": "天津市",
-		"name": "杨村五中",
-		"address": "天津市武清区振华路",
-		"location": {
-			"latitude": 39.382823707732,
-			"longitude": 117.05153781881
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -2536,19 +2354,6 @@
 	},
 	{
 		"province": "河北省",
-		"city": "张家口市",
-		"name": "崇礼云顶滑雪场",
-		"address": "河北省张家口市崇礼县",
-		"location": {
-			"latitude": 40.960597117652,
-			"longitude": 115.43477970951
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "河北省",
 		"city": "衡水市",
 		"name": "故城机场",
 		"address": "河北省衡水市故城县",
@@ -2763,19 +2568,6 @@
 		"location": {
 			"latitude": 37.485551460103,
 			"longitude": 110.29363503568
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "山东省",
-		"city": "济宁市",
-		"name": "济宁通用机场",
-		"address": "山东省济宁市兖州市S104",
-		"location": {
-			"latitude": 35.469275250855,
-			"longitude": 116.78646769793
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -3615,19 +3407,6 @@
 	},
 	{
 		"province": "山西省",
-		"city": "晋中市",
-		"name": "左权县职业技术中学",
-		"address": "山西省晋中市左权县北大街",
-		"location": {
-			"latitude": 37.094631769448,
-			"longitude": 113.3544583461
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "山西省",
 		"city": "长治市",
 		"name": "潞城宾馆",
 		"address": "山西省长治市潞城市中华大街895号",
@@ -3647,32 +3426,6 @@
 		"location": {
 			"latitude": 38.982632815347,
 			"longitude": 112.27902185445
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "山西省",
-		"city": "吕梁市",
-		"name": "离石民兵训练基地",
-		"address": "山西省吕梁市离石区",
-		"location": {
-			"latitude": 37.519957699926,
-			"longitude": 111.23268453594
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "山西省",
-		"city": "晋中市",
-		"name": "祁县克代尔啤酒厂 ",
-		"address": "山西省晋中市祁县",
-		"location": {
-			"latitude": 37.397855751478,
-			"longitude": 112.32564797331
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -4733,32 +4486,6 @@
 	},
 	{
 		"province": "内蒙古自治区",
-		"city": "兴安盟",
-		"name": "个人大院",
-		"address": "内蒙古自治区兴安盟乌兰浩特市",
-		"location": {
-			"latitude": 46.05390599512,
-			"longitude": 122.0249619923
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "内蒙古自治区",
-		"city": "兴安盟",
-		"name": "秸秆转化加工厂",
-		"address": "内蒙古自治区兴安盟突泉县巴乌线",
-		"location": {
-			"latitude": 45.363220522781,
-			"longitude": 121.55973218648
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "内蒙古自治区",
 		"city": "通辽市",
 		"name": "国家电网大院",
 		"address": "内蒙古自治区通辽市开鲁县",
@@ -4785,19 +4512,6 @@
 	},
 	{
 		"province": "内蒙古自治区",
-		"city": "锡林郭勒盟",
-		"name": "宏大彩钢板厂",
-		"address": "内蒙古自治区锡林郭勒盟西乌珠穆沁旗",
-		"location": {
-			"latitude": 44.702781115019,
-			"longitude": 118.44340577812
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "内蒙古自治区",
 		"city": "赤峰市",
 		"name": "直升机起降点",
 		"address": "内蒙古自治区赤峰市巴林右旗",
@@ -4812,37 +4526,11 @@
 	{
 		"province": "内蒙古自治区",
 		"city": "赤峰市",
-		"name": "个人设备库",
-		"address": "内蒙古自治区赤峰市翁牛特旗工四路",
-		"location": {
-			"latitude": 42.919789674771,
-			"longitude": 119.05137678005
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "内蒙古自治区",
-		"city": "赤峰市",
 		"name": "北疆北山粮库",
 		"address": "内蒙古自治区赤峰市红山区S205",
 		"location": {
 			"latitude": 42.350119141947,
 			"longitude": 118.91092066602
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "内蒙古自治区",
-		"city": "赤峰市",
-		"name": "个人大院",
-		"address": "内蒙古自治区赤峰市元宝山区古马路",
-		"location": {
-			"latitude": 42.064113925903,
-			"longitude": 119.329200345
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -5267,19 +4955,6 @@
 	{
 		"province": "浙江省",
 		"city": "湖州市",
-		"name": "菱湖众悦驾校",
-		"address": "浙江省湖州市吴兴区保戈公路",
-		"location": {
-			"latitude": 30.692245201413,
-			"longitude": 120.12150593718
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "浙江省",
-		"city": "湖州市",
 		"name": "湖州伏牛板簧",
 		"address": "浙江省湖州市南浔区菁菱公路",
 		"location": {
@@ -5311,19 +4986,6 @@
 		"location": {
 			"latitude": 29.688192599336,
 			"longitude": 121.29225312608
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "浙江省",
-		"city": "宁波市",
-		"name": "奉化市溪口镇政府溪口风景区第二停机点",
-		"address": "浙江省宁波市奉化市S33",
-		"location": {
-			"latitude": 29.69149710403,
-			"longitude": 121.26563335308
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -5527,63 +5189,11 @@
 	{
 		"province": "云南省",
 		"city": "红河哈尼族彝族自治州",
-		"name": "个旧市",
-		"address": "云南省红河哈尼族彝族自治州个旧市S212",
-		"location": {
-			"latitude": 23.520482923874,
-			"longitude": 103.24134018208
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
-		"city": "红河哈尼族彝族自治州",
-		"name": "建水县",
-		"address": "云南省红河哈尼族彝族自治州建水县",
-		"location": {
-			"latitude": 23.646835955588,
-			"longitude": 102.83865576821
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
-		"city": "红河哈尼族彝族自治州",
-		"name": "建水县",
-		"address": "云南省红河哈尼族彝族自治州建水县",
-		"location": {
-			"latitude": 23.661016493439,
-			"longitude": 102.84725945415
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
-		"city": "红河哈尼族彝族自治州",
 		"name": "红河县",
 		"address": "云南省红河哈尼族彝族自治州红河县",
 		"location": {
 			"latitude": 23.357077956258,
 			"longitude": 102.43309286873
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
-		"city": "玉溪市",
-		"name": "元江县",
-		"address": "云南省玉溪市元江G213(兰磨线)",
-		"location": {
-			"latitude": 23.650343327055,
-			"longitude": 101.98590258967
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -5636,19 +5246,6 @@
 		"location": {
 			"latitude": 22.785942832528,
 			"longitude": 100.91608664907
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
-		"city": "西双版纳傣族自治州",
-		"name": "西双版纳",
-		"address": "云南省西双版纳傣族自治州景洪市",
-		"location": {
-			"latitude": 22.021795390923,
-			"longitude": 100.75492617013
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -5721,19 +5318,6 @@
 	},
 	{
 		"province": "四川省",
-		"city": "凉山彝族自治州",
-		"name": "冕宁县复兴镇中心村",
-		"address": "四川省凉山彝族自治州冕宁县G108(京昆线)",
-		"location": {
-			"latitude": 28.430666358817,
-			"longitude": 102.18153395741
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "四川省",
 		"city": "自贡市",
 		"name": "沿滩区卫平镇综合管理办公室",
 		"address": "四川省自贡市大安区G85(渝昆高速)",
@@ -5787,50 +5371,11 @@
 	{
 		"province": "四川省",
 		"city": "乐山市",
-		"name": "金口河",
-		"address": "四川省乐山市金口河区S306",
-		"location": {
-			"latitude": 29.247422514822,
-			"longitude": 103.07982171864
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "四川省",
-		"city": "凉山彝族自治州",
-		"name": "巴浦镇阳光农家院",
-		"address": "四川省凉山彝族自治州美姑县",
-		"location": {
-			"latitude": 28.338778116036,
-			"longitude": 103.15056780359
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "四川省",
-		"city": "乐山市",
 		"name": "沐川县开源木业",
 		"address": "四川省乐山市沐川县",
 		"location": {
 			"latitude": 28.968400544337,
 			"longitude": 103.88802090105
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "四川省",
-		"city": "乐山市",
-		"name": "峨边羊竹",
-		"address": "四川省乐山市峨边彝族自治县铜河路",
-		"location": {
-			"latitude": 29.251975594859,
-			"longitude": 103.27576784478
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -6332,19 +5877,6 @@
 	},
 	{
 		"province": "辽宁省",
-		"city": "抚顺市",
-		"name": "望花区五老街盘南路8号通达驾校",
-		"address": "辽宁省抚顺市望花区盘南路",
-		"location": {
-			"latitude": 41.823656196953,
-			"longitude": 123.88456351311
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "辽宁省",
 		"city": "锦州市",
 		"name": "黑山县健康米业",
 		"address": "辽宁省锦州市黑山县",
@@ -6377,32 +5909,6 @@
 		"location": {
 			"latitude": 40.095312026055,
 			"longitude": 119.96492217551
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "辽宁省",
-		"city": "葫芦岛市",
-		"name": "个人粮库",
-		"address": "辽宁省葫芦岛市绥中县G102(京哈线)",
-		"location": {
-			"latitude": 40.134811469785,
-			"longitude": 119.99706122454
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "辽宁省",
-		"city": "朝阳市",
-		"name": "朝阳重型机器制造有限公司",
-		"address": "辽宁省朝阳市双塔区",
-		"location": {
-			"latitude": 41.6437955531,
-			"longitude": 120.5130701146
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -6507,19 +6013,6 @@
 		"location": {
 			"latitude": 51.676200922008,
 			"longitude": 124.40885190268
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "黑龙江省",
-		"city": "大兴安岭地区",
-		"name": "新林镇",
-		"address": "黑龙江省大兴安岭地区呼玛县S207(加漠公路)",
-		"location": {
-			"latitude": 51.684612795594,
-			"longitude": 124.41325630611
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -6637,19 +6130,6 @@
 		"location": {
 			"latitude": 46.753285006511,
 			"longitude": 129.93979045437
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "黑龙江省",
-		"city": "齐齐哈尔市",
-		"name": "碾子山区",
-		"address": "黑龙江省齐齐哈尔市碾子山区",
-		"location": {
-			"latitude": 47.50250229649,
-			"longitude": 122.91510639633
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -7059,19 +6539,6 @@
 		"description": ""
 	},
 	{
-		"province": "吉林省",
-		"city": "吉林市",
-		"name": "船营区越北镇",
-		"address": "吉林省吉林市船营区G302(迎宾大路)",
-		"location": {
-			"latitude": 43.875810795387,
-			"longitude": 126.50567633348
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
 		"province": "广西壮族自治区",
 		"city": "桂林市",
 		"name": "龙脊景区",
@@ -7438,19 +6905,6 @@
 	{
 		"province": "海南省",
 		"city": "三亚市",
-		"name": "海航旅游学院机坪",
-		"address": "海南省三亚市市辖区凤凰路",
-		"location": {
-			"latitude": 18.295706823776,
-			"longitude": 109.50099463746
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "海南省",
-		"city": "三亚市",
 		"name": "蜈支洲岛内冬季码头",
 		"address": "海南省三亚市市辖区",
 		"location": {
@@ -7593,19 +7047,6 @@
 	},
 	{
 		"province": "海南省",
-		"city": "海口市",
-		"name": "新国宾馆",
-		"address": "海南省海口市秀英区滨海大道",
-		"location": {
-			"latitude": 20.05603624305,
-			"longitude": 110.22529332254
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "海南省",
 		"city": "三亚市",
 		"name": "鸿州海上浮台",
 		"address": "海南省三亚市市辖区鸿洲路",
@@ -7716,32 +7157,6 @@
 		"location": {
 			"latitude": 18.764543860975,
 			"longitude": 110.23604548542
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "海南省",
-		"city": "琼海市",
-		"name": "博鳌机场",
-		"address": "海南省琼海市",
-		"location": {
-			"latitude": 19.145189190003,
-			"longitude": 110.4681663259
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "海南省",
-		"city": "海口市",
-		"name": "新国宾馆",
-		"address": "海南省海口市秀英区滨海大道",
-		"location": {
-			"latitude": 20.055477074873,
-			"longitude": 110.22528902479
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -8060,58 +7475,6 @@
 		"description": ""
 	},
 	{
-		"province": "黑龙江省",
-		"city": "绥化市",
-		"name": "南门停车场",
-		"address": "黑龙江省绥化市海伦市",
-		"location": {
-			"latitude": 47.455238616969,
-			"longitude": 126.97504907218
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "黑龙江省",
-		"city": "伊春市",
-		"name": "九河泉肥业",
-		"address": "黑龙江省伊春市铁力市",
-		"location": {
-			"latitude": 46.986054204618,
-			"longitude": 128.02075092025
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "黑龙江省",
-		"city": "佳木斯市",
-		"name": "永丰粮食贸易有限公司",
-		"address": "黑龙江省佳木斯市汤原县",
-		"location": {
-			"latitude": 46.753288184301,
-			"longitude": 129.93978668111
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "辽宁省",
-		"city": "葫芦岛市",
-		"name": "前所镇国家电网大院",
-		"address": "辽宁省葫芦岛市绥中县绥电线",
-		"location": {
-			"latitude": 40.095311800782,
-			"longitude": 119.96492514381
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
 		"province": "辽宁省",
 		"city": "葫芦岛市",
 		"name": "个人粮库",
@@ -8139,90 +7502,12 @@
 	},
 	{
 		"province": "辽宁省",
-		"city": "锦州市",
-		"name": "长鹏重型机器厂",
-		"address": "辽宁省锦州市北镇市G102(京哈线)",
-		"location": {
-			"latitude": 41.411142376085,
-			"longitude": 121.79126763858
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "辽宁省",
-		"city": "葫芦岛市",
-		"name": "凤城开发区丹东生大食品有限公司",
-		"address": "辽宁省葫芦岛市绥中县",
-		"location": {
-			"latitude": 40.416802546659,
-			"longitude": 120.02327914554
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "辽宁省",
-		"city": "本溪市",
-		"name": "环境卫生管理处",
-		"address": "辽宁省本溪市本溪满族自治县长江路",
-		"location": {
-			"latitude": 41.327717367574,
-			"longitude": 124.11870651384
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "辽宁省",
-		"city": "沈阳市",
-		"name": "候三家社区管委会",
-		"address": "辽宁省沈阳市沈北新区旁新线",
-		"location": {
-			"latitude": 42.078059985816,
-			"longitude": 123.54968359444
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "辽宁省",
-		"city": "铁岭市",
-		"name": "调兵山北工业区搅拌站",
-		"address": "辽宁省铁岭市调兵山市创业路",
-		"location": {
-			"latitude": 42.502107318612,
-			"longitude": 123.58424022959
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "辽宁省",
 		"city": "四平市",
 		"name": "四平宝宇粮食贸易有限公司",
 		"address": "吉林省四平市梨树县四桑线",
 		"location": {
 			"latitude": 43.279223426639,
 			"longitude": 124.36835901649
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "吉林省",
-		"city": "辽源市",
-		"name": "吉林睿康生物有限公司",
-		"address": "吉林省辽源市东丰县G303(集锡线)",
-		"location": {
-			"latitude": 42.690204812519,
-			"longitude": 125.56700207122
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -8262,32 +7547,6 @@
 		"location": {
 			"latitude": 45.363219416139,
 			"longitude": 121.55972893813
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "内蒙古自治区",
-		"city": "通辽市",
-		"name": "国家电网大院",
-		"address": "内蒙古自治区通辽市开鲁县",
-		"location": {
-			"latitude": 43.582729543381,
-			"longitude": 120.92703724768
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "内蒙古自治区",
-		"city": "通辽市",
-		"name": "远大彩钢厂",
-		"address": "内蒙古自治区通辽市霍林郭勒市远大路",
-		"location": {
-			"latitude": 45.47425692847,
-			"longitude": 119.64986801917
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -8361,50 +7620,11 @@
 	{
 		"province": "内蒙古自治区",
 		"city": "赤峰市",
-		"name": "北疆北山粮库",
-		"address": "内蒙古自治区赤峰市红山区S205",
-		"location": {
-			"latitude": 42.350114151496,
-			"longitude": 118.910912834
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "内蒙古自治区",
-		"city": "赤峰市",
 		"name": "个人大院",
 		"address": "内蒙古自治区赤峰市元宝山区古马路",
 		"location": {
 			"latitude": 42.0641133956,
 			"longitude": 119.32919952749
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "海南省",
-		"city": "三亚市",
-		"name": "亚太会议中心内",
-		"address": "海南省三亚市市辖区三亚湾路219",
-		"location": {
-			"latitude": 18.295911392192,
-			"longitude": 109.39944074135
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "四川省",
-		"city": "攀枝花市",
-		"name": "米易县职业技术学校",
-		"address": "四川省攀枝花市米易县铁建路",
-		"location": {
-			"latitude": 26.870995883393,
-			"longitude": 102.12005171214
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -8426,89 +7646,11 @@
 	{
 		"province": "四川省",
 		"city": "凉山彝族自治州",
-		"name": "西昌新钢业有限公司",
-		"address": "四川省凉山彝族自治州西昌市S107(机场路一段)",
-		"location": {
-			"latitude": 27.909365515037,
-			"longitude": 102.22409816532
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "重庆市",
-		"city": "重庆市",
-		"name": "荣昌板桥工业园五支路2号",
-		"address": "重庆市荣昌县园区五支路",
-		"location": {
-			"latitude": 29.412749211137,
-			"longitude": 105.63768287925
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "四川省",
-		"city": "凉山彝族自治州",
 		"name": "冕宁县复兴镇中心村",
 		"address": "四川省凉山彝族自治州冕宁县G108(京昆线)",
 		"location": {
 			"latitude": 28.430664708198,
 			"longitude": 102.1815393879
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "四川省",
-		"city": "自贡市",
-		"name": "沿滩区卫平镇综合管理办公室",
-		"address": "四川省自贡市大安区G85(渝昆高速)",
-		"location": {
-			"latitude": 29.357229131556,
-			"longitude": 104.8242527817
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "四川省",
-		"city": "凉山彝族自治州",
-		"name": "昭觉县金鑫水泥有限责任公司",
-		"address": "四川省凉山彝族自治州昭觉县",
-		"location": {
-			"latitude": 28.066592509,
-			"longitude": 102.9396507672
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "四川省",
-		"city": "乐山市",
-		"name": "沐川县吉泰龙食品有限公司",
-		"address": "四川省乐山市沐川县城北路518",
-		"location": {
-			"latitude": 28.974606748939,
-			"longitude": 103.91345787893
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "四川省",
-		"city": "乐山市",
-		"name": "马边彝族自治县",
-		"address": "四川省乐山市马边彝族自治县S103",
-		"location": {
-			"latitude": 28.829938065358,
-			"longitude": 103.53907505584
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -8541,19 +7683,6 @@
 		"description": ""
 	},
 	{
-		"province": "四川省",
-		"city": "乐山市",
-		"name": "沐川县开源木业",
-		"address": "四川省乐山市沐川县",
-		"location": {
-			"latitude": 28.968402654231,
-			"longitude": 103.8880168474
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
 		"province": "黑龙江省",
 		"city": "齐齐哈尔市",
 		"name": "碾子山区",
@@ -8561,32 +7690,6 @@
 		"location": {
 			"latitude": 47.502503574971,
 			"longitude": 122.9150962851
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
-		"city": "文山壮族苗族自治州",
-		"name": "砚山",
-		"address": "云南省文山壮族苗族自治州砚山县",
-		"location": {
-			"latitude": 23.659834136024,
-			"longitude": 104.3541361292
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
-		"city": "红河哈尼族彝族自治州",
-		"name": "开远市",
-		"address": "云南省红河哈尼族彝族自治州开远市市西南路",
-		"location": {
-			"latitude": 23.689737611048,
-			"longitude": 103.25418288283
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -8633,51 +7736,12 @@
 	},
 	{
 		"province": "云南省",
-		"city": "红河哈尼族彝族自治州",
-		"name": "红河县",
-		"address": "云南省红河哈尼族彝族自治州红河县",
-		"location": {
-			"latitude": 23.357081250395,
-			"longitude": 102.43310018119
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
 		"city": "玉溪市",
 		"name": "元江县",
 		"address": "云南省玉溪市元江G213(兰磨线)",
 		"location": {
 			"latitude": 23.650344618649,
 			"longitude": 101.98589799456
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
-		"city": "玉溪市",
-		"name": "江川县",
-		"address": "云南省玉溪市江川县",
-		"location": {
-			"latitude": 24.320573630907,
-			"longitude": 102.72145153964
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
-		"city": "普洱市",
-		"name": "墨江县",
-		"address": "云南省普洱市墨江哈尼族自治县G8511(昆磨高速)",
-		"location": {
-			"latitude": 23.300333757875,
-			"longitude": 101.39009452036
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -8712,76 +7776,11 @@
 	{
 		"province": "云南省",
 		"city": "普洱市",
-		"name": "江城县",
-		"address": "云南省普洱市江城哈尼族彝族自治县",
-		"location": {
-			"latitude": 22.568737655096,
-			"longitude": 101.88325268251
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
-		"city": "普洱市",
 		"name": "普洱市",
 		"address": "云南省普洱市思茅区",
 		"location": {
 			"latitude": 22.785944767064,
 			"longitude": 100.91609098229
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "电子城国际电子总部6号院内",
-		"address": "北京市朝阳区酒仙桥路",
-		"location": {
-			"latitude": 39.988403345018,
-			"longitude": 116.49730779429
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "宏昌骏体育运动公园",
-		"address": "北京市朝阳区",
-		"location": {
-			"latitude": 40.036544995564,
-			"longitude": 116.48408243915
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "长城脚下公社度假村",
-		"address": "北京市延庆县",
-		"location": {
-			"latitude": 40.34655575496,
-			"longitude": 116.05970101566
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "康屯镇屯军营村",
-		"address": "北京市延庆县政通路",
-		"location": {
-			"latitude": 40.401090755147,
-			"longitude": 115.88592032016
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -8842,50 +7841,11 @@
 	{
 		"province": "浙江省",
 		"city": "宁波市",
-		"name": "奉化市溪口镇政府溪口风景区",
-		"address": "浙江省宁波市奉化市武岭西路",
-		"location": {
-			"latitude": 29.688186576921,
-			"longitude": 121.29225015933
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "浙江省",
-		"city": "宁波市",
 		"name": "奉化市溪口镇政府溪口风景区第二停机点",
 		"address": "浙江省宁波市奉化市S33",
 		"location": {
 			"latitude": 29.691497648833,
 			"longitude": 121.26563091069
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "重庆市",
-		"city": "重庆市",
-		"name": "荣昌大道东段富吉集团",
-		"address": "重庆市荣昌县灵方大道",
-		"location": {
-			"latitude": 29.409446693981,
-			"longitude": 105.63572540024
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "重庆市",
-		"city": "重庆市",
-		"name": "板桥工业园灵方大道江特表面处理公司",
-		"address": "重庆市荣昌县灵方大道",
-		"location": {
-			"latitude": 29.409236730708,
-			"longitude": 105.65053809418
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -9518,37 +8478,11 @@
 	{
 		"province": "海南省",
 		"city": "三亚市",
-		"name": "海棠湾红树林酒店",
-		"address": "海南省三亚市市辖区",
-		"location": {
-			"latitude": 18.345086192893,
-			"longitude": 109.74486235368
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "海南省",
-		"city": "三亚市",
 		"name": "半山半岛帆船港",
 		"address": "海南省三亚市市辖区鹿回头路",
 		"location": {
 			"latitude": 18.217218511971,
 			"longitude": 109.49208241863
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "云南省",
-		"city": "大理白族自治州",
-		"name": "苍山高尔夫直升机停机坪",
-		"address": "云南省大理白族自治州大理市",
-		"location": {
-			"latitude": 25.653596384569,
-			"longitude": 100.32619798667
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -9568,45 +8502,6 @@
 		"description": ""
 	},
 	{
-		"province": "黑龙江省",
-		"city": "伊春市",
-		"name": "农场",
-		"address": "黑龙江省伊春市铁力市阳光路",
-		"location": {
-			"latitude": 47.016425592996,
-			"longitude": 128.0546584418
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "河北省",
-		"city": "石家庄市",
-		"name": "白鹿温泉度假村停车场",
-		"address": "河北省石家庄市平山县",
-		"location": {
-			"latitude": 38.255397304432,
-			"longitude": 113.99106768916
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "黑龙江省",
-		"city": "绥化市",
-		"name": "开发区北慧鑫铁制品有限公司",
-		"address": "黑龙江省绥化市海伦市海伦支线",
-		"location": {
-			"latitude": 47.494894458878,
-			"longitude": 126.95523415962
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
 		"province": "河北省",
 		"city": "石家庄市",
 		"name": "金博士种业有限公司",
@@ -9620,32 +8515,6 @@
 		"description": ""
 	},
 	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "国家会议中心前马路",
-		"address": "北京市朝阳区大屯路",
-		"location": {
-			"latitude": 40.008276487169,
-			"longitude": 116.39711102953
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "河北省",
-		"city": "邢台市",
-		"name": "金丰工贸有限公司",
-		"address": "河北省邢台市任县",
-		"location": {
-			"latitude": 37.152743282127,
-			"longitude": 114.66596130122
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
 		"province": "广东省",
 		"city": "湛江市",
 		"name": "生态工业聚集区",
@@ -9653,32 +8522,6 @@
 		"location": {
 			"latitude": 20.423834331257,
 			"longitude": 110.14204373032
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "广东省",
-		"city": "湛江市",
-		"name": "徐闻体育馆",
-		"address": "广东省湛江市徐闻县Y052",
-		"location": {
-			"latitude": 20.296830381938,
-			"longitude": 110.20947203826
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "吉林省",
-		"city": "吉林市",
-		"name": "船营区私人工厂",
-		"address": "吉林省吉林市船营区S101(吉长北线)",
-		"location": {
-			"latitude": 43.897553607708,
-			"longitude": 126.50093365921
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -9711,19 +8554,6 @@
 		"description": ""
 	},
 	{
-		"province": "海南省",
-		"city": "三亚市",
-		"name": "半山半岛帆船港",
-		"address": "海南省三亚市市辖区鹿回头路",
-		"location": {
-			"latitude": 18.21721525672,
-			"longitude": 109.49208241837
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
 		"province": "云南省",
 		"city": "大理白族自治州",
 		"name": "苍山高尔夫直升机停机坪",
@@ -9731,19 +8561,6 @@
 		"location": {
 			"latitude": 25.653595300282,
 			"longitude": 100.32620232692
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "东升会起降点",
-		"address": "北京市海淀区西小口路",
-		"location": {
-			"latitude": 40.055876722325,
-			"longitude": 116.37080009927
 		},
 		"published": true,
 		"type": "HELICOPTER",
@@ -10160,32 +8977,6 @@
 		"location": {
 			"latitude": 47.494895606426,
 			"longitude": 126.95523983278
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "河北省",
-		"city": "石家庄市",
-		"name": "金博士种业有限公司",
-		"address": "河北省石家庄市藁城市振兴北街",
-		"location": {
-			"latitude": 38.03840087274,
-			"longitude": 114.89905539188
-		},
-		"published": true,
-		"type": "HELICOPTER",
-		"description": ""
-	},
-	{
-		"province": "北京市",
-		"city": "北京市",
-		"name": "东单体育中心足球场",
-		"address": "北京市东城区崇文门内大街甲106号",
-		"location": {
-			"latitude": 39.912620091613,
-			"longitude": 116.42378131263
 		},
 		"published": true,
 		"type": "HELICOPTER",
