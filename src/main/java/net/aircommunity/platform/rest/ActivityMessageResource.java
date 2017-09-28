@@ -195,7 +195,6 @@ public class ActivityMessageResource {
 	@RolesAllowed({Roles.ROLE_ADMIN, Roles.ROLE_TENANT})
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView(JsonViews.User.class)
 	public ActivityMessage update(@PathParam("activityMessageId") String activityMessageId, @NotNull @Valid ActivityMessage activityMessage, @Context SecurityContext context) {
 		return activityMessageService.updateActivityMessage(activityMessageId, activityMessage);
 	}

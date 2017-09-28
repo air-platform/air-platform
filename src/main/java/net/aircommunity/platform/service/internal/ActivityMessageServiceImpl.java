@@ -52,10 +52,11 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 	@Override
 	public ActivityMessage createActivityMessage(ActivityMessage activityMessage, String userName) {
 		Tenant tenant = findAccount(userName, Tenant.class);
-		activityMessage.setVendor(tenant);
 		activityMessage.setDate(new Date());
 		ActivityMessage newActivityMessage = new ActivityMessage();
 		copyProperties(activityMessage, newActivityMessage);
+
+		newActivityMessage.setVendor(tenant);
 		return safeExecute(() -> activityMessageRepository.save(newActivityMessage),
 				"Create ActivityMessage %s failed", activityMessage);
 	}
@@ -153,7 +154,7 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 		tgt.setThumbnails(src.getThumbnails());
 		tgt.setHeadings(src.getHeadings());
 		tgt.setDescription(src.getDescription());
-		tgt.setVendor(src.getVendor());
+		//tgt.setVendor(src.getVendor());
 		tgt.setDate(new Date());
 
 	}
