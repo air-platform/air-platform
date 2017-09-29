@@ -125,7 +125,7 @@ public class ActivityMessageResource {
 	@POST
 	@RolesAllowed({Roles.ROLE_ADMIN, Roles.ROLE_TENANT})
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response create(@NotNull @Valid ActivityMessage activityMessage, @Context SecurityContext context, @Context UriInfo uriInfo) {
+	public Response create(@QueryParam("tenant") String tenantId, @NotNull @Valid ActivityMessage activityMessage, @Context SecurityContext context, @Context UriInfo uriInfo) {
 
 		ActivityMessage created = null;
 		if (context.isUserInRole(Roles.ROLE_TENANT)) {
@@ -133,7 +133,7 @@ public class ActivityMessageResource {
 			created = activityMessageService.createActivityMessage(activityMessage, userName);
 		}
 		else {
-			created = activityMessageService.createActivityMessage(activityMessage, activityMessage.getVendor().getId());
+			created = activityMessageService.createActivityMessage(activityMessage, tenantId);
 		}
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
@@ -203,7 +203,7 @@ public class ActivityMessageResource {
 	 * Delete
 	 */
 	@DELETE
-	@Path("{activityMessageService}")
+	@Path("{activityMessageId}")
 	@RolesAllowed({Roles.ROLE_ADMIN, Roles.ROLE_TENANT})
 	public void delete(@PathParam("activityMessageId") String activityMessageId) {
 		activityMessageService.deleteActivityMessage(activityMessageId);

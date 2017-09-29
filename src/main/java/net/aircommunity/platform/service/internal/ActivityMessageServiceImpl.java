@@ -51,12 +51,16 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 	@Transactional
 	@Override
 	public ActivityMessage createActivityMessage(ActivityMessage activityMessage, String userName) {
-		Tenant tenant = findAccount(userName, Tenant.class);
+
 		activityMessage.setDate(new Date());
 		ActivityMessage newActivityMessage = new ActivityMessage();
 		copyProperties(activityMessage, newActivityMessage);
 
-		newActivityMessage.setVendor(tenant);
+		if (userName != null) {
+			Tenant tenant = findAccount(userName, Tenant.class);
+			newActivityMessage.setVendor(tenant);
+		}
+
 		return safeExecute(() -> activityMessageRepository.save(newActivityMessage),
 				"Create ActivityMessage %s failed", activityMessage);
 	}
@@ -187,7 +191,7 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteActivityMessages() {
-		safeExecute(() -> activityMessageRepository.deleteAll(), "Delete all citysites failed");
+		safeExecute(() -> activityMessageRepository.deleteAll(), "Delete all activityMessages failed");
 	}
 
 }
