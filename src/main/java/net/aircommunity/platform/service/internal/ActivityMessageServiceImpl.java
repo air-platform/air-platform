@@ -97,8 +97,16 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 			LOG.error("ActivityMessage {} not found", activityMessageId);
 			throw new AirException(Codes.ACTIVITY_MESSAGE_NOT_FOUND, M.msg(M.ACTIVITY_MESSAGE_NOT_FOUND));
 		}
-		activityMessage.setPublished(isPublish);
 
+
+		if (isPublish && activityMessage.getReviewStatus() != ReviewStatus.APPROVED) {
+			LOG.error("activity message {} is not approved, cannot publish", activityMessage);
+			throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.PRODUCT_NOT_APPROVED));
+		}
+
+		activityMessage.setPublished(isPublish);
+		ActivityMessage ac = safeExecute(() -> activityMessageRepository.save(activityMessage), "Publish activityMessage %s to %s failed",
+				activityMessageId, activityMessage);
 
 		if (isPublish && activityMessage.getReviewStatus() == ReviewStatus.APPROVED) {
 			DomainEvent de = new DomainEvent(DomainType.ACTIVITY_MSG, Operation.PUSH_NOTIFICATION);
@@ -112,11 +120,7 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 			de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_MESSAGE, activityMessage.getTitle());
 			postDomainEvent(de);
 		}
-
-
-		return safeExecute(() -> activityMessageRepository.save(activityMessage), "Publish activityMessage %s to %s failed",
-				activityMessageId, activityMessage);
-
+		return ac;
 	}
 
 
