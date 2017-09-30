@@ -51,11 +51,16 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 	@Transactional
 	@Override
 	public ActivityMessage createActivityMessage(ActivityMessage activityMessage, String userName) {
-		Tenant tenant = findAccount(userName, Tenant.class);
-		activityMessage.setVendor(tenant);
+
 		activityMessage.setDate(new Date());
 		ActivityMessage newActivityMessage = new ActivityMessage();
 		copyProperties(activityMessage, newActivityMessage);
+
+		if (userName != null) {
+			Tenant tenant = findAccount(userName, Tenant.class);
+			newActivityMessage.setVendor(tenant);
+		}
+
 		return safeExecute(() -> activityMessageRepository.save(newActivityMessage),
 				"Create ActivityMessage %s failed", activityMessage);
 	}
@@ -92,8 +97,16 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 			LOG.error("ActivityMessage {} not found", activityMessageId);
 			throw new AirException(Codes.ACTIVITY_MESSAGE_NOT_FOUND, M.msg(M.ACTIVITY_MESSAGE_NOT_FOUND));
 		}
-		activityMessage.setPublished(isPublish);
 
+
+		if (isPublish && activityMessage.getReviewStatus() != ReviewStatus.APPROVED) {
+			LOG.error("activity message {} is not approved, cannot publish", activityMessage);
+			throw new AirException(Codes.ACCOUNT_PERMISSION_DENIED, M.msg(M.PRODUCT_NOT_APPROVED));
+		}
+
+		activityMessage.setPublished(isPublish);
+		ActivityMessage ac = safeExecute(() -> activityMessageRepository.save(activityMessage), "Publish activityMessage %s to %s failed",
+				activityMessageId, activityMessage);
 
 		if (isPublish && activityMessage.getReviewStatus() == ReviewStatus.APPROVED) {
 			DomainEvent de = new DomainEvent(DomainType.ACTIVITY_MSG, Operation.PUSH_NOTIFICATION);
@@ -107,11 +120,7 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 			de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_MESSAGE, activityMessage.getTitle());
 			postDomainEvent(de);
 		}
-
-
-		return safeExecute(() -> activityMessageRepository.save(activityMessage), "Publish activityMessage %s to %s failed",
-				activityMessageId, activityMessage);
-
+		return ac;
 	}
 
 
@@ -153,7 +162,7 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 		tgt.setThumbnails(src.getThumbnails());
 		tgt.setHeadings(src.getHeadings());
 		tgt.setDescription(src.getDescription());
-		tgt.setVendor(src.getVendor());
+		//tgt.setVendor(src.getVendor());
 		tgt.setDate(new Date());
 
 	}
@@ -186,7 +195,7 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 	@CacheEvict(cacheNames = CACHE_NAME, allEntries = true)
 	@Override
 	public void deleteActivityMessages() {
-		safeExecute(() -> activityMessageRepository.deleteAll(), "Delete all citysites failed");
+		safeExecute(() -> activityMessageRepository.deleteAll(), "Delete all activityMessages failed");
 	}
 
 }
