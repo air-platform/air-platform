@@ -15,6 +15,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface PushNotificationRepository extends JpaRepository<PushNotification, String> {
 
-    Page<PushNotification> findByOwnerOrOwnerIsNull(User user, Pageable var1);
+    Page<PushNotification> findByOwner(User user, Pageable var1);
 
 }

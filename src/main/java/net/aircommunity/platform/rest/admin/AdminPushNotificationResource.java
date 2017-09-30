@@ -2,6 +2,25 @@ package net.aircommunity.platform.rest.admin;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.micro.annotation.RESTful;
+import java.net.URI;
+import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import net.aircommunity.platform.model.JsonViews;
 import net.aircommunity.platform.model.Page;
 import net.aircommunity.platform.model.Roles;
@@ -9,17 +28,6 @@ import net.aircommunity.platform.model.domain.PushNotification;
 import net.aircommunity.platform.service.common.PushNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.Resource;
-import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.net.URI;
 
 /**
  * PushNotification RESTful API for ADMIN
@@ -58,9 +66,9 @@ public class AdminPushNotificationResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({Roles.ROLE_ADMIN})
 	@JsonView(JsonViews.Admin.class)
-	public Response create(@NotNull @Valid PushNotification pushNotification,
+	public Response create(@QueryParam("user") String userId, @NotNull @Valid PushNotification pushNotification,
 						   @Context UriInfo uriInfo) {
-		PushNotification created = pushNotificationService.createPushNotification(pushNotification);
+		PushNotification created = pushNotificationService.createPushNotification(pushNotification, userId);
 		URI uri = uriInfo.getAbsolutePathBuilder().segment(created.getId()).build();
 		LOG.debug("Created {}", uri);
 		return Response.created(uri).build();

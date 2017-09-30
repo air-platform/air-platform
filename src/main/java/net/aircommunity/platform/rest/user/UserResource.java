@@ -1,7 +1,11 @@
 package net.aircommunity.platform.rest.user;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import io.micro.annotation.Authenticated;
+import io.micro.annotation.RESTful;
+import io.micro.common.Strings;
+import io.swagger.annotations.Api;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.json.JsonObject;
@@ -22,16 +26,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.annotation.JsonView;
-
-import io.micro.annotation.Authenticated;
-import io.micro.annotation.RESTful;
-import io.micro.common.Strings;
-import io.swagger.annotations.Api;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.model.JsonViews;
@@ -40,27 +34,28 @@ import net.aircommunity.platform.model.Roles;
 import net.aircommunity.platform.model.domain.Address;
 import net.aircommunity.platform.model.domain.Order;
 import net.aircommunity.platform.model.domain.Passenger;
-import net.aircommunity.platform.model.domain.PushNotification;
 import net.aircommunity.platform.model.domain.Trade;
 import net.aircommunity.platform.model.metrics.UserOrderMetrics;
 import net.aircommunity.platform.model.payment.PaymentRequest;
 import net.aircommunity.platform.nls.M;
 import net.aircommunity.platform.rest.BaseResourceSupport;
+import net.aircommunity.platform.rest.PushNotificationResource;
 import net.aircommunity.platform.rest.annotation.AllowResourceOwner;
-import net.aircommunity.platform.service.common.PushNotificationService;
 import net.aircommunity.platform.service.order.CharterOrderService;
 import net.aircommunity.platform.service.security.AccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * User resource.
- * 
+ *
  * @author Bin.Zhang
  */
 @Api
 @RESTful
 @Path("user")
 @AllowResourceOwner
-@RolesAllowed({ Roles.ROLE_ADMIN, Roles.ROLE_USER })
+@RolesAllowed({Roles.ROLE_ADMIN, Roles.ROLE_USER})
 public class UserResource extends BaseResourceSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(UserResource.class);
 
@@ -165,8 +160,8 @@ public class UserResource extends BaseResourceSupport {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
 	public Page<Order> listAllOrders(@QueryParam("status") String status,
-			@QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize,
-			@Context SecurityContext context) {
+									 @QueryParam("page") @DefaultValue("0") int page, @QueryParam("pageSize") @DefaultValue("0") int pageSize,
+									 @Context SecurityContext context) {
 		String userId = context.getUserPrincipal().getName();
 		LOG.debug("List user {} orders in status: {}, page: {}, pageSize: {}", userId, status, page, pageSize);
 
@@ -202,8 +197,8 @@ public class UserResource extends BaseResourceSupport {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView(JsonViews.User.class)
 	public Response searchOrders(@QueryParam("orderNo") String orderNo,
-			@Min(0) @DefaultValue("0") @QueryParam("days") int days, @QueryParam("page") @DefaultValue("0") int page,
-			@QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
+								 @Min(0) @DefaultValue("0") @QueryParam("days") int days, @QueryParam("page") @DefaultValue("0") int page,
+								 @QueryParam("pageSize") @DefaultValue("0") int pageSize, @Context SecurityContext context) {
 		String userId = context.getUserPrincipal().getName();
 		LOG.debug("Search user {} orders in orderNo: {}, days: {},  page: {}, pageSize: {}", userId, orderNo, days,
 				page, pageSize);
@@ -251,7 +246,7 @@ public class UserResource extends BaseResourceSupport {
 	@POST
 	@Path("orders/{orderId}/fleet/select")
 	public void selectFleet(@PathParam("orderId") String orderId,
-			@NotNull @QueryParam("candidate") String fleetCandidateId) {
+							@NotNull @QueryParam("candidate") String fleetCandidateId) {
 		charterOrderService.selectOrderCandidate(orderId, fleetCandidateId);
 	}
 
@@ -274,7 +269,7 @@ public class UserResource extends BaseResourceSupport {
 	@Path("orders/{orderId}/pay/{paymentMethod}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public PaymentRequest payOrder(@PathParam("orderId") String orderId,
-			@PathParam("paymentMethod") Trade.Method method) {
+								   @PathParam("paymentMethod") Trade.Method method) {
 		return commonOrderService.requestOrderPayment(orderId, method);
 	}
 
@@ -388,11 +383,17 @@ public class UserResource extends BaseResourceSupport {
 	}
 
 	@Resource
-	private PushNotificationService pushNotificationService;
+	private PushNotificationResource pushNotificationResource;
 
-	@GET
 	@Path("pushnotifications")
-	@Authenticated
+	public PushNotificationResource pushNotificationResources() {
+		return pushNotificationResource;
+	}
+
+
+
+
+	/*@Authenticated
 	@JsonView(JsonViews.Public.class)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Page<PushNotification> listPushNotifications(@QueryParam("page") @DefaultValue("0") int page,
@@ -400,17 +401,6 @@ public class UserResource extends BaseResourceSupport {
 		String accountId = context.getUserPrincipal().getName();
 		return pushNotificationService.listUserPushNotifications(accountId, page, pageSize);
 	}
-
-	/**
-	 * Delete User passenger
-	 */
-	@GET
-	@Path("pushnotifications/{pushnotificationId}")
-	@Authenticated
-	@JsonView(JsonViews.Public.class)
-	@Produces(MediaType.APPLICATION_JSON)
-	public PushNotification findPushNotification(@PathParam("pushnotificationId") String pushnotificationId) {
-		return pushNotificationService.findPushNotification(pushnotificationId);
-	}
+*/
 
 }

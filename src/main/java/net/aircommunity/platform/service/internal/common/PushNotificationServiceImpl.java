@@ -1,21 +1,5 @@
 package net.aircommunity.platform.service.internal.common;
 
-import java.util.Date;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Strings;
-
 import cn.jiguang.common.ClientConfig;
 import cn.jiguang.common.resp.APIConnectionException;
 import cn.jiguang.common.resp.APIRequestException;
@@ -29,6 +13,12 @@ import cn.jpush.api.push.model.notification.AndroidNotification;
 import cn.jpush.api.push.model.notification.IosNotification;
 import cn.jpush.api.push.model.notification.Notification;
 import cn.jpush.api.push.model.notification.PlatformNotification;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
+import java.util.Date;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import net.aircommunity.platform.AirException;
 import net.aircommunity.platform.Codes;
 import net.aircommunity.platform.Configuration;
@@ -42,6 +32,12 @@ import net.aircommunity.platform.repository.PushNotificationRepository;
 import net.aircommunity.platform.service.common.PushNotificationService;
 import net.aircommunity.platform.service.internal.AbstractServiceSupport;
 import net.aircommunity.platform.service.internal.Pages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 
 /**
  * SMS service implementation
@@ -198,10 +194,17 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 
 	@Transactional
 	@Override
-	public PushNotification createPushNotification(PushNotification pushNotification) {
+	public PushNotification createPushNotification(PushNotification pushNotification, String userId) {
 
 		PushNotification newPushNotification = new PushNotification();
 		copyProperties(pushNotification, newPushNotification);
+
+		if (userId != null) {
+			User user = findAccount(userId, User.class);
+			newPushNotification.setAlias(userId.replace("-", "_"));
+			newPushNotification.setOwner(user);
+		}
+
 		newPushNotification.setCreationDate(new Date());
 		newPushNotification.setStatus(PushNotification.Status.NONE_PUSH);
 		return safeExecute(() -> pushNotificationRepository.save(newPushNotification),
@@ -283,13 +286,11 @@ public class PushNotificationServiceImpl extends AbstractServiceSupport implemen
 
 	@Override
 	public Page<PushNotification> listUserPushNotifications(String accountId, int page, int pageSize) {
-		Account account = findAccount(accountId);
-		if (!User.class.isAssignableFrom(account.getClass())) {
-			return Page.emptyPage(page, pageSize);
-		}
-		User user = User.class.cast(account);
+		User user = findAccount(accountId, User.class);
 		return Pages
-				.adapt(pushNotificationRepository.findByOwnerOrOwnerIsNull(user, createPageRequest(page, pageSize)));
+				.adapt(pushNotificationRepository.findByOwner(user, createPageRequest(page, pageSize)));
 	}
+
+	//.adapt(pushNotificationRepository.findByOwnerOrOwnerIsNull(user, createPageRequest(page, pageSize)));
 
 }

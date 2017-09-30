@@ -15,8 +15,10 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import net.aircommunity.platform.Constants;
 import net.aircommunity.platform.model.JsonViews;
+import net.aircommunity.platform.model.jaxb.DateTimeAdapter;
 
 /**
  * Aircraft for (Taxi, Transportation, Tour) of an {@code Tenant}.
@@ -48,11 +50,13 @@ public class PushNotification extends Persistable {
 	private Status status;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	@Column(name = "creation_date", nullable = false)
 	private Date creationDate;
 
 
 	@Temporal(value = TemporalType.TIMESTAMP)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	@Column(name = "last_send_date")
 	private Date lastSendDate;
 

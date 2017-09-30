@@ -20,7 +20,7 @@ public interface PushNotificationService {
 
     PushNotification sendInstantPushNotification(PushNotification pushNotification);
 
-    PushNotification createPushNotification(PushNotification pushNotification);
+    PushNotification createPushNotification(PushNotification pushNotification, String userId);
 
     PushNotification findPushNotification(String pushNotificationId);
 
