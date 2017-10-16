@@ -171,8 +171,8 @@ public class OrderNotificationServiceImpl extends AbstractServiceSupport impleme
 		// fleet is offer by a tenant
 		case FLEET_OFFERED:
 			// TODO SMS notification to customer
-			Contact contactPerson = event.getOrder().getContact();
-			notifyCustomer(ImmutableSet.of(contactPerson), event);
+			//Contact contactPerson = event.getOrder().getContact();
+			//notifyCustomer(ImmutableSet.of(contactPerson), event);
 
 			de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_MESSAGE, Constants.TEMPLATE_PUSHNOTIFICATION_OFFER);
 			postDomainEvent(de);
