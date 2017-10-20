@@ -45,7 +45,7 @@ public class FileServiceImpl implements FileService {
 	private static final int OP_SUCCESS = 0;
 	private static final int OP_PENDING = 1;
 	private static final int OP_PROCESSING = 2;
-	private static final int TOKEN_EXPIRES = 5 * 60; // 5 minutes
+	private static final int TOKEN_EXPIRES = 30 * 60; // 30 minutes
 
 	private Auth auth;
 	private UploadManager uploadManager;

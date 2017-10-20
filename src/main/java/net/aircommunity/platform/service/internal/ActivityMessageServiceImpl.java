@@ -114,6 +114,7 @@ public class ActivityMessageServiceImpl extends AbstractServiceSupport implement
 			String extras = new StringBuffer()
 					.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_CONTENT_TYPE).append(":").append(Type.PLAIN_TEXT.toString().toLowerCase()).append(";")
 					.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_BUSINESS_TYPE).append(":").append(BusinessType.ACTIVITY_MSG.toString().toLowerCase()).append(";")
+					.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_ACTIVITY_MSG_TITLE).append(":").append(activityMessage.getTitle()).append(";")
 					.append(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS_ACTIVITY_MSG_ID).append(":").append(activityMessage.getId())
 					.toString();
 			de.addParam(Constants.TEMPLATE_PUSHNOTIFICATION_EXTRAS, extras);

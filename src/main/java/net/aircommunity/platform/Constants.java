@@ -72,6 +72,7 @@ public final class Constants {
 	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS = "pushMessage_extras";
 	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_ORDER_ID = "order_id";
 	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_ACTIVITY_MSG_ID = "activity_msg_id";
+	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_ACTIVITY_MSG_TITLE = "activity_msg_title";
 	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_ORDER_TYPE = "order_type";
 	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_CONTENT_TYPE = "content_type";
 	public static final String TEMPLATE_PUSHNOTIFICATION_EXTRAS_BUSINESS_TYPE = "business_type";
